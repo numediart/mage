@@ -5,12 +5,36 @@
 
 # Compiled Dynamic libraries
 *.so
+*.dylib
+*.dll
 
 # Compiled Static libraries
 *.lai
 *.la
 *.a
+*.lib
 
 # Compiled Executable (Windows)
 *.exe
 
+# editors temporary files
+*.swp
+*~
+\#
+
+# build directory (build, builds, Build, Builds, ...)
+[bB]uild*
+
+# netbeans projects garbage
+nbproject
+nbbuild
+
+#OSX specific garbage
+.DS_Store
+*.xcodeproj
+*.perspectivev3
+*.pbxproj
+*.pbxuser
+
+# merge tools garbage
+*.orig
