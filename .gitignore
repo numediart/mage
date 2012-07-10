@@ -3,17 +3,6 @@
 *.lo
 *.o
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
 # Compiled Executable (Windows)
 *.exe
 
@@ -31,10 +20,7 @@ nbbuild
 
 #OSX specific garbage
 .DS_Store
-*.xcodeproj
 *.perspectivev3
-*.pbxproj
-*.pbxuser
 
 # merge tools garbage
 *.orig
