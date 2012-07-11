@@ -15,6 +15,9 @@
 [bB]uild*
 bin
 
+# xcode projects garbage
+*.xcuserstate
+
 # netbeans projects garbage
 nbproject
 nbbuild
