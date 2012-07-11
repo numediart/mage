@@ -16,7 +16,7 @@
 bin
 
 # xcode projects garbage
-*xcuserdata*
+xcuserdata
 
 # netbeans projects garbage
 nbproject
