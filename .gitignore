@@ -13,6 +13,7 @@
 
 # build directory (build, builds, Build, Builds, ...)
 [bB]uild*
+bin
 
 # netbeans projects garbage
 nbproject
