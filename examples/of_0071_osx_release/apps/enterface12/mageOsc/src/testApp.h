@@ -2,10 +2,15 @@
 
 #include "ofMain.h"
 #include "obOlaBuffer.h"
+#include "mage.h"
 
+// --- LABEL THINGS ---
+const int labelQueueLen = 16;
+
+// --- AUDIO THINGS ---
 const int sampleRate = 48000;
 const int maxFrameLen =  4800;
-const int dacBufferLen = 512;
+const int dacBufferLen = 64;
 
 class testApp : public ofBaseApp {
     
@@ -36,7 +41,10 @@ class testApp : public ofBaseApp {
     
     //---
     
-    // MAGE things here !
+    MAGE::LabelQueue *labelQueue;
+    MAGE::MemQueue<MAGE::Model> *modelQueue;
+    
+    MAGE::Model model1, model2;
     
     //---
     

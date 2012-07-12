@@ -2,15 +2,29 @@
 
 void testApp::setup( void ) {
     
+    // --- LABEL THINGS ---
+    labelQueue = new MAGE::LabelQueue( labelQueueLen );
+    modelQueue = new MAGE::MemQueue<MAGE::Model>( 2 );
+    
+    model1.state[0].mgc[0].mean = 8.348;
+    
+    modelQueue->push( &model1, 1 );
+    modelQueue->pop( &model2, 1 );
+    
+    printf( "%f\n", model2.state[0].mgc[0].mean );
+    
     // -- OLA AND AUDIO THINGS ---
     drawSampleFrame = false; // we don't draw the sample frame at runtime
     frameLen = 480; hopLen = 240; sampleCount = 0; // initialize OLA variables
     olaBuffer = new obOlaBuffer( 8*maxFrameLen ); // allocate memory for the OLA buffer
     sampleFrame = new float[ maxFrameLen ]; // allocate memory for the speech frame
-    ofSoundStreamSetup( 1, 0, this, sampleRate, dacBufferLen, 4 ); // audio setup
+    //ofSoundStreamSetup( 1, 0, this, sampleRate, dacBufferLen, 4 ); // audio setup
 }
 
 void testApp::exit( void ) {
+    
+    delete labelQueue;
+    delete modelQueue;
     
     delete sampleFrame;
     delete olaBuffer;
@@ -65,7 +79,7 @@ void testApp::audioOut( float *outBuffer, int bufSize, int nChan ) {
     }
     
     // pulling samples out for the DAC
-    olaBuffer->pull( outBuffer, bufSize );
+    olaBuffer->pop( outBuffer, bufSize );
 }
 
 //---
@@ -78,14 +92,39 @@ testApp::testApp( int argc, char **argv ) {
 
 void testApp::keyPressed( int key ) {
     
+    //printf("helllooooooo\n");
+    
     // press any key to check that the frame
     // is changed and corrected overlapped
     
-    frameLen = ofRandom( 300, 600 );
+    /*frameLen = ofRandom( 300, 600 );
     
     for( int k=0; k<frameLen; k++ ) {
         
         sampleFrame[k] = ofRandomf();
+    }*/
+    
+    if( key == 'a' ) {
+    
+        MAGE::Label label;
+        
+        if( !labelQueue->isFull() ) labelQueue->push( label );
+        else printf( "hey, it's full !\n" );
+    }
+    
+    if( key == 'r' ) {
+        
+        MAGE::Label label;
+        
+        if( !labelQueue->isEmpty() ) labelQueue->pop( label );
+        else printf( "hey, it's empty !\n" );
+        
+        printf( "popped: %s\n", label.query.c_str() );
+    }
+    
+    if( key == 'p' ) {
+        
+        labelQueue->print();
     }
 }
 
