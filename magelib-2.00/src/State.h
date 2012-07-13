@@ -1,7 +1,8 @@
 /**
  *   @file    State.h
  *   @author  N. d'Alessandro, M. Astrinaki
- *   @brief   HMM State Class
+ *   @brief   HMM state class, it contains the
+ *            state duration and distributions
  */
 
 #pragma once
@@ -18,7 +19,7 @@ struct State {
     
     Distribution mgc[nOfDers*nOfMGCs];
     MSDistribution lf0[nOfDers*nOfLF0s];
-    Distribution lpf[nOfDers*nOfLPFs];
+    Distribution lpf[nOfLPFs];
 };
 
 } // namespace

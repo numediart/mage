@@ -1,7 +1,10 @@
 /**
  *   @file    LabelQueue.cpp
  *   @author  N. d'Alessandro, M. Astrinaki
- *   @brief   Label Queue Class
+ *   @brief   Label queue class: used to exchange the
+ *            labels between the different threads; we
+ *            could not inherint from MemQueue because
+ *            Label is not a POD type -> memory issues
  */
 
 #include "LabelQueue.h"
@@ -18,7 +21,7 @@ void MAGE::LabelQueue::push( Label &label ) {
     queue[write] = label;
     
     write = (write+1)%queue.size();
-    
+    PaUtil_WriteMemoryBarrier();
     nOfLabels++;
 }
 
@@ -27,26 +30,20 @@ void MAGE::LabelQueue::pop( Label &label ) {
     label = queue[read];
     
     read = (read+1)%queue.size();
-    
+    PaUtil_WriteMemoryBarrier();
     nOfLabels--;
 }
 
 bool MAGE::LabelQueue::isEmpty( void ) {
 
+    PaUtil_ReadMemoryBarrier();
     if( nOfLabels <= 0 ) return true;
     else return false;
 }
 
 bool MAGE::LabelQueue::isFull( void ) {
 
+    PaUtil_ReadMemoryBarrier();
     if( nOfLabels >= queue.size() ) return true;
     else return false;
-}
-
-void MAGE::LabelQueue::print( void ) {
-    
-    for( int k=0; k<nOfLabels; k++ ) {
-    
-        printf( "%i: %s\n", (int)read+k, queue[read+k].query.c_str() );
-    }
 }

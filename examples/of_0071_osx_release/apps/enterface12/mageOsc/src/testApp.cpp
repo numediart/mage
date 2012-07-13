@@ -2,29 +2,31 @@
 
 void testApp::setup( void ) {
     
-    // --- LABEL THINGS ---
+    // --- QUEUES ---
     labelQueue = new MAGE::LabelQueue( labelQueueLen );
-    modelQueue = new MAGE::MemQueue<MAGE::Model>( 2 );
+    modelQueue = new MAGE::ModelQueue( modelQueueLen );
+    frameQueue = new MAGE::FrameQueue( frameQueueLen );
     
-    model1.state[0].mgc[0].mean = 8.348;
+    // --- PARAMETER GENERATION THREAD ---
+    generate = new genThread( labelQueue, modelQueue, frameQueue );
+    generate->startThread();
     
-    modelQueue->push( &model1, 1 );
-    modelQueue->pop( &model2, 1 );
-    
-    printf( "%f\n", model2.state[0].mgc[0].mean );
-    
-    // -- OLA AND AUDIO THINGS ---
-    drawSampleFrame = false; // we don't draw the sample frame at runtime
+    // -- OLA AND AUDIO ---
+    drawSampleFrame = true; // we don't draw the sample frame at runtime
     frameLen = 480; hopLen = 240; sampleCount = 0; // initialize OLA variables
     olaBuffer = new obOlaBuffer( 8*maxFrameLen ); // allocate memory for the OLA buffer
     sampleFrame = new float[ maxFrameLen ]; // allocate memory for the speech frame
-    //ofSoundStreamSetup( 1, 0, this, sampleRate, dacBufferLen, 4 ); // audio setup
+    ofSoundStreamSetup( 1, 0, this, sampleRate, dacBufferLen, 4 ); // audio setup
 }
 
 void testApp::exit( void ) {
     
+    generate->waitForThread( true );
+    delete generate;
+    
     delete labelQueue;
     delete modelQueue;
+    delete frameQueue;
     
     delete sampleFrame;
     delete olaBuffer;
@@ -69,6 +71,22 @@ void testApp::audioOut( float *outBuffer, int bufSize, int nChan ) {
         
         if( sampleCount >= hopLen ) { // if we hit the hop lenght
             
+            if( !frameQueue->isEmpty() ) {
+                
+                frameQueue->pop( &frame, 1 ); // we pop a speech parameter frame
+            
+                // <DUMMY-CODE>
+                
+                for( int s=0; s<frameLen; s++ ) {
+                    
+                    // create a frame with windowed sin reacting to interactive value of Length
+                    float hannWin = 0.5 * (1.0 - cos((TWO_PI * ((float)s)) / (((float)frameLen) - 1.0)));
+                    sampleFrame[s] = 0.95 * hannWin * sin( (float)s * ((TWO_PI*frame.lf0)/(float)sampleRate) );
+                }
+                
+                // </DUMMY-CODE>
+            }
+            
             olaBuffer->ola( sampleFrame, frameLen, k ); // OLA the frame
             sampleCount = 0; // and reset the sample count for next time
             
@@ -92,40 +110,25 @@ testApp::testApp( int argc, char **argv ) {
 
 void testApp::keyPressed( int key ) {
     
-    //printf("helllooooooo\n");
-    
-    // press any key to check that the frame
-    // is changed and corrected overlapped
-    
-    /*frameLen = ofRandom( 300, 600 );
-    
-    for( int k=0; k<frameLen; k++ ) {
+    if( key == 'l' ) {
         
-        sampleFrame[k] = ofRandomf();
-    }*/
-    
-    if( key == 'a' ) {
-    
         MAGE::Label label;
+        label.setQuery( "x^x-pau+ae=l@x_x/A:0_0_0/B:x-x-x@x-x&x-x#x-x$x-x!x-x;x-x|x/C:1+1+2/D:0_0/E:x+x@x+x&x+x#x+x/F:content_2/G:0_0/H:x=x^1=10|0/I:19=12/J:79+57-10" );
         
         if( !labelQueue->isFull() ) labelQueue->push( label );
-        else printf( "hey, it's full !\n" );
+        else printf( "label queue is full !\n" );
     }
     
-    if( key == 'r' ) {
-        
-        MAGE::Label label;
-        
-        if( !labelQueue->isEmpty() ) labelQueue->pop( label );
-        else printf( "hey, it's empty !\n" );
-        
-        printf( "popped: %s\n", label.query.c_str() );
+    /*if( key == 'b' ) {
+    
+        if( !frameQueue->isEmpty() ) frameQueue->pop( &frame, 1 );
+        else printf( "frame queue is empty !\n" );
     }
     
     if( key == 'p' ) {
-        
-        labelQueue->print();
-    }
+    
+        frameQueue->printQueue();
+    }*/
 }
 
 void testApp::keyReleased( int key ) {

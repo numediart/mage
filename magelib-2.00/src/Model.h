@@ -1,7 +1,7 @@
 /**
  *   @file    Model.h
  *   @author  N. d'Alessandro, M. Astrinaki
- *   @brief   HMM Class
+ *   @brief   HMM class: a bunch of states
  */
 
 #pragma once
