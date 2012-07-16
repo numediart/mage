@@ -65,7 +65,7 @@ void MAGE::ModelQueue::generate( unsigned int window, FrameQueue *frameQueue ) {
         // from each state of the model, we get the computed
         // duration and we iterate to generate the parameters
         
-        for( int q=0; q<rawData[head].state[s].duration; q++ ) {
+        for( unsigned int q=0; q<rawData[head].state[s].duration; q++ ) {
         
             // <DUMMY-CODE>
             

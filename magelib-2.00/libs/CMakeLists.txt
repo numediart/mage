@@ -1,0 +1,2 @@
+ADD_SUBDIRECTORY(hts_engine-1.06)
+ADD_SUBDIRECTORY(olabox-0.01)
