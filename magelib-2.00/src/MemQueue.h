@@ -48,7 +48,7 @@ class MemQueue {
 template <class Item>
 unsigned int MAGE::MemQueue<Item>::getNumOfItems( void ) {
 
-    return (nOfItems > 0) ? nOfItems : 0;
+    return (unsigned int) (nOfItems > 0) ? nOfItems : 0;
 }
 
 template <class Item>
@@ -69,7 +69,7 @@ MAGE::MemQueue<Item>::~MemQueue( void ) {
 
 template <class Item>
 void MAGE::MemQueue<Item>::push( Item *item, unsigned int nItem ) {
-    // TODO fix case whan 'write' pointer loops and pass 'read' (read should be advanced to write)
+    // TODO fix case when 'write' pointer loops and passes 'read' (read should be advanced to write)
     // this bug shouldn't be triggered as long as we check isfull() before any push() in calling functions
     
     PaUtil_ReadMemoryBarrier();
@@ -91,7 +91,7 @@ void MAGE::MemQueue<Item>::push( Item *item, unsigned int nItem ) {
 
 template <class Item>
 void MAGE::MemQueue<Item>::pop( Item *item, unsigned int nItem ) {
-    // TODO fix case whan 'write' pointer loops and pass 'read' (read should be advanced to write)
+    // TODO fix case when 'write' pointer loops and passes 'read' (read should be advanced to write)
     // this bug shouldn't be triggered as long as we check isfull() before any push() in calling functions
     // TODO an isempty() check *is* needed
     // TODO check for nItem == 0 (shouldn't happen except if isempty() )
@@ -141,5 +141,5 @@ template <class Item>
 bool MAGE::MemQueue<Item>::isFull( void ) {
     
     PaUtil_ReadMemoryBarrier();
-    return (nOfItems == length) ? true : false;
+    return (this->getNumOfItems() == length) ? true : false;
 }
