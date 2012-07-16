@@ -1,0 +1,16 @@
+to compile :
+
+Release:
+$ cd magelib-2.00
+$ mkdir -p builds/linux-x64-release/
+$ cd builds/linux-x64-release/
+$ cmake ../..
+$ make
+
+Debug:
+$ cd magelib-2.00
+$ mkdir -p builds/linux-x64-debug/
+$ cd builds/linux-x64-debug/
+$ cmake ../.. -DCMAKE_BUILD_TYPE=DEBUG
+(or use ccmake after cmake ../.., to change BUILD_TYPE option to Debug)
+$ make
