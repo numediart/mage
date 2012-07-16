@@ -75,7 +75,9 @@ void MAGE::MemQueue<Item>::push( Item *item, unsigned int nItem ) {
     
         remain = length-write;
         memcpy( &rawData[write], item, remain*sizeof(Item) );
-        memcpy( rawData, &item[remain], (nItem-remain)*sizeof(Item) );
+        if (nItem > remain) { 
+            memcpy( rawData, &item[remain], (nItem-remain)*sizeof(Item) );
+        }
     }
     
     PaUtil_WriteMemoryBarrier();
@@ -94,9 +96,11 @@ void MAGE::MemQueue<Item>::pop( Item *item, unsigned int nItem ) {
         
     } else {
         
-        remain = length-write;
-        memcpy( item, &rawData[write], remain*sizeof(Item) );
-        memcpy( &item[remain], rawData, (nItem-remain)*sizeof(Item) );
+        remain = length-read;
+        memcpy( item, &rawData[read], remain*sizeof(Item) );
+        if (nItem > remain) { 
+            memcpy( &item[remain], rawData, (nItem-remain)*sizeof(Item) );
+        }
     }
     
     PaUtil_WriteMemoryBarrier();
