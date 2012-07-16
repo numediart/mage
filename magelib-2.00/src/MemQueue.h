@@ -37,7 +37,7 @@ class MemQueue {
     
   //protected:
     
-    unsigned int nOfItems;
+    int nOfItems;
     unsigned int length, remain;
     unsigned int read, write;
     Item *rawData;
@@ -48,7 +48,7 @@ class MemQueue {
 template <class Item>
 unsigned int MAGE::MemQueue<Item>::getNumOfItems( void ) {
 
-    return nOfItems;
+    return (nOfItems > 0) ? nOfItems : 0;
 }
 
 template <class Item>
@@ -69,6 +69,8 @@ MAGE::MemQueue<Item>::~MemQueue( void ) {
 
 template <class Item>
 void MAGE::MemQueue<Item>::push( Item *item, unsigned int nItem ) {
+    // TODO fix case whan 'write' pointer loops and pass 'read' (read should be advanced to write)
+    // this bug shouldn't be triggered as long as we check isfull() before any push() in calling functions
     
     PaUtil_ReadMemoryBarrier();
     if( write+nItem <= length ) {
@@ -89,6 +91,15 @@ void MAGE::MemQueue<Item>::push( Item *item, unsigned int nItem ) {
 
 template <class Item>
 void MAGE::MemQueue<Item>::pop( Item *item, unsigned int nItem ) {
+    // TODO fix case whan 'write' pointer loops and pass 'read' (read should be advanced to write)
+    // this bug shouldn't be triggered as long as we check isfull() before any push() in calling functions
+    // TODO an isempty() check *is* needed
+    // TODO check for nItem == 0 (shouldn't happen except if isempty() )
+
+    //don't pop() further than available ...
+    if (nItem > this->getNumOfItems()) {
+        nItem = this->getNumOfItems();
+    }
     
     PaUtil_ReadMemoryBarrier();
     if( read+nItem <= length ) {
@@ -109,6 +120,10 @@ void MAGE::MemQueue<Item>::pop( Item *item, unsigned int nItem ) {
 
 template <class Item>
 void MAGE::MemQueue<Item>::pop( unsigned int nItem ) {
+
+    if (nItem > this->getNumOfItems()) {
+        nItem = this->getNumOfItems();
+    }
     
     PaUtil_WriteMemoryBarrier();
     read = (read+nItem)%length;
@@ -119,14 +134,12 @@ template <class Item>
 bool MAGE::MemQueue<Item>::isEmpty( void ) {
     
     PaUtil_ReadMemoryBarrier();
-    if( nOfItems <= 0 ) return true;
-    else return false;
+    return (nOfItems <= 0) ? true : false;
 }
 
 template <class Item>
 bool MAGE::MemQueue<Item>::isFull( void ) {
     
     PaUtil_ReadMemoryBarrier();
-    if( nOfItems >= length ) return true;
-    else return false;
+    return (nOfItems == length) ? true : false;
 }
