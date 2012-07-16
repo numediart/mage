@@ -75,15 +75,15 @@ void MAGE::ModelQueue::generate( unsigned int window, FrameQueue *frameQueue ) {
             
             for( int k=0; k<nOfMGCs; k++ ) {
                 
-                frame.mgc[k] = ofRandom( -5.0, 5.0 );
+                frame.mgc[k] = MAGE::Random( -5.0, 5.0 );
             }
             
             for( int k=0; k<nOfLPFs; k++ ) {
                 
-                frame.lpf[k] = ofRandom( -5.0, 5.0 );
+                frame.lpf[k] = MAGE::Random( -5.0, 5.0 );
             }
             
-            frame.lf0 = ofRandom( 300.0, 1500.0 );
+            frame.lf0 = MAGE::Random( 300.0, 1500.0 );
             
             // </DUMMY-CODE>
             

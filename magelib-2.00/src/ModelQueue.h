@@ -14,7 +14,7 @@
 #include "FrameQueue.h"
 #include "Frame.h"
 
-#include "ofMain.h" // temporary bad way to produce a random data :(
+#include "Math.h"
 
 namespace MAGE {
     

@@ -8,6 +8,7 @@
 #pragma once
 
 #include "Constants.h"
+#include "Math.h"
 #include "Label.h"
 
 #include "State.h"
