@@ -11,6 +11,11 @@
 #pragma once
 
 #include "pa_memorybarrier.h"
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
+#include <unistd.h>
+
 
 namespace MAGE {
 
