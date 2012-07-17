@@ -31,7 +31,7 @@ void MAGE::ModelQueue::generate( unsigned int window, FrameQueue *frameQueue ) {
         // we don't really compute anything else than the sum of
         // all the supposedly accessible data, but we do that to
         // check that we can actually access these data when we
-        // are supposed to and simpulate some complexity
+        // are supposed to and simulate some complexity
         
         for( int s=0; s<nOfStates; s++ ) {
             

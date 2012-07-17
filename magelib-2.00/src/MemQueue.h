@@ -119,7 +119,7 @@ void MAGE::MemQueue<Item>::pop( Item *item, unsigned int nItem ) {
 }
 
 template <class Item>
-void MAGE::MemQueue<Item>::pop( unsigned int nItem ) {
+void MAGE::MemQueue<Item>::pop( unsigned int nItem = 1 ) {
 
     if (nItem > this->getNumOfItems()) {
         nItem = this->getNumOfItems();
@@ -141,5 +141,5 @@ template <class Item>
 bool MAGE::MemQueue<Item>::isFull( void ) {
     
     PaUtil_ReadMemoryBarrier();
-    return (this->getNumOfItems() == length) ? true : false;
+    return (this->getNumOfItems() >= length) ? true : false;
 }
