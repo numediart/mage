@@ -11,6 +11,6 @@ in order to compile with linux :
 4. for debug:
    $ mkdir -p builds/linux-x64-debug/
    $ cd builds/linux-x64-debug/
-   $ cmake ../.. -DCMAKE_BUILD_TYPE=DEBUG
+   $ cmake ../.. -DCMAKE_BUILD_TYPE=Debug
 (or use ccmake after cmake ../.., to change BUILD_TYPE option to Debug)
    $ make
