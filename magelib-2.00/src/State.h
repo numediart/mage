@@ -16,10 +16,19 @@ namespace MAGE {
 struct State {
     
     unsigned int duration;
+
+    // global variances switch
+    bool gv_switch;
     
-    Distribution mgc[nOfDers*nOfMGCs];
-    MSDistribution lf0[nOfDers*nOfLF0s];
-    Distribution lpf[nOfLPFs];
+    // parameters loaded from trees
+    Distribution	mgc[nOfDers*nOfMGCs];
+    MSDistribution	lf0[nOfDers*nOfLF0s];
+    Distribution	lpf[nOfDers*nOfLPFs];
+
+    // global variances
+    Distribution gv_mgc[nOfDers*nOfMGCs];
+    Distribution gv_lf0[nOfDers*nOfLF0s];
+    Distribution gv_lpf[nOfDers*nOfLPFs];
 };
 
 } // namespace

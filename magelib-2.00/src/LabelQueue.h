@@ -29,6 +29,8 @@ class LabelQueue {
     bool isEmpty( void );
     bool isFull( void );
     
+    void print( void );
+    
   protected:
     
     vector<Label> queue;

@@ -53,3 +53,11 @@ bool MAGE::LabelQueue::isFull( void ) {
     if( nOfLabels >= queue.size() ) return true;
     else return false;
 }
+
+void MAGE::LabelQueue::print( void ) {
+    
+ //   for( int k=0; k<nOfLabels; k++ ) {
+    
+ //       printf( "%i: %s\n", (int)read+k, queue[read+k].query.c_str() );
+ //   }
+}

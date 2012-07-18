@@ -218,7 +218,7 @@ static int HTS_mseq(HTS_Vocoder * v)
    int x0, x28;
 
    v->x >>= 1;
-   if (v->x & B0)
+   if (v->x & HTS_B0)
       x0 = 1;
    else
       x0 = -1;

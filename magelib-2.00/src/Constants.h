@@ -9,6 +9,7 @@
 #pragma once
 
 namespace MAGE {
+    const unsigned int nOfStreams = 3;		// # of streams : mgcs, lf0, lpf
     
     const unsigned int nOfDers = 3; // # of derivations: ∆(0), ∆(1), ∆(3)
     
@@ -19,4 +20,5 @@ namespace MAGE {
     const unsigned int nOfStates = 5; // # of states in the HMM
     
     const unsigned int nOfLookup = 1; // # of looked-up labels
+	const int maxNumOfFrames = 100; // maximum # of frames per phoneme
 }

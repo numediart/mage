@@ -8,7 +8,10 @@
 #pragma once
 
 #include <string>
-#include <cstdio>
+#include <cstring>
+#include <sstream>
+#include "Engine.h"
+#include "hts.h"
 
 using namespace std;
 namespace MAGE {
@@ -17,9 +20,30 @@ class Label {
 
   public:
     
+    //default constructor
     Label( void );
-    void setQuery( string q );
+    Label( string query );
+    //Label( string query, Engine engine );
+
     void printQuery( void );
+    
+    // getters
+    string getQuery( void );
+    
+    int getBegin( void );
+    int getEnd( void );
+    
+    int getSpeed( void );
+    bool getIsForced( void );
+    
+    //setters
+    void setQuery(string query );
+    
+    void setBegin( int begin );
+    void setEnd( int end );
+    
+    void setSpeed( int speed );
+    void setIsForced( bool isDurationForced );
 
   protected:
     
@@ -27,8 +51,9 @@ class Label {
     
     bool isForced;
     
-    unsigned long begin;
-    unsigned long end;
+    int speed;
+    int begin;
+    int end;
 };
 
 } // namespace

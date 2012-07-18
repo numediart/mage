@@ -137,7 +137,7 @@ void HTS_free(void *p);
 
 #define IPERIOD 1
 #define SEED    1
-#define B0      0x00000001
+#define HTS_B0      0x00000001
 #define B28     0x10000000
 #define B31     0x80000000
 #define B31_    0x7fffffff

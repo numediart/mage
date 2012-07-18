@@ -36,7 +36,7 @@ class MemQueue {
     bool isEmpty( void );
     bool isFull( void );
     
-  //protected:
+  protected:
     
     int nOfItems;
     unsigned int length, remain;

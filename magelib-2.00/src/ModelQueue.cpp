@@ -38,21 +38,21 @@ void MAGE::ModelQueue::generate( unsigned int window, FrameQueue *frameQueue ) {
             
             for( k=0; k<(nOfDers*nOfMGCs); k++ ) {
                 
-                sum += rawData[head].state[s].mgc[k].mean;
-                sum += rawData[head].state[s].mgc[k].vari;
+                sum += rawData[head].getState(s).mgc[k].mean;
+                sum += rawData[head].getState(s).mgc[k].vari;
             }
             
             for( k=0; k<(nOfDers*nOfLF0s); k++ ) {
                 
-                sum += rawData[head].state[s].lf0[k].mean;
-                sum += rawData[head].state[s].lf0[k].vari;
-                rawData[head].state[s].lf0[k].msdFlag = true;
+                sum += rawData[head].getState(s).lf0[k].mean;
+                sum += rawData[head].getState(s).lf0[k].vari;
+                rawData[head].getState(s).lf0[k].msdFlag = true;
             }
             
             for( k=0; k<nOfLPFs; k++ ) {
                 
-                sum += rawData[head].state[s].lpf[k].mean;
-                sum += rawData[head].state[s].lpf[k].vari;
+                sum += rawData[head].getState(s).lpf[k].mean;
+                sum += rawData[head].getState(s).lpf[k].vari;
             }
         }
         
@@ -66,7 +66,7 @@ void MAGE::ModelQueue::generate( unsigned int window, FrameQueue *frameQueue ) {
         // from each state of the model, we get the computed
         // duration and we iterate to generate the parameters
         
-        for( q=0; q<rawData[head].state[s].duration; q++ ) {
+        for( q=0; q<rawData[head].getState(s).duration; q++ ) {
         
             // <DUMMY-CODE>
             
@@ -109,7 +109,7 @@ void MAGE::ModelQueue::printQueue( void ) {
         printf( "model %i:", head );
         
         for( s=0; s<nOfStates; s++ ) {
-            printf( " %i", rawData[head].state[s].duration );
+            printf( " %i", rawData[head].getState(s).duration );
         }
         
         printf( "\n" );

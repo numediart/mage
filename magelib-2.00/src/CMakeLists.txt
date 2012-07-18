@@ -1,9 +1,11 @@
 FILE(GLOB SRC ${SRC} *.cpp *.c)
 FILE(GLOB HDR ${HDR} *.hpp *.h)
 
+INCLUDE_DIRECTORIES(../libs/hts_engine-1.06)
 INCLUDE_DIRECTORIES(../libs/portaudio-0.19)
 
 SET(MAGE_LIB_NAME mage)
 
 ADD_LIBRARY(${MAGE_LIB_NAME} ${SRC} ${HDR})
 TARGET_LINK_LIBRARIES(${MAGE_LIB_NAME} pthread m)
+TARGET_LINK_LIBRARIES(${MAGE_LIB_NAME} htsengine)
