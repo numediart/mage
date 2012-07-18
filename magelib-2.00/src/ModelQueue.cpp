@@ -17,13 +17,14 @@ MAGE::MemQueue<Model>(queueLen) {
 
 void MAGE::ModelQueue::generate( unsigned int window, FrameQueue *frameQueue ) {
 
+    unsigned int k, s, q;
     float sum = 0.0;
     
     // we look at 'window' labels before the current
     // writing head to compute the stats (coarticulation)
-    for( int k=-window; k<0; k++ ) {
+    for( int m=-window; m<0; m++ ) {
     
-        head = (write+k)%length; // the real ringbufferized lookup head
+        head = (write+m)%length; // the real ringbufferized lookup head
         
         // <DUMMY-CODE>
         
@@ -33,22 +34,22 @@ void MAGE::ModelQueue::generate( unsigned int window, FrameQueue *frameQueue ) {
         // check that we can actually access these data when we
         // are supposed to and simulate some complexity
         
-        for( int s=0; s<nOfStates; s++ ) {
+        for( s=0; s<nOfStates; s++ ) {
             
-            for( int k=0; k<(nOfDers*nOfMGCs); k++ ) {
+            for( k=0; k<(nOfDers*nOfMGCs); k++ ) {
                 
                 sum += rawData[head].state[s].mgc[k].mean;
                 sum += rawData[head].state[s].mgc[k].vari;
             }
             
-            for( int k=0; k<(nOfDers*nOfLF0s); k++ ) {
+            for( k=0; k<(nOfDers*nOfLF0s); k++ ) {
                 
                 sum += rawData[head].state[s].lf0[k].mean;
                 sum += rawData[head].state[s].lf0[k].vari;
                 rawData[head].state[s].lf0[k].msdFlag = true;
             }
             
-            for( int k=0; k<nOfLPFs; k++ ) {
+            for( k=0; k<nOfLPFs; k++ ) {
                 
                 sum += rawData[head].state[s].lpf[k].mean;
                 sum += rawData[head].state[s].lpf[k].vari;
@@ -60,12 +61,12 @@ void MAGE::ModelQueue::generate( unsigned int window, FrameQueue *frameQueue ) {
     
     head = (write-window)%length; // then we land on the oldest model
     
-    for( int s=0; s<nOfStates; s++ ) {
+    for( s=0; s<nOfStates; s++ ) {
     
         // from each state of the model, we get the computed
         // duration and we iterate to generate the parameters
         
-        for( unsigned int q=0; q<rawData[head].state[s].duration; q++ ) {
+        for( q=0; q<rawData[head].state[s].duration; q++ ) {
         
             // <DUMMY-CODE>
             
@@ -73,12 +74,12 @@ void MAGE::ModelQueue::generate( unsigned int window, FrameQueue *frameQueue ) {
             // to see if data access is working
             // and check if the queue works
             
-            for( int k=0; k<nOfMGCs; k++ ) {
+            for( k=0; k<nOfMGCs; k++ ) {
                 
                 frame.mgc[k] = MAGE::Random( -5.0, 5.0 );
             }
             
-            for( int k=0; k<nOfLPFs; k++ ) {
+            for( k=0; k<nOfLPFs; k++ ) {
                 
                 frame.lpf[k] = MAGE::Random( -5.0, 5.0 );
             }
@@ -98,15 +99,16 @@ void MAGE::ModelQueue::generate( unsigned int window, FrameQueue *frameQueue ) {
 }
 
 void MAGE::ModelQueue::printQueue( void ) {
-    
-    for( int k=0; k<nOfItems; k++ ) {
+    unsigned int k, s;
+
+
+    for( k=0; k<getNumOfItems(); k++ ) {
         
         int head = (read+k)%length;
         
         printf( "model %i:", head );
         
-        for( int s=0; s<nOfStates; s++ ) {
-        
+        for( s=0; s<nOfStates; s++ ) {
             printf( " %i", rawData[head].state[s].duration );
         }
         

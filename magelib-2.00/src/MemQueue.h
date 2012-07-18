@@ -31,6 +31,7 @@ class MemQueue {
     void push( Item *item, unsigned int nOfItems );
     void pop( Item *item, unsigned int nOfItems );
     void pop( unsigned int nOfItems );
+    void get( Item *item, unsigned int nOfItems );
     
     bool isEmpty( void );
     bool isFull( void );
@@ -128,6 +129,32 @@ void MAGE::MemQueue<Item>::pop( unsigned int nItem = 1 ) {
     PaUtil_WriteMemoryBarrier();
     read = (read+nItem)%length;
     nOfItems -= nItem;
+}
+
+/* like pop but does not advance in the queue */
+template <class Item>
+void MAGE::MemQueue<Item>::get( Item *item, unsigned int nItem = 1 ) {
+    // TODO fix case when 'write' pointer loops and passes 'read' (read should be advanced to write)
+    // this bug shouldn't be triggered as long as we check isfull() before any push() in calling functions
+    // TODO an isempty() check *is* needed
+    // TODO check for nItem == 0 (shouldn't happen except if isempty() )
+
+    //don't pop() further than available ...
+    if (nItem > this->getNumOfItems()) {
+        nItem = this->getNumOfItems();
+    }
+    
+    PaUtil_ReadMemoryBarrier();
+    if( read+nItem <= length ) {
+        
+        memcpy( item, &rawData[read], nItem*sizeof(Item) );
+           
+    } else {
+        
+        remain = length-read;
+        memcpy( item, &rawData[read], remain*sizeof(Item) );
+        memcpy( &item[remain], rawData, (nItem-remain)*sizeof(Item) );
+    }
 }
 
 template <class Item>

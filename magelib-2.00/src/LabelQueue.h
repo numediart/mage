@@ -24,6 +24,7 @@ class LabelQueue {
     
     void push( Label &label );
     void pop( Label &label );
+    void get( Label &label );
     
     bool isEmpty( void );
     bool isFull( void );

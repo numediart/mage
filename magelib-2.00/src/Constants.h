@@ -10,13 +10,13 @@
 
 namespace MAGE {
     
-    const int nOfDers = 3; // # of derivations: ∆(0), ∆(1), ∆(3)
+    const unsigned int nOfDers = 3; // # of derivations: ∆(0), ∆(1), ∆(3)
     
-    const int nOfMGCs = 35; // # of MGC coefficients for the MLSA filter
-    const int nOfLF0s = 1; // fundamental frequency is a single value
-    const int nOfLPFs = 31; // # of low-pass filter coefficients
+    const unsigned int nOfMGCs = 35; // # of MGC coefficients for the MLSA filter
+    const unsigned int nOfLF0s = 1; // fundamental frequency is a single value
+    const unsigned int nOfLPFs = 31; // # of low-pass filter coefficients
     
-    const int nOfStates = 5; // # of states in the HMM
+    const unsigned int nOfStates = 5; // # of states in the HMM
     
-    const int nOfLookup = 1; // # of looked-up labels
+    const unsigned int nOfLookup = 1; // # of looked-up labels
 }

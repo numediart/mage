@@ -34,6 +34,12 @@ void MAGE::LabelQueue::pop( Label &label ) {
     nOfLabels--;
 }
 
+/* like pop but does not advance in the queue */
+void MAGE::LabelQueue::get( Label &label ) {
+
+    label = queue[read];
+}
+
 bool MAGE::LabelQueue::isEmpty( void ) {
 
     PaUtil_ReadMemoryBarrier();
