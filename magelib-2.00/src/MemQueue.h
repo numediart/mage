@@ -90,7 +90,7 @@ void MAGE::MemQueue<Item>::push( Item *item, unsigned int nItem ) {
 }
 
 template <class Item>
-void MAGE::MemQueue<Item>::pop( Item *item, unsigned int nItem ) {
+void MAGE::MemQueue<Item>::pop( Item *item, unsigned int nItem = 1 ) {
     // TODO fix case when 'write' pointer loops and passes 'read' (read should be advanced to write)
     // this bug shouldn't be triggered as long as we check isfull() before any push() in calling functions
     // TODO an isempty() check *is* needed
