@@ -12,7 +12,8 @@ MAGE::Label::Label( void )
 {
     query = "";
     isForced = false;
-    begin = end = speed = -1;
+    begin = end = -1;
+    speed = 1;
 }
 	
 MAGE::Label::Label( string query )

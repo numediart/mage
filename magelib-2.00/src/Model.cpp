@@ -94,7 +94,7 @@ void MAGE::Model::computeDuration( MAGE::Engine *engine, MAGE::Label *label )
 	
 	double duration_mean[nOfStates];
 	double duration_vari[nOfStates];
-	int duration[nOfStates];
+	int duration_array[nOfStates];
 
 	double frame_length;
 	
@@ -112,7 +112,7 @@ void MAGE::Model::computeDuration( MAGE::Engine *engine, MAGE::Label *label )
 		frame_length = label->getEnd() * rate;
 		 
 		if ( label->getEnd() > 0 ) 
-			this->duration = mHTS_set_duration( duration, duration_mean, duration_vari, nOfStates, frame_length );
+			this->duration = mHTS_set_duration( duration_array, duration_mean, duration_vari, nOfStates, frame_length );
 			
 		else
 			HTS_error( -1, (char *) "HTS_SStreamSet_create: The time of final label is not specified.\n" );
@@ -131,11 +131,12 @@ void MAGE::Model::computeDuration( MAGE::Engine *engine, MAGE::Label *label )
 			frame_length = 0;
 		
 		// set state duration 
-		this->duration = mHTS_set_duration( duration, duration_mean, duration_vari, nOfStates, frame_length );
+		this->duration = mHTS_set_duration( duration_array, duration_mean, duration_vari, nOfStates, frame_length );
 	}
 	
-	for ( i = 0; i < nOfStates; i++ ) 
-		this->state[i].duration = duration[i];
+	for ( i = 0; i < nOfStates; i++ ) {
+		this->state[i].duration = duration_array[i];
+    }
 		
 	return;
 }
