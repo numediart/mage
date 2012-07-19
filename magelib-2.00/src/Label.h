@@ -22,10 +22,11 @@ class Label {
     
     //default constructor
     Label( void );
-    Label( string query );
+    Label( string q );
     //Label( string query, Engine engine );
 
     void printQuery( void );
+    void parseQuery( string q );
     
     // getters
     string getQuery( void );
@@ -37,7 +38,7 @@ class Label {
     bool getIsForced( void );
     
     //setters
-    void setQuery(string query );
+    void setQuery( string query );
     
     void setBegin( int begin );
     void setEnd( int end );
