@@ -133,7 +133,7 @@ void MAGE::Model::computeDuration( MAGE::Engine *engine, MAGE::Label *label )
 		// set state duration 
 		this->duration = mHTS_set_duration( duration_array, duration_mean, duration_vari, nOfStates, frame_length );
 	}
-	
+	   
 	for ( i = 0; i < nOfStates; i++ ) {
 		this->state[i].duration = duration_array[i];
     }

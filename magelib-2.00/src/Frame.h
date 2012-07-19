@@ -15,6 +15,7 @@ struct Frame {
     double mgc[nOfMGCs];
     double lpf[nOfLPFs];
     double lf0;
+    bool voiced;
 };
     
 } // namespace

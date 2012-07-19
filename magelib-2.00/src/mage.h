@@ -10,6 +10,7 @@
 #include "Constants.h"
 #include "Math.h"
 
+#include "Frame.h"
 #include "Label.h"
 #include "Engine.h"
 

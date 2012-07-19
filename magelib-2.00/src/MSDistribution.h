@@ -12,7 +12,7 @@ namespace MAGE {
 
 struct MSDistribution : public Distribution {
     
-    bool msdFlag;
+    double msdFlag;
 };
     
 } // namespace

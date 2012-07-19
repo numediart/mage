@@ -16,7 +16,7 @@ MAGE::MemQueue<Model>(queueLen) {
 }
 
 void MAGE::ModelQueue::generate( unsigned int window, FrameQueue *frameQueue ) {
-
+//TODO actual frame generation with vocoder
     unsigned int k, s, q;
     float sum = 0.0;
     
@@ -46,7 +46,7 @@ void MAGE::ModelQueue::generate( unsigned int window, FrameQueue *frameQueue ) {
                 
                 sum += rawData[head].getState(s).lf0[k].mean;
                 sum += rawData[head].getState(s).lf0[k].vari;
-                rawData[head].getState(s).lf0[k].msdFlag = true;
+                //rawData[head].getState(s).lf0[k].msdFlag = true;
             }
             
             for( k=0; k<nOfLPFs; k++ ) {
@@ -65,6 +65,7 @@ void MAGE::ModelQueue::generate( unsigned int window, FrameQueue *frameQueue ) {
     
         // from each state of the model, we get the computed
         // duration and we iterate to generate the parameters
+        //printf("duration of state %d = %d, v/uv: %g\n",s,rawData[head].getState(s).duration,rawData[head].getState(s).lf0[0].msdFlag);
         for( q=0; q<rawData[head].getState(s).duration; q++ ) {
         
             // <DUMMY-CODE>
@@ -83,13 +84,18 @@ void MAGE::ModelQueue::generate( unsigned int window, FrameQueue *frameQueue ) {
                 frame.lpf[k] = MAGE::Random( -5.0, 5.0 );
             }
             
-            frame.lf0 = exp(rawData[head].getState(s).lf0[0].mean);
+            frame.lf0 = rawData[head].getState(s).lf0[0].mean;
+            
+            if (rawData[head].getState(s).lf0[0].msdFlag > 0.5)
+                frame.voiced = true;
+            else
+                frame.voiced = false;
             
             // </DUMMY-CODE>
             
             while( frameQueue->isFull() ) {
                 
-                printf("frameQueue is full\n");
+                //printf("frameQueue is full\n");
                 usleep(10);
             };
             frameQueue->push( &frame, 1 );
