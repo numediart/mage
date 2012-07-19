@@ -137,6 +137,8 @@ void MAGE::Model::computeDuration( MAGE::Engine *engine, MAGE::Label *label )
 	for ( i = 0; i < nOfStates; i++ ) {
 		this->state[i].duration = duration_array[i];
     }
+    
+    delete[] strQuery;
 		
 	return;
 }
@@ -197,6 +199,8 @@ void MAGE::Model::computeParameters( MAGE::Engine *engine, MAGE::Label *label )
 			this->state[i].lpf[j].vari = lpf_vari[j];
 		}
 	}
+    
+    delete[] strQuery;
 	
 	return;
 }
@@ -271,6 +275,8 @@ void MAGE::Model::computeGlobalVariances( MAGE::Engine *engine, MAGE::Label *lab
 			for ( i = 0; i < nOfStates; i++ )
 				this->state[i].gv_switch = false;
 	
+    delete[] strQuery;
+    
 	return;
 }
 
