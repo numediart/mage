@@ -65,7 +65,6 @@ void MAGE::ModelQueue::generate( unsigned int window, FrameQueue *frameQueue ) {
     
         // from each state of the model, we get the computed
         // duration and we iterate to generate the parameters
-        
         for( q=0; q<rawData[head].getState(s).duration; q++ ) {
         
             // <DUMMY-CODE>
@@ -84,7 +83,7 @@ void MAGE::ModelQueue::generate( unsigned int window, FrameQueue *frameQueue ) {
                 frame.lpf[k] = MAGE::Random( -5.0, 5.0 );
             }
             
-            frame.lf0 = MAGE::Random( 300.0, 1500.0 );
+            frame.lf0 = exp(rawData[head].getState(s).lf0[0].mean);
             
             // </DUMMY-CODE>
             
