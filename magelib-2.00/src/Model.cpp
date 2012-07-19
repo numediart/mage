@@ -115,7 +115,7 @@ void MAGE::Model::computeDuration( MAGE::Engine *engine, MAGE::Label *label )
 			this->duration = mHTS_set_duration( duration, duration_mean, duration_vari, nOfStates, frame_length );
 			
 		else
-			HTS_error( -1, "HTS_SStreamSet_create: The time of final label is not specified.\n" );
+			HTS_error( -1, (char *) "HTS_SStreamSet_create: The time of final label is not specified.\n" );
 	}
 	else // determine frame length
 	{

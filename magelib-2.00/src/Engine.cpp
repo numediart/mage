@@ -155,7 +155,7 @@ void MAGE::Engine::load(int argc, char **argv)
 							phoneme_alignment = TRUE;
 							break;
 						default:
-							Error(1, "hts_engine: Invalid option '-v%c'.\n", *(*argv + 2));
+							Error(1, (char *) "hts_engine: Invalid option '-v%c'.\n", *(*argv + 2));
 					}
 					break;
 				case 't':
@@ -174,7 +174,7 @@ void MAGE::Engine::load(int argc, char **argv)
 							fn_ts_lpf[num_ts_lpf++] = *++argv;
 							break;
 						default:
-							Error(1, "hts_engine: Invalid option '-t%c'.\n", *(*argv + 2));
+							Error(1, (char *) "hts_engine: Invalid option '-t%c'.\n", *(*argv + 2));
 					}
 					--argc;
 					break;
@@ -194,7 +194,7 @@ void MAGE::Engine::load(int argc, char **argv)
 							fn_ms_lpf[num_ms_lpf++] = *++argv;
 							break;
 						default:
-							Error(1, "hts_engine: Invalid option '-m%c'.\n", *(*argv + 2));
+							Error(1, (char *) "hts_engine: Invalid option '-m%c'.\n", *(*argv + 2));
 					}
 					--argc;
 					break;
@@ -211,7 +211,7 @@ void MAGE::Engine::load(int argc, char **argv)
 							fn_ws_lpf[num_ws_lpf++] = *++argv;
 							break;
 						default:
-							Error(1, "hts_engine: Invalid option '-d%c'.\n", *(*argv + 2));
+							Error(1, (char *) "hts_engine: Invalid option '-d%c'.\n", *(*argv + 2));
 					}
 					--argc;
 					break;
@@ -240,7 +240,7 @@ void MAGE::Engine::load(int argc, char **argv)
 							tracefp = HTS_fopen(*++argv, "wt");
 							break;
 						default:
-							Error(1, "hts_engine: Invalid option '-o%c'.\n", *(*argv + 2));
+							Error(1, (char *) "hts_engine: Invalid option '-o%c'.\n", *(*argv + 2));
 					}
 					--argc;
 					break;
@@ -285,7 +285,7 @@ void MAGE::Engine::load(int argc, char **argv)
 							half_tone = f;
 							break;
 						default:
-							Error(1, "hts_engine: Invalid option '-f%c'.\n", *(*argv + 2));
+							Error(1, (char *) "hts_engine: Invalid option '-f%c'.\n", *(*argv + 2));
 					}
 					--argc;
 					break;
@@ -314,7 +314,7 @@ void MAGE::Engine::load(int argc, char **argv)
 							fn_ts_gvf[num_ts_gvf++] = *++argv;
 							break;
 						default:
-							Error(1, "hts_engine: Invalid option '-e%c'.\n", *(*argv + 2));
+							Error(1, (char *) "hts_engine: Invalid option '-e%c'.\n", *(*argv + 2));
 					}
 					--argc;
 					break;
@@ -331,7 +331,7 @@ void MAGE::Engine::load(int argc, char **argv)
 							fn_ms_gvf[num_ms_gvf++] = *++argv;
 							break;
 						default:
-							Error(1, "hts_engine: Invalid option '-c%c'.\n", *(*argv + 2));
+							Error(1, (char *) "hts_engine: Invalid option '-c%c'.\n", *(*argv + 2));
 					}
 					--argc;
 					break;
@@ -348,7 +348,7 @@ void MAGE::Engine::load(int argc, char **argv)
 							gv_weight_lpf = atof(*++argv);
 							break;
 						default:
-							Error(1, "hts_engine: Invalid option '-j%c'.\n", *(*argv + 2));
+							Error(1, (char *) "hts_engine: Invalid option '-j%c'.\n", *(*argv + 2));
 					}
 					--argc;
 					break;
@@ -361,7 +361,7 @@ void MAGE::Engine::load(int argc, char **argv)
 					--argc;
 					break;
 				default:
-					Error(1, "hts_engine: Invalid option '-%c'.\n", *(*argv + 1));
+					Error(1, (char *) "hts_engine: Invalid option '-%c'.\n", *(*argv + 1));
 			}
 		} else {
 			labfn = *argv;
@@ -369,11 +369,11 @@ void MAGE::Engine::load(int argc, char **argv)
 	}
 	/* number of models,trees check */
 	if (num_interp != num_ts_dur || num_interp != num_ts_mgc || num_interp != num_ts_lf0 || num_interp != num_ms_dur || num_interp != num_ms_mgc || num_interp != num_ms_lf0) {
-		Error(1, "hts_engine: specify %d models(trees) for each parameter.\n", num_interp);
+		Error(1, (char *) "hts_engine: specify %d models(trees) for each parameter.\n", num_interp);
 	}
 	if (num_ms_lpf > 0 || num_ts_lpf > 0) {
 		if (num_interp != num_ms_lpf || num_interp != num_ts_lpf) {
-			Error(1, "hts_engine: specify %d models(trees) for each parameter.\n", num_interp);
+			Error(1, (char *) "hts_engine: specify %d models(trees) for each parameter.\n", num_interp);
 		}
 	}
 	
