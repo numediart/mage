@@ -25,3 +25,6 @@ nbbuild
 
 # merge tools garbage
 *.orig
+
+# data folder at root
+data
