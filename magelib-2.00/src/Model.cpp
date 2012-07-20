@@ -100,6 +100,7 @@ void MAGE::Model::computeDuration( MAGE::Engine *engine, MAGE::Label *label )
 	
 	// convert string query to char* 
 	string query = label->getQuery();
+    //TODO this allocation has to disappear
 	char *strQuery = new char [query.size()+1];
 	strcpy( strQuery, query.c_str() );
 
@@ -152,6 +153,7 @@ void MAGE::Model::computeParameters( MAGE::Engine *engine, MAGE::Label *label )
 	
 	// convert string query to char* 
 	string query = label->getQuery();
+    //TODO this allocation has to disappear
 	char *strQuery = new char [query.size()+1];
 	strcpy( strQuery, query.c_str() );
 	
@@ -214,6 +216,7 @@ void MAGE::Model::computeGlobalVariances( MAGE::Engine *engine, MAGE::Label *lab
 
 	// convert string query to char* 
 	string query = label->getQuery();
+    //TODO this allocation has to disappear
 	char *strQuery = new char [query.size()+1];
 	strcpy( strQuery, query.c_str() );
 

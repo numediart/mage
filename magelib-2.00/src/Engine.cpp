@@ -15,6 +15,33 @@ MAGE::Engine::Engine()
 	//nOfLabels = 0;
 }
 
+MAGE::Engine::~Engine() 
+{
+    /* free */
+	HTS_Engine_refresh(&engine);
+	
+	/* free memory */
+	HTS_Engine_clear(&engine);
+	free(rate_interp);
+	free(fn_ws_mgc);
+	free(fn_ws_lf0);
+	free(fn_ws_lpf);
+	free(fn_ms_mgc);
+	free(fn_ms_lf0);
+	free(fn_ms_lpf);
+	free(fn_ms_dur);
+	free(fn_ts_mgc);
+	free(fn_ts_lf0);
+	free(fn_ts_lpf);
+	free(fn_ts_dur);
+	free(fn_ms_gvm);
+	free(fn_ms_gvl);
+	free(fn_ms_gvf);
+	free(fn_ts_gvm);
+	free(fn_ts_gvl);
+	free(fn_ts_gvf);
+}
+
 // getters
 HTS_Global MAGE::Engine::getGlobal( void )
 {
@@ -50,46 +77,48 @@ void MAGE::Engine::load(int argc, char **argv)
 	
 	/* number of speakers for interpolation */
 	int num_interp = 0;
-	double *rate_interp = NULL;
+	//double *rate_interp = NULL;
+    rate_interp = NULL;
 	
 // HTS_Files
 	
 	/* file names of models */
-	char **fn_ms_dur;
-	char **fn_ms_mgc;
-	char **fn_ms_lf0;
-	char **fn_ms_lpf;
+//	char **fn_ms_dur;
+//	char **fn_ms_mgc;
+//	char **fn_ms_lf0;
+//	char **fn_ms_lpf;
 	/* number of each models for interpolation */
 	int num_ms_dur = 0, num_ms_mgc = 0, num_ms_lf0 = 0, num_ms_lpf = 0;
 	
 	/* file names of trees */
-	char **fn_ts_dur;
-	char **fn_ts_mgc;
-	char **fn_ts_lf0;
-	char **fn_ts_lpf;
+//	char **fn_ts_dur;
+//	char **fn_ts_mgc;
+//	char **fn_ts_lf0;
+//	char **fn_ts_lpf;
 	/* number of each trees for interpolation */
 	int num_ts_dur = 0, num_ts_mgc = 0, num_ts_lf0 = 0, num_ts_lpf = 0;
 	
 	/* file names of windows */
-	char **fn_ws_mgc;
-	char **fn_ws_lf0;
-	char **fn_ws_lpf;
+//	char **fn_ws_mgc;
+//	char **fn_ws_lf0;
+//	char **fn_ws_lpf;
 	int num_ws_mgc = 0, num_ws_lf0 = 0, num_ws_lpf = 0;
 	
 	/* file names of global variance */
-	char **fn_ms_gvm = NULL;
-	char **fn_ms_gvl = NULL;
-	char **fn_ms_gvf = NULL;
+//	char **fn_ms_gvm = NULL;
+//	char **fn_ms_gvl = NULL;
+//	char **fn_ms_gvf = NULL;
 	int num_ms_gvm = 0, num_ms_gvl = 0, num_ms_gvf = 0;
 	
 	/* file names of global variance trees */
-	char **fn_ts_gvm = NULL;
-	char **fn_ts_gvl = NULL;
-	char **fn_ts_gvf = NULL;
+//	char **fn_ts_gvm = NULL;
+//	char **fn_ts_gvl = NULL;
+//	char **fn_ts_gvf = NULL;
 	int num_ts_gvm = 0, num_ts_gvl = 0, num_ts_gvf = 0;
 	
 	/* file name of global variance switch */
-	char *fn_gv_switch = NULL;
+//	char *fn_gv_switch = NULL;
+    fn_gv_switch = NULL;
 
 // HTS_Files
 	
@@ -111,7 +140,7 @@ void MAGE::Engine::load(int argc, char **argv)
 	HTS_Boolean use_log_gain = FALSE;
 	
 	/* engine */
-	HTS_Engine engine;	
+//	HTS_Engine engine;	
 
 	/* parse command line */
 	if (argc == 1)
@@ -455,26 +484,26 @@ void MAGE::Engine::load(int argc, char **argv)
 	//HTS_Engine_refresh(&engine);
 	
 	/* free memory */
-	//HTS_Engine_clear(&engine);
-	/*free(rate_interp);
-	free(fn_ws_mgc);
-	free(fn_ws_lf0);
-	free(fn_ws_lpf);
-	free(fn_ms_mgc);
-	free(fn_ms_lf0);
-	free(fn_ms_lpf);
-	free(fn_ms_dur);
-	free(fn_ts_mgc);
-	free(fn_ts_lf0);
-	free(fn_ts_lpf);
-	free(fn_ts_dur);
-	free(fn_ms_gvm);
-	free(fn_ms_gvl);
-	free(fn_ms_gvf);
-	free(fn_ts_gvm);
-	free(fn_ts_gvl);
-	free(fn_ts_gvf);
-	*/
+//	HTS_Engine_clear(&engine);
+//	free(rate_interp);
+//	free(fn_ws_mgc);
+//	free(fn_ws_lf0);
+//	free(fn_ws_lpf);
+//	free(fn_ms_mgc);
+//	free(fn_ms_lf0);
+//	free(fn_ms_lpf);
+//	free(fn_ms_dur);
+//	free(fn_ts_mgc);
+//	free(fn_ts_lf0);
+//	free(fn_ts_lpf);
+//	free(fn_ts_dur);
+//	free(fn_ms_gvm);
+//	free(fn_ms_gvl);
+//	free(fn_ms_gvf);
+//	free(fn_ts_gvm);
+//	free(fn_ts_gvl);
+//	free(fn_ts_gvf);
+	
 	/* close files */
 	if (durfp != NULL)
 		HTS_fclose(durfp);

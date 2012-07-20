@@ -45,5 +45,7 @@ IF(NOT CMAKE_BUILD_TYPE)
       FORCE)
 ENDIF()
 
-#build the test
+#build the apps
 ADD_SUBDIRECTORY(${${CMAKE_PROJECT_NAME}_SRC})
+#test file for memory leak in magelib - use valgrind to run it
+ADD_SUBDIRECTORY(memorytest)
