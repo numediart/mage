@@ -93,6 +93,10 @@ void MAGE::Label::parseQuery( string q )
 	}
 
 	this->speed = 1;
+    
+    delete[] strFirst;
+    delete[] strMiddle;
+    delete[] strLast;
 }
 
 // getters
@@ -147,7 +151,6 @@ void MAGE::Label::setIsForced( bool isForced )
 	this->isForced = isForced;
 }
 
-void MAGE::Label::printQuery( void ) {
-    
+void MAGE::Label::printQuery( void ) {    
     printf( "label: %s\n", this->query.c_str() );
 }
