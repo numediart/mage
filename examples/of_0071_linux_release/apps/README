@@ -6,11 +6,14 @@ in order to compile with linux :
 3. in examples/of_0071_linux_release/apps:
    $ mkdir -p builds/linux-x64-release/
    $ cd builds/linux-x64-release/
-   $ cmake ../..
+   $ cmake ../.. -DOF_ROOT_PATH=/opt/openframeworks
    $ make
+
+where /opt/openframeworks is the path to openframeworks installation
+
 4. for debug:
    $ mkdir -p builds/linux-x64-debug/
    $ cd builds/linux-x64-debug/
-   $ cmake ../.. -DCMAKE_BUILD_TYPE=Debug
+   $ cmake ../.. -DCMAKE_BUILD_TYPE=Debug -DOF_ROOT_PATH=/opt/openframeworks
 (or use ccmake after cmake ../.., to change BUILD_TYPE option to Debug)
    $ make

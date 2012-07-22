@@ -1,7 +1,3 @@
-# TODO find a way to install openframework in /usr/local/something 
-# and write FindOpenFrameworks.cmake to avoid this idiotic hardcoded path
-SET(OF_ROOT_PATH "/home/alexis/Téléchargements/openframeworks/of_v0071_linux64_release")
-
 SET(MAGE_GIT_PATH "${CMAKE_SOURCE_DIR}/../../..")
 #SET(MAGE_GIT_PATH "../../../..")
 SET(HTS_ENGINE_ROOT_PATH "${MAGE_GIT_PATH}/magelib-2.00/libs/hts_engine-1.06")

@@ -45,6 +45,15 @@ IF(NOT CMAKE_BUILD_TYPE)
       FORCE)
 ENDIF()
 
+# this sets the path to the openframeworks folder containing "addons", "apps", "examples", "libs," ... (actually only "libs" is used)
+IF(NOT OF_ROOT_PATH)
+	# TODO find a way to install openframework in /usr/local/something 
+	# and write FindOpenFrameworks.cmake to avoid this idiotic hardcoded path
+	MESSAGE("*** Path to OpenFrameworks is undefined. Setting it to /opt/openframeworks.\r
+*** You can change this either within 'ccmake .' or using 'cmake ../.. -DOF_ROOT_PATH=/path/to/openframeworks'")
+	SET(OF_ROOT_PATH "/opt/openframeworks")
+ENDIF()
+
 #build the apps
 ADD_SUBDIRECTORY(${${CMAKE_PROJECT_NAME}_SRC})
 #test file for memory leak in magelib - use valgrind to run it
