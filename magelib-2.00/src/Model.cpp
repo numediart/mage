@@ -167,7 +167,7 @@ void MAGE::Model::computeParameters( MAGE::Engine *engine, MAGE::Label *label )
 	int lf0_length = nOfDers*nOfLF0s;
 	double lf0_mean[lf0_length];
     double lf0_vari[lf0_length];
-    double lf0_msd[lf0_length];
+    double lf0_msd;
 	
 	int lpf_stream_index = 2;
 	int lpf_length = nOfDers*nOfLPFs;
@@ -177,20 +177,20 @@ void MAGE::Model::computeParameters( MAGE::Engine *engine, MAGE::Label *label )
 	for ( i = 0; i < nOfStates; i++ ) 
 	{
 		HTS_ModelSet_get_parameter( &ms, strQuery, mgc_mean, mgc_vari, NULL, mcg_stream_index, i+2, global.parameter_iw[mcg_stream_index] ); 
-		
+        
 		for ( j = 0; j < mgc_length; j++) 
 		{
 			this->state[i].mgc[j].mean = mgc_mean[j];
 			this->state[i].mgc[j].vari = mgc_vari[j];
 		}
 		
-		HTS_ModelSet_get_parameter( &ms, strQuery, lf0_mean, lf0_vari, lf0_msd, lf0_stream_index, i+2, global.parameter_iw[lf0_stream_index] ); 
+		HTS_ModelSet_get_parameter( &ms, strQuery, lf0_mean, lf0_vari, &lf0_msd, lf0_stream_index, i+2, global.parameter_iw[lf0_stream_index] ); 
 		
 		for ( j = 0; j < lf0_length; j++) 
 		{
 			this->state[i].lf0[j].mean = lf0_mean[j];
 			this->state[i].lf0[j].vari = lf0_vari[j];
-			this->state[i].lf0[j].msdFlag = lf0_msd[j];
+			this->state[i].lf0[j].msdFlag = lf0_msd;
 		}
 		
 		HTS_ModelSet_get_parameter( &ms, strQuery, lpf_mean, lpf_vari, NULL, lpf_stream_index, i+2, global.parameter_iw[lpf_stream_index] );
