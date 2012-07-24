@@ -56,6 +56,7 @@ MAGE::ModelMemory::~ModelMemory( void )
 			free(mean[k][j]);
 			free(ivar[k][j]);
 			free(par [k][j]);
+			free(wuw [k][j]);
 		}
 		
 		free(mean[k]);
