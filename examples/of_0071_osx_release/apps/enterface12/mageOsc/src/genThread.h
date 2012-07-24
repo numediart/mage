@@ -16,7 +16,7 @@ class genThread : public ofThread {
 
   public:
     
-    genThread( LabelQueue *lab, ModelQueue *mod, FrameQueue *frm, Engine *eng );
+    genThread( LabelQueue *lab, ModelQueue *mq, FrameQueue *frm, Engine *eng, Model *mod );
     void threadedFunction( void );
     
   protected:
@@ -25,7 +25,8 @@ class genThread : public ofThread {
     ModelQueue *modelQueue;
     FrameQueue *frameQueue;
     Engine *engine;
+    Model *model;
     
     Label label;
-    Model model;
+
 };

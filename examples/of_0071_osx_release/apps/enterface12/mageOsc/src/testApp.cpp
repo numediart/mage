@@ -11,8 +11,12 @@ void testApp::setup( void ) {
     engine = new MAGE::Engine();
     engine->load(Argc, Argv);
     
+    // --- HTS Model ---
+    memory = new MAGE::ModelMemory::ModelMemory();
+	model = new MAGE::Model::Model(memory);
+    
     // --- PARAMETER GENERATION THREAD ---
-    generate = new genThread( labelQueue, modelQueue, frameQueue, engine );
+    generate = new genThread( labelQueue, modelQueue, frameQueue, engine, model );
     generate->startThread();
     
     // -- OLA AND AUDIO ---
@@ -32,9 +36,13 @@ void testApp::exit( void ) {
     generate->waitForThread( true );
     delete generate;
     
-    delete labelQueue;
-    delete modelQueue;
+    delete engine;
     delete frameQueue;
+    delete modelQueue;
+    delete labelQueue;
+    
+    delete memory;
+    delete model;
     
     delete sampleFrame;
     delete olaBuffer;
