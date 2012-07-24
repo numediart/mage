@@ -548,41 +548,10 @@ void MAGE::Model::optimizeParameters( MAGE::Engine *engine )
 		pss.sm.wum  = mem->wum[i];		// W' U^-1 mu 
 		pss.sm.wuw  = mem->wuw[i];		// W' U^-1 W  
 
-		// output parameter vector
+		// output parameter vector in a pre-allocated memory
 		pss.par = mem->par[i];		 
 		
 		HTS_PStream_mlpg(&pss);				// parameter generation 
-			
-//		// ATTENTION !!! MemAlloc?? MemLeak??
-//		if ( i == 0 ) { // mgcs
-////            printf("[mgc-dim %dx%d]\n",pss.length,pss.static_length);
-//            
-//            for (int z=0;z<pss.length;z++)
-//                for (int zz=0;zz<pss.static_length;zz++)
-//                    ;//this->mgc_pdf[z*pss.static_length + zz] = pss.par[z][zz];
-////                    printf("[mgc %d %d] %f\n",z,zz,*((*pss.par)+z*pss.static_length + zz));
-//            
-////			this->mgc_pdf.assign(*pss.par, ((*pss.par)+(pss.length*pss.static_length)));
-//        }
-//		
-//		if ( i == 1 ) { // lf0         
-////            printf("[lf0-dim %dx%d]\n",pss.length,pss.static_length);
-//            
-//            for (int z=0;z<pss.length;z++)
-//                for (int zz=0;zz<pss.static_length;zz++)
-//                    ;//this->lf0_pdf[z*pss.static_length + zz] = pss.par[z][zz];
-////                    printf("[lf0 %d %d] %f\n",z,zz,*((*pss.par)+z*pss.static_length + zz));
-//            
-////			this->lf0_pdf.assign(*pss.par, ((*pss.par)+(pss.length)));
-//        }
-//
-//		if ( i == 2 ) { // lpf
-//            for (int z=0;z<pss.length;z++)
-//                for (int zz=0;zz<pss.static_length;zz++)
-//                    ;//this->lpf_pdf[z*pss.static_length + zz] = pss.par[z][zz];
-//            
-////			this->lpf_pdf.assign(*pss.par, ((*pss.par)+(pss.length*pss.static_length)));
-//        }
 	}
 
 	return;

@@ -13,6 +13,7 @@
 #include "Frame.h"
 #include "Label.h"
 #include "Engine.h"
+#include "Vocoder.h"
 
 #include "Distribution.h"
 #include "MSDistribution.h"

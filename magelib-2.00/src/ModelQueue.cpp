@@ -17,7 +17,7 @@ MAGE::MemQueue<Model>(queueLen) {
 
 void MAGE::ModelQueue::generate( unsigned int window, FrameQueue *frameQueue ) {
 //TODO actual frame generation with vocoder
-    unsigned int k, s, q, qc;
+    unsigned int k, s, q, qmgc, qlf0;
     float sum = 0.0;
     
     // we look at 'window' labels before the current
@@ -61,7 +61,7 @@ void MAGE::ModelQueue::generate( unsigned int window, FrameQueue *frameQueue ) {
     
     head = (write-window)%length; // then we land on the oldest model
     
-    for( s=0, qc = 0; s<nOfStates; s++ ) {
+    for( s=0, qmgc = 0, qlf0 = 0; s<nOfStates; s++ ) {
     
         // from each state of the model, we get the computed
         // duration and we iterate to generate the parameters
@@ -76,20 +76,21 @@ void MAGE::ModelQueue::generate( unsigned int window, FrameQueue *frameQueue ) {
             
             for( k=0; k<nOfMGCs; k++ ) {
                 
-                frame.mgc[k] = MAGE::Random( -5.0, 5.0 );
+                frame.mgc[k] = rawData[head].getMem()->par[mgcStreamIndex][qmgc][k];
             }
+            qmgc++;
             
             for( k=0; k<nOfLPFs; k++ ) {
                 
                 frame.lpf[k] = MAGE::Random( -5.0, 5.0 );
             }
             
-            //frame.lf0 = rawData[head].getState(s).lf0[0].mean;
+            frame.lf0 = rawData[head].getState(s).lf0[0].mean;
             
             if (rawData[head].getState(s).lf0[0].msdFlag > 0.5) {
                 frame.voiced = true;
-                frame.lf0 = rawData[head].getMem()->par[lf0StreamIndex][qc][nOfLF0s-1];
-                qc++;
+                frame.lf0 = rawData[head].getMem()->par[lf0StreamIndex][qlf0][nOfLF0s-1];
+                qlf0++;
             } else {
                 frame.voiced = false;
                 frame.lf0 = 0;
@@ -102,6 +103,7 @@ void MAGE::ModelQueue::generate( unsigned int window, FrameQueue *frameQueue ) {
                 //printf("frameQueue is full\n");
                 usleep(10);
             };
+            
             frameQueue->push( &frame, 1 );
         }
     }
