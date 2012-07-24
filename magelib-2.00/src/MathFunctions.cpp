@@ -4,7 +4,7 @@
  *   @brief   Some math utilities
  */
 
-#include "Math.h"
+#include "MathFunctions.h"
 
 float MAGE::Random(float x, float y) {
         float high = 0;

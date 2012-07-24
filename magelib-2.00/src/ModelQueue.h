@@ -14,7 +14,7 @@
 #include "FrameQueue.h"
 #include "Frame.h"
 
-#include "Math.h"
+#include "MathFunctions.h"
 
 namespace MAGE {
     

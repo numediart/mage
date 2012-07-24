@@ -8,7 +8,7 @@
 #pragma once
 
 #include "Constants.h"
-#include "Math.h"
+#include "MathFunctions.h"
 
 #include "Frame.h"
 #include "Label.h"

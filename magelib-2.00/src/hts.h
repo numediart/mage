@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "Math.h"
+#include "MathFunctions.h"
 #include "HTS_engine.h"
 #include "HTS_hidden.h"
 
