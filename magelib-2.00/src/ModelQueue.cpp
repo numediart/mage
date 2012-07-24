@@ -17,7 +17,7 @@ MAGE::MemQueue<Model>(queueLen) {
 
 void MAGE::ModelQueue::generate( unsigned int window, FrameQueue *frameQueue ) {
 //TODO actual frame generation with vocoder
-    unsigned int k, s, q;
+    unsigned int k, s, q, qc;
     float sum = 0.0;
     
     // we look at 'window' labels before the current
@@ -61,7 +61,7 @@ void MAGE::ModelQueue::generate( unsigned int window, FrameQueue *frameQueue ) {
     
     head = (write-window)%length; // then we land on the oldest model
     
-    for( s=0; s<nOfStates; s++ ) {
+    for( s=0, qc = 0; s<nOfStates; s++ ) {
     
         // from each state of the model, we get the computed
         // duration and we iterate to generate the parameters
@@ -84,12 +84,16 @@ void MAGE::ModelQueue::generate( unsigned int window, FrameQueue *frameQueue ) {
                 frame.lpf[k] = MAGE::Random( -5.0, 5.0 );
             }
             
-            frame.lf0 = rawData[head].getState(s).lf0[0].mean;
+            //frame.lf0 = rawData[head].getState(s).lf0[0].mean;
             
-            if (rawData[head].getState(s).lf0[0].msdFlag > 0.5)
+            if (rawData[head].getState(s).lf0[0].msdFlag > 0.5) {
                 frame.voiced = true;
-            else
+                frame.lf0 = rawData[head].getMem()->par[lf0StreamIndex][qc][nOfLF0s-1];
+                qc++;
+            } else {
                 frame.voiced = false;
+                frame.lf0 = 0;
+            }
             
             // </DUMMY-CODE>
             

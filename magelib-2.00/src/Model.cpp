@@ -85,9 +85,9 @@ MAGE::ModelMemory::~ModelMemory( void )
 MAGE::Model::Model( ModelMemory *m ) 
 {
 	this->duration = 0;
-	this->mgc_pdf.reserve(maxNumOfFrames); 
-	this->lf0_pdf.reserve(maxNumOfFrames); 
-	this->lpf_pdf.reserve(maxNumOfFrames); 
+//	this->mgc_pdf.reserve(maxNumOfFrames*nOfMGCs); 
+//	this->lf0_pdf.reserve(maxNumOfFrames*nOfLF0s); 
+//	this->lpf_pdf.reserve(maxNumOfFrames*nOfLPFs); 
 
 	this->mem = m;
 }
@@ -273,6 +273,8 @@ void MAGE::Model::computeParameters( MAGE::Engine *engine, MAGE::Label *label )
 			this->state[i].lf0[j].mean = lf0_mean[j];
 			this->state[i].lf0[j].vari = lf0_vari[j];
 			this->state[i].lf0[j].msdFlag = lf0_msd;
+            
+//            printf("[cp] [%d,%d] %f %f\n",i,j,lf0_mean[j],lf0_vari[j]);
 		}
 		
 		HTS_ModelSet_get_parameter( &ms, strQuery, lpf_mean, lpf_vari, NULL, lpf_stream_index, i+2, global.parameter_iw[lpf_stream_index] );
@@ -356,6 +358,9 @@ void MAGE::Model::computeGlobalVariances( MAGE::Engine *engine, MAGE::Label *lab
 			}
 	}
 		
+    //TODO fix this
+    // 1. one gv_switch per stream
+    // 2. one gv_switch for nstates, not nstates gv_switch
 	if ( HTS_ModelSet_have_gv_switch(&ms) == true )
 	{
 		if ( HTS_ModelSet_get_gv_switch( &ms, strQuery ) == false )
@@ -366,9 +371,10 @@ void MAGE::Model::computeGlobalVariances( MAGE::Engine *engine, MAGE::Label *lab
 	
 	for ( i = 0; i < nOfStates; i++ )
 	{
-		this->state[i].mgc_gv_switch = gv_switch;
-		this->state[i].lf0_gv_switch = gv_switch;
-		this->state[i].lpf_gv_switch = gv_switch;
+        //set manually for now
+		this->state[i].mgc_gv_switch = true;
+		this->state[i].lf0_gv_switch = true;
+		this->state[i].lpf_gv_switch = false;
 	}
 	
     delete[] strQuery;
@@ -439,8 +445,8 @@ void MAGE::Model::optimizeParameters( MAGE::Engine *engine )
 										mem->ivar[i][msd_frame][m] = 0.0;
 									
 									// ATTENTION !!! Loop assignment
-									mem->gv_mean[i][m] = this->state[state].gv_lf0[m].mean;
-									mem->gv_vari[i][m] = this->state[state].gv_lf0[m].vari;
+									mem->gv_mean[i][m] = this->state[0].gv_lf0[m].mean;
+									mem->gv_vari[i][m] = this->state[0].gv_lf0[m].vari;
 								}
 							}
 						}
@@ -486,9 +492,9 @@ void MAGE::Model::optimizeParameters( MAGE::Engine *engine )
 									mem->ivar[i][frame][m] = 0.0;
 								
 								// ATTENTION !!! Loop assignment
-								mem->gv_mean[i][m] = this->state[state].gv_mgc[m].mean;
-								mem->gv_vari[i][m] = this->state[state].gv_mgc[m].vari;
-								mem->gv_switch[i][m] = this->state[state].mgc_gv_switch;
+								mem->gv_mean[i][m] = this->state[0].gv_mgc[m].mean;
+								mem->gv_vari[i][m] = this->state[0].gv_mgc[m].vari;
+								mem->gv_switch[i][m] = this->state[0].mgc_gv_switch;
 							}
 							
 							if ( i == 2 )  // lpf
@@ -501,9 +507,9 @@ void MAGE::Model::optimizeParameters( MAGE::Engine *engine )
 									mem->ivar[i][frame][m] = 0.0;
 								
 								// ATTENTION !!! Loop assignment
-								mem->gv_mean[i][m] = this->state[state].gv_lpf[m].mean;
-								mem->gv_vari[i][m] = this->state[state].gv_lpf[m].vari;
-								mem->gv_switch[i][m] = this->state[state].lpf_gv_switch;
+								mem->gv_mean[i][m] = this->state[0].gv_lpf[m].mean;
+								mem->gv_vari[i][m] = this->state[0].gv_lpf[m].vari;
+								mem->gv_switch[i][m] = this->state[0].lpf_gv_switch;
 							}
 						}
 					}
@@ -531,7 +537,7 @@ void MAGE::Model::optimizeParameters( MAGE::Engine *engine )
 			pss.length = frame;						// stream length :: total number of frames
 		
 		if ( HTS_ModelSet_use_gv(&ms, i)) // if GV is used 
-			pss.gv_length = frame;					//frame length for GV calculation
+			pss.gv_length = pss.length;					//frame length for GV calculation
 		else 
 			pss.gv_length = 0;					//frame length for GV calculation
 			
@@ -547,15 +553,36 @@ void MAGE::Model::optimizeParameters( MAGE::Engine *engine )
 		
 		HTS_PStream_mlpg(&pss);				// parameter generation 
 			
-		// ATTENTION !!! MemAlloc?? MemLeak??
-		if ( i == 0 )  // mgcs
-			this->mgc_pdf.assign(*pss.par, ((*pss.par)+(pss.static_length)));
-		
-		if ( i == 1 )  // lf0
-			this->lf0_pdf.assign(*pss.par, ((*pss.par)+(pss.static_length)));
-
-		if ( i == 2 )  // lpf
-			this->lpf_pdf.assign(*pss.par, ((*pss.par)+(pss.static_length)));
+//		// ATTENTION !!! MemAlloc?? MemLeak??
+//		if ( i == 0 ) { // mgcs
+////            printf("[mgc-dim %dx%d]\n",pss.length,pss.static_length);
+//            
+//            for (int z=0;z<pss.length;z++)
+//                for (int zz=0;zz<pss.static_length;zz++)
+//                    ;//this->mgc_pdf[z*pss.static_length + zz] = pss.par[z][zz];
+////                    printf("[mgc %d %d] %f\n",z,zz,*((*pss.par)+z*pss.static_length + zz));
+//            
+////			this->mgc_pdf.assign(*pss.par, ((*pss.par)+(pss.length*pss.static_length)));
+//        }
+//		
+//		if ( i == 1 ) { // lf0         
+////            printf("[lf0-dim %dx%d]\n",pss.length,pss.static_length);
+//            
+//            for (int z=0;z<pss.length;z++)
+//                for (int zz=0;zz<pss.static_length;zz++)
+//                    ;//this->lf0_pdf[z*pss.static_length + zz] = pss.par[z][zz];
+////                    printf("[lf0 %d %d] %f\n",z,zz,*((*pss.par)+z*pss.static_length + zz));
+//            
+////			this->lf0_pdf.assign(*pss.par, ((*pss.par)+(pss.length)));
+//        }
+//
+//		if ( i == 2 ) { // lpf
+//            for (int z=0;z<pss.length;z++)
+//                for (int zz=0;zz<pss.static_length;zz++)
+//                    ;//this->lpf_pdf[z*pss.static_length + zz] = pss.par[z][zz];
+//            
+////			this->lpf_pdf.assign(*pss.par, ((*pss.par)+(pss.length*pss.static_length)));
+//        }
 	}
 
 	return;

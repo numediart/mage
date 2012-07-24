@@ -19,7 +19,11 @@ namespace MAGE {
     
     const unsigned int nOfStates = 5; // # of states in the HMM
     
-    const unsigned int nOfLookup = 1; // # of looked-up labels
+    const unsigned int nOfLookup = 0; // # of looked-up labels
 	const int maxNumOfFrames = 100; // maximum # of frames per phoneme
 	const int maxWindowWidth = 50;
+    
+    const int mgcStreamIndex = 0;
+    const int lf0StreamIndex = 1;
+    const int lpfStreamIndex = 2;
 }

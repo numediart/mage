@@ -43,7 +43,7 @@ namespace MAGE
 			double **wum;	// [nOfStreams][maxNumOfFrames];
 			// output parameter vector for otimized mgc, lf0 and lpf for every stream, for every frame
 			double ***par;	// [nOfStreams][maxNumOfFrames][nOfDers*nOfMGCs] 
-			
+            		
 			int *voiced_unvoiced; // [maxNumOfFrames]
 		
 	};
@@ -60,6 +60,10 @@ namespace MAGE
 		// getters
 		State getState( int index );
 		int getDuration( void );
+        inline ModelMemory *getMem() { return this->mem; };
+//        std::vector<double> getMgc();
+//        std::vector<double> getLf0();
+//        std::vector<double> getLpf();
 		
 		//setters
 		void setState( State state, int index );
@@ -79,12 +83,6 @@ namespace MAGE
 		State state[nOfStates];
 		
 		ModelMemory *mem;
-		
-		std::vector<double> mgc_pdf; 	// mgc parameters generated generated using GV weight
-		std::vector<double> lf0_pdf; 	// lf0 parameters generated generated using GV weight
-		std::vector<double> lpf_pdf; 	// lpf parameters generated generated using GV weight
-		
-		
 	};
 	
 } // namespace
