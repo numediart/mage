@@ -53,6 +53,10 @@ HTS_ModelSet MAGE::Engine::getModelSet( void )
 	return(this->ms);
 }
 
+HTS_PStream MAGE::Engine::getPStream( void )
+{
+	return(this->pss);
+}
 
 //setters
 void MAGE::Engine::setGlobal( HTS_Global global )
@@ -63,6 +67,11 @@ void MAGE::Engine::setGlobal( HTS_Global global )
 void MAGE::Engine::setModelSet( HTS_ModelSet ms )
 {
 	this->ms = ms;
+}
+
+void MAGE::Engine::setPStream( HTS_PStream pss )
+{
+	this->pss = pss;
 }
 
 // public methods

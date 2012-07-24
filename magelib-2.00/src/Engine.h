@@ -27,15 +27,16 @@ namespace MAGE
 			// getters
 			HTS_Global getGlobal( void );
 			HTS_ModelSet getModelSet( void );
+			HTS_PStream getPStream( void );
 
 			//setters
 			void setGlobal( HTS_Global global );
 			void setModelSet( HTS_ModelSet ms );
-			
+			void setPStream( HTS_PStream pss );
+
 			// methods
 			void load( int argc, char **argv );
 		
-	
 		protected:
 		
 			//int nOfLabels;

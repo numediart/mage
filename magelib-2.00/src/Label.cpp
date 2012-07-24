@@ -12,7 +12,7 @@ MAGE::Label::Label( void )
 {
     this->query = "";
     this->isForced = false;
-    this->begin = end = -1;
+    this->begin = this->end = -1;
     this->speed = 1;
 }
 	

@@ -21,4 +21,5 @@ namespace MAGE {
     
     const unsigned int nOfLookup = 1; // # of looked-up labels
 	const int maxNumOfFrames = 100; // maximum # of frames per phoneme
+	const int maxWindowWidth = 50;
 }

@@ -204,3 +204,213 @@ double mHTS_set_duration(int *duration, double *mean, double *vari, int size, do
 	
 	return (double) target_length;
 }
+
+/* HTS_finv: calculate 1.0/variance function */
+double HTS_finv(const double x)
+{
+	if (x >= INFTY2)
+		return 0.0;
+	if (x <= -INFTY2)
+		return 0.0;
+	if (x <= INVINF2 && x >= 0)
+		return INFTY;
+	if (x >= -INVINF2 && x < 0)
+		return -INFTY;
+	
+	return (1.0 / x);
+}
+
+/* HTS_PStream_mlpg: generate sequence of speech parameter vector maximizing its output probability for given pdf sequence */
+void HTS_PStream_mlpg(HTS_PStream * pst)
+{
+	int m;
+	
+	if (pst->length == 0)
+		return;
+	
+	for (m = 0; m < pst->static_length; m++) {
+		HTS_PStream_calc_wuw_and_wum(pst, m);
+		HTS_PStream_ldl_factorization(pst);       /* LDL factorization */
+		HTS_PStream_forward_substitution(pst);    /* forward substitution   */
+		HTS_PStream_backward_substitution(pst, m);        /* backward substitution  */
+		if (pst->gv_length > 0)
+			HTS_PStream_gv_parmgen(pst, m);
+	}
+}
+
+/* HTS_PStream_calc_wuw_and_wum: calcurate W'U^{-1}W and W'U^{-1}M */
+void HTS_PStream_calc_wuw_and_wum(HTS_PStream * pst, const int m)
+{
+	int t, i, j, k;
+	double wu;
+	
+	for (t = 0; t < pst->length; t++) {
+		/* initialize */
+		pst->sm.wum[t] = 0.0;
+		for (i = 0; i < pst->width; i++)
+			pst->sm.wuw[t][i] = 0.0;
+		
+		/* calc WUW & WUM */
+		for (i = 0; i < pst->win_size; i++)
+			for (j = pst->win_l_width[i]; j <= pst->win_r_width[i]; j++)
+				if ((t + j >= 0) && (t + j < pst->length)
+					&& (pst->win_coefficient[i][-j] != 0.0)) {
+					wu = pst->win_coefficient[i][-j] * pst->sm.ivar[t + j][i * pst->static_length + m];
+					pst->sm.wum[t] += wu * pst->sm.mean[t + j][i * pst->static_length + m];
+					for (k = 0; (k < pst->width) && (t + k < pst->length); k++)
+						if ((k - j <= pst->win_r_width[i])
+							&& (pst->win_coefficient[i][k - j] != 0.0)) {
+							pst->sm.wuw[t][k] += wu * pst->win_coefficient[i][k - j];
+						}
+				}
+	}
+}
+
+
+/* HTS_PStream_ldl_factorization: Factorize W'*U^{-1}*W to L*D*L' (L: lower triangular, D: diagonal) */
+ void HTS_PStream_ldl_factorization(HTS_PStream * pst)
+{
+	int t, i, j;
+	
+	for (t = 0; t < pst->length; t++) {
+		for (i = 1; (i < pst->width) && (t >= i); i++)
+			pst->sm.wuw[t][0] -= pst->sm.wuw[t - i][i] * pst->sm.wuw[t - i][i] * pst->sm.wuw[t - i][0];
+		
+		for (i = 1; i < pst->width; i++) {
+			for (j = 1; (i + j < pst->width) && (t >= j); j++)
+				pst->sm.wuw[t][i] -= pst->sm.wuw[t - j][j] * pst->sm.wuw[t - j][i + j] * pst->sm.wuw[t - j][0];
+			pst->sm.wuw[t][i] /= pst->sm.wuw[t][0];
+		}
+	}
+}
+
+/* HTS_PStream_forward_substitution: forward subtitution for mlpg */
+ void HTS_PStream_forward_substitution(HTS_PStream * pst)
+{
+	int t, i;
+	
+	for (t = 0; t < pst->length; t++) {
+		pst->sm.g[t] = pst->sm.wum[t];
+		for (i = 1; (i < pst->width) && (t >= i); i++)
+			pst->sm.g[t] -= pst->sm.wuw[t - i][i] * pst->sm.g[t - i];
+	}
+}
+
+/* HTS_PStream_backward_substitution: backward subtitution for mlpg */
+ void HTS_PStream_backward_substitution(HTS_PStream * pst, const int m)
+{
+	int t, i;
+	
+	for (t = pst->length - 1; t >= 0; t--) {
+		pst->par[t][m] = pst->sm.g[t] / pst->sm.wuw[t][0];
+		for (i = 1; (i < pst->width) && (t + i < pst->length); i++)
+			pst->par[t][m] -= pst->sm.wuw[t][i] * pst->par[t + i][m];
+	}		
+}
+
+
+
+/* HTS_PStream_gv_parmgen: function for mlpg using GV */
+void HTS_PStream_gv_parmgen(HTS_PStream * pst, const int m)
+{
+	int t, i;
+	double step = STEPINIT;
+	double prev = -LZERO;
+	double obj;
+	
+	if (pst->gv_length == 0)
+		return;
+	
+	HTS_PStream_conv_gv(pst, m);
+	
+	if (GV_MAX_ITERATION > 0) {
+		HTS_PStream_calc_wuw_and_wum(pst, m);
+		for (i = 1; i <= GV_MAX_ITERATION; i++) {
+			obj = HTS_PStream_calc_derivative(pst, m);
+			if (obj > prev)
+				step *= STEPDEC;
+			if (obj < prev)
+				step *= STEPINC;
+			for (t = 0; t < pst->length; t++)
+				pst->par[t][m] += step * pst->sm.g[t];
+			prev = obj;
+		}
+	}
+}
+
+/* HTS_PStream_conv_gv: subfunction for mlpg using GV */
+void HTS_PStream_conv_gv(HTS_PStream * pst, const int m)
+{
+	int t;
+	double ratio;
+	double mean;
+	double vari;
+	
+	HTS_PStream_calc_gv(pst, m, &mean, &vari);
+
+	ratio = sqrt(pst->gv_mean[m] / vari);
+
+	for (t = 0; t < pst->length; t++)
+		if (pst->gv_switch[t])
+			pst->par[t][m] = ratio * (pst->par[t][m] - mean) + mean;
+}
+
+/* HTS_PStream_calc_derivative: subfunction for mlpg using GV */
+double HTS_PStream_calc_derivative(HTS_PStream * pst, const int m)
+{
+	int t, i;
+	double mean;
+	double vari;
+	double dv;
+	double h;
+	double gvobj;
+	double hmmobj;
+	const double w = 1.0 / (pst->win_size * pst->length);
+	
+	HTS_PStream_calc_gv(pst, m, &mean, &vari);
+	gvobj = -0.5 * W2 * vari * pst->gv_vari[m] * (vari - 2.0 * pst->gv_mean[m]);
+	dv = -2.0 * pst->gv_vari[m] * (vari - pst->gv_mean[m]) / pst->length;
+	
+	for (t = 0; t < pst->length; t++) {
+		pst->sm.g[t] = pst->sm.wuw[t][0] * pst->par[t][m];
+		for (i = 1; i < pst->width; i++) {
+			if (t + i < pst->length)
+				pst->sm.g[t] += pst->sm.wuw[t][i] * pst->par[t + i][m];
+			if (t + 1 > i)
+				pst->sm.g[t] += pst->sm.wuw[t - i][i] * pst->par[t - i][m];
+		}
+	}
+	
+	for (t = 0, hmmobj = 0.0; t < pst->length; t++) {
+		hmmobj += W1 * w * pst->par[t][m] * (pst->sm.wum[t] - 0.5 * pst->sm.g[t]);
+		h = -W1 * w * pst->sm.wuw[t][1 - 1] - W2 * 2.0 / (pst->length * pst->length) * ((pst->length - 1) * pst->gv_vari[m] * (vari - pst->gv_mean[m]) + 2.0 * pst->gv_vari[m] * (pst->par[t][m] - mean) * (pst->par[t][m] - mean));
+		if (pst->gv_switch[t])
+			pst->sm.g[t] = 1.0 / h * (W1 * w * (-pst->sm.g[t] + pst->sm.wum[t]) + W2 * dv * (pst->par[t][m] - mean));
+		else
+			pst->sm.g[t] = 1.0 / h * (W1 * w * (-pst->sm.g[t] + pst->sm.wum[t]));
+	}
+	
+	return (-(hmmobj + gvobj));
+}
+
+/* HTS_PStream_calc_gv: subfunction for mlpg using GV */
+void HTS_PStream_calc_gv(HTS_PStream * pst, const int m, double *mean, double *vari)
+{
+	int t;
+	
+	*mean = 0.0;
+	for (t = 0; t < pst->length; t++)
+	{
+		if (pst->gv_switch[t])
+			*mean += pst->par[t][m];
+	}	
+	*mean /= pst->gv_length;
+		
+	*vari = 0.0;
+	for (t = 0; t < pst->length; t++)
+		if (pst->gv_switch[t])
+			*vari += (pst->par[t][m] - *mean) * (pst->par[t][m] - *mean);
+			
+	*vari /= pst->gv_length;
+}
+
