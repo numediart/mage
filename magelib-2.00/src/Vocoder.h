@@ -26,7 +26,7 @@ namespace MAGE {
         void push(Frame frame);
         double pop();
         
-        inline bool ready() { return this->flagInit; }
+		bool ready();
 
         double *ppadesptk;
 

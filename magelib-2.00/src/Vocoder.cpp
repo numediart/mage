@@ -57,6 +57,11 @@ MAGE::Vocoder::~Vocoder() {
     delete[] c;
 }
 
+bool MAGE::Vocoder::ready()
+{ 
+	return this->flagInit; 
+}
+
 void MAGE::Vocoder::push(Frame frame) {
     if (flagInit) {
         movem(cc, c, sizeof(*cc), m + 1);
