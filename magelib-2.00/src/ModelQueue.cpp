@@ -93,32 +93,46 @@ void MAGE::ModelQueue::printQueue( void ) {
 void MAGE::ModelQueue::optimizeParameters( MAGE::Engine *engine, unsigned int window )
 {	
     head = read;//(write-window)%length; // then we land on the oldest model
-    
+
 	static HTS_ModelSet ms = engine->getModelSet();
 	static HTS_Global global = engine->getGlobal();
 	static HTS_PStream pss = engine->getPStream();
 	
-	int i, j, k, l, m;
+	int i, j, k, l, m, w;
 	int state, frame, msd_frame, static_length;
 	
 	bool not_bound;
 
-	for (state = 0, frame = 0; state < ms.nstate; state++) // for every state
-	{
-		for (j = 0; j < rawData[head].getState(state).duration; j++, frame++) // for every frame
-		{
-			if (rawData[head].getState(state).lf0[0].msdFlag > global.msd_threshold[1])  // if voiced
-				mem->voiced_unvoiced[frame] = true;
-			else
-				mem->voiced_unvoiced[frame] = false;
-		}
-	}
+    frame = 0;
+    //TODO optimize this: some computation will be done exactly the same in next call to this function (only shifted in mem)
+    int total_duration = 0;
+    for (w=0;w<window;w++) { // for every model
+        for (state = 0; state < ms.nstate; state++) // for every state
+        {
+            for (j = 0; j < rawData[head].getState(state).duration; j++, frame++) // for every frame
+            {
+                if (rawData[head].getState(state).lf0[0].msdFlag > global.msd_threshold[1])  // if voiced
+                    mem->voiced_unvoiced[frame] = true;
+                else
+                    mem->voiced_unvoiced[frame] = false;
+            }
+        }
+        
+        total_duration += rawData[head].getDuration();
+        
+        head = (head+1)%length;
+    }
 
+    
+    
 	for (i = 0; i < ms.nstream; i++)  // for every stream : mgc, lf0, lpf
 	{
+        head = read;
 		if (ms.stream[i].msd_flag)  // for MSD
 		{
-			for (state = 0, frame = 0, msd_frame = 0; state < ms.nstate; state++) // for every state
+            frame = 0, msd_frame = 0;
+            for (w=0;w<window;w++) {
+			for (state = 0; state < ms.nstate; state++) // for every state
 			{
 				for (j = 0; j < rawData[head].getState(state).duration; j++) // for every frame
 				{
@@ -130,7 +144,7 @@ void MAGE::ModelQueue::optimizeParameters( MAGE::Engine *engine, unsigned int wi
 							not_bound = true;
 							for (l = ms.stream[i].window.l_width[k]; l <= ms.stream[i].window.r_width[k]; l++)
 							{
-								if (frame + l < 0 || rawData[head].getDuration() <= frame + l || !mem->voiced_unvoiced[frame+l] )  // voiced unvoided
+								if (frame + l < 0 || total_duration <= frame + l || !mem->voiced_unvoiced[frame+l] )  // voiced unvoided
 								{
 									not_bound = false;
 									break;
@@ -166,10 +180,14 @@ void MAGE::ModelQueue::optimizeParameters( MAGE::Engine *engine, unsigned int wi
 					frame++;
 				}
 			}
+            head = (head+1)%length;
+            }
 		} 
 		else // for non MSD 
-		{                  
-			for (state = 0, frame = 0; state < ms.nstate; state++) // for every state
+		{          
+            frame = 0;
+            for (w=0;w<window;w++) {
+			for (state = 0; state < ms.nstate; state++) // for every state
 			{
 				for (j = 0; j < rawData[head].getState(state).duration; j++) // for every frame
 				{
@@ -178,7 +196,7 @@ void MAGE::ModelQueue::optimizeParameters( MAGE::Engine *engine, unsigned int wi
 						not_bound = true;
 						for (l = ms.stream[i].window.l_width[k]; l <= ms.stream[i].window.r_width[k]; l++)
 						{
-							if (frame + l < 0 || rawData[head].getDuration() <= frame + l) 
+							if (frame + l < 0 || total_duration <= frame + l) 
 							{
 								not_bound = false;
 								break;
@@ -226,6 +244,8 @@ void MAGE::ModelQueue::optimizeParameters( MAGE::Engine *engine, unsigned int wi
 					frame++;
 				}
 			}
+            head = (head+1)%length;
+            }
 		}
 
 		// just vector assigments in order to create a HTS_PStream object and use the default HTS_PStream_mlpg function
