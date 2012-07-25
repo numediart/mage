@@ -14,7 +14,7 @@ struct Frame {
         
     double mgc[nOfMGCs];
     double lpf[nOfLPFs];
-    double lf0;
+    double f0;
     bool voiced;
 };
     

@@ -26,4 +26,10 @@ namespace MAGE {
     const int mgcStreamIndex = 0;
     const int lf0StreamIndex = 1;
     const int lpfStreamIndex = 2;
+    
+    // --- VOCODER ---
+    const double defaultAlpha = 0.55;
+    const int defaultFrameRate = 240;
+    const int defaultInterpFrameRate = 1;
+    const int defaultPadeOrder = 4;
 }
