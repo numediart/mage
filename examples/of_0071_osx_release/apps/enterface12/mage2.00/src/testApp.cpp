@@ -60,8 +60,8 @@ void testApp::setup( void ) {
     sampleFrame = new float[ maxFrameLen ](); // allocate memory for the speech frame
     ofSoundStreamSetup( 2, 0, this, sampleRate, dacBufferLen, 4 ); // audio setup
     
-    string s(this->Argv[this->Argc-1]);
-    parsefile(s);
+//    string s(this->Argv[this->Argc-1]);
+//    parsefile(s);
     //parsefile("../../../../data/inouts/labels/alice01.lab");
     
     //f0 modification parameters (cf. audioOut)
@@ -69,6 +69,8 @@ void testApp::setup( void ) {
     f0shift = 0.0;
     
     paused = true;
+    loop = true;
+    fill = true;
 }
 
 void testApp::exit( void ) {
@@ -111,9 +113,11 @@ void testApp::update( void ) {
 		{
 			// --- change speed  ---
 			oscSpeed = m.getArgAsFloat( 0 );
-			speed = ofMap(oscSpeed, 0, 3, 0.1, 3, true);
-			printf("speed : %f\n", speed);
+			//speed = ofMap(oscSpeed, 0, 3, 0.1, 3, true);
+			//printf("speed : %f\n", speed);
 			//setSpeed(speed);
+			hopLen = (oscSpeed > 1) ? oscSpeed : 1;
+			printf("speed : %f\n", hopLen);
 		}
 		
 		if( m.getAddress() == "/alpha" )
@@ -171,7 +175,21 @@ void testApp::update( void ) {
 			this->vocoder->reset();
 			printf("Reset \n");
 		}
+
+		if( m.getAddress() == "/loop" ) 
+		{
+			this->loop = !this->loop;
+			if (this->loop) {
+				printf("Loop \n");
+			} else {
+				printf("No Loop\n");
+			}
 	}
+
+    //TODO check that this is thread-safe (probably not)
+    if (this->fill && this->labelQueue->isEmpty() && this->loop) {
+        fillLabelQueue();
+    }
 }
 
 void testApp::draw( void ) {
@@ -188,9 +206,9 @@ void testApp::draw( void ) {
     
         // middle line to show the zero
         ofLine( xOffset, yOffset+(yWidth/2),
-        xOffset+frameLen, yOffset+(yWidth/2) );
+        xOffset+hopLen, yOffset+(yWidth/2) );
         
-        for( int k=1; k<frameLen; k++ ) {
+        for( int k=1; k<hopLen; k++ ) {
         
             // linearly interpolated waveform to look nice on screen
             ofLine( (k-1)+xOffset, ofMap( sampleFrame[k-1], -1, 1, yOffset+yWidth,
@@ -198,7 +216,7 @@ void testApp::draw( void ) {
         }
         
         // rectangle box to show where is the max
-        ofRect( xOffset, yOffset, frameLen, yWidth );
+        ofRect( xOffset, yOffset, hopLen, yWidth );
     }
 }
 
@@ -233,7 +251,7 @@ void testApp::audioOut( float *outBuffer, int bufSize, int nChan ) {
         
         if (vocoder->ready()) {
             outBuffer[indchan] = 0.5*vocoder->pop()/32768;
-            
+
             if (outBuffer[indchan] > 1.0) {
                 outBuffer[indchan] = 1.0;
             } else if (outBuffer[indchan] < -1.0) {
@@ -258,7 +276,6 @@ void testApp::audioOut( float *outBuffer, int bufSize, int nChan ) {
 //---
 
 testApp::testApp( int argc, char **argv ) {
-    
     Argc = argc; // we use this trick to pass the HTS command line flags
     Argv = argv; // to the openFrameworks app and use them at launch
 }
@@ -318,6 +335,21 @@ void testApp::keyPressed( int key ) {
         this->vocoder->reset();
 //        f0shift -= 5; // -5Hz
     }
+    
+    if( key == 'f' ) {
+        hopLen += 10;
+    }
+    if( key == 's' ) {
+        hopLen -= 10;
+        if (hopLen < 1)
+            hopLen = 1;
+    }
+    
+    if( key == 'o' ) {
+        this->loop = !this->loop;
+        printf("loop %d\n",this->loop);
+    }
+
 }
 
 void testApp::keyReleased( int key ) {
@@ -325,6 +357,30 @@ void testApp::keyReleased( int key ) {
     
 }
 
+void testApp::fillLabelQueue()
+{    
+    string s(this->Argv[this->Argc-1]);
+    parsefile(s);
+    
+    this->fill = false;
+    
+    MAGE::Label label;
+    while (!labellist.empty()) {
+        string q = labellist.front();
+        label.setQuery(q);
+
+        //label.setSpeed(0.5);
+
+        labellist.pop();
+
+        if( !labelQueue->isFull() ) 
+            labelQueue->push( label );
+        else 
+            printf( "label queue is full !\n%s",q.c_str());
+    }
+    
+    this->fill = true;
+}
 void testApp::parsefile(std::string filename) 
 {
     string line;

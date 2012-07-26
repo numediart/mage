@@ -73,6 +73,7 @@ class testApp : public ofBaseApp {
     void keyReleased( int key );
     
     //parse lab file line-by-line
+    void fillLabelQueue();
     void parsefile(std::string filename);
 
   protected:
@@ -110,6 +111,8 @@ class testApp : public ofBaseApp {
     int sampleCount; // sample count for triggering
     bool drawSampleFrame; // do we show the frame
     bool paused;
+    bool loop;
+    bool fill;
     
     //SPTK vocoder
     MAGE::Vocoder *vocoder;
