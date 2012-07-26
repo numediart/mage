@@ -81,6 +81,7 @@ class testApp : public ofBaseApp {
     int frameLen, hopLen; // frame size and hop size
     int sampleCount; // sample count for triggering
     bool drawSampleFrame; // do we show the frame
+    bool paused;
     
     //SPTK vocoder
     MAGE::Vocoder *vocoder;

@@ -14,7 +14,6 @@ void testApp::setup( void ) {
     
     // --- QUEUES ---
     labelQueue = new MAGE::LabelQueue( labelQueueLen );
-
     memory = new MAGE::ModelMemory::ModelMemory();
     modelQueue = new MAGE::ModelQueue( modelQueueLen, memory );
     frameQueue = new MAGE::FrameQueue( frameQueueLen );
@@ -37,9 +36,11 @@ void testApp::setup( void ) {
     parsefile(s);
     //parsefile("../../../../data/inouts/labels/alice01.lab");
     
-	//f0 modification parameters (cf. audioOut)
+    //f0 modification parameters (cf. audioOut)
     f0scale = 1.0;
     f0shift = 0.0;
+    
+    paused = true;
 }
 
 void testApp::exit( void ) {
@@ -165,30 +166,43 @@ void testApp::audioOut( float *outBuffer, int bufSize, int nChan ) {
                 //any modification to f0 can go here
                 //frame.f0 = frame.f0*f0scale + f0shift;
                 vocoder->push(frame);
-				
+
+                //use the two lines below instead to generate unvoiced speech
+                //vocoder->push(frame,true);
+                //vocoder->setVoiced(false);
+
 				//vocoder->setPitch(0.1, scale, false);
 				//vocoder->setAlpha(-1);
 				//vocoder->setVolume(9);
 
+                paused = false;
+            } else {
+                paused = true;
             }
             //olaBuffer->ola( sampleFrame, frameLen, k ); // OLA the frame
             sampleCount = 0; // and reset the sample count for next time
         } else {
             sampleCount++; // otherwise increment sample count
         }
-        if (vocoder->ready())
-            outBuffer[k] = vocoder->pop();
-	}
+        
+        if (vocoder->ready()) {
+            outBuffer[k] = 0.5*vocoder->pop()/32768;
+            if (outBuffer[k] > 1.0)
+                outBuffer[k] = 1.0;
+            else if (outBuffer[k] < -1.0)
+                outBuffer[k] = -1.0;
+        }
+        sampleFrame[sampleCount] = outBuffer[k];
+    }
 
-    // pulling samples out for the DAC
-    //olaBuffer->pop( outBuffer, bufSize );
-
-//    FILE *file;
+    if (!paused) {
+//        FILE *file;
 //
-//    file = fopen("out.raw", "ab");
-//    fwrite(outBuffer, sizeof(float), bufSize, file);
+//        file = fopen("out.raw", "ab");
+//        fwrite(outBuffer, sizeof(float), bufSize, file);
 //
-//    fclose(file);
+//        fclose(file);
+    }
 }
 
 //---

@@ -33,17 +33,15 @@ void genThread::threadedFunction( void ) {
             //model->optimizeParameters( engine );
 
             modelQueue->push( model, 1 );
-			modelQueue->optimizeParameters( engine );
             
             if( modelQueue->getNumOfItems() > nOfLookup+nOfBackup ) {
                 flag = false;
                 modelQueue->optimizeParameters(engine, nOfBackup, nOfLookup);
                 modelQueue->generate( frameQueue, nOfBackup );                
-
                 modelQueue->pop();
             } else if (modelQueue->getNumOfItems() > nOfLookup && flag) {
-                modelQueue->optimizeParameters(engine, 0, nOfLookup);
-                modelQueue->generate( frameQueue, 0 );  
+                modelQueue->optimizeParameters(engine, modelQueue->getNumOfItems()-nOfLookup-1, nOfLookup);
+                modelQueue->generate( frameQueue, modelQueue->getNumOfItems()-nOfLookup-1 );  
             }     
         } else {
         
