@@ -224,6 +224,29 @@ void MAGE::Model::computeDuration( MAGE::Engine *engine, MAGE::Label *label )
 	return;
 }
 
+void MAGE::Model::updateDuration( int *updateFunction, int action ) 
+{
+	int i;
+	int duration = 0;
+	
+	for ( i = 0; i < nOfStates; i++ ) 
+	{
+		if ( action == MAGE::overwrite)
+			this->state[i].duration = updateFunction[i];
+		
+		if ( action == MAGE::shift)
+			this->state[i].duration += updateFunction[i];
+		
+		if ( action == MAGE::scale)
+			this->state[i].duration *= updateFunction[i];
+		
+		duration += this->state[i].duration;
+	}
+	
+	this->duration = duration;
+}
+
+
 void MAGE::Model::computeParameters( MAGE::Engine *engine, MAGE::Label *label )
 {
 	int i, j;

@@ -23,7 +23,7 @@ class ModelQueue : public MemQueue<Model> {
   public:
     
     ModelQueue( unsigned int queueLen, MAGE::ModelMemory *memory );
-    void generate( Engine *engine, FrameQueue *frameQueue, unsigned int backup=nOfBackup );
+    void generate( FrameQueue *frameQueue, unsigned int backup=nOfBackup );
     void printQueue( void );
     
     inline ModelMemory *getMem() { return this->mem; };

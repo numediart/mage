@@ -41,4 +41,5 @@ namespace MAGE
     const int defaultFrameRate = 240;
     const int defaultInterpFrameRate = 1;
     const int defaultPadeOrder = 4;
+	const int defaultSamplingRate = 48000;
 }

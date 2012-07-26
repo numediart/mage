@@ -15,7 +15,7 @@ MAGE::MemQueue<Model>(queueLen) {
     // queueLen to the parent class
 }
 
-void MAGE::ModelQueue::generate( Engine *engine, FrameQueue *frameQueue, unsigned int backup ) {
+void MAGE::ModelQueue::generate( FrameQueue *frameQueue, unsigned int backup ) {
 //TODO actual frame generation with vocoder
     unsigned int k, s, q, qmgc, qlf0, qlpf, w, ind;
     

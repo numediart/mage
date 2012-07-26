@@ -115,7 +115,7 @@ int MAGE::Label::getEnd( void )
 	return( this->end );
 }
 
-int MAGE::Label::getSpeed( void )
+float MAGE::Label::getSpeed( void )
 {
 	return( this->speed );
 }
@@ -141,7 +141,7 @@ void MAGE::Label::setEnd( int end )
 	this->end = end;
 }
 
-void MAGE::Label::setSpeed( int speed )
+void MAGE::Label::setSpeed( float speed )
 {
 	this->speed = speed;
 }

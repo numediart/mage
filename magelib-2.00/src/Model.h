@@ -60,6 +60,8 @@ namespace MAGE
 		// getters
 		State getState( int index );
 		int getDuration( void );
+		void updateDuration( int *updateFunction, int action  ); // to put a speed profile on state duration (put it inside compute duration ?)
+
 //        std::vector<double> getMgc();
 //        std::vector<double> getLf0();
 //        std::vector<double> getLpf();

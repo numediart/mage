@@ -34,7 +34,7 @@ class Label {
     int getBegin( void );
     int getEnd( void );
     
-    int getSpeed( void );
+    float getSpeed( void );
     bool getIsForced( void );
     
     //setters
@@ -43,7 +43,7 @@ class Label {
     void setBegin( int begin );
     void setEnd( int end );
     
-    void setSpeed( int speed );
+    void setSpeed( float speed );
     void setIsForced( bool isDurationForced );
 
   protected:
@@ -52,7 +52,7 @@ class Label {
     
     bool isForced;
     
-    int speed;
+    float speed;
     int begin;
     int end;
 };

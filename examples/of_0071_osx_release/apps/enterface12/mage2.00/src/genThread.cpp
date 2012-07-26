@@ -22,16 +22,19 @@ void genThread::threadedFunction( void ) {
             labelQueue->pop( label );
 
             model->computeDuration( engine, &label );
-            //TODO model->updateDuration() // to put a speed profile on state duration (put it inside compute duration ?)
-            model->computeParameters( engine, &label );
+             
+			//static int dur[5] = {0,0,10,0,0};
+			//model->updateDuration(dur, MAGE::scale); // to put a speed profile on state duration (put it inside compute duration ?)
+            
+			model->computeParameters( engine, &label );
             model->computeGlobalVariances( engine, &label );
-            model->optimizeParameters( engine );
+            //model->optimizeParameters( engine );
 
             modelQueue->push( model, 1 );
+			modelQueue->optimizeParameters( engine );
             
             if( modelQueue->getNumOfItems() > nOfLookup ) {
-            
-                modelQueue->generate( nOfLookup+1, frameQueue );                
+                modelQueue->generate( frameQueue, nOfLookup+1 );                
                 modelQueue->pop();
             }
                 

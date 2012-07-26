@@ -28,8 +28,10 @@ namespace MAGE {
         
         bool ready();
         
-        inline void setAlpha(double aalpha) { this->alpha = aalpha; };
-        void setPitch(double pitch, bool forceVoiced=false);
+        inline void setAlpha(double aalpha) { this->alpha = aalpha; };  	// ATTENTION no need for correct limit control???
+        inline void setVolume(double vvolume) { this->volume = vvolume; };  // ATTENTION no need for correct limit control???
+		
+        void setPitch(double pitch, int action, bool forceVoiced=false);
         
         //functions imported from SPTK
         void movem(void *a, void *b, const size_t size, const int nitem);
@@ -59,7 +61,7 @@ namespace MAGE {
         bool ngain;
         bool flagInit;
 
-        double alpha;
+        double alpha; // [0. 1]
         double gamma;
         double x;
         double *c;
@@ -78,8 +80,7 @@ namespace MAGE {
         bool voiced;
         int count;
         
-        double f0shift;
-        double f0scale;
+        double volume; // >= 0
     };
 
 }

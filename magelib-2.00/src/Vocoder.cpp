@@ -25,10 +25,10 @@ MAGE::Vocoder::Vocoder(int am, double aalpha, int afprd, int aiprd, int astage, 
     //excitation
     this->count = 0;
     this->f0 = 120;//Hz
-    this->t0 = 48000/this->f0;
+    this->t0 = defaultSamplingRate/this->f0; // defaultSamplingRate = 48000
     this->voiced = false;
-    this->f0shift = 0.0;
-    this->f0scale = 1.0;
+
+    this->volume = 1.0;
     
     if (stage != 0) {            /* MGLSA */
         gamma = -1 / (double) stage;
@@ -109,7 +109,7 @@ void MAGE::Vocoder::push(Frame &frame, bool ignoreVoicing) {
     }    
     
     this->f0 = frame.f0;//Hz
-    this->t0 = 48000/this->f0;
+    this->t0 = defaultSamplingRate/this->f0; // defaultSamplingRate = 48000
     if (!ignoreVoicing)
         this->voiced = frame.voiced;
 }
@@ -147,6 +147,10 @@ double MAGE::Vocoder::pop() {
     for (i = 0; i <= m; i++)
         c[i] += inc[i];
     
+	// ATTENTION volume??? correct place???
+	if (this->volume >= 0)
+		x = this->volume * x;
+	
     return x;
 }
 
@@ -166,14 +170,26 @@ bool MAGE::Vocoder::ready() {
  *                    become voiced with the given pitch otherwise it would ignore
  *                    the pitch set until next frame
  */
-void MAGE::Vocoder::setPitch(double pitch, bool forceVoiced) {
-    this->f0 = pitch;//Hz
-    this->t0 = 48000/this->f0;
-    if (forceVoiced)
+void MAGE::Vocoder::setPitch(double pitch, int action, bool forceVoiced) 
+{
+	if ( action == MAGE::overwrite)
+		this->f0 = pitch;//Hz
+	
+	if ( action == MAGE::shift)
+		this->f0 = (this->f0)+(pitch); //Hz
+	
+	if ( action == MAGE::scale)
+		this->f0 = (this->f0)*(pitch); 
+
+	// ATTENTION!! Should I do that???
+	//if(this->f0 < 1)
+	//	this->f0 = 1; // log(f0) = 0
+	
+	this->t0 = defaultSamplingRate/this->f0;  // defaultSamplingRate = 48000
+
+	if (forceVoiced)
         this->voiced = true;
 }
-
-
 
 /********************************************************
     $Id: movem.c,v 1.10 2011/04/27 13:46:44 mataki Exp $

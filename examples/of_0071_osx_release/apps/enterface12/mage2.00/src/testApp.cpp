@@ -2,24 +2,28 @@
 
 void testApp::setup( void ) {
 	
+	// --- HTS Engine ---
+    engine = new MAGE::Engine();
+    engine->load(Argc, Argv);
+	
+	// --- HTS Model ---
+    memory = new MAGE::ModelMemory::ModelMemory();
+	model = new MAGE::Model::Model();
+	
+	// --- Vocoder 
+	vocoder = new MAGE::Vocoder::Vocoder();
+
 	// --- OSC ---
 	receiver.setup( PORT );
     
     // --- QUEUES ---
     labelQueue = new MAGE::LabelQueue( labelQueueLen );
-    modelQueue = new MAGE::ModelQueue( modelQueueLen );
+    modelQueue = new MAGE::ModelQueue( modelQueueLen, memory );
     frameQueue = new MAGE::FrameQueue( frameQueueLen );
     
-    // --- HTS Engine ---
-    engine = new MAGE::Engine();
-    engine->load(Argc, Argv);
-	
-	// --- Vocoder 
-	vocoder = new MAGE::Vocoder::Vocoder();
     
-    // --- HTS Model ---
-    memory = new MAGE::ModelMemory::ModelMemory();
-	model = new MAGE::Model::Model(memory);
+    
+    
     
     // --- PARAMETER GENERATION THREAD ---
     generate = new genThread( labelQueue, modelQueue, frameQueue, engine, model );
@@ -158,6 +162,11 @@ void testApp::audioOut( float *outBuffer, int bufSize, int nChan ) {
             if( !frameQueue->isEmpty() ) {               
                 frameQueue->pop( &frame, 1 ); // we pop a speech parameter frame
                 vocoder->push(frame);
+				
+				//vocoder->setPitch(0.1, scale, false);
+				//vocoder->setAlpha(-1);
+				//vocoder->setVolume(9);
+
             }
             //olaBuffer->ola( sampleFrame, frameLen, k ); // OLA the frame
             sampleCount = 0; // and reset the sample count for next time
@@ -201,10 +210,15 @@ void testApp::keyPressed( int key ) {
         while (!labellist.empty()) {
             string q = labellist.front();
             label.setQuery(q);
-            labellist.pop();
+			
+			//label.setSpeed(0.5);
+            
+			labellist.pop();
         
-            if( !labelQueue->isFull() ) labelQueue->push( label );
-            else printf( "label queue is full !\n%s",q.c_str());
+            if( !labelQueue->isFull() ) 
+				labelQueue->push( label );
+            else 
+				printf( "label queue is full !\n%s",q.c_str());
         }
     }
     
