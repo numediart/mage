@@ -51,6 +51,13 @@ class testApp : public ofBaseApp {
     
     int Argc;		// number of arguments passed to the main()
     char **Argv;	// table of arguments passed to the main()
+	
+	// --- User controls
+	float speed;
+	float alpha;
+	float volume;
+	float pitch;
+	int	  action;
    
 	// --- OSC
 	ofxOscReceiver	receiver;

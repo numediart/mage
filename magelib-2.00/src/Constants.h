@@ -6,9 +6,10 @@
  *            the best way but mallocs were a pain
  */
 
-#pragma once
+#pragma once 
 
-namespace MAGE {
+namespace MAGE 
+{
     const unsigned int nOfStreams = 3;		// # of streams : mgcs, lf0, lpf
     
     const unsigned int nOfDers = 3; // # of derivations: ∆(0), ∆(1), ∆(3)
@@ -26,4 +27,8 @@ namespace MAGE {
     const int mgcStreamIndex = 0;
     const int lf0StreamIndex = 1;
     const int lpfStreamIndex = 2;
+	
+	const int overwrite = 0;
+	const int shift		= 1;
+	const int scale		= 2;
 }

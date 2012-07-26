@@ -1,6 +1,9 @@
 #include "testApp.h"
 
 void testApp::setup( void ) {
+	
+	// --- OSC ---
+	receiver.setup( PORT );
     
     // --- QUEUES ---
     labelQueue = new MAGE::LabelQueue( labelQueueLen );
@@ -19,6 +22,9 @@ void testApp::setup( void ) {
     generate = new genThread( labelQueue, modelQueue, frameQueue, engine, model );
     generate->startThread();
     
+	// --- Vocoder 
+	vocoder = new MAGE::Vocoder::Vocoder();
+
     // -- OLA AND AUDIO ---
     drawSampleFrame = true; // we don't draw the sample frame at runtime
     frameLen = 480; hopLen = 240; sampleCount = 0; // initialize OLA variables
@@ -29,8 +35,6 @@ void testApp::setup( void ) {
     string s(this->Argv[this->Argc-1]);
     parsefile(s);
     //parsefile("../../../../data/inouts/labels/alice01.lab");
-    
-    vocoder = new MAGE::Vocoder::Vocoder();
 }
 
 void testApp::exit( void ) {
@@ -54,7 +58,70 @@ void testApp::exit( void ) {
 
 void testApp::update( void ) {
     
-    
+	static float oscSpeed;
+	static float oscAlpha;
+	static float oscVolume;
+	static float oscPitch;
+	static int oscAction;
+
+	static ofxOscMessage m; 
+	
+	if( receiver.hasWaitingMessages() )
+	{
+		// --- get new OSC message ---
+		m.clear();
+		receiver.getNextMessage( &m );
+		
+		// --- THE LIST OF MESSAGES ---
+		if( m.getAddress() == "/speed" ) 
+		{
+			// --- change speed  ---
+			oscSpeed = m.getArgAsFloat( 0 );
+			speed = ofMap(oscSpeed, 0, 3, 0.1, 3, true);
+			printf("speed : %f\n", speed);
+			//setSpeed(speed);
+		}
+		
+		if( m.getAddress() == "/alpha" )
+		{
+			// --- change alpha ---
+			oscAlpha = m.getArgAsFloat( 0 );
+			alpha = ofMap(oscAlpha, 0.1, 0.9, 0.1, 0.9, true);
+			printf("alpha : %f\n", alpha);
+			//setAlpha(alpha);
+		}
+		
+		if( m.getAddress() == "/volume" ) 
+		{
+			// --- change volume ---
+			oscVolume = m.getArgAsFloat( 0 );
+			volume = ofMap(oscVolume, 0, 5, 0, 5, true);
+			printf("volume : %f\n", volume);
+			//setVolume(volume);
+		}
+		
+		if( m.getAddress() == "/pitch" ) 
+		{
+			// --- change pitch ---
+			oscPitch = m.getArgAsFloat( 0 ); 
+			oscAction = m.getArgAsFloat( 1 );
+
+			if (oscAction == MAGE::overwrite)
+			{
+				pitch = 65.406395 * ((oscPitch/12)*(oscPitch/12));
+				printf("pitch_overwrite : %f\n", pitch);
+				pitch = log(pitch);
+				//setPitch(pitch, MAGE::action::overwrite);
+			}
+			
+			if (oscAction == MAGE::shift)
+			{
+				pitch = ofMap(oscPitch, -3, 3, -3, 3, true);
+				printf("pitch_shift : %f\n", pitch);
+				//setPitch(pitch, MAGE::action::shift);				
+			}
+		}
+	}
 }
 
 void testApp::draw( void ) {
