@@ -120,6 +120,10 @@ void testApp::update( void ) {
 			if (hopLen < 1) {
 				hopLen = 1;
 			}
+ 			if (hopLen > 240*20) {
+				hopLen = 240*20;
+			}
+
 			printf("speed : %f\n", hopLen);
 		}
 		
@@ -342,12 +346,15 @@ void testApp::keyPressed( int key ) {
     }
     
     if( key == 'f' ) {
-        hopLen += 10;
-    }
-    if( key == 's' ) {
         hopLen -= 10;
         if (hopLen < 1)
             hopLen = 1;
+    }
+    if( key == 's' ) {
+        hopLen += 10;
+        if (hopLen > 240*20) {
+            hopLen = 240*20;
+        }
     }
     
     if( key == 'o' ) {
