@@ -24,7 +24,7 @@ MAGE::Vocoder::Vocoder(int am, double aalpha, int afprd, int aiprd, int astage, 
     
     //excitation
     this->count = 0;
-    this->f0 = 120;//Hz
+    this->f0 = 110;//110Hz, default pitch
     this->t0 = 48000/this->f0;
     this->voiced = false;
     this->f0shift = 0.0;
@@ -51,7 +51,8 @@ MAGE::Vocoder::Vocoder(int am, double aalpha, int afprd, int aiprd, int astage, 
     inc = cc + m + 1;
     d = inc + m + 1;
     
-    flagInit = false;
+    flagFirstPush = true;
+    this->nOfPopSinceLastPush = 0;
     
     double lpadesptk[] = { 1.0,
     1.0, 0.0,
@@ -73,11 +74,15 @@ MAGE::Vocoder::~Vocoder() {
     delete[] c;
 }
 
-
+/**
+ * 
+ * @param frame an instance of class Frame
+ * @param ignoreVoicing if true, ignore frame.voiced information and use latest known information
+ */
 void MAGE::Vocoder::push(Frame &frame, bool ignoreVoicing) {
     int i;
     
-    if (flagInit) {
+    if (!flagFirstPush) {
         movem(cc, c, sizeof(*cc), m + 1);
         
         mc2b(frame.mgc, cc, m, alpha);
@@ -87,11 +92,8 @@ void MAGE::Vocoder::push(Frame &frame, bool ignoreVoicing) {
             for (i = 1; i <= m; i++)
                 cc[i] *= gamma;
         }
-        
-        for (i = 0; i <= m; i++)
-            inc[i] = (cc[i] - c[i]) * iprd / fprd;
     } else {
-        flagInit = true;
+        flagFirstPush = false;
 
         mc2b(frame.mgc, c, m, alpha);
         if (stage != 0) { /* MGLSA */
@@ -102,16 +104,18 @@ void MAGE::Vocoder::push(Frame &frame, bool ignoreVoicing) {
         }
 
         for (i = 0; i <= m; i++)
-            cc[i] = c[i];// + MAGE::Random(-0.000001, 0.000001);
-        
-        for (i = 0; i <= m; i++)
-         inc[i] = (cc[i] - c[i]) * iprd / fprd;
+            cc[i] = c[i];
     }    
+    
+    for (i = 0; i <= m; i++)
+        inc[i] = (cc[i] - c[i]) * iprd / fprd;
     
     this->f0 = frame.f0;//Hz
     this->t0 = 48000/this->f0;
     if (!ignoreVoicing)
         this->voiced = frame.voiced;
+    
+    this->nOfPopSinceLastPush = 0;
 }
 
 /**
@@ -136,22 +140,24 @@ double MAGE::Vocoder::pop() {
     if (stage != 0) { /* MGLSA */
         if (!ngain)
             x *= exp(c[0]);
-        else
-            x = mglsadf(x, c, m, alpha, stage, d);
+        x = mglsadf(x, c, m, alpha, stage, d);
     } else { /* MLSA */
         if (!ngain)
             x *= exp(c[0]);
         x = mlsadf(x, c, m, alpha, pd, d);
     }
     
-    for (i = 0; i <= m; i++)
-        c[i] += inc[i];
+    if ( this->nOfPopSinceLastPush < (iprd / fprd) ) //filter interpolation has not reached next filter yet
+        for (i = 0; i <= m; i++)
+            c[i] += inc[i];
+    
+    this->nOfPopSinceLastPush++;
     
     return x;
 }
 
 bool MAGE::Vocoder::ready() { 
-    return this->flagInit; 
+    return !this->flagFirstPush; 
 }
 
 /**
@@ -173,6 +179,9 @@ void MAGE::Vocoder::setPitch(double pitch, bool forceVoiced) {
         this->voiced = true;
 }
 
+void MAGE::Vocoder::setVoiced(bool forceVoiced) {
+    this->voiced = forceVoiced;
+}
 
 
 /********************************************************

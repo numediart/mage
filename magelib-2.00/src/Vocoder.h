@@ -30,6 +30,7 @@ namespace MAGE {
         
         inline void setAlpha(double aalpha) { this->alpha = aalpha; };
         void setPitch(double pitch, bool forceVoiced=false);
+        void setVoiced(bool forceVoiced=true);
         
         //functions imported from SPTK
         void movem(void *a, void *b, const size_t size, const int nitem);
@@ -57,7 +58,7 @@ namespace MAGE {
         int pd;
 
         bool ngain;
-        bool flagInit;
+        bool flagFirstPush;
 
         double alpha;
         double gamma;
@@ -80,6 +81,8 @@ namespace MAGE {
         
         double f0shift;
         double f0scale;
+        
+        int nOfPopSinceLastPush;
     };
 
 }
