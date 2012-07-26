@@ -184,6 +184,7 @@ void testApp::update( void ) {
 			} else {
 				printf("No Loop\n");
 			}
+		}
 	}
 
     //TODO check that this is thread-safe (probably not)
