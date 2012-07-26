@@ -41,8 +41,10 @@
 #pragma once
 
 #include <cstdio>
+
 #include "Constants.h"
 #include "Frame.h"
+#include "MathFunctions.h"
 
 namespace MAGE {
 

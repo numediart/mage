@@ -38,8 +38,6 @@
  */
 
 #include "Vocoder.h"
-#include "Frame.h"
-#include "MathFunctions.h"
 
 MAGE::Vocoder::Vocoder(int am, double aalpha, int afprd, int aiprd, int astage, int apd, bool angain) {
     this->m = am;//nOfMGCs-1;
