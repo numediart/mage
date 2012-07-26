@@ -19,7 +19,7 @@ namespace MAGE {
 
     class Vocoder {
     public:
-        Vocoder(int am=(nOfMGCs-1), double aalpha=defaultAlpha, int afprd=defaultFrameRate, int aiprd=defaultInterpFrameRate, int astage=0, int apd=defaultPadeOrder, bool angain=true);
+        Vocoder(int am=(nOfMGCs-1), double aalpha=defaultAlpha, int afprd=defaultFrameRate, int aiprd=defaultInterpFrameRate, int astage=0, int apd=defaultPadeOrder, bool angain=false);
         Vocoder(const Vocoder& orig);
         virtual ~Vocoder();
 

@@ -126,15 +126,16 @@ double MAGE::Vocoder::pop() {
     int i;
     
     if (voiced) {
-        if (count >= this->t0) {
-            x = 1;
-            count = 0;
+        if (count <= 0) {
+            x = sqrt(this->t0);
+            count = this->t0;
         } else {
             x = 0;
-            count++;
+            count--;
         }
     } else {
         x = MAGE::Random(-1,1);
+        count = 0;
     }
     
     if (stage != 0) { /* MGLSA */
