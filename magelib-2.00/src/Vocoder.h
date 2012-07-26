@@ -27,6 +27,7 @@ namespace MAGE {
         double pop();
         
         bool ready();
+        void reset();
         
         inline void setAlpha(double aalpha) { this->alpha = aalpha; };
         void setPitch(double pitch, bool forceVoiced=false);
@@ -56,6 +57,7 @@ namespace MAGE {
         int iprd;
         int stage;
         int pd;
+        int csize;
 
         bool ngain;
         bool flagFirstPush;

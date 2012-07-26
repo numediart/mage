@@ -34,16 +34,16 @@ MAGE::Vocoder::Vocoder(int am, double aalpha, int afprd, int aiprd, int astage, 
         gamma = -1 / (double) stage;
     }
     
-    int csize = 0;
+    this->csize = 0;
     if (stage != 0) {
-        csize = m + m + m + 3 + (m + 1) * stage; /* MGLSA */
+        this->csize = m + m + m + 3 + (m + 1) * stage; /* MGLSA */
     } else {
-        csize = 3 * (m + 1) + 3 * (pd + 1) + pd * (m + 2); /* MLSA  */
+        this->csize = 3 * (m + 1) + 3 * (pd + 1) + pd * (m + 2); /* MLSA  */
     }
     
-    c = new double[csize];
+    c = new double[this->csize];
     
-    for (int k=0;k<csize;k++) {
+    for (int k=0;k<this->csize;k++) {
         c[k] = 0;
     }
     
@@ -148,12 +148,12 @@ double MAGE::Vocoder::pop() {
         x = mlsadf(x, c, m, alpha, pd, d);
     }
     
-    if ( this->nOfPopSinceLastPush < (iprd / fprd) ) //filter interpolation has not reached next filter yet
+    if ( this->nOfPopSinceLastPush < (fprd/iprd) ) //filter interpolation has not reached next filter yet
         for (i = 0; i <= m; i++)
             c[i] += inc[i];
     
     this->nOfPopSinceLastPush++;
-    
+     
     return x;
 }
 
@@ -161,6 +161,13 @@ bool MAGE::Vocoder::ready() {
     return !this->flagFirstPush; 
 }
 
+void MAGE::Vocoder::reset() {
+    for( int i=0; i<this->csize; i++ ) {
+        c[i] = 0;
+    }
+    
+    this->flagFirstPush = true;
+}
 /**
  * This function forces the value of the pitch used by the vocoder instead of the
  * one in frame.f0. Note that this will get overwritten at the next push(frame).
