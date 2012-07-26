@@ -13,6 +13,9 @@ void testApp::setup( void ) {
     // --- HTS Engine ---
     engine = new MAGE::Engine();
     engine->load(Argc, Argv);
+	
+	// --- Vocoder 
+	vocoder = new MAGE::Vocoder::Vocoder();
     
     // --- HTS Model ---
     memory = new MAGE::ModelMemory::ModelMemory();
@@ -21,9 +24,6 @@ void testApp::setup( void ) {
     // --- PARAMETER GENERATION THREAD ---
     generate = new genThread( labelQueue, modelQueue, frameQueue, engine, model );
     generate->startThread();
-    
-	// --- Vocoder 
-	vocoder = new MAGE::Vocoder::Vocoder();
 
     // -- OLA AND AUDIO ---
     drawSampleFrame = true; // we don't draw the sample frame at runtime

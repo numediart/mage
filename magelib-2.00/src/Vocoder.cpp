@@ -13,24 +13,40 @@
 #include "Frame.h"
 #include "MathFunctions.h"
 
-MAGE::Vocoder::Vocoder() {
-    m = nOfMGCs-1;
-    fprd = 240;
-    iprd = 1;
-    stage = 0;
-    pd = 4;
-    ngain = true;
-    alpha = 0.55;
+MAGE::Vocoder::Vocoder(int am, double aalpha, int afprd, int aiprd, int astage, int apd, bool angain) {
+    this->m = am;//nOfMGCs-1;
+    this->fprd = afprd;//240;
+    this->iprd = aiprd;//1;
+    this->stage = astage;//0;
+    this->pd = apd;//4;
+    this->ngain = angain;//true;
+    this->alpha = aalpha;//0.55;
+    
+    //excitation
+    this->count = 0;
+    this->f0 = 120;//Hz
+    this->t0 = 48000/this->f0;
+    this->voiced = false;
+    this->f0shift = 0.0;
+    this->f0scale = 1.0;
     
     if (stage != 0) {            /* MGLSA */
         gamma = -1 / (double) stage;
     }
     
+    int csize = 0;
     if (stage != 0) {
-        c = new double[m + m + m + 3 + (m + 1) * stage];  /* MGLSA */
+        csize = m + m + m + 3 + (m + 1) * stage; /* MGLSA */
     } else {
-        c = new double[3 * (m + 1) + 3 * (pd + 1) + pd * (m + 2)];    /* MLSA  */
+        csize = 3 * (m + 1) + 3 * (pd + 1) + pd * (m + 2); /* MLSA  */
     }
+    
+    c = new double[csize];
+    
+    for (int k=0;k<csize;k++) {
+        c[k] = 0;
+    }
+    
     cc = c + m + 1;
     inc = cc + m + 1;
     d = inc + m + 1;
@@ -57,12 +73,10 @@ MAGE::Vocoder::~Vocoder() {
     delete[] c;
 }
 
-bool MAGE::Vocoder::ready()
-{ 
-	return this->flagInit; 
-}
 
-void MAGE::Vocoder::push(Frame frame) {
+void MAGE::Vocoder::push(Frame &frame, bool ignoreVoicing) {
+    int i;
+    
     if (flagInit) {
         movem(cc, c, sizeof(*cc), m + 1);
         
@@ -73,6 +87,9 @@ void MAGE::Vocoder::push(Frame frame) {
             for (i = 1; i <= m; i++)
                 cc[i] *= gamma;
         }
+        
+        for (i = 0; i <= m; i++)
+            inc[i] = (cc[i] - c[i]) * iprd / fprd;
     } else {
         flagInit = true;
 
@@ -85,13 +102,36 @@ void MAGE::Vocoder::push(Frame frame) {
         }
 
         for (i = 0; i <= m; i++)
-            cc[i] = c[i];
+            cc[i] = c[i];// + MAGE::Random(-0.000001, 0.000001);
+        
+        for (i = 0; i <= m; i++)
+         inc[i] = (cc[i] - c[i]) * iprd / fprd;
     }    
+    
+    this->f0 = frame.f0;//Hz
+    this->t0 = 48000/this->f0;
+    if (!ignoreVoicing)
+        this->voiced = frame.voiced;
 }
 
-double MAGE::Vocoder::pop() {       
-    //TODO frame.lf0-dependent excitation
-    double x = MAGE::Random(-0.5,0.5);
+/**
+ * 
+ * @return one sample from the vocoder given current mgc and lf0
+ */
+double MAGE::Vocoder::pop() {
+    int i;
+    
+    if (voiced) {
+        if (count >= this->t0) {
+            x = 1;
+            count = 0;
+        } else {
+            x = 0;
+            count++;
+        }
+    } else {
+        x = MAGE::Random(-1,1);
+    }
     
     if (stage != 0) { /* MGLSA */
         if (!ngain)
@@ -104,9 +144,50 @@ double MAGE::Vocoder::pop() {
         x = mlsadf(x, c, m, alpha, pd, d);
     }
     
+    for (i = 0; i <= m; i++)
+        c[i] += inc[i];
+    
     return x;
 }
 
+bool MAGE::Vocoder::ready() { 
+    return this->flagInit; 
+}
+
+/**
+ * This function forces the value of the pitch used by the vocoder instead of the
+ * one in frame.f0. Note that this will get overwritten at the next push(frame).
+ * Therefore it is needed to call setPitch() after every push().
+ * Another solution is to call push(frame,true) which explicitely tells push to 
+ * ignore voicing information.
+ * 
+ * @param pitch pitch value in Hz
+ * @param forceVoiced in case the current frame is unvoiced, you can force it to 
+ *                    become voiced with the given pitch otherwise it would ignore
+ *                    the pitch set until next frame
+ */
+void MAGE::Vocoder::setPitch(double pitch, bool forceVoiced) {
+    this->f0 = pitch;//Hz
+    this->t0 = 48000/this->f0;
+    if (forceVoiced)
+        this->voiced = true;
+}
+
+
+
+/********************************************************
+    $Id: movem.c,v 1.10 2011/04/27 13:46:44 mataki Exp $
+
+    Data Transfer Function
+
+    movem(a, b, size, nitem)
+
+    void   *a    : intput data
+    void   *b    : output data
+    size_t size  : size of data type
+    int    nitem : data length
+
+*********************************************************/
 void MAGE::Vocoder::movem(void *a, void *b, const size_t size, const int nitem)
 {
    long i;

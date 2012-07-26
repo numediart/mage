@@ -75,11 +75,11 @@ void MAGE::MemQueue<Item>::push( Item *item, unsigned int nItem ) {
     
     PaUtil_ReadMemoryBarrier();
     if( write+nItem <= length ) {
-    
+        //TODO either change this for a copy constructor or check that no Item (Model, Label, ...) has dynamically allocated memory
         memcpy( &rawData[write], item, nItem*sizeof(Item) );
                
     } else {
-    
+        //TODO either change this or check that no Item (Model, Label, ...) has dynamically allocated memory
         remain = length-write;
         memcpy( &rawData[write], item, remain*sizeof(Item) );
         memcpy( rawData, &item[remain], (nItem-remain)*sizeof(Item) );

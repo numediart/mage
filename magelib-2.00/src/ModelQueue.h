@@ -22,14 +22,20 @@ class ModelQueue : public MemQueue<Model> {
     
   public:
     
-    ModelQueue( unsigned int queueLen );
-    void generate( unsigned int window, FrameQueue *frameQueue );
+    ModelQueue( unsigned int queueLen, MAGE::ModelMemory *memory );
+    void generate( Engine *engine, FrameQueue *frameQueue, unsigned int backup=nOfBackup );
     void printQueue( void );
+    
+    inline ModelMemory *getMem() { return this->mem; };
+    
+    void optimizeParameters( MAGE::Engine *engine, unsigned int backup=nOfBackup, unsigned int lookup=nOfLookup );
     
   protected:
     
     unsigned int head;
     Frame frame;
+    		
+    ModelMemory *mem;
 };
 
 } // namespace

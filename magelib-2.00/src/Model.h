@@ -54,13 +54,12 @@ namespace MAGE
 		public :
 		
 		//default constructor
-		Model(ModelMemory *m);
+		Model();
 	    ~Model();
 		
 		// getters
 		State getState( int index );
 		int getDuration( void );
-        inline ModelMemory *getMem() { return this->mem; };
 //        std::vector<double> getMgc();
 //        std::vector<double> getLf0();
 //        std::vector<double> getLpf();
@@ -74,15 +73,14 @@ namespace MAGE
 		void computeDuration( MAGE::Engine *engine, MAGE::Label *label );
 		void computeParameters( MAGE::Engine *engine, MAGE::Label *label );
 		void computeGlobalVariances( MAGE::Engine *engine, MAGE::Label *label );
-		void optimizeParameters( MAGE::Engine *engine );
+//		void optimizeParameters( MAGE::Engine *engine );
 		
 		
 		protected :
 		
 		int duration;
+        
 		State state[nOfStates];
-		
-		ModelMemory *mem;
 	};
 	
 } // namespace
