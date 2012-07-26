@@ -19,7 +19,7 @@ namespace MAGE {
 
     class Vocoder {
     public:
-        Vocoder(int am=(nOfMGCs-1), double aalpha=defaultAlpha, int afprd=defaultFrameRate, int aiprd=defaultInterpFrameRate, int astage=0, int apd=defaultPadeOrder, bool angain=true);
+        Vocoder(int am=(nOfMGCs-1), double aalpha=defaultAlpha, int afprd=defaultFrameRate, int aiprd=defaultInterpFrameRate, int astage=0, int apd=defaultPadeOrder, bool angain=false);
         Vocoder(const Vocoder& orig);
         virtual ~Vocoder();
 
@@ -27,12 +27,14 @@ namespace MAGE {
         double pop();
         
         bool ready();
+        void reset();
         
         inline void setAlpha(double aalpha) { this->alpha = aalpha; };  	// ATTENTION no need for correct limit control???
         inline void setVolume(double vvolume) { this->volume = vvolume; };  // ATTENTION no need for correct limit control???
 		
         void setPitch(double pitch, int action, bool forceVoiced=false);
-        
+		void setVoiced(bool forceVoiced);
+
         //functions imported from SPTK
         void movem(void *a, void *b, const size_t size, const int nitem);
         void mc2b(double *mc, double *b, int m, const double a);
@@ -57,9 +59,10 @@ namespace MAGE {
         int iprd;
         int stage;
         int pd;
+        int csize;
 
         bool ngain;
-        bool flagInit;
+        bool flagFirstPush;
 
         double alpha; // [0. 1]
         double gamma;
@@ -81,6 +84,8 @@ namespace MAGE {
         int count;
         
         double volume; // >= 0
+
+        int nOfPopSinceLastPush;
     };
 
 }

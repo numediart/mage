@@ -13,6 +13,8 @@ genThread::genThread( LabelQueue *lab, ModelQueue *mq, FrameQueue *frm, Engine *
 
 void genThread::threadedFunction( void ) {
     //unsigned int k, s;
+    
+    bool flag = true;
 
 
     while ( isThreadRunning() ) {
@@ -33,11 +35,16 @@ void genThread::threadedFunction( void ) {
             modelQueue->push( model, 1 );
 			modelQueue->optimizeParameters( engine );
             
-            if( modelQueue->getNumOfItems() > nOfLookup ) {
-                modelQueue->generate( frameQueue, nOfLookup+1 );                
+            if( modelQueue->getNumOfItems() > nOfLookup+nOfBackup ) {
+                flag = false;
+                modelQueue->optimizeParameters(engine, nOfBackup, nOfLookup);
+                modelQueue->generate( frameQueue, nOfBackup );                
+
                 modelQueue->pop();
-            }
-                
+            } else if (modelQueue->getNumOfItems() > nOfLookup && flag) {
+                modelQueue->optimizeParameters(engine, 0, nOfLookup);
+                modelQueue->generate( frameQueue, 0 );  
+            }     
         } else {
         
             usleep(100);

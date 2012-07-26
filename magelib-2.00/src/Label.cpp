@@ -13,13 +13,13 @@ MAGE::Label::Label( void )
     this->query = "";
     this->isForced = false;
     this->begin = this->end = -1;
-    this->speed = 1;
+    this->speed = 1.0;
 }
 	
 MAGE::Label::Label( string q )
 {
     this->parseQuery(q);
-    this->speed = 1;
+    this->speed = 1.0;
 }
 
 /*MAGE::Label::Label( string query, Engine engine )
@@ -92,7 +92,7 @@ void MAGE::Label::parseQuery( string q )
 		this->isForced = false;
 	}
 
-	this->speed = 1;
+	this->speed = 1.0;
     
     delete[] strFirst;
     delete[] strMiddle;
@@ -115,7 +115,7 @@ int MAGE::Label::getEnd( void )
 	return( this->end );
 }
 
-float MAGE::Label::getSpeed( void )
+double MAGE::Label::getSpeed( void )
 {
 	return( this->speed );
 }
@@ -141,7 +141,7 @@ void MAGE::Label::setEnd( int end )
 	this->end = end;
 }
 
-void MAGE::Label::setSpeed( float speed )
+void MAGE::Label::setSpeed( double speed )
 {
 	this->speed = speed;
 }

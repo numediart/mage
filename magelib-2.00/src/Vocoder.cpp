@@ -24,8 +24,10 @@ MAGE::Vocoder::Vocoder(int am, double aalpha, int afprd, int aiprd, int astage, 
     
     //excitation
     this->count = 0;
-    this->f0 = 120;//Hz
+
+    this->f0 = 110;//110Hz, default pitch
     this->t0 = defaultSamplingRate/this->f0; // defaultSamplingRate = 48000
+
     this->voiced = false;
 
     this->volume = 1.0;
@@ -34,16 +36,16 @@ MAGE::Vocoder::Vocoder(int am, double aalpha, int afprd, int aiprd, int astage, 
         gamma = -1 / (double) stage;
     }
     
-    int csize = 0;
+    this->csize = 0;
     if (stage != 0) {
-        csize = m + m + m + 3 + (m + 1) * stage; /* MGLSA */
+        this->csize = m + m + m + 3 + (m + 1) * stage; /* MGLSA */
     } else {
-        csize = 3 * (m + 1) + 3 * (pd + 1) + pd * (m + 2); /* MLSA  */
+        this->csize = 3 * (m + 1) + 3 * (pd + 1) + pd * (m + 2); /* MLSA  */
     }
     
-    c = new double[csize];
+    c = new double[this->csize];
     
-    for (int k=0;k<csize;k++) {
+    for (int k=0;k<this->csize;k++) {
         c[k] = 0;
     }
     
@@ -51,7 +53,8 @@ MAGE::Vocoder::Vocoder(int am, double aalpha, int afprd, int aiprd, int astage, 
     inc = cc + m + 1;
     d = inc + m + 1;
     
-    flagInit = false;
+    flagFirstPush = true;
+    this->nOfPopSinceLastPush = 0;
     
     double lpadesptk[] = { 1.0,
     1.0, 0.0,
@@ -73,11 +76,15 @@ MAGE::Vocoder::~Vocoder() {
     delete[] c;
 }
 
-
+/**
+ * 
+ * @param frame an instance of class Frame
+ * @param ignoreVoicing if true, ignore frame.voiced information and use latest known information
+ */
 void MAGE::Vocoder::push(Frame &frame, bool ignoreVoicing) {
     int i;
     
-    if (flagInit) {
+    if (!flagFirstPush) {
         movem(cc, c, sizeof(*cc), m + 1);
         
         mc2b(frame.mgc, cc, m, alpha);
@@ -87,11 +94,8 @@ void MAGE::Vocoder::push(Frame &frame, bool ignoreVoicing) {
             for (i = 1; i <= m; i++)
                 cc[i] *= gamma;
         }
-        
-        for (i = 0; i <= m; i++)
-            inc[i] = (cc[i] - c[i]) * iprd / fprd;
     } else {
-        flagInit = true;
+        flagFirstPush = false;
 
         mc2b(frame.mgc, c, m, alpha);
         if (stage != 0) { /* MGLSA */
@@ -102,16 +106,18 @@ void MAGE::Vocoder::push(Frame &frame, bool ignoreVoicing) {
         }
 
         for (i = 0; i <= m; i++)
-            cc[i] = c[i];// + MAGE::Random(-0.000001, 0.000001);
-        
-        for (i = 0; i <= m; i++)
-         inc[i] = (cc[i] - c[i]) * iprd / fprd;
+            cc[i] = c[i];
     }    
+    
+    for (i = 0; i <= m; i++)
+        inc[i] = (cc[i] - c[i]) * iprd / fprd;
     
     this->f0 = frame.f0;//Hz
     this->t0 = defaultSamplingRate/this->f0; // defaultSamplingRate = 48000
     if (!ignoreVoicing)
         this->voiced = frame.voiced;
+    
+    this->nOfPopSinceLastPush = 0;
 }
 
 /**
@@ -122,42 +128,52 @@ double MAGE::Vocoder::pop() {
     int i;
     
     if (voiced) {
-        if (count >= this->t0) {
-            x = 1;
-            count = 0;
+        if (count <= 0) {
+            x = sqrt(this->t0);
+            count = this->t0;
         } else {
             x = 0;
-            count++;
+            count--;
         }
     } else {
         x = MAGE::Random(-1,1);
+        count = 0;
     }
     
     if (stage != 0) { /* MGLSA */
         if (!ngain)
             x *= exp(c[0]);
-        else
-            x = mglsadf(x, c, m, alpha, stage, d);
+        x = mglsadf(x, c, m, alpha, stage, d);
     } else { /* MLSA */
         if (!ngain)
             x *= exp(c[0]);
         x = mlsadf(x, c, m, alpha, pd, d);
     }
     
-    for (i = 0; i <= m; i++)
-        c[i] += inc[i];
+    if ( this->nOfPopSinceLastPush < (fprd/iprd) ) //filter interpolation has not reached next filter yet
+        for (i = 0; i <= m; i++)
+            c[i] += inc[i];
     
 	// ATTENTION volume??? correct place???
 	if (this->volume >= 0)
 		x = this->volume * x;
 	
+    this->nOfPopSinceLastPush++;
+     
     return x;
 }
 
 bool MAGE::Vocoder::ready() { 
-    return this->flagInit; 
+    return !this->flagFirstPush; 
 }
 
+void MAGE::Vocoder::reset() {
+    for( int i=0; i<this->csize; i++ ) {
+        c[i] = 0;
+    }
+    
+    this->flagFirstPush = true;
+}
 /**
  * This function forces the value of the pitch used by the vocoder instead of the
  * one in frame.f0. Note that this will get overwritten at the next push(frame).
@@ -189,6 +205,10 @@ void MAGE::Vocoder::setPitch(double pitch, int action, bool forceVoiced)
 
 	if (forceVoiced)
         this->voiced = true;
+}
+
+void MAGE::Vocoder::setVoiced(bool forceVoiced) {
+    this->voiced = forceVoiced;
 }
 
 /********************************************************

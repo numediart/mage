@@ -33,8 +33,9 @@ class Label {
     
     int getBegin( void );
     int getEnd( void );
-    
-    float getSpeed( void );
+
+    double getSpeed( void );
+
     bool getIsForced( void );
     
     //setters
@@ -43,7 +44,8 @@ class Label {
     void setBegin( int begin );
     void setEnd( int end );
     
-    void setSpeed( float speed );
+    void setSpeed( double speed );
+
     void setIsForced( bool isDurationForced );
 
   protected:
@@ -51,8 +53,8 @@ class Label {
     string query;
     
     bool isForced;
-    
-    float speed;
+
+    double speed;
     int begin;
     int end;
 };

@@ -40,6 +40,6 @@ namespace MAGE
     const double defaultAlpha = 0.55;
     const int defaultFrameRate = 240;
     const int defaultInterpFrameRate = 1;
-    const int defaultPadeOrder = 4;
 	const int defaultSamplingRate = 48000;
+    const int defaultPadeOrder = 5;
 }

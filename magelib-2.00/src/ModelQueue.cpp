@@ -30,12 +30,11 @@ void MAGE::ModelQueue::generate( FrameQueue *frameQueue, unsigned int backup ) {
             //this is totally idiotic because it has already been computed in optimizeparameters
             //thus it should be saved there and re-used here
             //besides 0.5 should be a parameter (see global in optimizeparameters)
-            if (rawData[head].getState(s).lf0[0].msdFlag > 0.5) {
+            if (rawData[ind].getState(s).lf0[0].msdFlag > 0.5) {
                 qlf0 += rawData[ind].getState(s).duration;
             }
         }
     }
-
     
     for( s=0; s<nOfStates; s++ ) {
     
@@ -140,8 +139,6 @@ void MAGE::ModelQueue::optimizeParameters( MAGE::Engine *engine, unsigned int ba
         head = (head+1)%length;
     }
 
-    
-    
 	for (i = 0; i < ms.nstream; i++)  // for every stream : mgc, lf0, lpf
 	{
         head = read;

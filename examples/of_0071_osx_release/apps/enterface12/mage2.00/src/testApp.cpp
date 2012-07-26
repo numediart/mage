@@ -6,10 +6,6 @@ void testApp::setup( void ) {
     engine = new MAGE::Engine();
     engine->load(Argc, Argv);
 	
-	// --- HTS Model ---
-    memory = new MAGE::ModelMemory::ModelMemory();
-	model = new MAGE::Model::Model();
-	
 	// --- Vocoder 
 	vocoder = new MAGE::Vocoder::Vocoder();
 
@@ -18,12 +14,13 @@ void testApp::setup( void ) {
     
     // --- QUEUES ---
     labelQueue = new MAGE::LabelQueue( labelQueueLen );
+
+    memory = new MAGE::ModelMemory::ModelMemory();
     modelQueue = new MAGE::ModelQueue( modelQueueLen, memory );
     frameQueue = new MAGE::FrameQueue( frameQueueLen );
     
-    
-    
-    
+    // --- HTS Model ---
+	model = new MAGE::Model::Model();
     
     // --- PARAMETER GENERATION THREAD ---
     generate = new genThread( labelQueue, modelQueue, frameQueue, engine, model );
@@ -39,6 +36,10 @@ void testApp::setup( void ) {
     string s(this->Argv[this->Argc-1]);
     parsefile(s);
     //parsefile("../../../../data/inouts/labels/alice01.lab");
+    
+	//f0 modification parameters (cf. audioOut)
+    f0scale = 1.0;
+    f0shift = 0.0;
 }
 
 void testApp::exit( void ) {
@@ -161,6 +162,8 @@ void testApp::audioOut( float *outBuffer, int bufSize, int nChan ) {
         if( sampleCount >= hopLen-1 ) { // if we hit the hop length            
             if( !frameQueue->isEmpty() ) {               
                 frameQueue->pop( &frame, 1 ); // we pop a speech parameter frame
+                //any modification to f0 can go here
+                //frame.f0 = frame.f0*f0scale + f0shift;
                 vocoder->push(frame);
 				
 				//vocoder->setPitch(0.1, scale, false);
@@ -220,18 +223,25 @@ void testApp::keyPressed( int key ) {
             else 
 				printf( "label queue is full !\n%s",q.c_str());
         }
+        
+        string s(this->Argv[this->Argc-1]);
+        parsefile(s);
+        
     }
     
-    /*if( key == 'b' ) {
-    
-        if( !frameQueue->isEmpty() ) frameQueue->pop( &frame, 1 );
-        else printf( "frame queue is empty !\n" );
+    if( key == 'd' ) {
+        f0scale += 0.1;// multiplication --> small steps
+    }
+    if( key == 'g' ) {
+        f0scale -= 0.1;// multiplication --> small steps
     }
     
-    if( key == 'p' ) {
-    
-        frameQueue->printQueue();
-    }*/
+    if( key == 'h' ) {
+        f0shift += 5; //+ 5Hz
+    }
+    if( key == 'b' ) {
+        f0shift -= 5; // -5Hz
+    }
 }
 
 void testApp::keyReleased( int key ) {
