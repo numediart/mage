@@ -58,7 +58,7 @@ void testApp::setup( void ) {
     frameLen = 480; hopLen = 240; sampleCount = 0; // initialize OLA variables
     olaBuffer = new obOlaBuffer( 8*maxFrameLen ); // allocate memory for the OLA buffer
     sampleFrame = new float[ maxFrameLen ](); // allocate memory for the speech frame
-    ofSoundStreamSetup( 1, 0, this, sampleRate, dacBufferLen, 4 ); // audio setup
+    ofSoundStreamSetup( 2, 0, this, sampleRate, dacBufferLen, 4 ); // audio setup
     
     string s(this->Argv[this->Argc-1]);
     parsefile(s);
@@ -229,12 +229,18 @@ void testApp::audioOut( float *outBuffer, int bufSize, int nChan ) {
             sampleCount++; // otherwise increment sample count
         }
         
+        int indchan = k*nChan;
+        
         if (vocoder->ready()) {
-            outBuffer[k] = 0.5*vocoder->pop()/32768;
-            if (outBuffer[k] > 1.0)
-                outBuffer[k] = 1.0;
-            else if (outBuffer[k] < -1.0)
-                outBuffer[k] = -1.0;
+            outBuffer[indchan] = 0.5*vocoder->pop()/32768;
+            
+            if (outBuffer[indchan] > 1.0) {
+                outBuffer[indchan] = 1.0;
+            } else if (outBuffer[indchan] < -1.0) {
+                outBuffer[indchan] = -1.0;
+            }
+            
+            outBuffer[indchan+1] = outBuffer[indchan];
         }
         sampleFrame[sampleCount] = outBuffer[k];
     }
@@ -286,19 +292,31 @@ void testApp::keyPressed( int key ) {
         parsefile(s);
         
     }
-    
+    if( key == 'a' ) {
+        this->vocoder->setPitch(440,MAGE::overwrite);
+//        f0shift -= 5; // -5Hz
+    }
     if( key == 'd' ) {
-        f0scale += 0.1;// multiplication --> small steps
+        this->vocoder->setPitch(2,MAGE::scale);
+//        f0scale += 0.1;// multiplication --> small steps
     }
     if( key == 'g' ) {
-        f0scale -= 0.1;// multiplication --> small steps
+        this->vocoder->setPitch(0.5,MAGE::scale);
+//        f0scale -= 0.1;// multiplication --> small steps
     }
     
     if( key == 'h' ) {
-        f0shift += 5; //+ 5Hz
+        this->vocoder->setPitch(1000,MAGE::shift);
+//        f0shift += 5; //+ 5Hz
     }
     if( key == 'b' ) {
-        f0shift -= 5; // -5Hz
+        this->vocoder->setPitch(50,MAGE::shift);
+//        f0shift -= 5; // -5Hz
+    }
+    
+    if( key == 'r' ) {
+        this->vocoder->reset();
+//        f0shift -= 5; // -5Hz
     }
 }
 
