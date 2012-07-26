@@ -20,7 +20,11 @@ namespace MAGE {
     const unsigned int nOfStates = 5; // # of states in the HMM
     
     const unsigned int nOfLookup = 1; // # of looked-up labels
-	const int maxNumOfFrames = 100; // maximum # of frames per phoneme
+    // # of backed-up labels (models in modelqueue actually) 
+    //this is the number of labels/models already used that we keep in memory
+    //for smoother parameters computation
+    const unsigned int nOfBackup = 2; 
+	const int maxNumOfFrames = 512; // maximum # of frames per phoneme
 	const int maxWindowWidth = 50;
     
     const int mgcStreamIndex = 0;

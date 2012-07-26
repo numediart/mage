@@ -74,6 +74,8 @@ MAGE::Vocoder::~Vocoder() {
 }
 
 void MAGE::Vocoder::push(Frame &frame, bool ignoreVoicing) {
+    int i;
+    
     if (flagInit) {
         movem(cc, c, sizeof(*cc), m + 1);
         
@@ -84,6 +86,9 @@ void MAGE::Vocoder::push(Frame &frame, bool ignoreVoicing) {
             for (i = 1; i <= m; i++)
                 cc[i] *= gamma;
         }
+        
+        for (i = 0; i <= m; i++)
+            inc[i] = (cc[i] - c[i]) * iprd / fprd;
     } else {
         flagInit = true;
 
@@ -96,7 +101,10 @@ void MAGE::Vocoder::push(Frame &frame, bool ignoreVoicing) {
         }
 
         for (i = 0; i <= m; i++)
-            cc[i] = c[i] + MAGE::Random(-0.000001, 0.000001);
+            cc[i] = c[i];// + MAGE::Random(-0.000001, 0.000001);
+        
+        for (i = 0; i <= m; i++)
+         inc[i] = (cc[i] - c[i]) * iprd / fprd;
     }    
     
     this->f0 = frame.f0;//Hz
@@ -110,6 +118,8 @@ void MAGE::Vocoder::push(Frame &frame, bool ignoreVoicing) {
  * @return one sample from the vocoder given current mgc and lf0
  */
 double MAGE::Vocoder::pop() {
+    int i;
+    
     if (voiced) {
         if (count >= this->t0) {
             x = 1;
@@ -132,6 +142,9 @@ double MAGE::Vocoder::pop() {
             x *= exp(c[0]);
         x = mlsadf(x, c, m, alpha, pd, d);
     }
+    
+    for (i = 0; i <= m; i++)
+        c[i] += inc[i];
     
     return x;
 }

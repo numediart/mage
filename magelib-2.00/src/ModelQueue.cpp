@@ -15,13 +15,29 @@ MAGE::MemQueue<Model>(queueLen) {
     // queueLen to the parent class
 }
 
-void MAGE::ModelQueue::generate( Engine *engine, FrameQueue *frameQueue, unsigned int window ) {
+void MAGE::ModelQueue::generate( Engine *engine, FrameQueue *frameQueue, unsigned int backup ) {
 //TODO actual frame generation with vocoder
-    unsigned int k, s, q, qmgc, qlf0, qlpf;
+    unsigned int k, s, q, qmgc, qlf0, qlpf, w, ind;
     
-    head = read;//(write-window)%length; // then we land on the oldest model
+    head = (read+backup)%length; // then we land on the correct model (backup models have already been used, let's forget about them)
     
-    for( s=0, qmgc = 0, qlf0 = 0, qlpf = 0; s<nOfStates; s++ ) {
+    qmgc = qlf0 = qlpf = 0;
+    for (w=0;w<backup;w++) {
+        ind = (read+w)%length;
+        for( s=0; s<nOfStates; s++ ) {
+            qmgc += rawData[ind].getState(s).duration;
+            qlpf += rawData[ind].getState(s).duration;
+            //this is totally idiotic because it has already been computed in optimizeparameters
+            //thus it should be saved there and re-used here
+            //besides 0.5 should be a parameter (see global in optimizeparameters)
+            if (rawData[head].getState(s).lf0[0].msdFlag > 0.5) {
+                qlf0 += rawData[ind].getState(s).duration;
+            }
+        }
+    }
+
+    
+    for( s=0; s<nOfStates; s++ ) {
     
         // from each state of the model, we get the computed
         // duration and we iterate to generate the parameters
@@ -90,9 +106,10 @@ void MAGE::ModelQueue::printQueue( void ) {
     }
 }
 
-void MAGE::ModelQueue::optimizeParameters( MAGE::Engine *engine, unsigned int window )
+void MAGE::ModelQueue::optimizeParameters( MAGE::Engine *engine, unsigned int backup, unsigned int lookup )
 {	
-    head = read;//(write-window)%length; // then we land on the oldest model
+    int window = backup + lookup + 1;//how many model do we use
+    head = read; // hopefuly we land on the oldest model wich is 'backup' earlier than current model
 
 	static HTS_ModelSet ms = engine->getModelSet();
 	static HTS_Global global = engine->getGlobal();

@@ -79,6 +79,7 @@ namespace MAGE
 		protected :
 		
 		int duration;
+        
 		State state[nOfStates];
 	};
 	

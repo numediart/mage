@@ -55,8 +55,6 @@ namespace MAGE {
         int iprd;
         int stage;
         int pd;
-        int i;
-        int j;
 
         bool ngain;
         bool flagInit;
