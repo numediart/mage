@@ -1,3 +1,31 @@
+/* ------------------------------------------------------------------------------------------- */
+/*																							   */
+/*  This file is part of MAGE / pHTS (the performative HMM-based speech synthesis system)      */
+/*																							   */
+/*  MAGE / pHTS is free software: you can redistribute it and/or modify it under the terms     */
+/*  of the GNU General Public License as published by the Free Software Foundation, either     */
+/*  version 3 of the license, or any later version.											   */
+/*																							   */
+/*  MAGE / pHTS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;   */	
+/*  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  */
+/*  See the GNU General Public License for more details.									   */
+/*																							   */	
+/*  You should have received a copy of the GNU General Public License along with MAGE / pHTS.  */ 
+/*  If not, see http://www.gnu.org/licenses/												   */
+/*																							   */
+/*																							   */	
+/*  Copyright 2011 University of Mons :													       */
+/*																							   */	
+/*			Numediart Institute for New Media Art (www.numediart.org)						   */
+/*         Acapela Group (www.acapela-group.com)											   */
+/*																							   */
+/*																							   */
+/*   Developed by :																			   */
+/*																							   */
+/*		Maria Astrinaki, Geoffrey Wilfart, Alexis Moinet, Nicolas d'Alessandro, Thierry Dutoit */
+/*																							   */
+/* ------------------------------------------------------------------------------------------- */
+
 /* 
  * File:   Vocoder.cpp
  * Author: alexis
@@ -25,6 +53,8 @@ MAGE::Vocoder::Vocoder(int am, double aalpha, int afprd, int aiprd, int astage, 
     //excitation
     this->count = 0;
 
+	this->action = synthetic;
+	
     this->f0 = 110;//110Hz, default pitch
     this->t0 = defaultSamplingRate/this->f0; // defaultSamplingRate = 48000
 
@@ -112,7 +142,28 @@ void MAGE::Vocoder::push(Frame &frame, bool ignoreVoicing) {
     for (i = 0; i <= m; i++)
         inc[i] = (cc[i] - c[i]) * iprd / fprd;
     
-    this->f0 = frame.f0;//Hz
+	switch (action)
+	{
+		case MAGE::overwrite:
+			this->f0 = this->actionValue;//Hz
+			break;
+			
+		case MAGE::shift:
+			this->f0 = (frame.f0)+(this->actionValue); //Hz
+			break;
+			
+		case MAGE::scale:
+			this->f0 = (frame.f0)*(this->actionValue); 
+			break;
+			
+		case MAGE::synthetic:
+		default:
+			this->f0 = frame.f0;
+	}
+		
+	if(this->f0 < 0)
+		this->f0 = 110; 
+	
     this->t0 = defaultSamplingRate/this->f0; // defaultSamplingRate = 48000
     if (!ignoreVoicing)
         this->voiced = frame.voiced;
@@ -171,7 +222,9 @@ void MAGE::Vocoder::reset() {
     for( int i=0; i<this->csize; i++ ) {
         c[i] = 0;
     }
-    
+    this->f0 = 110;
+	this->t0 = defaultSamplingRate/(this->f0);
+	this->action = synthetic;
     this->flagFirstPush = true;
 }
 /**
@@ -188,18 +241,31 @@ void MAGE::Vocoder::reset() {
  */
 void MAGE::Vocoder::setPitch(double pitch, int action, bool forceVoiced) 
 {
-	if ( action == MAGE::overwrite)
-		this->f0 = pitch;//Hz
+	switch (action)
+	{
+		case MAGE::overwrite:
+			this->f0 = pitch;//Hz
+			break;
+
+		case MAGE::shift:
+			this->f0 = (this->f0)+(pitch); //Hz
+			break;
+			
+		case MAGE::scale:
+			this->f0 = (this->f0)*(pitch); 
+			break;
+			
+		case MAGE::synthetic:
+		default:
+			this->f0 = pitch;//
+	}
 	
-	if ( action == MAGE::shift)
-		this->f0 = (this->f0)+(pitch); //Hz
-	
-	if ( action == MAGE::scale)
-		this->f0 = (this->f0)*(pitch); 
+	this->action = action;
+	this->actionValue = pitch;
 
 	// ATTENTION!! Should I do that???
-	//if(this->f0 < 1)
-	//	this->f0 = 1; // log(f0) = 0
+	if(this->f0 < 0)
+		this->f0 = 110; 
 	
 	this->t0 = defaultSamplingRate/this->f0;  // defaultSamplingRate = 48000
 

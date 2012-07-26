@@ -1,3 +1,31 @@
+/* ------------------------------------------------------------------------------------------- */
+/*																							   */
+/*  This file is part of MAGE / pHTS (the performative HMM-based speech synthesis system)      */
+/*																							   */
+/*  MAGE / pHTS is free software: you can redistribute it and/or modify it under the terms     */
+/*  of the GNU General Public License as published by the Free Software Foundation, either     */
+/*  version 3 of the license, or any later version.											   */
+/*																							   */
+/*  MAGE / pHTS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;   */	
+/*  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  */
+/*  See the GNU General Public License for more details.									   */
+/*																							   */	
+/*  You should have received a copy of the GNU General Public License along with MAGE / pHTS.  */ 
+/*  If not, see http://www.gnu.org/licenses/												   */
+/*																							   */
+/*																							   */	
+/*  Copyright 2011 University of Mons :													       */
+/*																							   */	
+/*			Numediart Institute for New Media Art (www.numediart.org)						   */
+/*         Acapela Group (www.acapela-group.com)											   */
+/*																							   */
+/*																							   */
+/*   Developed by :																			   */
+/*																							   */
+/*		Maria Astrinaki, Geoffrey Wilfart, Alexis Moinet, Nicolas d'Alessandro, Thierry Dutoit */
+/*																							   */
+/* ------------------------------------------------------------------------------------------- */
+
 #include "testApp.h"
 
 void testApp::setup( void ) {
@@ -94,7 +122,7 @@ void testApp::update( void ) {
 			oscAlpha = m.getArgAsFloat( 0 );
 			alpha = ofMap(oscAlpha, 0.1, 0.9, 0.1, 0.9, true);
 			printf("alpha : %f\n", alpha);
-			//setAlpha(alpha);
+			this->vocoder->setAlpha(alpha);
 		}
 		
 		if( m.getAddress() == "/volume" ) 
@@ -103,7 +131,7 @@ void testApp::update( void ) {
 			oscVolume = m.getArgAsFloat( 0 );
 			volume = ofMap(oscVolume, 0, 5, 0, 5, true);
 			printf("volume : %f\n", volume);
-			//setVolume(volume);
+			this->vocoder->setVolume(volume);
 		}
 		
 		if( m.getAddress() == "/pitch" ) 
@@ -112,20 +140,36 @@ void testApp::update( void ) {
 			oscPitch = m.getArgAsFloat( 0 ); 
 			oscAction = m.getArgAsFloat( 1 );
 
-			if (oscAction == MAGE::overwrite)
+			if (oscAction == overwrite)
 			{
 				pitch = 65.406395 * ((oscPitch/12)*(oscPitch/12));
 				printf("pitch_overwrite : %f\n", pitch);
-				pitch = log(pitch);
-				//setPitch(pitch, MAGE::action::overwrite);
+				//pitch = log(pitch);
+				this->vocoder->setPitch(pitch, overwrite);
 			}
 			
-			if (oscAction == MAGE::shift)
+			if (oscAction == shift)
+			{
+				//pitch = ofMap(oscPitch, -3, 3, -3, 3, true);
+				pitch = 65.406395 * ((oscPitch/12)*(oscPitch/12));
+				printf("pitch_shift : %f\n", pitch);
+				//pitch = log(pitch);
+				this->vocoder->setPitch(pitch, shift);				
+			}
+			
+			if (oscAction == scale)
 			{
 				pitch = ofMap(oscPitch, -3, 3, -3, 3, true);
-				printf("pitch_shift : %f\n", pitch);
-				//setPitch(pitch, MAGE::action::shift);				
+				printf("pitch_scale : %f\n", pitch);
+				//pitch = log(pitch);
+				this->vocoder->setPitch(pitch, scale);				
 			}
+		}
+		
+		if( m.getAddress() == "/reset" ) 
+		{
+			this->vocoder->reset();
+			printf("Reset \n");
 		}
 	}
 }
