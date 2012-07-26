@@ -1,0 +1,49 @@
+         XX  XX    XXXXXX   XXXXXX                   XX   XX     XX      XXXX   XXXXXXX
+         XX  XX    X XX X  XX    X                   XXX XXX    XXXX    XX  X    XX   X
+XX XXX   XX  XX      XX    XX                        XXXXXXX   XX  XX  XX        XX X
+ XX  XX  XXXXXX      XX     XXXXX        XXXXX       XX X XX   XX  XX  XX        XXXX
+ XX  XX  XX  XX      XX         XX                   XX   XX   XXXXXX  XX  XXX   XX X
+ XXXXX   XX  XX      XX    X    XX                   XX   XX   XX  XX   XX  XX   XX   X
+ XX      XX  XX     XXXX   XXXXXX                    XX   XX   XX  XX    XXX X  XXXXXXX
+XXXX
+
+pHTS (performative HTS) allows reactive speech synthesis and is built upon the 
+HMM-Based Speech Synthesis System (HTS). MAGE is the engine independent and thread safe 
+layer of pHTS and can be used in reactive application designs. 
+This software is released under the GNU General Public License as published by the 
+Free Software Foundation, either version 3 of the license, or any later version.
+See the COPYING file in the same directory as this file for the license.
+
+MAGE and pHTS have been developed by several members of 
+University of Mons (NUMEDIART Institute: www.numediart.org), and Acapela Group:
+
+
+Maria Astrinaki	(Main Maintainer/Developer)		
+	http://tcts.fpms.ac.be/~astrinaki/      maria.astrinaki@umons.ac.be 
+	
+Onur Babacan  		 	
+	http://www.tcts.fpms.ac.be/~babacan/     onur.babacan@umons.ac.be
+	
+Geoffrey Wilfart											   
+	geoffrey.wilfart@acapela-group.com
+											
+Alexis Moinet 		 	
+	http://www.tcts.fpms.ac.be/~moinet/     alexis.moinet@umons.ac.be
+	
+Nicolas	d'Alessandro	
+	http://www.nicolasdalessandro.net/      nicolas@dalessandro.be
+	
+Thierry Dutoit			
+	http://tcts.fpms.ac.be/~dutoit/         thierry.dutoit@umons.ac.be 
+
+
+----------------------------------------------------------------------------------------
+
+Copyright (c) 2011  University of Mons 
+                    NUMEDIART Institute for New Media Art Technology (www.numediart.org)
+                    Acapela Group (www.acapela-group.com)
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.  This file is offered as-is,
+without warranty of any kind.
