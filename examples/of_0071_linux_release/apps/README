@@ -2,8 +2,7 @@ in order to compile with linux :
 
 0. have magelib-2.00 compiled (see README there)
 1. have openframeworks for linux installed somewhere on system. This is a bit tricky but it is possible (TODO write a manual for this)
-2. change examples/of_0071_linux_release/apps/enterface2012/CMakeLists.txt ${OF_ROOT_PATH} variable to your path to openframeworks
-3. in examples/of_0071_linux_release/apps:
+2. in examples/of_0071_linux_release/apps:
    $ mkdir -p builds/linux-x64-release/
    $ cd builds/linux-x64-release/
    $ cmake ../.. -DOF_ROOT_PATH=/opt/openframeworks
@@ -11,7 +10,7 @@ in order to compile with linux :
 
 where /opt/openframeworks is the path to openframeworks installation
 
-4. for debug:
+3. for debug:
    $ mkdir -p builds/linux-x64-debug/
    $ cd builds/linux-x64-debug/
    $ cmake ../.. -DCMAKE_BUILD_TYPE=Debug -DOF_ROOT_PATH=/opt/openframeworks
