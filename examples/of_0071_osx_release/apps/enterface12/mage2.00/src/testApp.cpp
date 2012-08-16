@@ -116,8 +116,20 @@ void testApp::update( void ) {
 			//speed = ofMap(oscSpeed, 0, 3, 0.1, 3, true);
 			//printf("speed : %f\n", speed);
 			//setSpeed(speed);
+
 			hopLen = (oscSpeed > 1) ? oscSpeed : 1;
 			printf("speed : %d\n", hopLen);
+
+			hopLen = (int) 240/oscSpeed;
+			if (hopLen < 1) {
+				hopLen = 1;
+			}
+ 			if (hopLen > 240*20) {
+				hopLen = 240*20;
+			}
+
+			printf("speed : %f\n", hopLen);
+
 		}
 		
 		if( m.getAddress() == "/alpha" )
@@ -173,6 +185,7 @@ void testApp::update( void ) {
 		if( m.getAddress() == "/reset" ) 
 		{
 			this->vocoder->reset();
+			hopLen = 240;
 			printf("Reset \n");
 		}
 
@@ -335,16 +348,19 @@ void testApp::keyPressed( int key ) {
     
     if( key == 'r' ) {
         this->vocoder->reset();
-//        f0shift -= 5; // -5Hz
+        hopLen = 240;
     }
     
     if( key == 'f' ) {
-        hopLen += 10;
-    }
-    if( key == 's' ) {
         hopLen -= 10;
         if (hopLen < 1)
             hopLen = 1;
+    }
+    if( key == 's' ) {
+        hopLen += 10;
+        if (hopLen > 240*20) {
+            hopLen = 240*20;
+        }
     }
     
     if( key == 'o' ) {

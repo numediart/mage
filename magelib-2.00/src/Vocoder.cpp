@@ -224,6 +224,7 @@ void MAGE::Vocoder::reset() {
 	this->t0 = defaultSamplingRate/(this->f0);
 	this->action = synthetic;
     this->flagFirstPush = true;
+    this->alpha = defaultAlpha;
 }
 /**
  * This function forces the value of the pitch used by the vocoder instead of the
