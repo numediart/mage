@@ -117,7 +117,7 @@ void testApp::update( void ) {
 			//printf("speed : %f\n", speed);
 			//setSpeed(speed);
 			hopLen = (oscSpeed > 1) ? oscSpeed : 1;
-			printf("speed : %f\n", hopLen);
+			printf("speed : %d\n", hopLen);
 		}
 		
 		if( m.getAddress() == "/alpha" )
@@ -184,12 +184,14 @@ void testApp::update( void ) {
 			} else {
 				printf("No Loop\n");
 			}
+		}
 	}
 
     //TODO check that this is thread-safe (probably not)
     if (this->fill && this->labelQueue->isEmpty() && this->loop) {
         fillLabelQueue();
     }
+	
 }
 
 void testApp::draw( void ) {
