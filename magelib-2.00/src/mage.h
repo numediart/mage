@@ -45,3 +45,49 @@
 #include "LabelQueue.h"
 #include "ModelQueue.h"
 #include "FrameQueue.h"
+
+namespace MAGE 
+{
+	class Mage 
+	{
+		public:
+		
+			//default constructor
+			Mage( void );
+			Mage( int Argc, char **Argv );
+		
+			// getters
+			LabelQueue *getLabelQueue( void );
+			ModelQueue *getModelQueue( void );
+			FrameQueue *getFrameQueue( void );
+			ModelMemory *getMemory( void );
+			Engine *getEngine( void );		
+			Model *getModel( void );
+			Vocoder	*getVocoder( void );
+			//Frame getFrame( void );
+		
+			//setters
+				
+		protected:
+		
+			// --- Memory ---
+			ModelMemory *memory;
+		
+			// --- Queues ---	
+			LabelQueue *labelQueue;
+			ModelQueue *modelQueue;
+			FrameQueue *frameQueue;
+		
+			// --- HTS Engine ---
+			Engine *engine;
+		
+			// --- Model ---
+			Model *model;
+		
+			// --- SPTK vocoder ---
+			Vocoder *vocoder;
+		
+			// --- Frame ---
+			//Frame frame;
+	};
+} // namespace

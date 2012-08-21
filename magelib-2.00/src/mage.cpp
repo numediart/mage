@@ -26,80 +26,100 @@
 /*																								*/
 /* --------------------------------------------------------------------------------------------	*/
 
-#pragma once
+/**
+ *	 @file	Mage.cpp
+ *	 @author M. Astrinaki
+ */
 
-#include "ofMain.h"
-#include "obOlaBuffer.h"
 #include "mage.h"
-#include "genThread.h"
 
-#include <fstream>
-
-// --- OSC
-#include "ofxOsc.h"
-#define PORT 5454 
-
-// --- AUDIO THINGS ---
-const int maxFrameLen =	4800;
-const int dacBufferLen = 128;
-
-class testApp : public ofBaseApp 
+MAGE::Mage::Mage( void )
 {
-	public:
-	
-		// app callbacks
-		void setup( void );
-		void exit( void );
-	
-		// loop callbacks
-		void update( void );
-		void draw( void );
-	
-		// audio out callback
-		void audioOut( float *outBuffer, int bufSize, int nChan );
-		
-		// app constructor
-		testApp( int argc, char **argv );
-	
-		// keyboard callbacks
-		void keyPressed( int key );
-		void keyReleased( int key );
-	
-		//parse lab file line-by-line
-		void fillLabelQueue();
-		void parsefile( std::string filename );
+	// --- Memory ---
+	this->memory = NULL;
 
-	protected:
+	// --- Queues ---	
+	this->labelQueue = NULL;
+	this->modelQueue = NULL;
+	this->frameQueue = NULL;
 	
-		int Argc;		// number of arguments passed to the main()
-		char **Argv;	// table of arguments passed to the main()
+	// --- HTS Engine ---
+	this->engine = NULL;
 	
-		// --- User controls
-		float speed;
-		float alpha;
-		float volume;
-		float pitch;
-		int		action;
-	 
-		// --- OSC
-		ofxOscReceiver	receiver;
+	// --- Model ---
+	this->model = NULL;
 	
-		//--- Mage
-		MAGE::Mage *mage;
+	// --- SPTK Vocoder ---
+	this->vocoder = NULL;
+	// --- FRAME ---
+	//Frame frame;
 	
-		genThread *generate;
-		Frame frame;
-	 
-		//---
 	
-		float *sampleFrame; // frame to be OLAed
-		obOlaBuffer *olaBuffer; // overlap-add buffer
-		int frameLen, hopLen; // frame size and hop size
-		int sampleCount; // sample count for triggering
-		bool drawSampleFrame; // do we show the frame
-		bool paused;
-		bool loop;
-		bool fill;
+	
 		
-		std::queue<std::string> labellist;
-};
+}
+
+MAGE::Mage::Mage( int Argc, char **Argv )
+{
+	// --- Memory ---
+	this->memory = new MAGE::ModelMemory::ModelMemory();
+	 
+	// --- Queues ---	
+	this->labelQueue = new MAGE::LabelQueue( maxLabelQueueLen );
+	this->modelQueue = new MAGE::ModelQueue( maxModelQueueLen, memory );
+	this->frameQueue = new MAGE::FrameQueue( maxFrameQueueLen );
+	
+	// --- HTS Engine ---
+	this->engine = new MAGE::Engine();
+	this->engine->load( Argc, Argv );
+	
+	// --- Model ---
+	this->model = new MAGE::Model::Model();
+
+	// --- SPTK Vocoder ---
+	this->vocoder = new MAGE::Vocoder::Vocoder();
+	
+	// --- FRAME ---
+	//Frame frame;
+
+}
+
+MAGE::LabelQueue * MAGE::Mage::getLabelQueue( void )
+{
+	return( this->labelQueue );
+}
+
+MAGE::ModelQueue * MAGE::Mage::getModelQueue( void )
+{
+	return( this->modelQueue );
+}
+
+MAGE::FrameQueue * MAGE::Mage::getFrameQueue( void )
+{
+	return( this->frameQueue );
+}
+
+MAGE::ModelMemory * MAGE::Mage::getMemory( void )
+{
+	return( this->memory );
+}
+
+MAGE::Vocoder * MAGE::Mage::getVocoder( void )
+{
+	return( this->vocoder );
+}
+
+MAGE::Engine * MAGE::Mage::getEngine( void )
+{
+	return( this->engine );
+}
+
+MAGE::Model * MAGE::Mage::getModel( void )
+{
+	return( this->model );
+}
+
+/*MAGE::Frame MAGE::Mage::getFrame( void )
+{
+	return( this->frame );
+}*/
