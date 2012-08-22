@@ -90,6 +90,9 @@ namespace MAGE
 			void setVolume( double volume );
 			void setDuration( int *updateFunction, int action);
 		
+			// methods
+			void run( void );
+		
 		/* --------------------------- Input interface to the engine : phonetics -------------------------- */
 		//void MAGE_pushLabel(MAGE_Environment *environment, char *labelAsStr);
 		//int MAGE_parseLabel(MAGE_Environment *environment);		
@@ -173,5 +176,12 @@ namespace MAGE
 		
 			// --- Frame ---
 			//Frame frame;
+		
+			// --- Label ---
+			Label label;
+		
+		private:
+		
+			bool flag;
 	};
 } // namespace

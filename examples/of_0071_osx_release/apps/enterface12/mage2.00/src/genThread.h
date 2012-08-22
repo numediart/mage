@@ -30,13 +30,7 @@
 
 #include "ofMain.h"
 
-#include "LabelQueue.h"
-#include "ModelQueue.h"
-#include "FrameQueue.h"
-
-#include "Label.h"
-#include "Model.h"
-#include "Engine.h"
+#include "mage.h"
 
 using namespace MAGE;
 
@@ -44,18 +38,14 @@ class genThread : public ofThread
 {
 	
 	public:
+		
+		// constructor
+		genThread( Mage *mage );
 	
-		genThread( LabelQueue *lab, ModelQueue *mq, FrameQueue *frm, Engine *eng, Model *mod );
+		// methods
 		void threadedFunction( void );
 	
 	protected:
 	
-		LabelQueue *labelQueue;
-		ModelQueue *modelQueue;
-		FrameQueue *frameQueue;
-		
-		Engine *engine;
-		Model  *model;
-	
-		Label label;
+		Mage *mage;
 };

@@ -37,7 +37,8 @@ void testApp::setup( void )
 	receiver.setup( PORT );
 		
 	// --- PARAMETER GENERATION THREAD ---
-	generate = new genThread( this->mage->getLabelQueue(), this->mage->getModelQueue(), this->mage->getFrameQueue(), this->mage->getEngine(), this->mage->getModel() );
+	//generate = new genThread( this->mage->getLabelQueue(), this->mage->getModelQueue(), this->mage->getFrameQueue(), this->mage->getEngine(), this->mage->getModel() );
+	generate = new genThread( this->mage );
 	generate->startThread();
 	
 	// -- OLA AND AUDIO ---

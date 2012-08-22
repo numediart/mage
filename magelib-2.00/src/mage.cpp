@@ -55,6 +55,8 @@ MAGE::Mage::Mage( void )
 	
 	// --- Frame ---
 	//Frame frame;
+	
+	this->flag = true;
 }
 
 MAGE::Mage::Mage( int Argc, char **Argv )
@@ -79,7 +81,9 @@ MAGE::Mage::Mage( int Argc, char **Argv )
 	
 	// --- Frame ---
 	//Frame frame;
-
+	
+	this->flag = true;
+	this->model->checkInterpolationWeights( this->engine );
 }
 
 // getters
@@ -185,5 +189,39 @@ void MAGE::Mage::setVolume( double volume )
 void MAGE::Mage::setDuration( int *updateFunction, int action)
 {
 	this->model->updateDuration( updateFunction, action ); 
+	return;
+}
+
+// methods
+void MAGE::Mage::run( void )
+{
+	if( !this->labelQueue->isEmpty() )
+	{
+		this->labelQueue->pop( this->label );
+		
+		this->model->computeDuration( this->engine, &(this->label) );
+		
+		this->model->computeParameters( this->engine, &(this->label) );
+		this->model->computeGlobalVariances( this->engine, &(this->label) );
+		
+		this->modelQueue->push( this->model, 1 );
+		
+		if( this->modelQueue->getNumOfItems() > nOfLookup + nOfBackup )
+		{
+			this->flag = false;
+			this->modelQueue->optimizeParameters( this->engine, nOfBackup, nOfLookup );
+			this->modelQueue->generate( this->frameQueue, nOfBackup );				
+			this->modelQueue->pop();
+		} 
+		else if( this->modelQueue->getNumOfItems() > nOfLookup && this->flag )
+		{
+			this->modelQueue->optimizeParameters( this->engine, this->modelQueue->getNumOfItems() - nOfLookup - 1, nOfLookup );
+			this->modelQueue->generate( this->frameQueue, this->modelQueue->getNumOfItems() - nOfLookup - 1 );	
+		}	 
+	}
+	else 
+	{
+		usleep( 100 );
+	}
 	return;
 }
