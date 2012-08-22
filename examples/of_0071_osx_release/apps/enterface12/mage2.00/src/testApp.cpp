@@ -55,14 +55,14 @@ void testApp::setup( void )
 	
 	// -- OLA AND AUDIO ---
 	drawSampleFrame = true; // we don't draw the sample frame at runtime
-	frameLen = 480; 
-	hopLen = 240; 
+	frameLen = 480;
+	hopLen = 240;
 	sampleCount = 0; // initialize OLA variables
 	olaBuffer = new obOlaBuffer( 8*maxFrameLen ); // allocate memory for the OLA buffer
 	sampleFrame = new float[ maxFrameLen ](); // allocate memory for the speech frame
 	ofSoundStreamSetup( 2, 0, this, sampleRate, dacBufferLen, 4 ); // audio setup
 	
-	//f0 modification parameters( cf. audioOut )
+	//f0 modification parameters ( cf. audioOut )
 	f0scale = 1.0;
 	f0shift = 0.0;
 	
@@ -191,7 +191,7 @@ void testApp::update( void )
 		}
 	}
 	
-	//TODO check that this is thread-safe( probably not )
+	//TODO check that this is thread-safe ( probably not )
 	if( this->fill && this->labelQueue->isEmpty() && this->loop )
 		fillLabelQueue();
 }
@@ -226,6 +226,8 @@ void testApp::draw( void )
 
 void testApp::audioOut( float *outBuffer, int bufSize, int nChan )
 {
+	int c;
+
 	for( int k = 0; k < bufSize; k++ )
 	{
 		if( sampleCount >= hopLen-1 )
@@ -275,10 +277,19 @@ void testApp::audioOut( float *outBuffer, int bufSize, int nChan )
 			{
 				outBuffer[indchan] = -1.0;
 			}
-			
-			outBuffer[indchan + 1] = outBuffer[indchan];
+
+			for (c = 1; c < nChan; c++)
+				outBuffer[indchan + c] = outBuffer[indchan]; //mono --> stereo / multi-channel
+
+		} else {
+			outBuffer[indchan] = 0.0;
+			for (c = 1; c < nChan; c++)
+				outBuffer[indchan + c] = 0.0; //mono --> stereo / multi-channel
 		}
-		sampleFrame[sampleCount] = outBuffer[k];
+
+		if (drawSampleFrame) {
+			sampleFrame[sampleCount] = outBuffer[k];
+		}
 	}
 	
 	if( !paused )
@@ -387,10 +398,34 @@ void testApp::keyPressed( int key )
 		this->loop = !this->loop;
 		printf( "loop %d\n",this->loop );
 	}
+
+	if ( key == 'p' ) 
+	{
+		pushLabel();
+	}
 }
 
 void testApp::keyReleased( int key )
 {
+}
+
+void testApp::pushLabel()
+{
+	MAGE::Label label;
+	if( !labellist.empty() )
+	{
+		string q = labellist.front();
+		label.setQuery( q );
+
+		//label.setSpeed( 0.5 );
+
+		labellist.pop();
+
+		if( !labelQueue->isFull() )
+			labelQueue->push( label );
+		else
+			printf("label queue is full !\n%s",q.c_str());
+	}
 }
 
 void testApp::fillLabelQueue()
