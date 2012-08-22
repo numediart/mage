@@ -278,13 +278,13 @@ void testApp::audioOut( float *outBuffer, int bufSize, int nChan )
 				outBuffer[indchan] = -1.0;
 			}
 
-			for (c = 1; c < nChan; c++)
-				outBuffer[indchan + c] = outBuffer[indchan]; //mono --> stereo / multi-channel
+			for( c = 1; c < nChan; c++ )
+				outBuffer[indchan+c] = outBuffer[indchan]; //mono --> stereo / multi-channel
 
 		} else {
 			outBuffer[indchan] = 0.0;
-			for (c = 1; c < nChan; c++)
-				outBuffer[indchan + c] = 0.0; //mono --> stereo / multi-channel
+			for( c = 1; c < nChan; c++ )
+				outBuffer[indchan+c] = 0.0; //mono --> stereo / multi-channel
 		}
 
 		if (drawSampleFrame) {
