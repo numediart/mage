@@ -50,15 +50,17 @@ namespace MAGE
 	{
 		public:
 		
+			// constructor
 			ModelQueue( unsigned int queueLen, MAGE::ModelMemory *memory );
 			
-			void generate( FrameQueue *frameQueue, unsigned int backup=nOfBackup );
-			void printQueue( void );
-		
+			// getters 
 			inline ModelMemory *getMem(){ return this->mem; };
-		
+
+			// methods
+			void generate( FrameQueue *frameQueue, unsigned int backup=nOfBackup );
 			void optimizeParameters( MAGE::Engine *engine, unsigned int backup=nOfBackup, unsigned int lookup=nOfLookup );
-		
+			void printQueue( void );
+
 		protected:
 		
 			unsigned int head;

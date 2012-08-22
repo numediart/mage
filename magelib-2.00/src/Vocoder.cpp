@@ -39,6 +39,7 @@
 
 #include "Vocoder.h"
 
+// constructor
 MAGE::Vocoder::Vocoder( int am, double aalpha, int afprd, int aiprd, int astage, int apd, bool angain )
 {
 	this->m = am;			//nOfMGCs-1;
@@ -106,6 +107,95 @@ MAGE::Vocoder::~Vocoder()
 	delete[] c;
 }
 
+// getters
+double MAGE::Vocoder::getAlpha( void )
+{
+	return( this->alpha );
+}
+
+double MAGE::Vocoder::getGamma( void )
+{
+	return( this->gamma );
+}
+
+double MAGE::Vocoder::getPitch( void )
+{
+	return( this->f0 );
+}
+
+double MAGE::Vocoder::getPeriod( void )
+{
+	return( this->t0 );
+}
+
+int MAGE::Vocoder::getAction( void )
+{
+	return( this->action );
+}
+
+double MAGE::Vocoder::getVolume( void )
+{
+	return( this->volume );
+}
+
+// setters
+
+/**
+ * This function forces the value of the pitch used by the vocoder instead of the
+ * one in frame.f0. Note that this will get overwritten at the next push( frame ).
+ * Therefore it is needed to call setPitch()after every push().
+ * Another solution is to call push( frame,true )which explicitely tells push to 
+ * ignore voicing information.
+ * 
+ * @param pitch pitch value in Hz
+ * @param forceVoiced in case the current frame is unvoiced, you can force it to 
+ *					become voiced with the given pitch otherwise it would ignore
+ *					the pitch set until next frame
+ */
+void MAGE::Vocoder::setPitch( double pitch, int action, bool forceVoiced )
+{
+	switch( action )
+	{
+		case MAGE::overwrite:
+			this->f0 = pitch;//Hz
+			break;
+			
+		case MAGE::shift:
+			this->f0 = ( this->f0 )+( pitch ); //Hz
+			break;
+			
+		case MAGE::scale:
+			this->f0 = ( this->f0 )*( pitch ); //Hz
+			break;
+			
+		case MAGE::synthetic:
+		default:
+			this->f0 = pitch;//
+	}
+	
+	this->action = action;
+	this->actionValue = pitch;
+	
+	// ATTENTION!! Should I do that???
+	if( this->f0 < 0 )
+		this->f0 = 110; 
+	
+	this->t0 = defaultSamplingRate/this->f0;	// defaultSamplingRate = 48000
+	
+	if( forceVoiced )
+		this->voiced = true;
+	
+	return;
+}
+
+void MAGE::Vocoder::setVoiced( bool forceVoiced )
+{
+	this->voiced = forceVoiced;
+	return;
+}
+
+
+// methods
 /**
  * 
  * @param frame an instance of class Frame
@@ -257,59 +347,7 @@ void MAGE::Vocoder::reset()
 	return;
 }
 
-/**
- * This function forces the value of the pitch used by the vocoder instead of the
- * one in frame.f0. Note that this will get overwritten at the next push( frame ).
- * Therefore it is needed to call setPitch()after every push().
- * Another solution is to call push( frame,true )which explicitely tells push to 
- * ignore voicing information.
- * 
- * @param pitch pitch value in Hz
- * @param forceVoiced in case the current frame is unvoiced, you can force it to 
- *					become voiced with the given pitch otherwise it would ignore
- *					the pitch set until next frame
- */
-void MAGE::Vocoder::setPitch( double pitch, int action, bool forceVoiced )
-{
-	switch( action )
-	{
-		case MAGE::overwrite:
-			this->f0 = pitch;//Hz
-			break;
-			
-		case MAGE::shift:
-			this->f0 = ( this->f0 )+( pitch ); //Hz
-			break;
-			
-		case MAGE::scale:
-			this->f0 = ( this->f0 )*( pitch ); //Hz
-			break;
-			
-		case MAGE::synthetic:
-		default:
-			this->f0 = pitch;//
-	}
-	
-	this->action = action;
-	this->actionValue = pitch;
-	
-	// ATTENTION!! Should I do that???
-	if( this->f0 < 0 )
-		this->f0 = 110; 
-	
-	this->t0 = defaultSamplingRate/this->f0;	// defaultSamplingRate = 48000
-	
-	if( forceVoiced )
-		this->voiced = true;
-	
-	return;
-}
-
-void MAGE::Vocoder::setVoiced( bool forceVoiced )
-{
-	this->voiced = forceVoiced;
-	return;
-}
+// functions imported from SPTK
 
 /********************************************************
  $Id: movem.c,v 1.10 2011/04/27 13:46:44 mataki Exp $
@@ -488,3 +526,10 @@ double MAGE::Vocoder::mlsadf( double x, double *b, const int m, const double a, 
 	
 	return( x );
 }
+
+// accessors
+bool MAGE::Vocoder::isVoiced( void )
+{
+	return( this->voiced );
+}
+

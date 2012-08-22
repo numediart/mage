@@ -37,6 +37,7 @@
 
 #include "LabelQueue.h"
 
+// constructor 
 MAGE::LabelQueue::LabelQueue( unsigned int size )
 {
 	queue.resize( size );
@@ -44,6 +45,7 @@ MAGE::LabelQueue::LabelQueue( unsigned int size )
 	nOfLabels = 0;
 }
 
+// methods
 void MAGE::LabelQueue::push( Label &label )
 {
 	queue[write] = label;
@@ -64,13 +66,23 @@ void MAGE::LabelQueue::pop( Label &label )
 	return;
 }
 
-/* like pop but does not advance in the queue */
+// like pop but does not advance in the queue 
 void MAGE::LabelQueue::get( Label &label )
 {
 	label = queue[read];
 	return;
 }
 
+void MAGE::LabelQueue::print( void )
+{
+	//return;
+	//	 for( int k=0; k<nOfLabels; k++ ){
+	
+	//		 printf( "%i: %s\n",( int )read+k, queue[read+k].query.c_str() );
+	//	 }
+}
+
+// accessors 
 bool MAGE::LabelQueue::isEmpty( void )
 {
 	PaUtil_ReadMemoryBarrier();
@@ -91,11 +103,3 @@ bool MAGE::LabelQueue::isFull( void )
 		return false;
 }
 
-void MAGE::LabelQueue::print( void )
-{
-	return;
-	//	 for( int k=0; k<nOfLabels; k++ ){
-	
-	//		 printf( "%i: %s\n",( int )read+k, queue[read+k].query.c_str() );
-	//	 }
-}

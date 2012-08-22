@@ -37,6 +37,7 @@
 
 #include "Model.h"
 
+// constructor
 MAGE::ModelMemory::ModelMemory()
 {
 	// for every stream, for every frame, every mean / ivar / optimized parameters / gv_mean / gv_vari / gv_switch

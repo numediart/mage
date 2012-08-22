@@ -43,8 +43,11 @@ namespace MAGE
 	class FrameQueue : public MemQueue<Frame> 
 	{
 		public:
+			
+			// constructor
+			FrameQueue( unsigned int queueLen );
 		
-		FrameQueue( unsigned int queueLen );
-		void printQueue( void );
+			// methods
+			void printQueue( void );
 	};	
 } // namespace

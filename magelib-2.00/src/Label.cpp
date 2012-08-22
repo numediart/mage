@@ -35,7 +35,7 @@
 
 #include "Label.h"
 
-//default constructor
+// constructor
 MAGE::Label::Label( void )
 {
 	this->query = "";

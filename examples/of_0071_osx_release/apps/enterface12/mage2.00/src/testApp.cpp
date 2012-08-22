@@ -307,26 +307,26 @@ void testApp::keyPressed( int key )
 	
 	if( key == 'a' )
 	{
-		this->mage->getVocoder()->setPitch( 440, MAGE::overwrite );
+		this->mage->setPitch( 440, MAGE::overwrite );
 	}
 	
 	if( key == 'd' )
 	{
-		this->mage->getVocoder()->setPitch( 2, MAGE::scale );
+		this->mage->setPitch( 2, MAGE::scale );
 	}
 	
 	if( key == 'g' )
 	{
-		this->mage->getVocoder()->setPitch( 0.5, MAGE::scale );
+		this->mage->setPitch( 0.5, MAGE::scale );
 	}
 	
 	if( key == 'h' )
 	{
-		this->mage->getVocoder()->setPitch( 1000, MAGE::shift );
+		this->mage->setPitch( 1000, MAGE::shift );
 	}
 	if( key == 'b' )
 	{
-		this->mage->getVocoder()->setPitch( 50, MAGE::shift );
+		this->mage->setPitch( 50, MAGE::shift );
 	}
 	
 	if( key == 'r' )

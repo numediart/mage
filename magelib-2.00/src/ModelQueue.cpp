@@ -36,6 +36,7 @@
 
 #include "ModelQueue.h"
 
+// constructor
 MAGE::ModelQueue::ModelQueue( unsigned int queueLen, MAGE::ModelMemory *memory ):
 MAGE::MemQueue<Model>( queueLen )
 {
@@ -44,6 +45,7 @@ MAGE::MemQueue<Model>( queueLen )
 	// queueLen to the parent class
 }
 
+// methods
 void MAGE::ModelQueue::generate( FrameQueue *frameQueue, unsigned int backup )
 {
 	//TODO actual frame generation with vocoder
@@ -111,24 +113,6 @@ void MAGE::ModelQueue::generate( FrameQueue *frameQueue, unsigned int backup )
 			
 			frameQueue->push( &frame, 1 );
 		}
-	}
-	return;
-}
-
-void MAGE::ModelQueue::printQueue( void )
-{
-	unsigned int k, s;
-	
-	for( k = 0; k < getNumOfItems(); k++ )
-	{
-		int head = ( read + k ) % length;
-		
-		printf( "model %i:", head );
-		
-		for( s = 0; s < nOfStates; s++ )
-			printf( " %i", rawData[head].getState( s ).duration );
-		
-		printf( "\n" );
 	}
 	return;
 }
@@ -331,6 +315,24 @@ void MAGE::ModelQueue::optimizeParameters( MAGE::Engine *engine, unsigned int ba
 		pss.par = mem->par[i];		 
 		
 		HTS_PStream_mlpg( &pss );			// parameter generation 
+	}
+	return;
+}
+
+void MAGE::ModelQueue::printQueue( void )
+{
+	unsigned int k, s;
+	
+	for( k = 0; k < getNumOfItems(); k++ )
+	{
+		int head = ( read + k ) % length;
+		
+		printf( "model %i:", head );
+		
+		for( s = 0; s < nOfStates; s++ )
+			printf( " %i", rawData[head].getState( s ).duration );
+		
+		printf( "\n" );
 	}
 	return;
 }

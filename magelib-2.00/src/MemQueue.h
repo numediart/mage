@@ -52,16 +52,20 @@ namespace MAGE
 	{
 		public:
 	
+			// constructor 
 			MemQueue( unsigned int queueLen );
 			~MemQueue( void );
 	
+			// getters
 			unsigned int getNumOfItems( void );
-	
+		
+			// methods
 			void push( Item *item, unsigned int nOfItems );
 			void pop( Item *item, unsigned int nOfItems );
 			void pop( unsigned int nOfItems );
 			void get( Item *item, unsigned int nOfItems );
 	
+			// accessors
 			bool isEmpty( void );
 			bool isFull( void );
 	

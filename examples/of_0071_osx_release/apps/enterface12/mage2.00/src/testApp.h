@@ -79,7 +79,7 @@ class testApp : public ofBaseApp
 		float alpha;
 		float volume;
 		float pitch;
-		int		action;
+		int	  action;
 	 
 		// --- OSC
 		ofxOscReceiver	receiver;

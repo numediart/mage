@@ -49,16 +49,19 @@ namespace MAGE
 	{
 		public:
 	
+			// constructor
 			LabelQueue( unsigned int size );
 	
+			// methods
 			void push( Label &label );
 			void pop ( Label &label );
 			void get ( Label &label );
-	
+			void print( void );
+
+			// accessors 
 			bool isEmpty( void );
 			bool isFull ( void );
 	
-			void print( void );
 	
 		protected:
 	

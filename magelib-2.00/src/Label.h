@@ -49,7 +49,7 @@ namespace MAGE
 	{
 		public:
 	
-			//default constructor
+			// constructor
 			Label( void );
 			Label( string q );
 

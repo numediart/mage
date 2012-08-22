@@ -51,9 +51,7 @@ namespace MAGE
 		
 			ModelMemory();
 			~ModelMemory();
-		
-	//	protected :
-		
+				
 			// for every stream, for every frame, every mean
 			double ***mean;			// [nOfStreams][maxNumOfFrames][nOfDers*nOfMGCs] 
 			// for every stream, for every frame, every ivar
@@ -65,9 +63,11 @@ namespace MAGE
 			// for every stream, every gv_switch
 			int ** gv_switch;	// [nOfStreams][maxNumOfFrames][nOfDers*nOfMGCs] 
 		
+			// for every stream
 			double **g;		// [nOfStreams][maxNumOfFrames];
 			double ***wuw;	// [nOfStreams][maxNumOfFrames][maxWindowWidth]
 			double **wum;	// [nOfStreams][maxNumOfFrames];
+		
 			// output parameter vector for otimized mgc, lf0 and lpf for every stream, for every frame
 			double ***par;	// [nOfStreams][maxNumOfFrames][nOfDers*nOfMGCs] 
 					
@@ -78,20 +78,20 @@ namespace MAGE
 	{	
 		public :
 		
-			//default constructor
+			// constructor
 			Model();
 			~Model();
 		
 			// getters
 			State getState( int index );
 			int getDuration( void );
-			void updateDuration( int *updateFunction, int action	 ); // to put a speed profile on state duration( put it inside compute duration ? )
 
 			//setters
 			void setState( State state, int index );
 			void setDuration( int duration );
 		
 			// methods
+			void updateDuration( int *updateFunction, int action	 ); // to put a speed profile on state duration( put it inside compute duration ? )
 			void checkInterpolationWeights( MAGE::Engine *engine );
 			void computeDuration( MAGE::Engine *engine, MAGE::Label *label );
 			void computeParameters( MAGE::Engine *engine, MAGE::Label *label );

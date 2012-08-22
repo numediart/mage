@@ -51,20 +51,73 @@ namespace MAGE
 	{
 		public:
 		
+			// constructor 
 			Vocoder( int am=( nOfMGCs-1 ), double aalpha=defaultAlpha, int afprd=defaultFrameRate, int aiprd=defaultInterpFrameRate, int astage=0, int apd=defaultPadeOrder, bool angain=false );
 			Vocoder( const Vocoder& orig );
 			virtual ~Vocoder();
+			
+			// getters
+			double getAlpha ( void );
+			double getGamma ( void );
+			double getPitch ( void );
+			double getPeriod( void );
+			double getVolume( void );
+			int getAction( void );
+
+			// setters
+			inline void setAlpha( double aalpha ){ this->alpha = aalpha; };		// ATTENTION no need for correct limit control???
+			inline void setGamma( double agamma ){ this->gamma = agamma; };		// ATTENTION no need for correct limit control???
+			void setPitch( double pitch, int action, bool forceVoiced=false );
+
+			void setVoiced( bool forceVoiced );
+			inline void setVolume( double avolume ){ this->volume = avolume; };	// ATTENTION no need for correct limit control???
 		
+			// methods
 			void push( Frame &frame, bool ignoreVoicing=false );
 			void reset( void );
-			void setPitch( double pitch, int action, bool forceVoiced=false );
-			void setVoiced( bool forceVoiced );
-			
 			double pop();
 			bool ready();
+		
+			// accessors
+			bool isVoiced( void );
+		
+		protected:
 			
-			inline void setAlpha( double aalpha ){ this->alpha = aalpha; };		// ATTENTION no need for correct limit control???
-			inline void setVolume( double vvolume ){ this->volume = vvolume; };	// ATTENTION no need for correct limit control???
+			double alpha; // [0. 1]
+			double gamma;
+		
+			// excitation
+			double f0;
+			double t0;
+			bool voiced;
+			int action;
+		
+		private:
+		
+			int m;
+			int fprd;
+			int iprd;
+			int stage;
+			int pd;
+			int csize;
+		
+			bool ngain;
+			bool flagFirstPush;
+		
+			double x;
+			double *c;
+			double *inc;
+			double *cc;
+			double *d;
+				
+			double padesptk[21];
+			double *ppadesptk;
+		
+			int count;
+			double actionValue;
+		
+			double volume; // >= 0
+			int nOfPopSinceLastPush;
 		
 			// functions imported from SPTK
 			void movem( void *a, void *b, const size_t size, const int nitem );
@@ -79,43 +132,6 @@ namespace MAGE
 			double mlsadf1( double x, double *b, const int m, const double a, const int pd, double *d );
 			double mlsadf2( double x, double *b, const int m, const double a, const int pd, double *d );
 			double mlsadf( double x, double *b, const int m, const double a, const int pd, double *d );
-		
-		private:
-		
-			int m;
-			int fprd;
-			int iprd;
-			int stage;
-			int pd;
-			int csize;
-		
-			bool ngain;
-			bool flagFirstPush;
-		
-			double alpha; // [0. 1]
-			double gamma;
-			double x;
-			double *c;
-			double *inc;
-			double *cc;
-			double *d;
-		
-			double lf0;
-		
-			double padesptk[21];
-			double *ppadesptk;
-		
-			// excitation
-			double f0;
-			double t0;
-			bool voiced;
-			int count;
-			int action;
-			double actionValue;
-		
-			double volume; // >= 0
-		
-			int nOfPopSinceLastPush;
 	};	
 } // namespace
 

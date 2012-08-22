@@ -33,6 +33,7 @@
 
 #include "mage.h"
 
+// constructor
 MAGE::Mage::Mage( void )
 {
 	// --- Memory ---
@@ -51,12 +52,9 @@ MAGE::Mage::Mage( void )
 	
 	// --- SPTK Vocoder ---
 	this->vocoder = NULL;
-	// --- FRAME ---
+	
+	// --- Frame ---
 	//Frame frame;
-	
-	
-	
-		
 }
 
 MAGE::Mage::Mage( int Argc, char **Argv )
@@ -79,11 +77,12 @@ MAGE::Mage::Mage( int Argc, char **Argv )
 	// --- SPTK Vocoder ---
 	this->vocoder = new MAGE::Vocoder::Vocoder();
 	
-	// --- FRAME ---
+	// --- Frame ---
 	//Frame frame;
 
 }
 
+// getters
 MAGE::LabelQueue * MAGE::Mage::getLabelQueue( void )
 {
 	return( this->labelQueue );
@@ -123,3 +122,68 @@ MAGE::Model * MAGE::Mage::getModel( void )
 {
 	return( this->frame );
 }*/
+
+double MAGE::Mage::getSpeed ( void )
+{
+	//return(this->vocoder->getSpeed( ));
+}
+
+double MAGE::Mage::getPitch ( void )
+{
+	return( this->vocoder->getPitch() );
+}
+
+double MAGE::Mage::getAlpha ( void )
+{
+	return( this->vocoder->getAlpha() );
+}
+
+double MAGE::Mage::getGamma ( void )
+{
+	return( this->vocoder->getGamma() );
+}
+
+double MAGE::Mage::getVolume( void )
+{
+	return( this->vocoder->getVolume() );
+}
+
+double MAGE::Mage::getDuration( void )
+{
+	return( this->model->getDuration() );
+}
+
+// setters
+void MAGE::Mage::setSpeed ( double speechSpeed )
+{
+}
+
+void MAGE::Mage::setPitch ( double pitch, int action )
+{
+	this->vocoder->setPitch( pitch, action );
+	return;
+}
+
+void MAGE::Mage::setAlpha ( double alpha )
+{
+	this->vocoder->setAlpha( alpha );
+	return;
+}
+
+void MAGE::Mage::setGamma ( double gamma )
+{
+	this->vocoder->setGamma( gamma );
+	return;
+}
+
+void MAGE::Mage::setVolume( double volume )
+{
+	this->vocoder->setVolume( volume );
+	return;
+}
+
+void MAGE::Mage::setDuration( int *updateFunction, int action)
+{
+	this->model->updateDuration( updateFunction, action ); 
+	return;
+}

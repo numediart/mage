@@ -35,11 +35,13 @@
 
 #include "FrameQueue.h"
 
+// constructor
 MAGE::FrameQueue::FrameQueue( unsigned int queueLen ):
 MAGE::MemQueue<Frame>( queueLen )
 {	
 }
 
+// methods
 void MAGE::FrameQueue::printQueue( void )
 {
 	int head;
