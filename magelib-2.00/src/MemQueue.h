@@ -58,10 +58,11 @@ namespace MAGE
 			unsigned int getNumOfItems( void );
 	
 			void push( Item *item, unsigned int nOfItems=1 );
+			void push( unsigned int nOfItems=1 );
 			void pop( Item *item, unsigned int nOfItems=1 );
 			void pop( unsigned int nOfItems=1 );
 			void get( Item *item, unsigned int nOfItems=1 );
-			Item& get( void );
+			Item* get( void );
 	
 			bool isEmpty( void );
 			bool isFull( void );
@@ -117,6 +118,23 @@ void MAGE::MemQueue<Item>::push( Item *item, unsigned int nItem )
 		memcpy( &rawData[write], item, remain * sizeof( Item ) );
 		memcpy( rawData, &item[remain],( nItem-remain ) * sizeof( Item ) );
 	}
+	
+	// TODO what if write + nItem > 2*length ?
+	PaUtil_WriteMemoryBarrier();
+	write = ( write + nItem ) % length;
+	nOfItems += nItem;
+	return;
+}
+
+/* advance in queue (to be used in case we use the get() to directly access Item from the queue ) 
+ * (as opposed to pushing Item instantiated outside)
+ */
+template <class Item>
+void MAGE::MemQueue<Item>::push( unsigned int nItem )
+{
+	// TODO fix case when 'write' pointer loops and passes 'read'( read should be advanced to write )
+	// this bug shouldn't be triggered as long as we check isfull()before any push()in calling functions
+	// TODO what if write + nItem > 2*length ?
 	
 	PaUtil_WriteMemoryBarrier();
 	write = ( write + nItem ) % length;
@@ -195,9 +213,9 @@ void MAGE::MemQueue<Item>::get( Item *item, unsigned int nItem )
 
 /* get current item, the one that pop() would remove. get() does not advance in the queue */
 template <class Item>
-Item& MAGE::MemQueue<Item>::get( void )
+Item* MAGE::MemQueue<Item>::get( void )
 {
-	return rawData[read];
+	return &rawData[read];
 }
 
 template <class Item>

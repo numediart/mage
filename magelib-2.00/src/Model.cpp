@@ -117,6 +117,7 @@ MAGE::ModelMemory::~ModelMemory( void )
 MAGE::Model::Model()
 {
 	this->duration = 0;
+	this->weightsChecked = false;
 }
 
 MAGE::Model::~Model( void )
@@ -148,7 +149,7 @@ void MAGE::Model::setDuration( int duration )
 }
 
 // methods
-void MAGE::Model::checkInterpolationWeights( MAGE::Engine *engine )// ATTENTION !!! it must be run at least once
+void MAGE::Model::checkInterpolationWeights( MAGE::Engine *engine, bool forced )// ATTENTION !!! it must be run at least once
 {
 	int i, j;
 	double temp;
@@ -156,35 +157,42 @@ void MAGE::Model::checkInterpolationWeights( MAGE::Engine *engine )// ATTENTION 
 	static HTS_ModelSet ms = engine->getModelSet();
 	static HTS_Global global = engine->getGlobal();
 	
-	// check interpolation weights 
-	for( i = 0, temp = 0.0; i < HTS_ModelSet_get_duration_interpolation_size( &ms ); i++ )
-		temp += global.duration_iw[i];
-	
-	if( temp != 0.0 )
-		for( i = 0; i < HTS_ModelSet_get_duration_interpolation_size( &ms ); i++ )
-			if( global.duration_iw[i] != 0.0 )
-				global.duration_iw[i] /= temp; // ATTENTION !!! should not change in the model !!!
-	
-	for( i = 0; i < nOfStreams; i++ )
+	//do it only once
+	if( !this->weightsChecked || forced)
 	{
-		for( j = 0, temp = 0.0; j < HTS_ModelSet_get_parameter_interpolation_size( &ms, i ); j++ )
-			temp += global.parameter_iw[i][j];
-		
+
+		// check interpolation weights 
+		for( i = 0, temp = 0.0; i < HTS_ModelSet_get_duration_interpolation_size( &ms ); i++ )
+			temp += global.duration_iw[i];
+
 		if( temp != 0.0 )
-			for( j = 0; j < HTS_ModelSet_get_parameter_interpolation_size( &ms, i ); j++ )
-				if( global.parameter_iw[i][j] != 0.0 )
-					global.parameter_iw[i][j] /= temp; // ATTENTION !!! should not change in the model !!!
-		
-		if( HTS_ModelSet_use_gv( &ms, i ) )
+			for( i = 0; i < HTS_ModelSet_get_duration_interpolation_size( &ms ); i++ )
+				if( global.duration_iw[i] != 0.0 )
+					global.duration_iw[i] /= temp; // ATTENTION !!! should not change in the model !!!
+
+		for( i = 0; i < nOfStreams; i++ )
 		{
-			for( j = 0, temp = 0.0; j < HTS_ModelSet_get_gv_interpolation_size( &ms, i ); j++ )
-				temp += global.gv_iw[i][j];
-			
+			for( j = 0, temp = 0.0; j < HTS_ModelSet_get_parameter_interpolation_size( &ms, i ); j++ )
+				temp += global.parameter_iw[i][j];
+
 			if( temp != 0.0 )
-				for( j = 0; j < HTS_ModelSet_get_gv_interpolation_size( &ms, i ); j++ )
-					if( global.gv_iw[i][j] != 0.0 )
-						global.gv_iw[i][j] /= temp; // ATTENTION !!! should not change in the model !!!
+				for( j = 0; j < HTS_ModelSet_get_parameter_interpolation_size( &ms, i ); j++ )
+					if( global.parameter_iw[i][j] != 0.0 )
+						global.parameter_iw[i][j] /= temp; // ATTENTION !!! should not change in the model !!!
+
+			if( HTS_ModelSet_use_gv( &ms, i ) )
+			{
+				for( j = 0, temp = 0.0; j < HTS_ModelSet_get_gv_interpolation_size( &ms, i ); j++ )
+					temp += global.gv_iw[i][j];
+
+				if( temp != 0.0 )
+					for( j = 0; j < HTS_ModelSet_get_gv_interpolation_size( &ms, i ); j++ )
+						if( global.gv_iw[i][j] != 0.0 )
+							global.gv_iw[i][j] /= temp; // ATTENTION !!! should not change in the model !!!
+			}
 		}
+		
+		this->weightsChecked = true;
 	}
 	return;
 }
