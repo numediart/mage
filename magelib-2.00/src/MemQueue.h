@@ -63,6 +63,7 @@ namespace MAGE
 			void pop( unsigned int nOfItems=1 );
 			void get( Item *item, unsigned int nOfItems=1 );
 			Item* get( void );
+			Item* next( void );
 	
 			bool isEmpty( void );
 			bool isFull( void );
@@ -216,6 +217,13 @@ template <class Item>
 Item* MAGE::MemQueue<Item>::get( void )
 {
 	return &rawData[read];
+}
+
+/* get next item, the one that push() would write to. next() does not advance in the queue */
+template <class Item>
+Item* MAGE::MemQueue<Item>::next( void )
+{
+	return &rawData[write];
 }
 
 template <class Item>
