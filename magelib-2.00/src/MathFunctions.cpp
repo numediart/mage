@@ -28,6 +28,7 @@
 
 #include "MathFunctions.h"
 
+// methods
 float MAGE::Random( float x, float y )
 {
 	float high = 0;

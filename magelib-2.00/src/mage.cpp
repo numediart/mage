@@ -75,6 +75,7 @@ MAGE::Mage::Mage( int Argc, char **Argv )
 	
 	// --- Model ---
 	this->model = new MAGE::Model::Model();
+	this->model->checkInterpolationWeights( this->engine );
 
 	// --- SPTK Vocoder ---
 	this->vocoder = new MAGE::Vocoder::Vocoder();
@@ -82,8 +83,7 @@ MAGE::Mage::Mage( int Argc, char **Argv )
 	// --- Frame ---
 	//Frame frame;
 	
-	this->flag = true;
-	this->model->checkInterpolationWeights( this->engine );
+	this->flag = true;	
 }
 
 // getters
@@ -223,5 +223,11 @@ void MAGE::Mage::run( void )
 	{
 		usleep( 100 );
 	}
+	return;
+}
+
+void MAGE::Mage::resetVocoder( void )
+{
+	this->vocoder->reset();
 	return;
 }

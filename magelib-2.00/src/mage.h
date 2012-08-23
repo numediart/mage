@@ -33,7 +33,6 @@
 
 #include "Frame.h"
 #include "Label.h"
-#include "Engine.h"
 #include "Vocoder.h"
 
 #include "Distribution.h"
@@ -54,6 +53,7 @@ namespace MAGE
 		
 			// constructor
 			Mage( void );
+			Mage( char *configFile );
 			Mage( int Argc, char **Argv );
 		
 			// getters
@@ -92,15 +92,13 @@ namespace MAGE
 		
 			// methods
 			void run( void );
+			void resetVocoder( void );
 		
 		/* --------------------------- Input interface to the engine : phonetics -------------------------- */
 		//void MAGE_pushLabel(MAGE_Environment *environment, char *labelAsStr);
 		//int MAGE_parseLabel(MAGE_Environment *environment);		
 		
 		/* ---------------------------- Updating internal state of the engine ----------------------------- */
-
-		/* MAGE_update: generate the speech samples */ 
-		//void MAGE_update(MAGE_Environment *environment);
 	
 		/* MAGE_updatePDFs: generate PDFs */   
 		//void MAGE_updatePDFs(MAGE_Environment *environment);  
@@ -115,9 +113,6 @@ namespace MAGE
 
 		/* MAGE_getNumberOfLabels: get the # of labels queued in the engine of the MAGE_Environment */ 
 		//int MAGE_getNumberOfLabels(MAGE_Environment *environment);
-
-		/* MAGE_getNumberOfSamples: get the current number of generated samples queued in the engine */
-		//int MAGE_getNumberOfSamples(MAGE_Environment *environment);
 
 		/* MAGE_getLabel: get the current label processed by the engine of the MAGE_Environment */                              
 		//MAGE_Label * MAGE_getLabel(MAGE_Environment *environment);
@@ -137,23 +132,13 @@ namespace MAGE
 		/* ---------------------------------------- Audio routine ----------------------------------------- */
 
 		/* MAGE_popSamples : access and pop speech samples from ring buffer ~ to be called from audio callback */
-	//	void MAGE_popSamples(MAGE_Environment *environment, float *buffer, int nOfSamples);	
+		//void MAGE_popSamples(MAGE_Environment *environment, float *buffer, int nOfSamples);	
 		
-		/* -------------------------------------------- Exiting ------------------------------------------- */
-
-		/* MAGE_finalize: flushes the delayed labels */	
-	//	void MAGE_finalize( MAGE_Environment *environment );
-
-		/* MAGE_refresh: flushes the internal memory */
-	//	void MAGE_refresh( MAGE_Environment *environment );
-
-		/* MAGE_free: free alocated memory */
-	//	void MAGE_free(MAGE_Environment *environment);
 		
 		/* ---------------------------------------- specific usage ---------------------------------------- */
 
 		/* MAGE_getLabelFromFile: get one label string from a label file */
-	//	void * MAGE_getLabelFromFile(MAGE_Environment *environment);
+		//void * MAGE_getLabelFromFile(MAGE_Environment *environment);
 		
 		protected:
 		
