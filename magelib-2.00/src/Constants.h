@@ -68,6 +68,12 @@ namespace MAGE
 	const int shift		= 1;
 	const int scale		= 2;
 	const int synthetic	= 3;
+	
+	// configuration files
+	const int maxNumOfArguments = 100;
+	
+	// max sting lenght
+	const int maxStrLen = 1024;
 
 } // namespace	
 

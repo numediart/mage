@@ -71,6 +71,8 @@ namespace MAGE
 			double ***par;	// [nOfStreams][maxNumOfFrames][nOfDers*nOfMGCs] 
 					
 			int *voiced_unvoiced; // [maxNumOfFrames]
+			
+			char **argv; // configuration arguments 
 	};
 
 	class Model 

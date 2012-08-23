@@ -57,33 +57,29 @@ MAGE::Mage::Mage( void )
 	//Frame frame;
 	
 	this->flag = true;
+	this->argc = 0;
+	//this->argv = NULL;
 }
 
-MAGE::Mage::Mage( int Argc, char **Argv )
+MAGE::Mage::Mage( std::string confFilename )
 {
 	// --- Memory ---
 	this->memory = new MAGE::ModelMemory::ModelMemory();
-	 
-	// --- Queues ---	
-	this->labelQueue = new MAGE::LabelQueue( maxLabelQueueLen );
-	this->modelQueue = new MAGE::ModelQueue( maxModelQueueLen, memory );
-	this->frameQueue = new MAGE::FrameQueue( maxFrameQueueLen );
 	
-	// --- HTS Engine ---
-	this->engine = new MAGE::Engine();
-	this->engine->load( Argc, Argv );
+	parseConfigFile( confFilename );
 	
-	// --- Model ---
-	this->model = new MAGE::Model::Model();
-	this->model->checkInterpolationWeights( this->engine );
+	init( this->argc, this->argv );
+}
 
-	// --- SPTK Vocoder ---
-	this->vocoder = new MAGE::Vocoder::Vocoder();
+MAGE::Mage::Mage( int argc, char **argv )
+{
+	// --- Memory ---
+	this->memory = new MAGE::ModelMemory::ModelMemory();
 	
-	// --- Frame ---
-	//Frame frame;
+	this->argc = argc;
+	this->argv = argv;
 	
-	this->flag = true;	
+	init( this->argc, this->argv );
 }
 
 // getters
@@ -229,5 +225,64 @@ void MAGE::Mage::run( void )
 void MAGE::Mage::resetVocoder( void )
 {
 	this->vocoder->reset();
+	return;
+}
+
+void MAGE::Mage::parseConfigFile( std::string confFilename )
+{
+	int k = 0;
+	string line, s;
+	ifstream confFile( confFilename.c_str() );
+		
+	if( !confFile.is_open() )
+	{
+		printf( "could not open file %s",confFilename.c_str() );
+		return;
+	}
+		
+	while( getline( confFile, line ) )
+	{
+		istringstream iss( line );
+		while( getline( iss, s, ' ' ) )
+		{
+			if( s.c_str()[0] != '\0')
+			{
+				strcpy(this->memory->argv[k], s.c_str() ); 
+				k++;
+			}
+		}
+	}
+	
+	this->argc = k;
+	this->argv = this->memory->argv;
+	
+	confFile.close();
+		
+	return;
+}
+
+void MAGE::Mage::init( int argc, char **argv )
+{	
+	// --- Queues ---	
+	this->labelQueue = new MAGE::LabelQueue( maxLabelQueueLen );
+	this->modelQueue = new MAGE::ModelQueue( maxModelQueueLen, memory );
+	this->frameQueue = new MAGE::FrameQueue( maxFrameQueueLen );
+	
+	// --- HTS Engine ---
+	this->engine = new MAGE::Engine();
+	this->engine->load( argc, argv );
+	
+	// --- Model ---
+	this->model = new MAGE::Model::Model();
+	this->model->checkInterpolationWeights( this->engine );
+	
+	// --- SPTK Vocoder ---
+	this->vocoder = new MAGE::Vocoder::Vocoder();
+	
+	// --- Frame ---
+	//Frame frame;
+	
+	this->flag = true;
+
 	return;
 }

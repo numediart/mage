@@ -28,6 +28,8 @@
 
 #pragma once
 
+#include <fstream>
+
 #include "Constants.h"
 #include "MathFunctions.h"
 
@@ -35,10 +37,10 @@
 #include "Label.h"
 #include "Vocoder.h"
 
-#include "Distribution.h"
-#include "MSDistribution.h"
 #include "State.h"
 #include "Model.h"
+#include "Distribution.h"
+#include "MSDistribution.h"
 
 #include "MemQueue.h"
 #include "LabelQueue.h"
@@ -53,8 +55,8 @@ namespace MAGE
 		
 			// constructor
 			Mage( void );
-			Mage( char *configFile );
-			Mage( int Argc, char **Argv );
+			Mage( std::string confFilename );
+			Mage( int argc, char **argv );
 		
 			// getters
 			LabelQueue *getLabelQueue( void );
@@ -139,7 +141,7 @@ namespace MAGE
 
 		/* MAGE_getLabelFromFile: get one label string from a label file */
 		//void * MAGE_getLabelFromFile(MAGE_Environment *environment);
-		
+
 		protected:
 		
 			// --- Memory ---
@@ -168,5 +170,11 @@ namespace MAGE
 		private:
 		
 			bool flag;
+			int argc;
+			char **argv;
+			
+			// methods
+			void init( int argc, char **argv );
+			void parseConfigFile( std::string filename );
 	};
 } // namespace

@@ -40,79 +40,94 @@
 // constructor
 MAGE::ModelMemory::ModelMemory()
 {
+	int k;
+	
 	// for every stream, for every frame, every mean / ivar / optimized parameters / gv_mean / gv_vari / gv_switch
-	mean	= ( double *** ) calloc( nOfStreams,sizeof( double** ) );	// [nOfStreams][maxNumOfFrames][nOfDers*nOfMGCs]
-	ivar	= ( double *** ) calloc( nOfStreams,sizeof( double** ) );	// [nOfStreams][maxNumOfFrames][nOfDers*nOfMGCs]
-	par		= ( double *** ) calloc( nOfStreams,sizeof( double** ) );	// [nOfStreams][maxNumOfFrames][nOfDers*nOfMGCs]
+	this->mean	= ( double *** ) calloc( nOfStreams,sizeof( double ** ) );	// [nOfStreams][maxNumOfFrames][nOfDers*nOfMGCs]
+	this->ivar	= ( double *** ) calloc( nOfStreams,sizeof( double ** ) );	// [nOfStreams][maxNumOfFrames][nOfDers*nOfMGCs]
+	this->par	= ( double *** ) calloc( nOfStreams,sizeof( double ** ) );	// [nOfStreams][maxNumOfFrames][nOfDers*nOfMGCs]
 	
-	gv_mean	= ( double ** ) calloc( nOfStreams,sizeof( double* ) );	// [nOfStreams][nOfDers*nOfMGCs]
-	gv_vari	= ( double ** ) calloc( nOfStreams,sizeof( double* ) );	// [nOfStreams][nOfDers*nOfMGCs]
+	this->gv_mean	= ( double ** ) calloc( nOfStreams,sizeof( double * ) );// [nOfStreams][nOfDers*nOfMGCs]
+	this->gv_vari	= ( double ** ) calloc( nOfStreams,sizeof( double * ) );// [nOfStreams][nOfDers*nOfMGCs]
 	
-	gv_switch = ( int **  ) calloc( nOfStreams,sizeof( int* ) );		// [nOfStreams][nOfDers*nOfMGCs]
+	this->gv_switch = ( int **  ) calloc( nOfStreams,sizeof( int * ) );		// [nOfStreams][nOfDers*nOfMGCs]
 	
-	voiced_unvoiced = ( int * ) calloc( maxNumOfFrames,sizeof( int ) );	// [maxNumOfFrames]
+	this->voiced_unvoiced = ( int * ) calloc( maxNumOfFrames,sizeof( int ) );	// [maxNumOfFrames]
 	
 	// HTS_SMatrixies needed
-	g	= ( double **  ) calloc( nOfStreams,sizeof( double* ) );	// [nOfStreams][maxNumOfFrames]
-	wum	= ( double **  ) calloc( nOfStreams,sizeof( double* ) );	// [nOfStreams][maxNumOfFrames]
-	wuw	= ( double *** ) calloc( nOfStreams,sizeof( double** ) );	// [nOfStreams][maxNumOfFrames][maxWindowWidth]
-	
-	for( int k = 0; k < nOfStreams; k++ )
+	this->g		= ( double **  ) calloc( nOfStreams,sizeof( double *  ) );	// [nOfStreams][maxNumOfFrames]
+	this->wum	= ( double **  ) calloc( nOfStreams,sizeof( double *  ) );	// [nOfStreams][maxNumOfFrames]
+	this->wuw	= ( double *** ) calloc( nOfStreams,sizeof( double ** ) );	// [nOfStreams][maxNumOfFrames][maxWindowWidth]
+
+	for( k = 0; k < nOfStreams; k++ )
 	{
-		mean[k] = ( double ** ) calloc( maxNumOfFrames,sizeof( double* ) );
-		ivar[k] = ( double ** ) calloc( maxNumOfFrames,sizeof( double* ) );
-		par [k] = ( double ** ) calloc( maxNumOfFrames,sizeof( double* ) );
-		g	[k] = ( double *  ) calloc( maxNumOfFrames,sizeof( double ) );
-		wum [k] = ( double *  ) calloc( maxNumOfFrames,sizeof( double ) );
-		wuw	[k] = ( double ** ) calloc( maxNumOfFrames,sizeof( double* ) );	
+		this->mean[k] = ( double ** ) calloc( maxNumOfFrames,sizeof( double * ) );
+		this->ivar[k] = ( double ** ) calloc( maxNumOfFrames,sizeof( double * ) );
+		this->par [k] = ( double ** ) calloc( maxNumOfFrames,sizeof( double * ) );
+		this->g	  [k] = ( double *  ) calloc( maxNumOfFrames,sizeof( double   ) );
+		this->wum [k] = ( double *  ) calloc( maxNumOfFrames,sizeof( double   ) );
+		this->wuw [k] = ( double ** ) calloc( maxNumOfFrames,sizeof( double * ) );	
 		
-		gv_mean[k]	= ( double * ) calloc( nOfStreams*nOfDers*nOfMGCs,sizeof( double ) );	
-		gv_vari[k]	= ( double * ) calloc( nOfStreams*nOfDers*nOfMGCs,sizeof( double ) );	
+		this->gv_mean[k]	= ( double * ) calloc( nOfStreams * nOfDers * nOfMGCs,sizeof( double ) );	
+		this->gv_vari[k]	= ( double * ) calloc( nOfStreams * nOfDers * nOfMGCs,sizeof( double ) );	
 		
-		gv_switch[k]	= ( int * ) calloc( nOfStreams*nOfDers*nOfMGCs,sizeof( int ) );	
+		this->gv_switch[k]	= ( int * ) calloc( nOfStreams * nOfDers * nOfMGCs,sizeof( int ) );	
 		
 		for( int j = 0; j < maxNumOfFrames; j++ )
 		{
-			mean[k][j] = ( double * ) calloc( nOfDers*nOfMGCs,sizeof( double ) );
-			ivar[k][j] = ( double * ) calloc( nOfDers*nOfMGCs,sizeof( double ) );
-			par [k][j] = ( double * ) calloc( nOfDers*nOfMGCs,sizeof( double ) );
-			wuw [k][j] = ( double * ) calloc( maxWindowWidth ,sizeof( double ) );
+			this->mean[k][j] = ( double * ) calloc( nOfDers * nOfMGCs,sizeof( double ) );
+			this->ivar[k][j] = ( double * ) calloc( nOfDers * nOfMGCs,sizeof( double ) );
+			this->par [k][j] = ( double * ) calloc( nOfDers * nOfMGCs,sizeof( double ) );
+			this->wuw [k][j] = ( double * ) calloc( maxWindowWidth ,sizeof( double ) );
 		}
 	}	
+	
+	// configuration arguments
+	this->argv	= ( char **  ) calloc( maxNumOfArguments,sizeof( char * ) );
+	
+	for( k = 0; k < maxNumOfArguments; k++ )
+		this->argv[k] = ( char *  ) calloc( maxStrLen,sizeof( char ) );
 }
 
 MAGE::ModelMemory::~ModelMemory( void )
 {
-	for( int k = 0; k < nOfStreams; k++ )
+	int k;
+		
+	for( k = 0; k < nOfStreams; k++ )
 	{
 		for( int j = 0; j < maxNumOfFrames; j++ )
 		{
-			free( mean[k][j] );
-			free( ivar[k][j] );
-			free( par [k][j] );
-			free( wuw [k][j] );
+			free( this->mean[k][j] );
+			free( this->ivar[k][j] );
+			free( this->par [k][j] );
+			free( this->wuw [k][j] );
 		}
 		
-		free( mean[k] );
-		free( ivar[k] );
-		free( par [k] );
-		free( g	 [k] );
-		free( wum [k] );
-		free( wuw [k] );
-		free( gv_mean	[k] );
-		free( gv_vari	[k] );
-		free( gv_switch[k] );
+		free( this->mean[k] );
+		free( this->ivar[k] );
+		free( this->par [k] );
+		free( this->g	[k] );
+		free( this->wum [k] );
+		free( this->wuw [k] );
+		free( this->gv_mean	 [k] );
+		free( this->gv_vari	 [k] );
+		free( this->gv_switch[k] );
 	}
-	free( mean );
-	free( ivar );
-	free( par );
-	free( g	 );
-	free( wum );
-	free( wuw );
-	free( gv_mean );
-	free( gv_vari );
-	free( gv_switch );
-	free( voiced_unvoiced );
+	
+	free( this->mean );
+	free( this->ivar );
+	free( this->par  );
+	free( this->g	 );
+	free( this->wum  );
+	free( this->wuw  );
+	free( this->gv_mean );
+	free( this->gv_vari );
+	free( this->gv_switch );
+	free( this->voiced_unvoiced );
+	
+	for( k = 0; k < maxNumOfArguments; k++ )
+		free( this->argv[k] );
+	free( this->argv );
 }
 
 MAGE::Model::Model()

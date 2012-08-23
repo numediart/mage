@@ -34,8 +34,10 @@ void testApp::setup( void )
 	receiver.setup( PORT );
 	
 	// --- Mage ---
-	this->mage = new MAGE::Mage( this->Argc, this->Argv );		
+	//this->mage = new MAGE::Mage( this->Argc, this->Argv );		
+	this->mage = new MAGE::Mage( "/Users/Maipn/Documents/myLibs/MAGE/examples/of_0071_osx_release/apps/enterface12/mage2.00/inouts/configSLT.conf" );		
 	
+	//this->mage->parseConfigFile("/Users/Maipn/Documents/myLibs/MAGE/examples/of_0071_osx_release/apps/enterface12/mage2.00/inouts/configSLT.conf");
 	// --- Parameter Generation Thread ---
 	generate = new genThread( this->mage );
 	generate->startThread();
