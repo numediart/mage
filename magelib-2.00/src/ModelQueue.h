@@ -54,7 +54,7 @@ namespace MAGE
 			ModelQueue( unsigned int queueLen, MAGE::ModelMemory *memory );
 			
 			// getters 
-			inline ModelMemory *getMem(){ return this->mem; };
+			inline ModelMemory *getMem( void ){ return( this->mem ); };
 
 			// methods
 			void generate( FrameQueue *frameQueue, unsigned int backup=nOfBackup );

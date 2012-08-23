@@ -69,7 +69,7 @@ void MAGE::Label::parseQuery( string q )
 	strcpy( strMiddle, middle.c_str() );
 	strcpy( strLast,	 last.c_str() );
 	
-	if( isdigit_string( strFirst ) && isdigit_string( strMiddle ) ) // has correct frame infomation
+	if( isdigit_string( strFirst ) && isdigit_string( strMiddle ) ) // has correct frame information
 	{ 
 		this->begin = atof( strFirst );
 		this->end	= atof( strMiddle );
@@ -89,6 +89,8 @@ void MAGE::Label::parseQuery( string q )
 	delete[] strFirst;
 	delete[] strMiddle;
 	delete[] strLast;
+	
+	return;
 }
 
 // getters

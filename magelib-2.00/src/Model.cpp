@@ -83,10 +83,10 @@ MAGE::ModelMemory::ModelMemory()
 	}	
 	
 	// configuration arguments
-	this->argv	= ( char **  ) calloc( maxNumOfArguments,sizeof( char * ) );
+	this->argv	= ( char ** ) calloc( maxNumOfArguments,sizeof( char * ) );
 	
 	for( k = 0; k < maxNumOfArguments; k++ )
-		this->argv[k] = ( char *  ) calloc( maxStrLen,sizeof( char ) );
+		this->argv[k] = ( char * ) calloc( maxStrLen,sizeof( char ) );
 }
 
 MAGE::ModelMemory::~ModelMemory( void )
@@ -216,17 +216,15 @@ void MAGE::Model::computeDuration( MAGE::Engine *engine, MAGE::Label *label )
 	// determine state duration 
 	const double rate = global.sampling_rate / ( global.fperiod * 1e+7 );
 	
-	double duration_mean[nOfStates];
-	double duration_vari[nOfStates];
-	int duration_array[nOfStates];
+	static double duration_mean[nOfStates];
+	static double duration_vari[nOfStates];
+	static int duration_array[nOfStates];
 	
 	double frame_length;
 	
 	// convert string query to char* 
 	string query = label->getQuery();
-	//TODO this allocation has to disappear
-	char *strQuery = new char [query.size()+1];
-	strcpy( strQuery, query.c_str() );
+	strcpy( this->strQuery, query.c_str() );
 	
 	
 	// HTS_ModelSet_get_duration: get duration using interpolation weight 
@@ -260,9 +258,7 @@ void MAGE::Model::computeDuration( MAGE::Engine *engine, MAGE::Label *label )
 	
 	for( i = 0; i < nOfStates; i++ )
 		this->state[i].duration = duration_array[i];
-	
-	delete[] strQuery;
-	
+		
 	return;
 }
 
@@ -296,31 +292,27 @@ void MAGE::Model::computeParameters( MAGE::Engine *engine, MAGE::Label *label )
 	
 	static HTS_ModelSet ms = engine->getModelSet();
 	static HTS_Global global = engine->getGlobal();
-	
-	// ATTENTION !!! dynamic mem aloc
-	
+		
 	// convert string query to char* 
 	string query = label->getQuery();
-	//TODO this allocation has to disappear
-	char *strQuery = new char [query.size()+1];
-	strcpy( strQuery, query.c_str() );
+	strcpy( this->strQuery, query.c_str() );
 	
 	// get parameter 
 	int mcg_stream_index = 0;
-	int mgc_length = nOfDers*nOfMGCs;
-	static double mgc_mean[nOfDers*nOfMGCs];
-	static double mgc_vari[nOfDers*nOfMGCs];
+	int mgc_length = nOfDers * nOfMGCs;
+	static double mgc_mean[nOfDers * nOfMGCs];
+	static double mgc_vari[nOfDers * nOfMGCs];
 	
 	int lf0_stream_index = 1;
-	int lf0_length = nOfDers*nOfLF0s;
-	static double lf0_mean[nOfDers*nOfLF0s];
-	static double lf0_vari[nOfDers*nOfLF0s];
+	int lf0_length = nOfDers * nOfLF0s;
+	static double lf0_mean[nOfDers * nOfLF0s];
+	static double lf0_vari[nOfDers * nOfLF0s];
 	static double lf0_msd;//[nOfDers*nOfLF0s];
 	
 	int lpf_stream_index = 2;
-	int lpf_length = nOfDers*nOfLPFs;
-	static double lpf_mean[nOfDers*nOfLPFs];
-	static double lpf_vari[nOfDers*nOfLPFs];
+	int lpf_length = nOfDers * nOfLPFs;
+	static double lpf_mean[nOfDers * nOfLPFs];
+	static double lpf_vari[nOfDers * nOfLPFs];
 	
 	for( i = 0; i < nOfStates; i++ )
 	{
@@ -350,8 +342,6 @@ void MAGE::Model::computeParameters( MAGE::Engine *engine, MAGE::Label *label )
 		}
 	}
 	
-	delete[] strQuery;
-	
 	return;
 }
 
@@ -365,26 +355,24 @@ void MAGE::Model::computeGlobalVariances( MAGE::Engine *engine, MAGE::Label *lab
 	static HTS_Global global = engine->getGlobal();
 	
 	// convert string query to char* 
-	string query = label->getQuery();
-	//TODO this allocation has to disappear
-	char *strQuery = new char [query.size()+1];
-	strcpy( strQuery, query.c_str() );
+	static string query = label->getQuery();
+	strcpy( this->strQuery, query.c_str() );
 	
 	// determine GV 
 	static int mcg_stream_index = 0;
-	static int gv_mgc_length = nOfDers*nOfMGCs;
-	static double gv_mgc_mean[nOfDers*nOfMGCs];
-	static double gv_mgc_vari[nOfDers*nOfMGCs];
+	static int gv_mgc_length = nOfDers * nOfMGCs;
+	static double gv_mgc_mean[nOfDers * nOfMGCs];
+	static double gv_mgc_vari[nOfDers * nOfMGCs];
 	
 	static int lf0_stream_index = 1;
-	static int gv_lf0_length = nOfDers*nOfLF0s;
-	static double gv_lf0_mean[nOfDers*nOfLF0s];
-	static double gv_lf0_vari[nOfDers*nOfLF0s];
+	static int gv_lf0_length = nOfDers * nOfLF0s;
+	static double gv_lf0_mean[nOfDers * nOfLF0s];
+	static double gv_lf0_vari[nOfDers * nOfLF0s];
 	
 	static int lpf_stream_index = 2;
-	static int gv_lpf_length = nOfDers*nOfLPFs;
-	static double gv_lpf_mean[nOfDers*nOfLPFs];
-	static double gv_lpf_vari[nOfDers*nOfLPFs];
+	static int gv_lpf_length = nOfDers * nOfLPFs;
+	static double gv_lpf_mean[nOfDers * nOfLPFs];
+	static double gv_lpf_vari[nOfDers * nOfLPFs];
 	
 	if( HTS_ModelSet_use_gv( &ms, mcg_stream_index ) )
 	{
@@ -440,8 +428,6 @@ void MAGE::Model::computeGlobalVariances( MAGE::Engine *engine, MAGE::Label *lab
 		this->state[i].lf0_gv_switch = true;
 		this->state[i].lpf_gv_switch = false;
 	}
-	
-	delete[] strQuery;
-	
+		
 	return;
 }

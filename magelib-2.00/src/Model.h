@@ -72,7 +72,7 @@ namespace MAGE
 					
 			int *voiced_unvoiced; // [maxNumOfFrames]
 			
-			char **argv; // configuration arguments 
+			char **argv;	// configuration arguments 
 	};
 
 	class Model 
@@ -98,10 +98,10 @@ namespace MAGE
 			void computeParameters( MAGE::Engine *engine, MAGE::Label *label );
 			void computeGlobalVariances( MAGE::Engine *engine, MAGE::Label *label );
 
-		
 		protected :
 		
 			int duration;
 			State state[nOfStates];
+			char strQuery[maxStrLen];
 	};
 } // namespace

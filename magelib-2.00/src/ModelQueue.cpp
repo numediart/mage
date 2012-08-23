@@ -63,6 +63,7 @@ void MAGE::ModelQueue::generate( FrameQueue *frameQueue, unsigned int backup )
 		{
 			qmgc += rawData[ind].getState( s ).duration;
 			qlpf += rawData[ind].getState( s ).duration;
+			
 			//this is totally idiotic because it has already been computed in optimizeparameters
 			//thus it should be saved there and re-used here
 			//besides 0.5 should be a parameter( see global in optimizeparameters )
@@ -76,29 +77,22 @@ void MAGE::ModelQueue::generate( FrameQueue *frameQueue, unsigned int backup )
 	{
 		// from each state of the model, we get the computed
 		// duration and we iterate to generate the parameters
-		//printf( "duration of state %d = %d, v/uv: %g\n",s,rawData[head].getState( s ).duration,rawData[head].getState( s ).lf0[0].msdFlag );
+
 		for( q = 0; q < rawData[head].getState( s ).duration; q++ )
 		{
 			for( k = 0; k < nOfMGCs; k++ )
-			{
-				//frame.mgc[k] = rawData[head].getMem()->par[mgcStreamIndex][qmgc][k];
 				frame.mgc[k] = getMem()->par[mgcStreamIndex][qmgc][k];
-			}
+	
 			qmgc++;
 			
 			for( k = 0; k < nOfLPFs; k++ )
-			{
-				//frame.lpf[k] = rawData[head].getMem()->par[lpfStreamIndex][qlpf][k];
 				frame.lpf[k] = getMem()->par[lpfStreamIndex][qlpf][k];
-			}
+	
 			qlpf++;
-			
-			//frame.f0 = exp( rawData[head].getState( s ).lf0[0].mean );
-			
+						
 			if( rawData[head].getState( s ).lf0[0].msdFlag > 0.5 )
 			{
 				frame.voiced = true;
-				//frame.f0 = exp( rawData[head].getMem()->par[lf0StreamIndex][qlf0][nOfLF0s-1] );
 				frame.f0 = exp( getMem()->par[lf0StreamIndex][qlf0][0] );
 				qlf0++;
 			} 

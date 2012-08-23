@@ -83,40 +83,6 @@ MAGE::Mage::Mage( int argc, char **argv )
 }
 
 // getters
-MAGE::LabelQueue * MAGE::Mage::getLabelQueue( void )
-{
-	return( this->labelQueue );
-}
-
-MAGE::ModelQueue * MAGE::Mage::getModelQueue( void )
-{
-	return( this->modelQueue );
-}
-
-MAGE::FrameQueue * MAGE::Mage::getFrameQueue( void )
-{
-	return( this->frameQueue );
-}
-
-MAGE::ModelMemory * MAGE::Mage::getMemory( void )
-{
-	return( this->memory );
-}
-
-MAGE::Vocoder * MAGE::Mage::getVocoder( void )
-{
-	return( this->vocoder );
-}
-
-MAGE::Engine * MAGE::Mage::getEngine( void )
-{
-	return( this->engine );
-}
-
-MAGE::Model * MAGE::Mage::getModel( void )
-{
-	return( this->model );
-}
 
 /*MAGE::Frame MAGE::Mage::getFrame( void )
 {
@@ -125,7 +91,7 @@ MAGE::Model * MAGE::Mage::getModel( void )
 
 double MAGE::Mage::getSpeed ( void )
 {
-	//return(this->vocoder->getSpeed( ));
+	return(	this->label.getSpeed() );
 }
 
 double MAGE::Mage::getPitch ( void )
@@ -156,6 +122,8 @@ double MAGE::Mage::getDuration( void )
 // setters
 void MAGE::Mage::setSpeed ( double speechSpeed )
 {
+	this->label.setSpeed( speechSpeed );
+	return;
 }
 
 void MAGE::Mage::setPitch ( double pitch, int action )
@@ -189,11 +157,75 @@ void MAGE::Mage::setDuration( int *updateFunction, int action)
 }
 
 // methods
+void MAGE::Mage::parseConfigFile( std::string confFilename )
+{
+	int k = 0;
+	string line, s;
+	ifstream confFile( confFilename.c_str() );
+	
+	if( !confFile.is_open() )
+	{
+		printf( "could not open file %s",confFilename.c_str() );
+		return;
+	}
+	
+	while( getline( confFile, line ) )
+	{
+		istringstream iss( line );
+		while( getline( iss, s, ' ' ) )
+		{
+			if( s.c_str()[0] != '\0')
+			{
+				strcpy(this->memory->argv[k], s.c_str() ); 
+				k++;
+			}
+		}
+	}
+	
+	this->argc = k;
+	this->argv = this->memory->argv;
+	
+	confFile.close();
+	
+	return;
+}
+
+void MAGE::Mage::init( int argc, char **argv )
+{	
+	// --- Queues ---	
+	this->labelQueue = new MAGE::LabelQueue( maxLabelQueueLen );
+	this->modelQueue = new MAGE::ModelQueue( maxModelQueueLen, memory );
+	this->frameQueue = new MAGE::FrameQueue( maxFrameQueueLen );
+	
+	// --- HTS Engine ---
+	this->engine = new MAGE::Engine();
+	this->engine->load( argc, argv );
+	
+	// --- Model ---
+	this->model = new MAGE::Model::Model();
+	this->model->checkInterpolationWeights( this->engine );
+	
+	// --- SPTK Vocoder ---
+	this->vocoder = new MAGE::Vocoder::Vocoder();
+	
+	// --- Frame ---
+	//Frame frame;
+	
+	// --- Label ---
+	this->labelQueue->get( this->label );
+	
+	this->flag = true;
+	
+	return;
+}
+
 void MAGE::Mage::run( void )
 {
 	if( !this->labelQueue->isEmpty() )
 	{
 		this->labelQueue->pop( this->label );
+		
+		printf(" run : %s \n", this->label.getQuery().c_str());
 		
 		this->model->computeDuration( this->engine, &(this->label) );
 		
@@ -222,67 +254,64 @@ void MAGE::Mage::run( void )
 	return;
 }
 
+void MAGE::Mage::pushLabel( Label label )
+{
+	if( !this->labelQueue->isFull() )
+	{
+		this->labelQueue->push( label );
+		this->labelQueue->get( this->label );
+	}
+	else 
+		printf( "label queue is full !\n%s", label.getQuery().c_str() );
+	
+	return;
+}
+
+void MAGE::Mage::popLabel ( Label &label )
+{
+	if( !this->labelQueue->isEmpty() )
+	{
+		this->labelQueue->pop( label );
+		this->labelQueue->get( this->label );
+
+		this->model->computeDuration( this->engine, &(this->label) );
+
+	}
+	else 
+	{
+		usleep( 100 );
+	}
+	return;
+}
+
+void MAGE::Mage::computeParameters( void )
+{
+	this->model->computeParameters( this->engine, &(this->label) );
+	this->model->computeGlobalVariances( this->engine, &(this->label) );
+	
+	this->modelQueue->push( this->model, 1 );
+	return;
+}
+
+void MAGE::Mage::optimizeParameters( void )
+{
+	if( this->modelQueue->getNumOfItems() > nOfLookup + nOfBackup )
+	{
+		this->flag = false;
+		this->modelQueue->optimizeParameters( this->engine, nOfBackup, nOfLookup );
+		this->modelQueue->generate( this->frameQueue, nOfBackup );				
+		this->modelQueue->pop();
+	} 
+	else if( this->modelQueue->getNumOfItems() > nOfLookup && this->flag )
+	{
+		this->modelQueue->optimizeParameters( this->engine, this->modelQueue->getNumOfItems() - nOfLookup - 1, nOfLookup );
+		this->modelQueue->generate( this->frameQueue, this->modelQueue->getNumOfItems() - nOfLookup - 1 );	
+	}	
+	return; 
+}
+
 void MAGE::Mage::resetVocoder( void )
 {
 	this->vocoder->reset();
-	return;
-}
-
-void MAGE::Mage::parseConfigFile( std::string confFilename )
-{
-	int k = 0;
-	string line, s;
-	ifstream confFile( confFilename.c_str() );
-		
-	if( !confFile.is_open() )
-	{
-		printf( "could not open file %s",confFilename.c_str() );
-		return;
-	}
-		
-	while( getline( confFile, line ) )
-	{
-		istringstream iss( line );
-		while( getline( iss, s, ' ' ) )
-		{
-			if( s.c_str()[0] != '\0')
-			{
-				strcpy(this->memory->argv[k], s.c_str() ); 
-				k++;
-			}
-		}
-	}
-	
-	this->argc = k;
-	this->argv = this->memory->argv;
-	
-	confFile.close();
-		
-	return;
-}
-
-void MAGE::Mage::init( int argc, char **argv )
-{	
-	// --- Queues ---	
-	this->labelQueue = new MAGE::LabelQueue( maxLabelQueueLen );
-	this->modelQueue = new MAGE::ModelQueue( maxModelQueueLen, memory );
-	this->frameQueue = new MAGE::FrameQueue( maxFrameQueueLen );
-	
-	// --- HTS Engine ---
-	this->engine = new MAGE::Engine();
-	this->engine->load( argc, argv );
-	
-	// --- Model ---
-	this->model = new MAGE::Model::Model();
-	this->model->checkInterpolationWeights( this->engine );
-	
-	// --- SPTK Vocoder ---
-	this->vocoder = new MAGE::Vocoder::Vocoder();
-	
-	// --- Frame ---
-	//Frame frame;
-	
-	this->flag = true;
-
 	return;
 }

@@ -47,7 +47,7 @@ void testApp::setup( void )
 	frameLen = defaultFrameRate * 2;
 	hopLen = defaultFrameRate;
 	sampleCount = 0; // initialize OLA variables
-	olaBuffer = new obOlaBuffer( 8*maxFrameLen ); // allocate memory for the OLA buffer
+	olaBuffer = new obOlaBuffer( 8 * maxFrameLen ); // allocate memory for the OLA buffer
 	sampleFrame = new float[ maxFrameLen ](); // allocate memory for the speech frame
 
 	ofSoundStreamSetup( 2, 0, this, defaultSamplingRate, dacBufferLen, 4 ); // audio setup
@@ -92,7 +92,7 @@ void testApp::update( void )
 			//speed = ofMap( oscSpeed, 0, 3, 0.1, 3, true );
 			//setSpeed( speed );
 			
-			hopLen = ( oscSpeed > 1 )? oscSpeed : 1;
+			hopLen = ( oscSpeed > 1 ) ? oscSpeed : 1;
 			//printf( "speed : %d\n", hopLen );
 			
 			hopLen = ( int )defaultFrameRate/oscSpeed;
@@ -296,10 +296,7 @@ void testApp::keyPressed( int key )
 			
 			labellist.pop();
 			
-			if( !this->mage->getLabelQueue()->isFull() )
-				this->mage->getLabelQueue()->push( label );
-			else 
-				printf( "label queue is full !\n%s",q.c_str() );
+			this->mage->pushLabel( label );
 		}
 		
 		string s( this->Argv[this->Argc - 1] );
@@ -307,28 +304,19 @@ void testApp::keyPressed( int key )
 	}
 	
 	if( key == 'a' )
-	{
 		this->mage->setPitch( 440, MAGE::overwrite );
-	}
 	
 	if( key == 'd' )
-	{
 		this->mage->setPitch( 2, MAGE::scale );
-	}
 	
 	if( key == 'g' )
-	{
 		this->mage->setPitch( 0.5, MAGE::scale );
-	}
 	
 	if( key == 'h' )
-	{
 		this->mage->setPitch( 1000, MAGE::shift );
-	}
+
 	if( key == 'b' )
-	{
 		this->mage->setPitch( 50, MAGE::shift );
-	}
 	
 	if( key == 'r' )
 	{
@@ -370,19 +358,15 @@ void testApp::keyReleased( int key )
 void testApp::pushLabel()
 {
 	MAGE::Label label;
+	
 	if( !labellist.empty() )
 	{
 		string q = labellist.front();
 		label.setQuery( q );
-
-		//label.setSpeed( 0.5 );
-
+		
 		labellist.pop();
 
-		if( !this->mage->getLabelQueue()->isFull() )
-			this->mage->getLabelQueue()->push( label );
-		else
-			printf("label queue is full !\n%s",q.c_str());
+		this->mage->pushLabel( label );
 	}
 }
 
@@ -399,15 +383,10 @@ void testApp::fillLabelQueue()
 	{
 		string q = labellist.front();
 		label.setQuery( q );
-		
-		//label.setSpeed( 0.5 );
-		
+				
 		labellist.pop();
 		
-		if( !this->mage->getLabelQueue()->isFull() )
-			this->mage->getLabelQueue()->push( label );
-		else 
-			printf( "label queue is full !\n%s",q.c_str() );
+		this->mage->pushLabel( label );
 	}
 	
 	this->fill = true;
