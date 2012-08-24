@@ -56,6 +56,7 @@ namespace MAGE
 			virtual ~Vocoder();
 		
 			void push( Frame &frame, bool ignoreVoicing=false );
+			void push( Frame *frame, bool ignoreVoicing=false );
 			void reset( void );
 			void setPitch( double pitch, int action, bool forceVoiced=false );
 			void setVoiced( bool forceVoiced );

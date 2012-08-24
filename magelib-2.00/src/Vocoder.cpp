@@ -155,15 +155,15 @@ void MAGE::Vocoder::push( Frame &frame, bool ignoreVoicing )
 	switch( action )
 	{
 		case MAGE::overwrite:
-			this->f0 = this->actionValue;	//Hz
+			this->f0 = this->actionValue;	//Hz
 			break;
 			
 		case MAGE::shift:
-			this->f0 = ( frame.f0 )+( this->actionValue ); //Hz
+			this->f0 = ( frame.f0 )+( this->actionValue ); //Hz
 			break;
 			
 		case MAGE::scale:
-			this->f0 = ( frame.f0 )*( this->actionValue );  //Hz
+			this->f0 = ( frame.f0 )*( this->actionValue );  //Hz
 			break;
 			
 		case MAGE::synthetic:
@@ -178,6 +178,83 @@ void MAGE::Vocoder::push( Frame &frame, bool ignoreVoicing )
 	
 	if( !ignoreVoicing )
 		this->voiced = frame.voiced;
+	
+	this->nOfPopSinceLastPush = 0;
+	return;
+}
+
+/**
+ * 
+ * @param frame a pointer to an instance of class Frame
+ * @param ignoreVoicing if true, ignore frame->voiced information and use latest known information
+ */
+void MAGE::Vocoder::push( Frame *frame, bool ignoreVoicing )
+{
+	int i;
+	
+	if( !flagFirstPush )
+	{
+		movem( cc, c, sizeof( *cc ), m + 1 );
+		
+		mc2b( frame->mgc, cc, m, alpha );
+		
+		if( stage != 0 )
+		{
+			gnorm( cc, cc, m, gamma );
+			cc[0] = log( cc[0] );
+			
+			for( i = 1; i <= m; i++ )
+				cc[i] *= gamma;
+		}
+	} 
+	else 
+	{
+		flagFirstPush = false;
+		
+		mc2b( frame->mgc, c, m, alpha );
+		
+		if( stage != 0 )/* MGLSA */
+		{ 
+			gnorm( c, c, m, gamma );
+			c[0] = log( c[0] );
+			
+			for( i = 1; i <= m; i++ )
+				c[i] *= gamma;
+		}
+		
+		for( i = 0; i <= m; i++ )
+			cc[i] = c[i];
+	}	
+	
+	for( i = 0; i <= m; i++ )
+		inc[i] = ( cc[i] - c[i] ) * iprd / fprd;
+	
+	switch( action )
+	{
+		case MAGE::overwrite:
+			this->f0 = this->actionValue;	//Hz
+			break;
+			
+		case MAGE::shift:
+			this->f0 = ( frame->f0 )+( this->actionValue ); //Hz
+			break;
+			
+		case MAGE::scale:
+			this->f0 = ( frame->f0 )*( this->actionValue );  //Hz
+			break;
+			
+		case MAGE::synthetic:
+		default:
+			this->f0 = frame->f0;
+	}
+	
+	if( this->f0 < 0 )
+		this->f0 = 110; 
+	
+	this->t0 = defaultSamplingRate / this->f0; // defaultSamplingRate = 48000
+	
+	if( !ignoreVoicing )
+		this->voiced = frame->voiced;
 	
 	this->nOfPopSinceLastPush = 0;
 	return;
@@ -259,7 +336,7 @@ void MAGE::Vocoder::reset()
 
 /**
  * This function forces the value of the pitch used by the vocoder instead of the
- * one in frame.f0. Note that this will get overwritten at the next push( frame ).
+ * one in frame->f0. Note that this will get overwritten at the next push( frame ).
  * Therefore it is needed to call setPitch()after every push().
  * Another solution is to call push( frame,true )which explicitely tells push to 
  * ignore voicing information.
