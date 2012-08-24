@@ -77,39 +77,40 @@ void MAGE::ModelQueue::generate( FrameQueue *frameQueue, unsigned int backup )
 		//printf( "duration of state %d = %d, v/uv: %g\n",s,rawData[head].getState( s ).duration,rawData[head].getState( s ).lf0[0].msdFlag );
 		for( q = 0; q < rawData[head].getState( s ).duration; q++ )
 		{
+			while( frameQueue->isFull() )
+				usleep( 10 );
+			
+			frame = frameQueue->next();
 			for( k = 0; k < nOfMGCs; k++ )
 			{
-				//frame.mgc[k] = rawData[head].getMem()->par[mgcStreamIndex][qmgc][k];
-				frame.mgc[k] = getMem()->par[mgcStreamIndex][qmgc][k];
+				//frame->mgc[k] = rawData[head].getMem()->par[mgcStreamIndex][qmgc][k];
+				frame->mgc[k] = getMem()->par[mgcStreamIndex][qmgc][k];
 			}
 			qmgc++;
 			
 			for( k = 0; k < nOfLPFs; k++ )
 			{
-				//frame.lpf[k] = rawData[head].getMem()->par[lpfStreamIndex][qlpf][k];
-				frame.lpf[k] = getMem()->par[lpfStreamIndex][qlpf][k];
+				//frame->lpf[k] = rawData[head].getMem()->par[lpfStreamIndex][qlpf][k];
+				frame->lpf[k] = getMem()->par[lpfStreamIndex][qlpf][k];
 			}
 			qlpf++;
 			
-			//frame.f0 = exp( rawData[head].getState( s ).lf0[0].mean );
+			//frame->f0 = exp( rawData[head].getState( s ).lf0[0].mean );
 			
 			if( rawData[head].getState( s ).lf0[0].msdFlag > 0.5 )
 			{
-				frame.voiced = true;
-				//frame.f0 = exp( rawData[head].getMem()->par[lf0StreamIndex][qlf0][nOfLF0s-1] );
-				frame.f0 = exp( getMem()->par[lf0StreamIndex][qlf0][0] );
+				frame->voiced = true;
+				//frame->f0 = exp( rawData[head].getMem()->par[lf0StreamIndex][qlf0][nOfLF0s-1] );
+				frame->f0 = exp( getMem()->par[lf0StreamIndex][qlf0][0] );
 				qlf0++;
 			} 
 			else
 			{
-				frame.voiced = false;
-				frame.f0 = 0;
+				frame->voiced = false;
+				frame->f0 = 0;
 			}
 			
-			while( frameQueue->isFull() )
-				usleep( 10 );
-			
-			frameQueue->push( &frame, 1 );
+			frameQueue->push();
 		}
 	}
 	return;

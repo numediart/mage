@@ -52,8 +52,12 @@ namespace MAGE
 			LabelQueue( unsigned int size );
 	
 			void push( Label &label );
+			void push( void );
 			void pop ( Label &label );
+			void pop( void );
 			void get ( Label &label );
+			Label* get( void );
+			Label* next( void );
 	
 			bool isEmpty( void );
 			bool isFull ( void );

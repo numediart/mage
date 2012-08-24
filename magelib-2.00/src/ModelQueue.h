@@ -62,7 +62,7 @@ namespace MAGE
 		protected:
 		
 			unsigned int head;
-			Frame frame;
+			Frame *frame;
 		
 			ModelMemory *mem;
 	};	
