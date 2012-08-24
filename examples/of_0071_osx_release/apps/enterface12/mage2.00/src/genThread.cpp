@@ -44,6 +44,7 @@ void genThread::threadedFunction( void )
 		//this->mage->run( );
 		
 		this->mage->popLabel ( label );
+		this->mage->computeDuration   ( );
 		this->mage->computeParameters ( );
 		this->mage->optimizeParameters( );
 	}

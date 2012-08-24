@@ -273,9 +273,6 @@ void MAGE::Mage::popLabel ( Label &label )
 	{
 		this->labelQueue->pop( label );
 		this->labelQueue->get( this->label );
-
-		this->model->computeDuration( this->engine, &(this->label) );
-
 	}
 	else 
 	{
@@ -284,12 +281,22 @@ void MAGE::Mage::popLabel ( Label &label )
 	return;
 }
 
+void MAGE::Mage::computeDuration ( void )
+{
+	if( !this->labelQueue->isEmpty() )
+		this->model->computeDuration( this->engine, &(this->label) );
+	return;
+}
+
 void MAGE::Mage::computeParameters( void )
 {
-	this->model->computeParameters( this->engine, &(this->label) );
-	this->model->computeGlobalVariances( this->engine, &(this->label) );
-	
-	this->modelQueue->push( this->model, 1 );
+	if( !this->labelQueue->isEmpty() )
+	{		
+		this->model->computeParameters( this->engine, &(this->label) );
+		this->model->computeGlobalVariances( this->engine, &(this->label) );
+		
+		this->modelQueue->push( this->model, 1 );
+	}
 	return;
 }
 
