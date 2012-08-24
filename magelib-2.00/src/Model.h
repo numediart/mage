@@ -44,7 +44,7 @@
 
 namespace MAGE 
 {
-	class ModelMemory 
+	/*class ModelMemory 
 	{
 		public :
 		
@@ -73,7 +73,7 @@ namespace MAGE
 			int *voiced_unvoiced; // [maxNumOfFrames]
 			
 			char **argv;	// configuration arguments 
-	};
+	};*/
 
 	class Model 
 	{	

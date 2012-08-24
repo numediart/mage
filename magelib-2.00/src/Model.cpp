@@ -36,7 +36,7 @@
  */
 
 #include "Model.h"
-
+/*
 // constructor
 MAGE::ModelMemory::ModelMemory()
 {
@@ -129,7 +129,7 @@ MAGE::ModelMemory::~ModelMemory( void )
 		free( this->argv[k] );
 	free( this->argv );
 }
-
+*/
 MAGE::Model::Model()
 {
 	this->duration = 0;

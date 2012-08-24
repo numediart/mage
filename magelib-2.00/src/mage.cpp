@@ -36,9 +36,6 @@
 // constructor
 MAGE::Mage::Mage( void )
 {
-	// --- Memory ---
-	this->memory = NULL;
-
 	// --- Queues ---	
 	this->labelQueue = NULL;
 	this->modelQueue = NULL;
@@ -58,24 +55,18 @@ MAGE::Mage::Mage( void )
 	
 	this->flag = true;
 	this->argc = 0;
-	//this->argv = NULL;
+	this->argv = NULL;
 }
 
 MAGE::Mage::Mage( std::string confFilename )
-{
-	// --- Memory ---
-	this->memory = new MAGE::ModelMemory::ModelMemory();
-	
+{	
 	parseConfigFile( confFilename );
 	
 	init( this->argc, this->argv );
 }
 
 MAGE::Mage::Mage( int argc, char **argv )
-{
-	// --- Memory ---
-	this->memory = new MAGE::ModelMemory::ModelMemory();
-	
+{	
 	this->argc = argc;
 	this->argv = argv;
 	
@@ -169,6 +160,9 @@ void MAGE::Mage::parseConfigFile( std::string confFilename )
 		return;
 	}
 	
+	// configuration arguments
+	this->argv	= ( char ** ) calloc( maxNumOfArguments,sizeof( char * ) );
+	
 	while( getline( confFile, line ) )
 	{
 		istringstream iss( line );
@@ -176,14 +170,14 @@ void MAGE::Mage::parseConfigFile( std::string confFilename )
 		{
 			if( s.c_str()[0] != '\0')
 			{
-				strcpy(this->memory->argv[k], s.c_str() ); 
+				this->argv[k] = new char[maxStrLen];  // ATTENTION!!! FREE!!! DISALLOCATE!!!
+				strcpy(this->argv[k], s.c_str() ); 
 				k++;
 			}
 		}
 	}
 	
 	this->argc = k;
-	this->argv = this->memory->argv;
 	
 	confFile.close();
 	
@@ -194,7 +188,7 @@ void MAGE::Mage::init( int argc, char **argv )
 {	
 	// --- Queues ---	
 	this->labelQueue = new MAGE::LabelQueue( maxLabelQueueLen );
-	this->modelQueue = new MAGE::ModelQueue( maxModelQueueLen, memory );
+	this->modelQueue = new MAGE::ModelQueue( maxModelQueueLen );
 	this->frameQueue = new MAGE::FrameQueue( maxFrameQueueLen );
 	
 	// --- HTS Engine ---
@@ -221,36 +215,11 @@ void MAGE::Mage::init( int argc, char **argv )
 
 void MAGE::Mage::run( void )
 {
-	if( !this->labelQueue->isEmpty() )
-	{
-		this->labelQueue->pop( this->label );
-		
-		printf(" run : %s \n", this->label.getQuery().c_str());
-		
-		this->model->computeDuration( this->engine, &(this->label) );
-		
-		this->model->computeParameters( this->engine, &(this->label) );
-		this->model->computeGlobalVariances( this->engine, &(this->label) );
-		
-		this->modelQueue->push( this->model, 1 );
-		
-		if( this->modelQueue->getNumOfItems() > nOfLookup + nOfBackup )
-		{
-			this->flag = false;
-			this->modelQueue->optimizeParameters( this->engine, nOfBackup, nOfLookup );
-			this->modelQueue->generate( this->frameQueue, nOfBackup );				
-			this->modelQueue->pop();
-		} 
-		else if( this->modelQueue->getNumOfItems() > nOfLookup && this->flag )
-		{
-			this->modelQueue->optimizeParameters( this->engine, this->modelQueue->getNumOfItems() - nOfLookup - 1, nOfLookup );
-			this->modelQueue->generate( this->frameQueue, this->modelQueue->getNumOfItems() - nOfLookup - 1 );	
-		}	 
-	}
-	else 
-	{
-		usleep( 100 );
-	}
+	popLabel();
+	computeDuration   ();
+	computeParameters ();
+	optimizeParameters();
+	
 	return;
 }
 
@@ -267,17 +236,16 @@ void MAGE::Mage::pushLabel( Label label )
 	return;
 }
 
-void MAGE::Mage::popLabel ( Label &label )
+void MAGE::Mage::popLabel ( void )
 {
 	if( !this->labelQueue->isEmpty() )
 	{
-		this->labelQueue->pop( label );
+		this->labelQueue->pop( this->label );
 		this->labelQueue->get( this->label );
 	}
 	else 
-	{
 		usleep( 100 );
-	}
+
 	return;
 }
 
