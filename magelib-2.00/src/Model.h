@@ -93,7 +93,7 @@ namespace MAGE
 		
 			// methods
 			void updateDuration( int *updateFunction, int action	 ); // to put a speed profile on state duration( put it inside compute duration ? )
-			void checkInterpolationWeights( MAGE::Engine *engine );
+			void checkInterpolationWeights( MAGE::Engine *engine, bool forced=false );
 			void computeDuration( MAGE::Engine *engine, MAGE::Label *label );
 			void computeParameters( MAGE::Engine *engine, MAGE::Label *label );
 			void computeGlobalVariances( MAGE::Engine *engine, MAGE::Label *label );
@@ -103,5 +103,6 @@ namespace MAGE
 			int duration;
 			State state[nOfStates];
 			char strQuery[maxStrLen];
+			bool weightsChecked;
 	};
 } // namespace

@@ -74,6 +74,7 @@ namespace MAGE
 		
 			// methods
 			void push( Frame &frame, bool ignoreVoicing=false );
+			void push( Frame *frame, bool ignoreVoicing=false );
 			void reset( void );
 			double pop();
 			bool ready();

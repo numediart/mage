@@ -80,32 +80,33 @@ void MAGE::ModelQueue::generate( FrameQueue *frameQueue, unsigned int backup )
 
 		for( q = 0; q < rawData[head].getState( s ).duration; q++ )
 		{
+			while( frameQueue->isFull() )
+				usleep( 10 );
+			
+			frame = frameQueue->next();
 			for( k = 0; k < nOfMGCs; k++ )
-				frame.mgc[k] = getMem()->par[mgcStreamIndex][qmgc][k];
-	
+				frame->mgc[k] = getMem()->par[mgcStreamIndex][qmgc][k];
+
 			qmgc++;
 			
 			for( k = 0; k < nOfLPFs; k++ )
-				frame.lpf[k] = getMem()->par[lpfStreamIndex][qlpf][k];
-	
+				frame->lpf[k] = getMem()->par[lpfStreamIndex][qlpf][k];
+
 			qlpf++;
-						
+			
 			if( rawData[head].getState( s ).lf0[0].msdFlag > 0.5 )
 			{
-				frame.voiced = true;
-				frame.f0 = exp( getMem()->par[lf0StreamIndex][qlf0][0] );
+				frame->voiced = true;
+				frame->f0 = exp( getMem()->par[lf0StreamIndex][qlf0][0] );
 				qlf0++;
 			} 
 			else
 			{
-				frame.voiced = false;
-				frame.f0 = 0;
+				frame->voiced = false;
+				frame->f0 = 0;
 			}
 			
-			while( frameQueue->isFull() )
-				usleep( 10 );
-			
-			frameQueue->push( &frame, 1 );
+			frameQueue->push();
 		}
 	}
 	return;

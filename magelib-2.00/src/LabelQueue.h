@@ -54,8 +54,13 @@ namespace MAGE
 	
 			// methods
 			void push( Label &label );
+			void push( void );
 			void pop ( Label &label );
+			void pop( void );
 			void get ( Label &label );
+			Label* get( void );
+			Label* next( void );
+
 			void print( void );
 
 			// accessors 

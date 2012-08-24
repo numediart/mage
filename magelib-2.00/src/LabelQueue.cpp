@@ -56,6 +56,14 @@ void MAGE::LabelQueue::push( Label &label )
 	return;
 }
 
+void MAGE::LabelQueue::push( void )
+{
+	write = ( write + 1 ) % queue.size();
+	PaUtil_WriteMemoryBarrier();
+	nOfLabels++;
+	return;
+}
+
 void MAGE::LabelQueue::pop( Label &label )
 {
 	label = queue[read];
@@ -66,11 +74,28 @@ void MAGE::LabelQueue::pop( Label &label )
 	return;
 }
 
-// like pop but does not advance in the queue 
+void MAGE::LabelQueue::pop( void )
+{	
+	read = ( read + 1 ) % queue.size();
+	PaUtil_WriteMemoryBarrier();
+	nOfLabels--;
+	return;
+}
+
+// like pop but does not advance in the queue
 void MAGE::LabelQueue::get( Label &label )
 {
 	label = queue[read];
 	return;
+}
+
+MAGE::Label* MAGE::LabelQueue::get( void )
+{
+		return &queue[read];
+}
+MAGE::Label* MAGE::LabelQueue::next( void )
+{
+		return &queue[write];
 }
 
 void MAGE::LabelQueue::print( void )
