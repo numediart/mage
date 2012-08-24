@@ -63,7 +63,7 @@ namespace MAGE
 			inline Label  getLabel( void ){ return( this->label ); };
 			inline Engine  *getEngine ( void ){ return( this->engine );  };		
 			inline Vocoder *getVocoder( void ){ return( this->vocoder ); };
-			inline ModelMemory *getMemory( void ){ return( this->memory ); };
+			//inline ModelMemory *getMemory( void ){ return( this->memory ); };
 			inline LabelQueue  *getLabelQueue( void ){ return( this->labelQueue ); };
 			inline ModelQueue  *getModelQueue( void ){ return( this->modelQueue ); };
 			inline FrameQueue  *getFrameQueue( void ){ return( this->frameQueue ); };
@@ -81,7 +81,7 @@ namespace MAGE
 			inline void setLabel( Label alabel )		{ this->label = alabel; };
 			inline void setEngine( Engine *aengine )	{ this->engine = aengine; };		
 			inline void setVocoder( Vocoder *avocoder )	{ this->vocoder = avocoder; };
-			inline void setMemory( ModelMemory *amemory )		{ this->memory = amemory; };
+			//inline void setMemory( ModelMemory *amemory )		{ this->memory = amemory; };
 			inline void setLabelQueue( LabelQueue *alabelQueue ){ this->labelQueue = alabelQueue; };
 			inline void setModelQueue( ModelQueue *amodelQueue ){ this->modelQueue = amodelQueue; };
 			inline void setFrameQueue( FrameQueue *aframeQueue ){ this->frameQueue = aframeQueue; };
@@ -95,10 +95,10 @@ namespace MAGE
 			void setDuration( int *updateFunction, int action);
 		
 			// methods
-			void run( void );
+			void run( void );	
+			void popLabel ( void );
 			void resetVocoder( void );
 			void pushLabel( Label label  );
-			void popLabel ( Label &label );
 			void computeDuration   ( void );
 			void computeParameters ( void );
 			void optimizeParameters( void );
@@ -114,7 +114,7 @@ namespace MAGE
 		protected:
 		
 			// --- Memory ---
-			ModelMemory *memory;
+			//ModelMemory *memory;
 		
 			// --- Queues ---	
 			LabelQueue *labelQueue;

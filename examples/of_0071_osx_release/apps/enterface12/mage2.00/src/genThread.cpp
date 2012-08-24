@@ -41,12 +41,12 @@ void genThread::threadedFunction( void )
 	
 	while( isThreadRunning() )
 	{
-		//this->mage->run( );
+		this->mage->run( );
 		
-		this->mage->popLabel ( label );
-		this->mage->computeDuration   ( );
-		this->mage->computeParameters ( );
-		this->mage->optimizeParameters( );
+	/*	this->mage->popLabel();
+		this->mage->computeDuration   ();
+		this->mage->computeParameters ();
+		this->mage->optimizeParameters();*/
 	}
 	return;
 }

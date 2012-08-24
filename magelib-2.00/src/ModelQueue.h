@@ -46,15 +46,46 @@
 
 namespace MAGE 
 {	
+	class ModelQueueMemory 
+	{
+		public :
+		
+			ModelQueueMemory();
+			~ModelQueueMemory();
+		
+			// for every stream, for every frame, every mean
+			double ***mean;			// [nOfStreams][maxNumOfFrames][nOfDers*nOfMGCs] 
+			// for every stream, for every frame, every ivar
+			double ***ivar;			// [nOfStreams][maxNumOfFrames][nOfDers*nOfMGCs] 
+			// for every stream, every gv_mean
+			double ** gv_mean;		// [nOfStreams][maxNumOfFrames][nOfDers*nOfMGCs] 
+			// for every stream, every gv_var
+			double ** gv_vari;		// [nOfStreams][maxNumOfFrames][nOfDers*nOfMGCs] 
+			// for every stream, every gv_switch
+			int ** gv_switch;		// [nOfStreams][maxNumOfFrames][nOfDers*nOfMGCs] 
+		
+			// for every stream
+			double **g;		// [nOfStreams][maxNumOfFrames];
+			double ***wuw;	// [nOfStreams][maxNumOfFrames][maxWindowWidth]
+			double **wum;	// [nOfStreams][maxNumOfFrames];
+			
+			// output parameter vector for otimized mgc, lf0 and lpf for every stream, for every frame
+			double ***par;	// [nOfStreams][maxNumOfFrames][nOfDers*nOfMGCs] 
+		
+			int *voiced_unvoiced; // [maxNumOfFrames]
+		
+			char **argv;	// configuration arguments 
+	};
+	
 	class ModelQueue : public MemQueue<Model> 
 	{
 		public:
 		
 			// constructor
-			ModelQueue( unsigned int queueLen, MAGE::ModelMemory *memory );
+			ModelQueue( unsigned int queueLen );
 			
 			// getters 
-			inline ModelMemory *getMem( void ){ return( this->mem ); };
+			inline ModelQueueMemory *getModelQueueMemory( void ){ return( this->modelQueueMemory ); };
 
 			// methods
 			void generate( FrameQueue *frameQueue, unsigned int backup=nOfBackup );
@@ -63,9 +94,8 @@ namespace MAGE
 
 		protected:
 		
-			unsigned int head;
 			Frame *frame;
-		
-			ModelMemory *mem;
+			unsigned int head;
+			ModelQueueMemory *modelQueueMemory;
 	};	
 } // namespace
