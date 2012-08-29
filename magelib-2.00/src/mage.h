@@ -70,15 +70,17 @@ namespace MAGE
 			inline ModelQueue  *getModelQueue( void ){ return( this->modelQueue ); };
 			inline FrameQueue  *getFrameQueue( void ){ return( this->frameQueue ); };
 
-			double getSpeed ( void );
+			inline double getSpeed ( void ){ return( this->speed ); };
+			
 			double getPitch ( void );
 			double getAlpha ( void );
 			double getGamma ( void );
 			double getVolume( void );
+		
 			double getDuration( void );
 
 			//setters
-			inline void getFrame( Frame  aframe ){ this->frame = aframe; };
+			inline void setFrame( Frame  aframe ){ this->frame = aframe; };
 			inline void setLabel( Label  alabel ){ this->label = alabel; };
 			inline void setModel( Model *amodel ){ this->model = amodel; };
 		
@@ -88,14 +90,15 @@ namespace MAGE
 			inline void setLabelQueue( LabelQueue *alabelQueue ){ this->labelQueue = alabelQueue; };
 			inline void setModelQueue( ModelQueue *amodelQueue ){ this->modelQueue = amodelQueue; };
 			inline void setFrameQueue( FrameQueue *aframeQueue ){ this->frameQueue = aframeQueue; };
-			//
-	
+
+			inline void setSpeed ( double aspeed ){ this->speed = aspeed; };
+
+			void setPitch ( double pitch, int action );
 			void setAlpha ( double alpha );
 			void setGamma ( double gamma );
 			void setVolume( double volume );
-			void setSpeed ( double speechSpeed );
-			void setPitch ( double pitch, int action );
-			void setDuration( int *updateFunction, int action);
+		
+			void setDuration( int *updateFunction, int action );
 		
 			// methods
 			void run( void );	
@@ -132,12 +135,15 @@ namespace MAGE
 			// --- Label ---
 			Label label;
 		
+			double speed;	// we need this because the speed changes on the lable 
+							// level and we need to have memory of this
+		
 		private:
 		
 			bool flag;
 			int argc;
 			char **argv;
-			
+		
 			// methods
 			void init( int argc, char **argv );
 			void parseConfigFile( std::string filename );

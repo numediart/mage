@@ -50,12 +50,10 @@ MAGE::Mage::Mage( void )
 	// --- SPTK Vocoder ---
 	this->vocoder = NULL;
 	
-	// --- Frame ---
-	//Frame frame;
-	
-	this->flag = true;
 	this->argc = 0;
 	this->argv = NULL;
+	this->flag = true;
+	this->speed = 1;
 }
 
 MAGE::Mage::Mage( std::string confFilename )
@@ -74,17 +72,6 @@ MAGE::Mage::Mage( int argc, char **argv )
 }
 
 // getters
-
-/*MAGE::Frame MAGE::Mage::getFrame( void )
-{
-	return( this->frame );
-}*/
-
-double MAGE::Mage::getSpeed ( void )
-{
-	return(	this->label.getSpeed() );
-}
-
 double MAGE::Mage::getPitch ( void )
 {
 	return( this->vocoder->getPitch() );
@@ -111,12 +98,6 @@ double MAGE::Mage::getDuration( void )
 }
 
 // setters
-void MAGE::Mage::setSpeed ( double speechSpeed )
-{
-	this->label.setSpeed( speechSpeed );
-	return;
-}
-
 void MAGE::Mage::setPitch ( double pitch, int action )
 {
 	this->vocoder->setPitch( pitch, action );
@@ -141,7 +122,7 @@ void MAGE::Mage::setVolume( double volume )
 	return;
 }
 
-void MAGE::Mage::setDuration( int *updateFunction, int action)
+void MAGE::Mage::setDuration( int *updateFunction, int action )
 {
 	this->model->updateDuration( updateFunction, action ); 
 	return;
@@ -202,13 +183,11 @@ void MAGE::Mage::init( int argc, char **argv )
 	// --- SPTK Vocoder ---
 	this->vocoder = new MAGE::Vocoder::Vocoder();
 	
-	// --- Frame ---
-	//Frame frame;
-	
 	// --- Label ---
 	this->labelQueue->get( this->label );
 	
 	this->flag = true;
+	this->speed = 1;
 	
 	return;
 }
@@ -239,6 +218,7 @@ bool MAGE::Mage::popLabel ( void )
 	if( !this->labelQueue->isEmpty() )
 	{
 		this->labelQueue->pop( this->label );
+		this->label.setSpeed ( this->speed );
 		return( true );
 	}
 	else 
