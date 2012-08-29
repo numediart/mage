@@ -78,6 +78,7 @@ namespace MAGE
 			double getPitch ( void );
 			double getAlpha ( void );
 			double getGamma ( void );
+			double getPOrder( void );
 			double getVolume( void );
 		
 			double getDuration( void );
@@ -97,8 +98,9 @@ namespace MAGE
 			inline void setSpeed ( double aspeed ){ this->speed = aspeed; };
 
 			void setPitch ( double pitch, int action );
-			void setAlpha ( double alpha );
-			void setGamma ( double gamma );
+			void setAlpha ( double alpha  );
+			void setGamma ( double gamma  );
+			void setPOrder( double glitch );
 			void setVolume( double volume );
 		
 			void setDuration( int *updateFunction, int action );

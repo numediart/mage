@@ -404,6 +404,8 @@ void MAGE::Vocoder::reset()
 	this->action = synthetic;
 	this->alpha  = defaultAlpha;
 	this->gamma  = defaultGamma;
+	this->stage  = defaultGamma;
+	this->pd	 = defaultPadeOrder; 
 	this->flagFirstPush = true;
 	
 	return;

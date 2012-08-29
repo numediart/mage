@@ -276,7 +276,7 @@ void testApp::keyPressed( int key )
 		this->mage->setPitch( 1000, MAGE::shift );
 	
 	if( key == 'i' )
-		this->mage->setGamma( 10 );
+		this->mage->setGamma( 2 );
 	
 	if( key == 'j' )
 		this->mage->setVolume( 5 );
@@ -304,6 +304,10 @@ void testApp::keyPressed( int key )
 		string s( this->Argv[this->Argc - 1] );
 		parsefile( s );
 	}
+	
+	if( key == 'm' )
+		this->mage->setPOrder( 3 );
+	
 	
 	if( key == 'o' )
 	{

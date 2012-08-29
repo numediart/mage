@@ -52,23 +52,24 @@ namespace MAGE
 		public:
 		
 			// constructor 
-		Vocoder( int am=( nOfMGCs-1 ), double aalpha=defaultAlpha, int afprd=defaultFrameRate, int aiprd=defaultInterpFrameRate, int astage=defaultGamma, int apd=defaultPadeOrder, bool angain=false );
+			Vocoder( int am=( nOfMGCs-1 ), double aalpha=defaultAlpha, int afprd=defaultFrameRate, int aiprd=defaultInterpFrameRate, int astage=defaultGamma, int apd=defaultPadeOrder, bool angain=false );
 			Vocoder( const Vocoder& orig );
 			virtual ~Vocoder();
 			
 			// getters
 			inline double getAlpha ( void ){ return( this->alpha  ); };
-			inline double getGamma ( void ){ return( this->gamma  ); };
 			inline double getPitch ( void ){ return( this->f0	  ); };
 			inline double getPeriod( void ){ return( this->t0	  ); };
 			inline double getVolume( void ){ return( this->volume ); };
 			inline double getPadeOrder( void ){ return( this->pd  ); };
-		
-			inline int getAction( void ){ return( this->action  ); };
+			
+			inline int    getAction( void ){ return( this->action  ); };
+			inline double getGamma ( void ){ return( this->gamma = this->stage  ); };
+
 
 			// setters
 			inline void setAlpha ( double aalpha  ){ this->alpha  = aalpha;  };	// ATTENTION no need for correct limit control???
-			inline void setGamma ( double agamma  ){ this->gamma  = agamma;  };	// ATTENTION no need for correct limit control???
+			inline void setGamma ( double agamma  ){ this->stage  = agamma;  };	// ATTENTION no need for correct limit control???
 			inline void setVolume( double avolume ){ this->volume = avolume; };	// ATTENTION no need for correct limit control???
 			inline void setPadeOrder( double apd  ){ this->pd     = apd;	 };
 
@@ -94,7 +95,7 @@ namespace MAGE
 			double f0;
 			double t0;
 			bool voiced;
-			int action;
+			int  action;
 		
 		private:
 		

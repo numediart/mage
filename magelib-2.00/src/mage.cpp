@@ -103,6 +103,11 @@ double MAGE::Mage::getGamma ( void )
 	return( this->vocoder->getGamma() );
 }
 
+double MAGE::Mage::getPOrder ( void )
+{
+	return( this->vocoder->getPadeOrder() );
+}
+
 double MAGE::Mage::getVolume( void )
 {
 	return( this->vocoder->getVolume() );
@@ -129,6 +134,12 @@ void MAGE::Mage::setAlpha ( double alpha )
 void MAGE::Mage::setGamma ( double gamma )
 {
 	this->vocoder->setGamma( gamma );
+	return;
+}
+
+void MAGE::Mage::setPOrder ( double pOrder )
+{
+	this->vocoder->setPadeOrder( pOrder );
 	return;
 }
 
@@ -214,6 +225,7 @@ void MAGE::Mage::run( void )
 	{
 		this->prepareModel      ();
 		this->computeDuration   ();
+		//this->updateDuration
 		this->computeParameters ();
 		this->optimizeParameters();
 	}
