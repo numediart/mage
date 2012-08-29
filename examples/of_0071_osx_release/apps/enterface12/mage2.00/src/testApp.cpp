@@ -52,7 +52,6 @@ void testApp::setup( void )
 
 	ofSoundStreamSetup( 2, 0, this, defaultSamplingRate, dacBufferLen, 4 ); // audio setup
 		
-	paused = true;
 	loop = true;
 	fill = true;
 }
@@ -203,28 +202,14 @@ void testApp::draw( void )
 
 void testApp::audioOut( float *outBuffer, int bufSize, int nChan )
 {
-	int c;
+	static int c, indchan;
 
 	for( int k = 0; k < bufSize; k++ )
 	{
-		if( sampleCount >= hopLen-1 )
-		{ // if we hit the hop length			
-			if( !this->mage->getFrameQueue()->isEmpty() )
-			{				 
-				this->mage->getFrameQueue()->pop( &frame, 1 ); // we pop a speech parameter frame
-				
-				//any modification to f0 can go here
-				//frame.f0 = frame.f0*f0scale + f0shift;
-				this->mage->getVocoder()->push( frame );
-				
-				paused = false;
-			} 
-			else 
-			{
-				paused = true;
-			}
-			
-			//olaBuffer->ola( sampleFrame, frameLen, k ); // OLA the frame
+		// ATTENTION!!! should we generate the samples from the parameters in the audio thread or befor?!  
+		if( sampleCount >= hopLen-1 ) // if we hit the hop length
+		{	
+			this->mage->updateSamples();
 			sampleCount = 0; // and reset the sample count for next time
 		} 
 		else 
@@ -232,45 +217,14 @@ void testApp::audioOut( float *outBuffer, int bufSize, int nChan )
 			sampleCount++; // otherwise increment sample count
 		}
 		
-		int indchan = k * nChan;
+		indchan = k * nChan;
+		outBuffer[indchan] = this->mage->popSamples();
 		
-		if( this->mage->getVocoder()->ready() )
-		{
-			outBuffer[indchan] = 0.5 * this->mage->getVocoder()->pop() / 32768;
-			
-			if( outBuffer[indchan] > 1.0 )
-			{
-				outBuffer[indchan] = 1.0;
-			} 
-			else if( outBuffer[indchan] < -1.0 )
-			{
-				outBuffer[indchan] = -1.0;
-			}
-
-			for( c = 1; c < nChan; c++ )
-				outBuffer[indchan+c] = outBuffer[indchan]; //mono --> stereo / multi-channel
-
-		} else 
-		{
-			outBuffer[indchan] = 0.0;
-			for( c = 1; c < nChan; c++ )
-				outBuffer[indchan+c] = 0.0; //mono --> stereo / multi-channel
-		}
-
+		for( c = 1; c < nChan; c++ )
+			outBuffer[indchan+c] = outBuffer[indchan]; //mono --> stereo / multi-channel
+		
 		if (drawSampleFrame) 
-		{
 			sampleFrame[sampleCount] = outBuffer[k];
-		}
-	}
-	
-	if( !paused )
-	{
-		//	FILE *file;
-		//
-		//	file = fopen( "out.raw", "ab" );
-		//	fwrite( outBuffer, sizeof( float ), bufSize, file );
-		//
-		//	fclose( file );
 	}
 }
 

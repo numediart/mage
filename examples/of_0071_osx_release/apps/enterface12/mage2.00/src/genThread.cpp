@@ -43,6 +43,8 @@ void genThread::threadedFunction( void )
 	{
 		this->mage->run( );
 		
+		// OR 
+		
 		//this->mage->popLabel();
 		//this->mage->computeDuration   ();
 		//this->mage->computeParameters ();

@@ -59,15 +59,16 @@ namespace MAGE
 			Mage( std::string confFilename );
 		
 			// getters
+			inline Frame getFrame ( void ){ return( this->frame ); };
+			inline Label getLabel ( void ){ return( this->label ); };
 			inline Model *getModel( void ){ return( this->model ); };
-			inline Label  getLabel( void ){ return( this->label ); };
+		
 			inline Engine  *getEngine ( void ){ return( this->engine );  };		
 			inline Vocoder *getVocoder( void ){ return( this->vocoder ); };
-			//inline ModelMemory *getMemory( void ){ return( this->memory ); };
+		
 			inline LabelQueue  *getLabelQueue( void ){ return( this->labelQueue ); };
 			inline ModelQueue  *getModelQueue( void ){ return( this->modelQueue ); };
 			inline FrameQueue  *getFrameQueue( void ){ return( this->frameQueue ); };
-			//Frame getFrame( void );
 
 			double getSpeed ( void );
 			double getPitch ( void );
@@ -77,15 +78,17 @@ namespace MAGE
 			double getDuration( void );
 
 			//setters
-			inline void setModel( Model *amodel )		{ this->model = amodel; };
-			inline void setLabel( Label alabel )		{ this->label = alabel; };
-			inline void setEngine( Engine *aengine )	{ this->engine = aengine; };		
+			inline void getFrame( Frame  aframe ){ this->frame = aframe; };
+			inline void setLabel( Label  alabel ){ this->label = alabel; };
+			inline void setModel( Model *amodel ){ this->model = amodel; };
+		
+			inline void setEngine ( Engine  *aengine  )	{ this->engine  = aengine;  };		
 			inline void setVocoder( Vocoder *avocoder )	{ this->vocoder = avocoder; };
-			//inline void setMemory( ModelMemory *amemory )		{ this->memory = amemory; };
+		
 			inline void setLabelQueue( LabelQueue *alabelQueue ){ this->labelQueue = alabelQueue; };
 			inline void setModelQueue( ModelQueue *amodelQueue ){ this->modelQueue = amodelQueue; };
 			inline void setFrameQueue( FrameQueue *aframeQueue ){ this->frameQueue = aframeQueue; };
-			//void getFrame( Frame frame );
+			//
 	
 			void setAlpha ( double alpha );
 			void setGamma ( double gamma );
@@ -97,24 +100,18 @@ namespace MAGE
 			// methods
 			void run( void );	
 			bool popLabel ( void );
-			void resetVocoder( void );
-			void pushLabel( Label label  );
+			void pushLabel( Label label );
+
+			void resetVocoder ( void );
+			void updateSamples( void );
+		
 			void computeDuration   ( void );
 			void computeParameters ( void );
 			void optimizeParameters( void );
-		
-		/* ---------------------------- Updating internal state of the engine ----------------------------- */
-		
-		/* MAGE_updateSamples: generate speech samples from the speech parameters */ 
-		//void MAGE_updateSamples(MAGE_Environment *environment);
-		
-		/* MAGE_popSamples : access and pop speech samples from ring buffer ~ to be called from audio callback */
-		//void MAGE_popSamples(MAGE_Environment *environment, float *buffer, int nOfSamples);	
 
-		protected:
+			double popSamples ( void );
 		
-			// --- Memory ---
-			//ModelMemory *memory;
+		protected:
 		
 			// --- Queues ---	
 			LabelQueue *labelQueue;
@@ -131,7 +128,7 @@ namespace MAGE
 			Vocoder *vocoder;
 		
 			// --- Frame ---
-			//Frame frame;
+			Frame frame;
 		
 			// --- Label ---
 			Label label;
