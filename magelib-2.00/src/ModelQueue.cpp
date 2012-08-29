@@ -127,6 +127,11 @@ MAGE::MemQueue<Model>( queueLen )
 	// queueLen to the parent class
 }
 
+MAGE::ModelQueue::~ModelQueue()
+{
+	delete this->modelQueueMemory;
+}
+
 // methods
 void MAGE::ModelQueue::generate( FrameQueue *frameQueue, unsigned int backup )
 {

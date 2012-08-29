@@ -65,6 +65,7 @@ namespace MAGE
 			// constructor
 			Label( void );
 			Label( string q );
+			~Label( void );
 
 			void printQuery( void );
 			void parseQuery( string q );
@@ -85,7 +86,7 @@ namespace MAGE
 
 		protected:
 	
-			LabelMemory *labelMemory;
+			LabelMemory labelMemory;
 
 			string query;
 			bool isForced;
