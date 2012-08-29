@@ -59,6 +59,7 @@ namespace MAGE
 	const int defaultInterpFrameRate = 1;
 	const int defaultSamplingRate = 48000;
 	const int defaultPadeOrder = 5;
+	const int defaultGamma = 0;
 	
 	const int mgcStreamIndex = 0;
 	const int lf0StreamIndex = 1;

@@ -56,14 +56,14 @@ MAGE::Vocoder::Vocoder( int am, double aalpha, int afprd, int aiprd, int astage,
 	this->action = synthetic;
 	
 	this->f0 = 110;//110Hz, default pitch
-	this->t0 = defaultSamplingRate/this->f0; // defaultSamplingRate = 48000
+	this->t0 = defaultSamplingRate / this->f0; // defaultSamplingRate = 48000
 	
 	this->voiced = false;
 	
 	this->volume = 1.0;
 	
 	if( stage != 0 )/* MGLSA */
-		gamma = -1 /( double )stage;
+		gamma = -1 / ( double )stage;
 	
 	this->csize = 0;
 	
@@ -108,35 +108,7 @@ MAGE::Vocoder::~Vocoder()
 }
 
 // getters
-double MAGE::Vocoder::getAlpha( void )
-{
-	return( this->alpha );
-}
 
-double MAGE::Vocoder::getGamma( void )
-{
-	return( this->gamma );
-}
-
-double MAGE::Vocoder::getPitch( void )
-{
-	return( this->f0 );
-}
-
-double MAGE::Vocoder::getPeriod( void )
-{
-	return( this->t0 );
-}
-
-int MAGE::Vocoder::getAction( void )
-{
-	return( this->action );
-}
-
-double MAGE::Vocoder::getVolume( void )
-{
-	return( this->volume );
-}
 
 // setters
 
@@ -180,7 +152,7 @@ void MAGE::Vocoder::setPitch( double pitch, int action, bool forceVoiced )
 	if( this->f0 < 0 )
 		this->f0 = 110; 
 	
-	this->t0 = defaultSamplingRate/this->f0;	// defaultSamplingRate = 48000
+	this->t0 = defaultSamplingRate / this->f0;	// defaultSamplingRate = 48000
 	
 	if( forceVoiced )
 		this->voiced = true;
@@ -392,7 +364,7 @@ double MAGE::Vocoder::pop()
 		x = mlsadf( x, c, m, alpha, pd, d );
 	}
 	
-	if( this->nOfPopSinceLastPush < ( fprd/iprd ) ) //filter interpolation has not reached next filter yet
+	if( this->nOfPopSinceLastPush < ( fprd/iprd ) ) // filter interpolation has not reached next filter yet
 		for( i = 0; i <= m; i++ )
 			c[i] += inc[i];
 	
@@ -416,10 +388,11 @@ void MAGE::Vocoder::reset()
 		c[i] = 0;
 	
 	this->f0 = 110;
-	this->t0 = defaultSamplingRate/( this->f0 );
+	this->t0 = defaultSamplingRate / ( this->f0 );
 	this->action = synthetic;
+	this->alpha  = defaultAlpha;
+	this->gamma  = defaultGamma;
 	this->flagFirstPush = true;
-	this->alpha = defaultAlpha;
 	
 	return;
 }
