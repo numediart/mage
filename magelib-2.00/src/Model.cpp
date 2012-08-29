@@ -83,6 +83,7 @@ MAGE::Model::Model()
 
 MAGE::Model::~Model( void )
 {
+	delete this->modelMemory;
 }
 
 // getters

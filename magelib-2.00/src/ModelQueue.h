@@ -81,6 +81,7 @@ namespace MAGE
 		
 			// constructor
 			ModelQueue( unsigned int queueLen );
+			~ModelQueue();
 			
 			// getters 
 			inline ModelQueueMemory *getModelQueueMemory( void ){ return( this->modelQueueMemory ); };
