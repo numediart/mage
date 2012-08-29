@@ -285,3 +285,34 @@ void MAGE::Mage::resetVocoder( void )
 	this->vocoder->reset();
 	return;
 }
+
+void MAGE::Mage::updateSamples( void )
+{
+	if( !this->frameQueue->isEmpty() )
+	{				 
+		this->frameQueue->pop( &this->frame, 1 ); // we pop a speech parameter frame
+		
+		//any modification to f0 can go here
+		//frame.f0 = frame.f0*f0scale + f0shift;
+		this->vocoder->push( this->frame );
+	} 	return;
+}
+
+double MAGE::Mage::popSamples ( void )
+{
+	double sample; 
+	
+	if( this->vocoder->ready() )
+	{
+		sample = 0.5 * this->vocoder->pop() / 32768;
+		
+		if( sample > 1.0 )
+			return( 1.0 );
+	
+		if( sample < -1.0 )
+			return( -1.0 );
+		
+		return( sample );			
+	} 
+	return( 0 );
+}

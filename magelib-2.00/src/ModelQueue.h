@@ -93,6 +93,7 @@ namespace MAGE
 		protected:
 		
 			Frame *frame;
+
 			unsigned int head;
 			ModelQueueMemory *modelQueueMemory;
 	};	

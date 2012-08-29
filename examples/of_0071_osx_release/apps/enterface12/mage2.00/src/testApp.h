@@ -89,16 +89,14 @@ class testApp : public ofBaseApp
 		MAGE::Mage *mage;
 	
 		genThread *generate;
-		Frame frame;
 	 
 		//---
 	
-		float *sampleFrame; // frame to be OLAed
+		float *sampleFrame;		// frame to be OLAed
 		obOlaBuffer *olaBuffer; // overlap-add buffer
-		int frameLen, hopLen; // frame size and hop size
-		int sampleCount; // sample count for triggering
-		bool drawSampleFrame; // do we show the frame
-		bool paused;
+		int frameLen, hopLen;	// frame size and hop size
+		int sampleCount;		// sample count for triggering
+		bool drawSampleFrame;	// do we show the frame
 		bool loop;
 		bool fill;
 		

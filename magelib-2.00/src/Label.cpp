@@ -50,6 +50,7 @@ MAGE::LabelMemory::~LabelMemory( void )
 // constructor
 MAGE::Label::Label( void )
 {
+	this->labelMemory = new LabelMemory();
 	this->query = "";
 	this->isForced = false;
 	this->begin = this->end = -1;
@@ -58,13 +59,14 @@ MAGE::Label::Label( void )
 
 MAGE::Label::Label( string q )
 {
+	this->labelMemory = new LabelMemory();
 	this->parseQuery( q );
 	this->speed = 1.0;
 }
 
 void MAGE::Label::parseQuery( string q )
 {
-	string first, middle, last;
+	static string first, middle, last;
 	istringstream liness( q );
 	
 	// parse input label string to get strings : start - end - query
@@ -73,34 +75,26 @@ void MAGE::Label::parseQuery( string q )
 	getline( liness, last,	 ' ' );
 	
 	// parse splitted strings to get char* : start - end - query
-	char *strFirst	= new char [first.size()+1]; 
-	char *strMiddle = new char [middle.size()+1];
-	char *strLast	= new char [last.size()+1];
+	strcpy( this->labelMemory->strBegin, first.c_str()  );
+	strcpy( this->labelMemory->strEnd,	 middle.c_str() );
+	strcpy( this->labelMemory->strQuery, last.c_str()   );
 	
-	strcpy( strFirst,	first.c_str() );
-	strcpy( strMiddle, middle.c_str() );
-	strcpy( strLast,	 last.c_str() );
-	
-	if( isdigit_string( strFirst ) && isdigit_string( strMiddle ) ) // has correct frame information
+	if( isdigit_string( this->labelMemory->strBegin ) && isdigit_string( this->labelMemory->strEnd ) ) // has correct frame information
 	{ 
-		this->begin = atof( strFirst );
-		this->end	= atof( strMiddle );
-		this->query.assign( strLast );
+		this->begin = atof( this->labelMemory->strBegin );
+		this->end	= atof( this->labelMemory->strEnd   );
+		this->query.assign( this->labelMemory->strQuery );
 		this->isForced = true;
 	} 
 	else 
 	{
 		this->begin = -1.0;
 		this->end	= -1.0;
-		this->query.assign( strFirst );
+		this->query.assign( this->labelMemory->strBegin );
 		this->isForced = false;
 	}
 	
 	this->speed = 1.0;
-	
-	delete[] strFirst;
-	delete[] strMiddle;
-	delete[] strLast;
 	
 	return;
 }

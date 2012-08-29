@@ -85,6 +85,8 @@ namespace MAGE
 
 		protected:
 	
+			LabelMemory *labelMemory;
+
 			string query;
 			bool isForced;
 			double speed;

@@ -181,6 +181,7 @@ void MAGE::ModelQueue::generate( FrameQueue *frameQueue, unsigned int backup )
 			{
 				frame->voiced = true;
 				frame->f0 = exp( modelQueueMemory->par[lf0StreamIndex][qlf0][0] );
+
 				qlf0++;
 			} 
 			else
