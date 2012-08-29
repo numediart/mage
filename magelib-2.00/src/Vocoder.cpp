@@ -157,26 +157,27 @@ void MAGE::Vocoder::setPitch( double pitch, int action, bool forceVoiced )
 	switch( action )
 	{
 		case MAGE::overwrite:
-			this->f0 = pitch;//Hz
+			this->f0 = pitch;//Hz
 			break;
 			
 		case MAGE::shift:
-			this->f0 = ( this->f0 )+( pitch ); //Hz
+			this->f0 = ( this->f0 )+( pitch ); //Hz
 			break;
 			
 		case MAGE::scale:
-			this->f0 = ( this->f0 )*( pitch ); //Hz
+			this->f0 = ( this->f0 )*( pitch ); //Hz
 			break;
 			
 		case MAGE::synthetic:
 		default:
-			this->f0 = pitch;//
+			this->f0 = pitch;//Hz
 	}
 	
 	this->action = action;
 	this->actionValue = pitch;
 	
 	// ATTENTION!! Should I do that???
+	//set a default value for the pitch in case a negative value is entered
 	if( this->f0 < 0 )
 		this->f0 = 110; 
 	
@@ -211,7 +212,7 @@ void MAGE::Vocoder::push( Frame &frame, bool ignoreVoicing )
 		
 		mc2b( frame.mgc, cc, m, alpha );
 		
-		if( stage != 0 )
+		if( stage != 0 )/* MGLSA */
 		{
 			gnorm( cc, cc, m, gamma );
 			cc[0] = log( cc[0] );
@@ -288,7 +289,7 @@ void MAGE::Vocoder::push( Frame *frame, bool ignoreVoicing )
 		
 		mc2b( frame->mgc, cc, m, alpha );
 		
-		if( stage != 0 )
+		if( stage != 0 )/* MGLSA */
 		{
 			gnorm( cc, cc, m, gamma );
 			cc[0] = log( cc[0] );
@@ -392,7 +393,10 @@ double MAGE::Vocoder::pop()
 		x = mlsadf( x, c, m, alpha, pd, d );
 	}
 	
-	if( this->nOfPopSinceLastPush < ( fprd/iprd ) ) //filter interpolation has not reached next filter yet
+	//filter interpolation has not reached next filter yet
+	//when next filter is reached, stop interpolation, otherwise
+	//you'll eventually get an unstable filter
+	if( this->nOfPopSinceLastPush < ( fprd/iprd ) ) 
 		for( i = 0; i <= m; i++ )
 			c[i] += inc[i];
 	
@@ -405,11 +409,19 @@ double MAGE::Vocoder::pop()
 	return( x );
 }
 
+/**
+ * 
+ * @return true if at least one frame has been pushed, false otherwise
+ */
 bool MAGE::Vocoder::ready()
 { 
 	return (!this->flagFirstPush); 
 }
 
+/**
+ * Set the internal members of Vocoder to the contructor values.
+ * To be used in case the vocoder becomes irremediably unstable
+ */
 void MAGE::Vocoder::reset()
 {
 	for( int i=0; i<this->csize; i++ )

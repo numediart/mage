@@ -82,6 +82,22 @@ MAGE::Mage::Mage( int argc, char **argv )
 	init( this->argc, this->argv );
 }
 
+MAGE::Mage::~Mage( void )
+{
+	delete this->labelQueue;
+	delete this->modelQueue;
+	delete this->frameQueue;
+	
+	// --- HTS Engine ---
+	delete this->engine;
+	
+	// --- Model ---
+	//delete this->model;
+	
+	// --- SPTK Vocoder ---
+	delete this->vocoder;
+}
+
 // getters
 
 /*MAGE::Frame MAGE::Mage::getFrame( void )
@@ -202,8 +218,8 @@ void MAGE::Mage::init( int argc, char **argv )
 	this->engine->load( argc, argv );
 	
 	// --- Model ---
-	this->model = new MAGE::Model::Model();
-	this->model->checkInterpolationWeights( this->engine );
+	//this->model = new MAGE::Model::Model();
+	//this->model->checkInterpolationWeights( this->engine );
 	
 	// --- SPTK Vocoder ---
 	this->vocoder = new MAGE::Vocoder::Vocoder();
@@ -220,37 +236,15 @@ void MAGE::Mage::init( int argc, char **argv )
 }
 
 void MAGE::Mage::run( void )
-{
-	if( !this->labelQueue->isEmpty() )
+{		
+	if( this->popLabel() )
 	{
-		this->labelQueue->pop( this->label );
-		
-		printf(" run : %s \n", this->label.getQuery().c_str());
-		
-		this->model->computeDuration( this->engine, &(this->label) );
-		
-		this->model->computeParameters( this->engine, &(this->label) );
-		this->model->computeGlobalVariances( this->engine, &(this->label) );
-		
-		this->modelQueue->push( this->model, 1 );
-		
-		if( this->modelQueue->getNumOfItems() > nOfLookup + nOfBackup )
-		{
-			this->flag = false;
-			this->modelQueue->optimizeParameters( this->engine, nOfBackup, nOfLookup );
-			this->modelQueue->generate( this->frameQueue, nOfBackup );				
-			this->modelQueue->pop();
-		} 
-		else if( this->modelQueue->getNumOfItems() > nOfLookup && this->flag )
-		{
-			this->modelQueue->optimizeParameters( this->engine, this->modelQueue->getNumOfItems() - nOfLookup - 1, nOfLookup );
-			this->modelQueue->generate( this->frameQueue, this->modelQueue->getNumOfItems() - nOfLookup - 1 );	
-		}	 
+		this->prepareModel      ( );
+		this->computeDuration   ( );
+		this->computeParameters ( );
+		this->optimizeParameters( );
 	}
-	else 
-	{
-		usleep( 100 );
-	}
+		
 	return;
 }
 
@@ -259,7 +253,6 @@ void MAGE::Mage::pushLabel( Label label )
 	if( !this->labelQueue->isFull() )
 	{
 		this->labelQueue->push( label );
-		this->labelQueue->get( this->label );
 	}
 	else 
 		printf( "label queue is full !\n%s", label.getQuery().c_str() );
@@ -267,36 +260,47 @@ void MAGE::Mage::pushLabel( Label label )
 	return;
 }
 
-void MAGE::Mage::popLabel ( Label &label )
+bool MAGE::Mage::popLabel( void )
 {
 	if( !this->labelQueue->isEmpty() )
 	{
-		this->labelQueue->pop( label );
-		this->labelQueue->get( this->label );
+		this->labelQueue->pop( this->label );
+		return true;
 	}
 	else 
 	{
 		usleep( 100 );
+		return false;
 	}
-	return;
 }
 
-void MAGE::Mage::computeDuration ( void )
+void MAGE::Mage::prepareModel( void )
 {
-	if( !this->labelQueue->isEmpty() )
+	this->model = this->modelQueue->next();
+	this->model->checkInterpolationWeights( this->engine );
+}
+
+void MAGE::Mage::checkInterpolationWeights( bool forced )
+{
+	this->model->checkInterpolationWeights( this->engine, forced );
+}
+
+void MAGE::Mage::computeDuration( void )
+{
+//	if( !this->labelQueue->isEmpty() )
 		this->model->computeDuration( this->engine, &(this->label) );
 	return;
 }
 
 void MAGE::Mage::computeParameters( void )
 {
-	if( !this->labelQueue->isEmpty() )
-	{		
+//	if( !this->labelQueue->isEmpty() )
+//	{		
 		this->model->computeParameters( this->engine, &(this->label) );
 		this->model->computeGlobalVariances( this->engine, &(this->label) );
 		
-		this->modelQueue->push( this->model, 1 );
-	}
+		this->modelQueue->push( );
+//	}
 	return;
 }
 

@@ -57,6 +57,9 @@ namespace MAGE
 			Mage( void );
 			Mage( int argc, char **argv );
 			Mage( std::string confFilename );
+			
+			//destructor
+			~Mage( void );
 		
 			// getters
 			inline Model *getModel( void ){ return( this->model ); };
@@ -98,7 +101,9 @@ namespace MAGE
 			void run( void );
 			void resetVocoder( void );
 			void pushLabel( Label label  );
-			void popLabel ( Label &label );
+			bool popLabel ( void );
+			void prepareModel( void );
+			void checkInterpolationWeights( bool forced=false );
 			void computeDuration   ( void );
 			void computeParameters ( void );
 			void optimizeParameters( void );
