@@ -43,10 +43,10 @@ void genThread::threadedFunction( void )
 	{
 		this->mage->run( );
 		
-	/*	this->mage->popLabel();
-		this->mage->computeDuration   ();
-		this->mage->computeParameters ();
-		this->mage->optimizeParameters();*/
+		//this->mage->popLabel();
+		//this->mage->computeDuration   ();
+		//this->mage->computeParameters ();
+		//this->mage->optimizeParameters();
 	}
 	return;
 }

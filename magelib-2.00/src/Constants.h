@@ -64,6 +64,10 @@ namespace MAGE
 	const int lf0StreamIndex = 1;
 	const int lpfStreamIndex = 2;
 	
+	const int mgcLen = nOfDers * nOfMGCs;
+	const int lf0Len = nOfDers * nOfLF0s;
+	const int lpfLen = nOfDers * nOfLPFs;
+	
 	const int overwrite = 0;
 	const int shift		= 1;
 	const int scale		= 2;

@@ -44,36 +44,32 @@
 
 namespace MAGE 
 {
-	/*class ModelMemory 
+	class ModelMemory 
 	{
 		public :
 		
 			ModelMemory();
 			~ModelMemory();
 				
-			// for every stream, for every frame, every mean
-			double ***mean;			// [nOfStreams][maxNumOfFrames][nOfDers*nOfMGCs] 
-			// for every stream, for every frame, every ivar
-			double ***ivar;			// [nOfStreams][maxNumOfFrames][nOfDers*nOfMGCs] 
-			// for every stream, every gv_mean
-			double ** gv_mean;		// [nOfStreams][maxNumOfFrames][nOfDers*nOfMGCs] 
-			// for every stream, every gv_var
-			double ** gv_vari;		// [nOfStreams][maxNumOfFrames][nOfDers*nOfMGCs] 
-			// for every stream, every gv_switch
-			int ** gv_switch;	// [nOfStreams][maxNumOfFrames][nOfDers*nOfMGCs] 
+			// for every state
+			double *duration_mean; 
+			double *duration_vari;
+			int    *duration_array;
 		
-			// for every stream
-			double **g;		// [nOfStreams][maxNumOfFrames];
-			double ***wuw;	// [nOfStreams][maxNumOfFrames][maxWindowWidth]
-			double **wum;	// [nOfStreams][maxNumOfFrames];
+			// # of MGC coefficients for the MLSA filter & # of derivations: ∆( 0 ), ∆( 1 ), ∆( 3 )
+			double *mgc_mean; // [nOfDers * nOfMGCs]
+			double *mgc_vari; // [nOfDers * nOfMGCs]
 		
-			// output parameter vector for otimized mgc, lf0 and lpf for every stream, for every frame
-			double ***par;	// [nOfStreams][maxNumOfFrames][nOfDers*nOfMGCs] 
-					
-			int *voiced_unvoiced; // [maxNumOfFrames]
+			// fundamental frequency & # of derivations: ∆( 0 ), ∆( 1 ), ∆( 3 )
+			double *lf0_mean; // [nOfDers * nOfLF0s]
+			double *lf0_vari; // [nOfDers * nOfLF0s]
+		
+			// # of low-pass filter coefficients & # of derivations: ∆( 0 ), ∆( 1 ), ∆( 3 )
+			double *lpf_mean; // [nOfDers * nOfLPFs]
+			double *lpf_vari; // [nOfDers * nOfLPFs]
 			
-			char **argv;	// configuration arguments 
-	};*/
+			char strQuery[maxStrLen];
+	};
 
 	class Model 
 	{	
@@ -102,6 +98,8 @@ namespace MAGE
 		
 			int duration;
 			State state[nOfStates];
+			ModelMemory *modelMemory;
+		
 			char strQuery[maxStrLen];
 	};
 } // namespace

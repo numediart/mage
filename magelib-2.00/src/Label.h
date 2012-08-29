@@ -38,12 +38,26 @@
 #include <string>
 #include <cstring>
 #include <sstream>
+
 #include "hts.h"
+#include "Constants.h"
 
 using namespace std;
 
 namespace MAGE 
 {
+	class LabelMemory 
+	{
+		public :
+		
+			LabelMemory();
+			~LabelMemory();
+		
+			char strQuery[maxStrLen];
+			char strBegin[maxStrLen];
+			char strEnd  [maxStrLen];
+	};
+	
 	class Label 
 	{
 		public:
