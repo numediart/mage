@@ -37,7 +37,6 @@ void testApp::setup( void )
 	//this->mage = new MAGE::Mage( this->Argc, this->Argv );		
 	this->mage = new MAGE::Mage( "/Users/Maipn/Documents/myLibs/MAGE/examples/of_0071_osx_release/apps/enterface12/mage2.00/inouts/configSLT.conf" );		
 	
-	//this->mage->parseConfigFile("/Users/Maipn/Documents/myLibs/MAGE/examples/of_0071_osx_release/apps/enterface12/mage2.00/inouts/configSLT.conf");
 	// --- Parameter Generation Thread ---
 	generate = new genThread( this->mage );
 	generate->startThread();
@@ -213,9 +212,7 @@ void testApp::audioOut( float *outBuffer, int bufSize, int nChan )
 			sampleCount = 0; // and reset the sample count for next time
 		} 
 		else 
-		{
 			sampleCount++; // otherwise increment sample count
-		}
 		
 		indchan = k * nChan;
 		outBuffer[indchan] = this->mage->popSamples();
@@ -238,45 +235,22 @@ testApp::testApp( int argc, char **argv )
 
 void testApp::keyPressed( int key )
 {
-	if( key == 'l' )
-	{
-		MAGE::Label label;
-		while( !labellist.empty() )
-		{
-			string q = labellist.front();
-			label.setQuery( q );
-			
-			//label.setSpeed( 0.5 );
-			
-			labellist.pop();
-			
-			this->mage->pushLabel( label );
-		}
-		
-		string s( this->Argv[this->Argc - 1] );
-		parsefile( s );
-	}
-	
 	if( key == 'a' )
 		this->mage->setPitch( 440, MAGE::overwrite );
 	
-	if( key == 'd' )
-		this->mage->setPitch( 2, MAGE::scale );
-	
-	if( key == 'g' )
-		this->mage->setPitch( 0.5, MAGE::scale );
-	
-	if( key == 'h' )
-		this->mage->setPitch( 1000, MAGE::shift );
-
 	if( key == 'b' )
 		this->mage->setPitch( 50, MAGE::shift );
 	
-	if( key == 'r' )
-	{
-		this->mage->resetVocoder( );
-		hopLen = defaultFrameRate;
-	}
+	if( key == 'c' )
+		this->mage->setPitch( 2, MAGE::scale );
+
+	if( key == 'd' )
+		this->mage->setAlpha( 0.8 );
+	
+// --- Speed contor :: we keep one? we embed also the hopLen in the Mage API?
+	
+	if( key == 'e' )
+		this->mage->setSpeed( 4 );
 	
 	if( key == 'f' )
 	{
@@ -292,17 +266,64 @@ void testApp::keyPressed( int key )
 		if( hopLen > defaultFrameRate * 20 )
 			hopLen = defaultFrameRate * 20;
 	}
+
+// --- Speed contor :: we keep one? we embed also the hopLen in the Mage API?
+	
+	if( key == 'g' )
+		this->mage->setPitch( 0.5, MAGE::scale );
+
+	if( key == 'h' )
+		this->mage->setPitch( 1000, MAGE::shift );
+	
+	if( key == 'i' )
+		this->mage->setGamma( 10 );
+	
+	if( key == 'j' )
+		this->mage->setVolume( 5 );
+
+	if( key == 'k' )
+	{
+		int updateFunction[nOfStates] = { 1, 1, 5, 1, 1 };
+		//this->mage->setDuration( updateFunction, MAGE::scale );
+	}
+	
+	
+	if( key == 'l' )
+	{
+		MAGE::Label label;
+		while( !labellist.empty() )
+		{
+			string q = labellist.front();
+			label.setQuery( q );
+						
+			labellist.pop();
+			
+			this->mage->pushLabel( label );
+		}
+		
+		string s( this->Argv[this->Argc - 1] );
+		parsefile( s );
+	}
 	
 	if( key == 'o' )
 	{
 		this->loop = !this->loop;
 		printf( "loop %d\n",this->loop );
 	}
-
+	
 	if ( key == 'p' ) 
 	{
 		pushLabel();
 	}
+	
+	if( key == 'r' )
+	{
+		this->mage->resetVocoder();
+		hopLen = defaultFrameRate;
+	}
+	
+	
+	
 }
 
 void testApp::keyReleased( int key )

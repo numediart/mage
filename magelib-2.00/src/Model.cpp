@@ -220,6 +220,9 @@ void MAGE::Model::updateDuration( int *updateFunction, int action )
 	int i;
 	int duration = 0;
 	
+	if( updateFunction == NULL )
+		return;
+	
 	for( i = 0; i < nOfStates; i++ )
 	{
 		if( action == MAGE::overwrite )
