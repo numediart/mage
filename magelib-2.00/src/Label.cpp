@@ -36,6 +36,18 @@
 #include "Label.h"
 
 // constructor
+MAGE::LabelMemory::LabelMemory()
+{
+}
+
+MAGE::LabelMemory::~LabelMemory( void )
+{
+	free( this->strQuery );
+	free( this->strBegin );
+	free( this->strEnd   );
+}
+
+// constructor
 MAGE::Label::Label( void )
 {
 	this->query = "";

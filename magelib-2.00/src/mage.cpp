@@ -215,56 +215,51 @@ void MAGE::Mage::init( int argc, char **argv )
 
 void MAGE::Mage::run( void )
 {
-	popLabel();
-	computeDuration   ();
-	computeParameters ();
-	optimizeParameters();
-	
+	if( popLabel() )
+	{
+		computeDuration   ();
+		computeParameters ();
+		optimizeParameters();
+	}
 	return;
 }
 
 void MAGE::Mage::pushLabel( Label label )
 {
 	if( !this->labelQueue->isFull() )
-	{
 		this->labelQueue->push( label );
-		this->labelQueue->get( this->label );
-	}
 	else 
 		printf( "label queue is full !\n%s", label.getQuery().c_str() );
 	
 	return;
 }
 
-void MAGE::Mage::popLabel ( void )
+bool MAGE::Mage::popLabel ( void )
 {
 	if( !this->labelQueue->isEmpty() )
 	{
 		this->labelQueue->pop( this->label );
-		this->labelQueue->get( this->label );
+		return( true );
 	}
 	else 
 		usleep( 100 );
-
-	return;
+	
+	return( false );
 }
 
 void MAGE::Mage::computeDuration ( void )
 {
-	if( !this->labelQueue->isEmpty() )
-		this->model->computeDuration( this->engine, &(this->label) );
+	this->model->computeDuration( this->engine, &(this->label) );
 	return;
 }
 
 void MAGE::Mage::computeParameters( void )
 {
-	if( !this->labelQueue->isEmpty() )
-	{		
-		this->model->computeParameters( this->engine, &(this->label) );
-		this->model->computeGlobalVariances( this->engine, &(this->label) );
+	this->model->computeParameters( this->engine, &(this->label) );
+	this->model->computeGlobalVariances( this->engine, &(this->label) );
 		
-		this->modelQueue->push( this->model, 1 );
-	}
+	this->modelQueue->push( this->model, 1 );
+
 	return;
 }
 

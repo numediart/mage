@@ -96,7 +96,7 @@ namespace MAGE
 		
 			// methods
 			void run( void );	
-			void popLabel ( void );
+			bool popLabel ( void );
 			void resetVocoder( void );
 			void pushLabel( Label label  );
 			void computeDuration   ( void );
