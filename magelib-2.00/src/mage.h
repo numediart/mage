@@ -57,6 +57,9 @@ namespace MAGE
 			Mage( void );
 			Mage( int argc, char **argv );
 			Mage( std::string confFilename );
+			
+			//destructor
+			~Mage( void );
 		
 			// getters
 			inline Frame getFrame ( void ){ return( this->frame ); };
@@ -105,6 +108,9 @@ namespace MAGE
 			void resetVocoder ( void );
 			void updateSamples( void );		
 
+			void prepareModel( void );
+			void checkInterpolationWeights( bool forced=false );
+			
 			void computeDuration   ( void );
 			void computeParameters ( void );
 			void optimizeParameters( void );

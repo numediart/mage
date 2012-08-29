@@ -73,6 +73,22 @@ MAGE::Mage::Mage( int argc, char **argv )
 	init( this->argc, this->argv );
 }
 
+MAGE::Mage::~Mage( void )
+{
+	delete this->labelQueue;
+	delete this->modelQueue;
+	delete this->frameQueue;
+	
+	// --- HTS Engine ---
+	delete this->engine;
+	
+	// --- Model ---
+	//delete this->model;
+	
+	// --- SPTK Vocoder ---
+	delete this->vocoder;
+}
+
 // getters
 
 /*MAGE::Frame MAGE::Mage::getFrame( void )
@@ -196,8 +212,8 @@ void MAGE::Mage::init( int argc, char **argv )
 	this->engine->load( argc, argv );
 	
 	// --- Model ---
-	this->model = new MAGE::Model::Model();
-	this->model->checkInterpolationWeights( this->engine );
+	//this->model = new MAGE::Model::Model();
+	//this->model->checkInterpolationWeights( this->engine );
 	
 	// --- SPTK Vocoder ---
 	this->vocoder = new MAGE::Vocoder::Vocoder();
@@ -217,10 +233,12 @@ void MAGE::Mage::run( void )
 {
 	if( popLabel() )
 	{
-		computeDuration   ();
-		computeParameters ();
-		optimizeParameters();
+		this->prepareModel      ();
+		this->computeDuration   ();
+		this->computeParameters ();
+		this->optimizeParameters();
 	}
+		
 	return;
 }
 
@@ -234,31 +252,41 @@ void MAGE::Mage::pushLabel( Label label )
 	return;
 }
 
-bool MAGE::Mage::popLabel ( void )
+bool MAGE::Mage::popLabel( void )
 {
 	if( !this->labelQueue->isEmpty() )
 	{
 		this->labelQueue->pop( this->label );
 		return( true );
 	}
-	else 
+	else
 		usleep( 100 );
 	
 	return( false );
 }
 
-void MAGE::Mage::computeDuration ( void )
+void MAGE::Mage::prepareModel( void )
+{
+	this->model = this->modelQueue->next();
+	this->model->checkInterpolationWeights( this->engine );
+}
+
+void MAGE::Mage::checkInterpolationWeights( bool forced )
+{
+	this->model->checkInterpolationWeights( this->engine, forced );
+}
+
+void MAGE::Mage::computeDuration( void )
 {
 	this->model->computeDuration( this->engine, &(this->label) );
-	return;
 }
 
 void MAGE::Mage::computeParameters( void )
 {
 	this->model->computeParameters( this->engine, &(this->label) );
 	this->model->computeGlobalVariances( this->engine, &(this->label) );
-		
-	this->modelQueue->push( this->model, 1 );
+
+	this->modelQueue->push( );
 
 	return;
 }
