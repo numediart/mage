@@ -76,14 +76,12 @@ MAGE::ModelMemory::~ModelMemory( void )
 
 MAGE::Model::Model()
 {
-	this->modelMemory = new ModelMemory();
 	this->duration = 0;
 	this->weightsChecked = false;
 }
 
 MAGE::Model::~Model( void )
 {
-	delete this->modelMemory;
 }
 
 // getters
@@ -174,20 +172,20 @@ void MAGE::Model::computeDuration( MAGE::Engine *engine, MAGE::Label *label )
 	
 	// convert string query to char* 
 	string query = label->getQuery();
-	strcpy( this->modelMemory->strQuery, query.c_str() );
+	strcpy( this->modelMemory.strQuery, query.c_str() );
 	
 	
 	// HTS_ModelSet_get_duration: get duration using interpolation weight 
-	HTS_ModelSet_get_duration( &ms, this->modelMemory->strQuery, this->modelMemory->duration_mean, 
-									this->modelMemory->duration_vari, global.duration_iw );
+	HTS_ModelSet_get_duration( &ms, this->modelMemory.strQuery, this->modelMemory.duration_mean, 
+									this->modelMemory.duration_vari, global.duration_iw );
 	
 	if( label->getIsForced() ) // use duration set by user : -vp
 	{
 		frame_length = ( label->getEnd()- label->getBegin() )* rate;
 		
 		if( label->getEnd() > 0 )
-			this->duration = mHTS_set_duration( this->modelMemory->duration_array, this->modelMemory->duration_mean,
-												this->modelMemory->duration_vari, nOfStates, frame_length );
+			this->duration = mHTS_set_duration( this->modelMemory.duration_array, this->modelMemory.duration_mean,
+												this->modelMemory.duration_vari, nOfStates, frame_length );
 		else
 			HTS_error( -1,( char * )"HTS_SStreamSet_create: The time of final label is not specified.\n" );
 	}
@@ -197,7 +195,7 @@ void MAGE::Model::computeDuration( MAGE::Engine *engine, MAGE::Label *label )
 		{
 			temp = 0.0;
 			for( i = 0; i < nOfStates; i++ )
-				temp += this->modelMemory->duration_mean[i];
+				temp += this->modelMemory.duration_mean[i];
 			
 			frame_length = temp / label->getSpeed();
 		}
@@ -205,12 +203,12 @@ void MAGE::Model::computeDuration( MAGE::Engine *engine, MAGE::Label *label )
 			frame_length = 0;
 		
 		// set state duration 
-		this->duration = mHTS_set_duration( this->modelMemory->duration_array, this->modelMemory->duration_mean, 
-											this->modelMemory->duration_vari, nOfStates, frame_length );
+		this->duration = mHTS_set_duration( this->modelMemory.duration_array, this->modelMemory.duration_mean, 
+											this->modelMemory.duration_vari, nOfStates, frame_length );
 	}
 	
 	for( i = 0; i < nOfStates; i++ )
-		this->state[i].duration = this->modelMemory->duration_array[i];
+		this->state[i].duration = this->modelMemory.duration_array[i];
 		
 	return;
 }
@@ -225,14 +223,26 @@ void MAGE::Model::updateDuration( int *updateFunction, int action )
 	
 	for( i = 0; i < nOfStates; i++ )
 	{
-		if( action == MAGE::overwrite )
-			this->state[i].duration = updateFunction[i];
+		switch( action )
+		{
+			case MAGE::overwrite:
+				this->state[i].duration = updateFunction[i];
+				break;
+				
+			case MAGE::shift:
+				this->state[i].duration += updateFunction[i];
+				break;
+				
+			case MAGE::scale:
+				this->state[i].duration *= updateFunction[i];
+				break;
+				
+			default:
+				break;
+		}
 		
-		if( action == MAGE::shift )
-			this->state[i].duration += updateFunction[i];
-		
-		if( action == MAGE::scale )
-			this->state[i].duration *= updateFunction[i];
+		if( this->state[i].duration < 0)
+			this->state[i].duration = 0;
 		
 		duration += this->state[i].duration;
 	}
@@ -257,32 +267,32 @@ void MAGE::Model::computeParameters( MAGE::Engine *engine, MAGE::Label *label )
 	
 	for( i = 0; i < nOfStates; i++ )
 	{
-		HTS_ModelSet_get_parameter( &ms, strQuery, this->modelMemory->mgc_mean, this->modelMemory->mgc_vari, 
+		HTS_ModelSet_get_parameter( &ms, strQuery, this->modelMemory.mgc_mean, this->modelMemory.mgc_vari, 
 									NULL, mgcStreamIndex, i+2, global.parameter_iw[mgcStreamIndex] ); 
 		
 		for( j = 0; j < mgcLen; j++ )
 		{
-			this->state[i].mgc[j].mean = this->modelMemory->mgc_mean[j];
-			this->state[i].mgc[j].vari = this->modelMemory->mgc_vari[j];
+			this->state[i].mgc[j].mean = this->modelMemory.mgc_mean[j];
+			this->state[i].mgc[j].vari = this->modelMemory.mgc_vari[j];
 		}
 		
-		HTS_ModelSet_get_parameter( &ms, strQuery, this->modelMemory->lf0_mean, this->modelMemory->lf0_vari, 
+		HTS_ModelSet_get_parameter( &ms, strQuery, this->modelMemory.lf0_mean, this->modelMemory.lf0_vari, 
 									&lf0_msd, lf0StreamIndex, i+2, global.parameter_iw[lf0StreamIndex] ); 
 		
 		for( j = 0; j < lf0Len; j++ )
 		{
-			this->state[i].lf0[j].mean = this->modelMemory->lf0_mean[j];
-			this->state[i].lf0[j].vari = this->modelMemory->lf0_vari[j];
+			this->state[i].lf0[j].mean = this->modelMemory.lf0_mean[j];
+			this->state[i].lf0[j].vari = this->modelMemory.lf0_vari[j];
 			this->state[i].lf0[j].msdFlag = lf0_msd;
 		}
 		
-		HTS_ModelSet_get_parameter( &ms, strQuery, this->modelMemory->lpf_mean, this->modelMemory->lpf_vari, 
+		HTS_ModelSet_get_parameter( &ms, strQuery, this->modelMemory.lpf_mean, this->modelMemory.lpf_vari, 
 									NULL, lpfStreamIndex, i+2, global.parameter_iw[lpfStreamIndex] );
 		
 		for( j = 0; j < lpfLen; j++ )
 		{
-			this->state[i].lpf[j].mean = this->modelMemory->lpf_mean[j];
-			this->state[i].lpf[j].vari = this->modelMemory->lpf_vari[j];
+			this->state[i].lpf[j].mean = this->modelMemory.lpf_mean[j];
+			this->state[i].lpf[j].vari = this->modelMemory.lpf_vari[j];
 		}
 	}
 	
@@ -304,40 +314,40 @@ void MAGE::Model::computeGlobalVariances( MAGE::Engine *engine, MAGE::Label *lab
 	
 	if( HTS_ModelSet_use_gv( &ms, mgcStreamIndex ) )
 	{
-		HTS_ModelSet_get_gv( &ms, strQuery, this->modelMemory->mgc_mean, this->modelMemory->mgc_vari, 
+		HTS_ModelSet_get_gv( &ms, strQuery, this->modelMemory.mgc_mean, this->modelMemory.mgc_vari, 
 							 mgcStreamIndex, global.gv_iw[mgcStreamIndex] );
 		
 		for( i = 0; i < nOfStates; i++ )
 			for( j = 0; j < mgcLen; j++ )
 			{
-				this->state[i].gv_mgc[j].mean = this->modelMemory->mgc_mean[j];
-				this->state[i].gv_mgc[j].vari = this->modelMemory->mgc_vari[j];
+				this->state[i].gv_mgc[j].mean = this->modelMemory.mgc_mean[j];
+				this->state[i].gv_mgc[j].vari = this->modelMemory.mgc_vari[j];
 			}
 	}
 	
 	if( HTS_ModelSet_use_gv( &ms, lf0StreamIndex ) )
 	{
-		HTS_ModelSet_get_gv( &ms, strQuery, this->modelMemory->lf0_mean, this->modelMemory->lf0_vari, 
+		HTS_ModelSet_get_gv( &ms, strQuery, this->modelMemory.lf0_mean, this->modelMemory.lf0_vari, 
 							 lf0StreamIndex, global.gv_iw[lf0StreamIndex] );
 		
 		for( i = 0; i < nOfStates; i++ )
 			for( j = 0; j < lf0Len; j++ )
 			{
-				this->state[i].gv_lf0[j].mean = this->modelMemory->lf0_mean[j];
-				this->state[i].gv_lf0[j].vari = this->modelMemory->lf0_vari[j];
+				this->state[i].gv_lf0[j].mean = this->modelMemory.lf0_mean[j];
+				this->state[i].gv_lf0[j].vari = this->modelMemory.lf0_vari[j];
 			}
 	}
 	
 	if( HTS_ModelSet_use_gv( &ms, lpfStreamIndex ) )
 	{
-		HTS_ModelSet_get_gv( &ms, strQuery, this->modelMemory->lpf_mean, this->modelMemory->lpf_vari, 
+		HTS_ModelSet_get_gv( &ms, strQuery, this->modelMemory.lpf_mean, this->modelMemory.lpf_vari, 
 							 lpfStreamIndex, global.gv_iw[lpfStreamIndex] );
 		
 		for( i = 0; i < nOfStates; i++ )
 			for( j = 0; j < lpfLen; j++ )
 			{
-				this->state[i].gv_lpf[j].mean = this->modelMemory->lpf_mean[j];
-				this->state[i].gv_lpf[j].vari = this->modelMemory->lpf_vari[j];
+				this->state[i].gv_lpf[j].mean = this->modelMemory.lpf_mean[j];
+				this->state[i].gv_lpf[j].vari = this->modelMemory.lpf_vari[j];
 			}
 	}
 	

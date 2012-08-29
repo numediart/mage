@@ -98,7 +98,7 @@ namespace MAGE
 		
 			int duration;
 			State state[nOfStates];
-			ModelMemory *modelMemory;
+			ModelMemory modelMemory;
 		
 			char strQuery[maxStrLen];
 			bool weightsChecked;

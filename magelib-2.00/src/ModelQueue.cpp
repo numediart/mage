@@ -122,14 +122,13 @@ MAGE::ModelQueueMemory::~ModelQueueMemory( void )
 MAGE::ModelQueue::ModelQueue( unsigned int queueLen ):
 MAGE::MemQueue<Model>( queueLen )
 {
-	this->modelQueueMemory = new MAGE::ModelQueueMemory::ModelQueueMemory();
+	//this->modelQueueMemory = new MAGE::ModelQueueMemory::ModelQueueMemory();
 	// this is just to pass the
 	// queueLen to the parent class
 }
 
 MAGE::ModelQueue::~ModelQueue()
 {
-	delete this->modelQueueMemory;
 }
 
 // methods
@@ -173,19 +172,19 @@ void MAGE::ModelQueue::generate( FrameQueue *frameQueue, unsigned int backup )
 			
 			frame = frameQueue->next();
 			for( k = 0; k < nOfMGCs; k++ )
-				frame->mgc[k] = modelQueueMemory->par[mgcStreamIndex][qmgc][k];
+				frame->mgc[k] = this->modelQueueMemory.par[mgcStreamIndex][qmgc][k];
 
 			qmgc++;
 			
 			for( k = 0; k < nOfLPFs; k++ )
-				frame->lpf[k] = modelQueueMemory->par[lpfStreamIndex][qlpf][k];
+				frame->lpf[k] = this->modelQueueMemory.par[lpfStreamIndex][qlpf][k];
 	
 			qlpf++;
 			
 			if( rawData[head].getState( s ).lf0[0].msdFlag > 0.5 )
 			{
 				frame->voiced = true;
-				frame->f0 = exp( modelQueueMemory->par[lf0StreamIndex][qlf0][0] );
+				frame->f0 = exp( this->modelQueueMemory.par[lf0StreamIndex][qlf0][0] );
 
 				qlf0++;
 			} 
@@ -228,9 +227,9 @@ void MAGE::ModelQueue::optimizeParameters( MAGE::Engine *engine, unsigned int ba
 			for( j = 0; j < rawData[head].getState( state ).duration; j++, frame++ )// for every frame
 			{
 				if( rawData[head].getState( state ).lf0[0].msdFlag > global.msd_threshold[1] )	// if voiced
-					modelQueueMemory->voiced_unvoiced[frame] = true;
+					this->modelQueueMemory.voiced_unvoiced[frame] = true;
 				else
-					modelQueueMemory->voiced_unvoiced[frame] = false;
+					this->modelQueueMemory.voiced_unvoiced[frame] = false;
 			}
 		}
 		
@@ -252,7 +251,7 @@ void MAGE::ModelQueue::optimizeParameters( MAGE::Engine *engine, unsigned int ba
 				{
 					for( j = 0; j < rawData[head].getState( state ).duration; j++ ) // for every frame
 					{
-						if( modelQueueMemory->voiced_unvoiced[frame] )
+						if( this->modelQueueMemory.voiced_unvoiced[frame] )
 						{
 							// check current frame is MSD boundary or not 
 							for( k = 0; k < ms.stream[i].window.size; k++ )
@@ -261,7 +260,7 @@ void MAGE::ModelQueue::optimizeParameters( MAGE::Engine *engine, unsigned int ba
 								
 								for( l = ms.stream[i].window.l_width[k]; l <= ms.stream[i].window.r_width[k]; l++ )
 								{
-									if( frame + l < 0 || total_duration <= frame + l || !modelQueueMemory->voiced_unvoiced[frame+l] ) // voiced unvoided
+									if( frame + l < 0 || total_duration <= frame + l || !this->modelQueueMemory.voiced_unvoiced[frame+l] ) // voiced unvoided
 									{
 										not_bound = false;
 										break;
@@ -277,20 +276,20 @@ void MAGE::ModelQueue::optimizeParameters( MAGE::Engine *engine, unsigned int ba
 									
 									if( i == 1 )	// lf0
 									{
-										modelQueueMemory->mean[i][msd_frame][m] = rawData[head].getState( state ).lf0[m].mean;
+										this->modelQueueMemory.mean[i][msd_frame][m] = rawData[head].getState( state ).lf0[m].mean;
 										
 										if( not_bound || k == 0 )
-											modelQueueMemory->ivar[i][msd_frame][m] = HTS_finv( rawData[head].getState( state ).lf0[m].vari );
+											this->modelQueueMemory.ivar[i][msd_frame][m] = HTS_finv( rawData[head].getState( state ).lf0[m].vari );
 										else
-											modelQueueMemory->ivar[i][msd_frame][m] = 0.0;
+											this->modelQueueMemory.ivar[i][msd_frame][m] = 0.0;
 										
 										// ATTENTION !!! Loop assignment
-										modelQueueMemory->gv_mean[i][m] = rawData[head].getState( 0 ).gv_lf0[m].mean;
-										modelQueueMemory->gv_vari[i][m] = rawData[head].getState( 0 ).gv_lf0[m].vari;
+										this->modelQueueMemory.gv_mean[i][m] = rawData[head].getState( 0 ).gv_lf0[m].mean;
+										this->modelQueueMemory.gv_vari[i][m] = rawData[head].getState( 0 ).gv_lf0[m].vari;
 									}
 								}
 							}
-							modelQueueMemory->gv_switch[i][msd_frame] = rawData[head].getState( state ).lf0_gv_switch;
+							this->modelQueueMemory.gv_switch[i][msd_frame] = rawData[head].getState( state ).lf0_gv_switch;
 							msd_frame++;
 						}
 						frame++;
@@ -330,32 +329,32 @@ void MAGE::ModelQueue::optimizeParameters( MAGE::Engine *engine, unsigned int ba
 								
 								if( i == 0 ) // mgcs
 								{
-									modelQueueMemory->mean[i][frame][m] = rawData[head].getState( state ).mgc[m].mean;
+									this->modelQueueMemory.mean[i][frame][m] = rawData[head].getState( state ).mgc[m].mean;
 									
 									if( not_bound || k == 0 )
-										modelQueueMemory->ivar[i][frame][m] = HTS_finv( rawData[head].getState( state ).mgc[m].vari );
+										this->modelQueueMemory.ivar[i][frame][m] = HTS_finv( rawData[head].getState( state ).mgc[m].vari );
 									else
-										modelQueueMemory->ivar[i][frame][m] = 0.0;
+										this->modelQueueMemory.ivar[i][frame][m] = 0.0;
 									
 									// ATTENTION !!! Loop assignment
-									modelQueueMemory->gv_mean[i][m] = rawData[head].getState( 0 ).gv_mgc[m].mean;
-									modelQueueMemory->gv_vari[i][m] = rawData[head].getState( 0 ).gv_mgc[m].vari;
-									modelQueueMemory->gv_switch[i][m] = rawData[head].getState( 0 ).mgc_gv_switch;
+									this->modelQueueMemory.gv_mean[i][m] = rawData[head].getState( 0 ).gv_mgc[m].mean;
+									this->modelQueueMemory.gv_vari[i][m] = rawData[head].getState( 0 ).gv_mgc[m].vari;
+									this->modelQueueMemory.gv_switch[i][m] = rawData[head].getState( 0 ).mgc_gv_switch;
 								}
 								
 								if( i == 2 ) // lpf
 								{
-									modelQueueMemory->mean[i][frame][m] = rawData[head].getState( state ).lpf[m].mean;
+									this->modelQueueMemory.mean[i][frame][m] = rawData[head].getState( state ).lpf[m].mean;
 									
 									if( not_bound || k == 0 )
-										modelQueueMemory->ivar[i][frame][m] = HTS_finv( rawData[head].getState( state ).lpf[m].vari );
+										this->modelQueueMemory.ivar[i][frame][m] = HTS_finv( rawData[head].getState( state ).lpf[m].vari );
 									else
-										modelQueueMemory->ivar[i][frame][m] = 0.0;
+										this->modelQueueMemory.ivar[i][frame][m] = 0.0;
 									
 									// ATTENTION !!! Loop assignment
-									modelQueueMemory->gv_mean[i][m] = rawData[head].getState( 0 ).gv_lpf[m].mean;
-									modelQueueMemory->gv_vari[i][m] = rawData[head].getState( 0 ).gv_lpf[m].vari;
-									modelQueueMemory->gv_switch[i][m] = rawData[head].getState( 0 ).lpf_gv_switch;
+									this->modelQueueMemory.gv_mean[i][m] = rawData[head].getState( 0 ).gv_lpf[m].mean;
+									this->modelQueueMemory.gv_vari[i][m] = rawData[head].getState( 0 ).gv_lpf[m].vari;
+									this->modelQueueMemory.gv_switch[i][m] = rawData[head].getState( 0 ).lpf_gv_switch;
 								}
 							}
 						}
@@ -373,9 +372,9 @@ void MAGE::ModelQueue::optimizeParameters( MAGE::Engine *engine, unsigned int ba
 		pss.win_l_width = ms.stream[i].window.l_width;			// left width of windows 
 		pss.win_r_width = ms.stream[i].window.r_width;			// right width of windows 
 		pss.win_coefficient = ms.stream[i].window.coefficient;	// window coefficients 
-		pss.gv_mean = modelQueueMemory->gv_mean[i];							// mean vector of GV 
-		pss.gv_vari = modelQueueMemory->gv_vari[i];							// variance vector of GV 
-		pss.gv_switch = modelQueueMemory->gv_switch[i];						// GV flag sequence 
+		pss.gv_mean = this->modelQueueMemory.gv_mean[i];							// mean vector of GV 
+		pss.gv_vari = this->modelQueueMemory.gv_vari[i];							// variance vector of GV 
+		pss.gv_switch = this->modelQueueMemory.gv_switch[i];						// GV flag sequence 
 		pss.static_length = ms.stream[i].vector_length / ms.stream[i].window.size;		// static features length 
 		
 		
@@ -390,14 +389,14 @@ void MAGE::ModelQueue::optimizeParameters( MAGE::Engine *engine, unsigned int ba
 			pss.gv_length = 0;				//frame length for GV calculation
 		
 		// matrices for parameter generation 		
-		pss.sm.mean = modelQueueMemory->mean[i];	// mean vector sequence 
-		pss.sm.ivar = modelQueueMemory->ivar[i];	// inverse diag variance sequence
-		pss.sm.g	= modelQueueMemory->g[i];		// vector used in the forward substitution 
-		pss.sm.wum	= modelQueueMemory->wum[i];		// W' U^-1 mu 
-		pss.sm.wuw	= modelQueueMemory->wuw[i];		// W' U^-1 W	
+		pss.sm.mean = this->modelQueueMemory.mean[i];	// mean vector sequence 
+		pss.sm.ivar = this->modelQueueMemory.ivar[i];	// inverse diag variance sequence
+		pss.sm.g	= this->modelQueueMemory.g[i];		// vector used in the forward substitution 
+		pss.sm.wum	= this->modelQueueMemory.wum[i];		// W' U^-1 mu 
+		pss.sm.wuw	= this->modelQueueMemory.wuw[i];		// W' U^-1 W	
 		
 		// output parameter vector in a pre-allocated memory
-		pss.par = modelQueueMemory->par[i];		 
+		pss.par = this->modelQueueMemory.par[i];		 
 		
 		HTS_PStream_mlpg( &pss );			// parameter generation 
 	}
