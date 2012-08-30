@@ -36,20 +36,21 @@ genThread::genThread( Mage * mage )
 
 // methods
 void genThread::threadedFunction( void )
-{	
-	Label label;
-	
+{		
 	while( isThreadRunning() )
 	{
 		this->mage->run( );
 
 		// OR 
 
-		//this->mage->popLabel();
-		//this->mage->computeDuration();
-		//this->mage->updateDuration ();
-		//this->mage->computeParameters ();
-		//this->mage->optimizeParameters();
+		//if( popLabel() )
+		//{
+		//	this->prepareModel();
+		//	this->computeDuration();
+		//	this->updateDuration ();
+		//	this->computeParameters ();
+		//	this->optimizeParameters();
+		//}
 	}
 	return;
 }
