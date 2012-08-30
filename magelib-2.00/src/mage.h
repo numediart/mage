@@ -58,7 +58,7 @@ namespace MAGE
 			Mage( int argc, char ** argv );
 			Mage( std::string confFilename );
 			
-			//destructor
+			// destructor
 			~Mage( void );
 		
 			// getters

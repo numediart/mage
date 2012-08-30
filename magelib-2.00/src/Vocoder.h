@@ -52,8 +52,11 @@ namespace MAGE
 		public:
 		
 			// constructor 
-			Vocoder( int am=( nOfMGCs-1 ), double aalpha=defaultAlpha, int afprd=defaultFrameRate, int aiprd=defaultInterpFrameRate, int astage=defaultGamma, int apd=defaultPadeOrder, bool angain=false );
+			Vocoder( int am = ( nOfMGCs-1 ), double aalpha = defaultAlpha, int afprd = defaultFrameRate, int aiprd = defaultInterpFrameRate, 
+					 int astage = defaultGamma, int apd = defaultPadeOrder, bool angain = false );
 			Vocoder( const Vocoder& orig );
+		
+			// destructor	
 			virtual ~Vocoder();
 			
 			// getters

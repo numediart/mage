@@ -87,17 +87,16 @@ class testApp : public ofBaseApp
 	
 		//--- Mage
 		MAGE::Mage * mage;
+		MAGE::Mage * mageSLT;
+		MAGE::Mage * mageBDL;
 	
 		genThread * generate;
 	 
 		//---
 	
-		float * sampleFrame;		// frame to be OLAed
+		float * sampleFrame;	 // frame to be OLAed
 		obOlaBuffer * olaBuffer; // overlap-add buffer
-		int frameLen; // frame size
-	//	int hopLen;	// hop size
-		int sampleCount;		// sample count for triggering
-		bool drawSampleFrame;	// do we show the frame
+		bool drawSampleFrame;	 // do we show the frame
 		bool loop;
 		bool fill;
 		

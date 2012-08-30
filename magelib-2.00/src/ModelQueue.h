@@ -50,7 +50,10 @@ namespace MAGE
 	{
 		public :
 		
+			// destructor
 			ModelQueueMemory();
+			
+			// destructor
 			~ModelQueueMemory();
 		
 			// for every stream, for every frame, every mean
@@ -65,7 +68,7 @@ namespace MAGE
 			int ** gv_switch;		// [nOfStreams][maxNumOfFrames][nOfDers * nOfMGCs] 
 		
 			// for every stream
-			double **  g;		// [nOfStreams][maxNumOfFrames];
+			double **  g;	// [nOfStreams][maxNumOfFrames];
 			double **  wum;	// [nOfStreams][maxNumOfFrames];
 			double *** wuw;	// [nOfStreams][maxNumOfFrames][maxWindowWidth]
 
@@ -81,15 +84,17 @@ namespace MAGE
 		
 			// constructor
 			ModelQueue( unsigned int queueLen );
+		
+			// destructor
 			~ModelQueue();
 			
 			// getters 
 			inline ModelQueueMemory *getModelQueueMemory( void ){ return( &this->modelQueueMemory ); };
 
 			// methods
-			void generate( FrameQueue * frameQueue, unsigned int backup=nOfBackup );
-			void optimizeParameters( MAGE::Engine * engine, unsigned int backup=nOfBackup, unsigned int lookup=nOfLookup );
 			void printQueue( void );
+			void generate( FrameQueue * frameQueue, unsigned int backup = nOfBackup );
+			void optimizeParameters( MAGE::Engine * engine, unsigned int backup = nOfBackup, unsigned int lookup = nOfLookup );
 
 		protected:
 		

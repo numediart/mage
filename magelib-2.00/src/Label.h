@@ -50,7 +50,10 @@ namespace MAGE
 	{
 		public :
 		
+			// constructor 
 			LabelMemory();
+		
+			// destructor
 			~LabelMemory();
 		
 			char strQuery[maxStrLen];
@@ -65,10 +68,9 @@ namespace MAGE
 			// constructor
 			Label( void );
 			Label( string q );
+		
+			// destructor
 			~Label( void );
-
-			void printQuery( void );
-			void parseQuery( string q );
 	
 			// getters
 			inline string getQuery( void ){ return( this->query ); };
@@ -88,6 +90,10 @@ namespace MAGE
 		
 			inline void setSpeed( double aspeed ){ this->speed = aspeed; };
 			inline void setIsForced( bool isDurationForced ){ this->isForced = isDurationForced; };
+		
+			// methods
+			void printQuery( void );
+			void parseQuery( string q );
 
 
 		protected:

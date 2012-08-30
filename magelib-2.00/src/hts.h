@@ -48,27 +48,30 @@ namespace MAGE
 		
 		// constructor
 		Engine();
+		
+		// destructor
 		~Engine();
 		
 		// getters
-		HTS_Global getGlobal( void );
-		HTS_ModelSet getModelSet( void );
-		HTS_PStream getPStream( void );
-		
+		inline HTS_Global   getGlobal  ( void ){ return( this->global ); };
+		inline HTS_PStream  getPStream ( void ){ return( this->pss	  ); };
+		inline HTS_ModelSet getModelSet( void ){ return( this->ms     ); };
+
 		//setters
-		void setGlobal( HTS_Global global );
-		void setModelSet( HTS_ModelSet ms );
-		void setPStream( HTS_PStream pss );
-		
+		inline void setGlobal  ( HTS_Global   aglobal ){ this->global = aglobal; };
+		inline void setPStream ( HTS_PStream  apss    ){ this->pss	  = apss;    };
+		inline void setModelSet( HTS_ModelSet ams     ){ this->ms	  = ams;     };
+
 		// methods
 		void load( int argc, char ** argv );
 		
 	protected:
 		
 		//int nOfLabels;
-		HTS_Global global;	// global settings 
+		HTS_Global   global;// global settings 
+		HTS_PStream  pss;	// set of PDF streams
 		HTS_ModelSet ms;	// set of duration models, HMMs and GV models 
-		HTS_PStream pss;	// set of PDF streams
+
 		
 	private:
 		

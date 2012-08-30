@@ -42,35 +42,35 @@
 // constructor
 MAGE::Vocoder::Vocoder( int am, double aalpha, int afprd, int aiprd, int astage, int apd, bool angain )
 {
-	this->m = am;			//nOfMGCs-1;
-	this->fprd = afprd;		//240;
-	this->iprd = aiprd;		//1;
-	this->stage = astage;	//0;
-	this->pd = apd;			//4;
-	this->ngain = angain;	//true;
-	this->alpha = aalpha;	//0.55;
+	this->m = am;			// nOfMGCs-1;
+	this->fprd = afprd;		// 240;
+	this->iprd = aiprd;		// 1;
+	this->stage = astage;	// 0;
+	this->pd = apd;			// 4;
+	this->ngain = angain;	// true;
+	this->alpha = aalpha;	// 0.55;
 	
 	//excitation
 	this->count = 0;
 	
 	this->action = noaction;
 	
-	this->f0 = 110;//110Hz, default pitch
+	this->f0 = 110;// 110Hz, default pitch
 	this->t0 = defaultSamplingRate / this->f0; // defaultSamplingRate = 48000
 	
 	this->voiced = false;
 	
 	this->volume = 1.0;
 	
-	if( stage != 0 ) /* MGLSA*/
+	if( stage != 0 ) // MGLSA
 		gamma = -1 / ( double )stage;
 	
 	this->csize = 0;
 	
 	if( stage != 0 )
-		this->csize = m + m + m + 3 + ( m + 1 ) * stage;  /* MGLSA*/
+		this->csize = m + m + m + 3 + ( m + 1 ) * stage;  // MGLSA
 	else
-		this->csize = 3 * ( m + 1 )+ 3 * ( pd + 1 ) + pd * ( m + 2 );  /* MLSA	*/
+		this->csize = 3 * ( m + 1 )+ 3 * ( pd + 1 ) + pd * ( m + 2 );  // MLSA
 	
 	c = new double[this->csize];
 	
@@ -102,6 +102,7 @@ MAGE::Vocoder::Vocoder( const Vocoder& orig )
 {
 }
 
+// destructor
 MAGE::Vocoder::~Vocoder()
 {
 	delete[] c;
@@ -112,7 +113,7 @@ MAGE::Vocoder::~Vocoder()
 
 // setters
 
- /** 
+/** 
  * This function forces the value of the pitch used by the vocoder instead of the
  * one in frame.f0. Note that this will get overwritten at the next push( frame ).
  * Therefore it is needed to call setPitch()after every push().
@@ -123,21 +124,21 @@ MAGE::Vocoder::~Vocoder()
  * @param forceVoiced in case the current frame is unvoiced, you can force it to 
  * 					become voiced with the given pitch otherwise it would ignore
  * 					the pitch set until next frame
-*/
+ */
 void MAGE::Vocoder::setPitch( double pitch, int action, bool forceVoiced )
 {
 	switch( action )
 	{
 		case MAGE::overwrite:
-			this->f0 = pitch;//Hz
+			this->f0 = pitch; // Hz
 			break;
 			
 		case MAGE::shift:
-			this->f0 = ( this->f0 ) + ( pitch ); //Hz
+			this->f0 = ( this->f0 ) + ( pitch ); // Hz
 			break;
 			
 		case MAGE::scale:
-			this->f0 = ( this->f0 ) * ( pitch ); //Hz
+			this->f0 = ( this->f0 ) * ( pitch ); // Hz
 			break;
 			
 		case MAGE::synthetic:
@@ -170,11 +171,11 @@ void MAGE::Vocoder::setVoiced( bool forceVoiced )
 
 
 // methods
- /** 
+/** 
  * 
  * @param frame an instance of class Frame
  * @param ignoreVoicing if true, ignore frame.voiced information and use latest known information
-*/
+ */
 void MAGE::Vocoder::push( Frame &frame, bool ignoreVoicing )
 {
 	int i;
@@ -185,7 +186,7 @@ void MAGE::Vocoder::push( Frame &frame, bool ignoreVoicing )
 		
 		mc2b( frame.mgc, cc, m, alpha );
 		
-		if( stage != 0 ) /* MGLSA*/
+		if( stage != 0 ) // MGLSA
 		{
 			gnorm( cc, cc, m, gamma );
 			cc[0] = log( cc[0] );
@@ -200,7 +201,7 @@ void MAGE::Vocoder::push( Frame &frame, bool ignoreVoicing )
 		
 		mc2b( frame.mgc, c, m, alpha );
 		
-		if( stage != 0 ) /* MGLSA*/
+		if( stage != 0 ) // MGLSA
 		{ 
 			gnorm( c, c, m, gamma );
 			c[0] = log( c[0] );
@@ -219,15 +220,15 @@ void MAGE::Vocoder::push( Frame &frame, bool ignoreVoicing )
 	switch( action )
 	{
 		case MAGE::overwrite:
-			this->f0 = this->actionValue;	//Hz
+			this->f0 = this->actionValue; // Hz
 			break;
 			
 		case MAGE::shift:
-			this->f0 = ( frame.f0 ) + ( this->actionValue ); //Hz
+			this->f0 = ( frame.f0 ) + ( this->actionValue ); // Hz
 			break;
 			
 		case MAGE::scale:
-			this->f0 = ( frame.f0 ) * ( this->actionValue );  //Hz
+			this->f0 = ( frame.f0 ) * ( this->actionValue );  // Hz
 			break;
 			
 		case MAGE::synthetic:
@@ -248,11 +249,11 @@ void MAGE::Vocoder::push( Frame &frame, bool ignoreVoicing )
 	return;
 }
 
- /** 
+/** 
  * 
  * @param frame a pointer to an instance of class Frame
  * @param ignoreVoicing if true, ignore frame->voiced information and use latest known information
-*/
+ */
 void MAGE::Vocoder::push( Frame * frame, bool ignoreVoicing )
 {
 	int i;
@@ -278,7 +279,7 @@ void MAGE::Vocoder::push( Frame * frame, bool ignoreVoicing )
 		
 		mc2b( frame->mgc, c, m, alpha );
 		
-		if( stage != 0 ) /* MGLSA*/
+		if( stage != 0 ) // MGLSA
 		{ 
 			gnorm( c, c, m, gamma );
 			c[0] = log( c[0] );
@@ -297,15 +298,15 @@ void MAGE::Vocoder::push( Frame * frame, bool ignoreVoicing )
 	switch( action )
 	{
 		case MAGE::overwrite:
-			this->f0 = this->actionValue;	//Hz
+			this->f0 = this->actionValue;	// Hz
 			break;
 			
 		case MAGE::shift:
-			this->f0 = ( frame->f0 ) + ( this->actionValue ); //Hz
+			this->f0 = ( frame->f0 ) + ( this->actionValue ); // Hz
 			break;
 			
 		case MAGE::scale:
-			this->f0 = ( frame->f0 ) * ( this->actionValue );  //Hz
+			this->f0 = ( frame->f0 ) * ( this->actionValue );  // Hz
 			break;
 			
 		case MAGE::synthetic:
@@ -326,10 +327,10 @@ void MAGE::Vocoder::push( Frame * frame, bool ignoreVoicing )
 	return;
 }
 
- /** 
+/** 
  * 
  * @return one sample from the vocoder given current mgc and lf0
-*/
+ */
 double MAGE::Vocoder::pop()
 {
 	int i;
@@ -353,14 +354,14 @@ double MAGE::Vocoder::pop()
 		count = 0;
 	}
 	
-	if( stage != 0 )  /* MGLSA*/
+	if( stage != 0 )  // MGLSA
 	{ 
 		if( !ngain )
 			x *= exp( c[0] );
 		
 		x = mglsadf( x, c, m, alpha, stage, d );
 	} 
-	else  /* MLSA*/
+	else  // MLSA
 	{ 
 		if( !ngain )
 			x *= exp( c[0] );
@@ -384,19 +385,19 @@ double MAGE::Vocoder::pop()
 	return( x );
 }
 
- /** 
+/** 
  * 
  * @return true if at least one frame has been pushed, false otherwise
-*/
+ */
 bool MAGE::Vocoder::ready()
 { 
 	return (!this->flagFirstPush); 
 }
 
- /** 
+/** 
  * Set the internal members of Vocoder to the contructor values.
  * To be used in case the vocoder becomes irremediably unstable
-*/
+ */
 void MAGE::Vocoder::reset()
 {
 	for( int i=0; i<this->csize; i++ )

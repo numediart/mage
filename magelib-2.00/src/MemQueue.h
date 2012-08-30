@@ -54,17 +54,19 @@ namespace MAGE
 	
 			// constructor 
 			MemQueue( unsigned int queueLen );
+		
+			// destructor
 			~MemQueue( void );
 	
 			// getters
 			unsigned int getNumOfItems( void );
 
 			// methods
-			void push( Item * item, unsigned int nOfItems=1 );
-			void push( unsigned int nOfItems=1 );
-			void pop( Item * item, unsigned int nOfItems=1 );
-			void pop( unsigned int nOfItems=1 );
-			void get( Item * item, unsigned int nOfItems=1 );
+			void push( Item * item, unsigned int nOfItems = 1 );
+			void push( unsigned int nOfItems = 1 );
+			void pop( Item * item, unsigned int nOfItems = 1 );
+			void pop( unsigned int nOfItems = 1 );
+			void get( Item * item, unsigned int nOfItems = 1 );
 			Item * get( void );
 			Item * next( void );
 	

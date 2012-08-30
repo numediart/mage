@@ -40,6 +40,7 @@ MAGE::LabelMemory::LabelMemory()
 {
 }
 
+// destructor
 MAGE::LabelMemory::~LabelMemory( void )
 {
 }
@@ -59,10 +60,10 @@ MAGE::Label::Label( string q )
 	this->speed = 1.0;
 }
 
+// destructor
 MAGE::Label::~Label( void )
 {
 }
-
 
 // getters
 

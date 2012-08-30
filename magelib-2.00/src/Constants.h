@@ -30,7 +30,6 @@
 
 namespace MAGE 
 {
-	
 	const unsigned int nOfDers = 3;		// # of derivations: ∆( 0 ), ∆( 1 ), ∆( 3 )
 	const unsigned int nOfMGCs = 35;	// # of MGC coefficients for the MLSA filter
 	const unsigned int nOfLF0s = 1;		// fundamental frequency is a single value
@@ -61,14 +60,17 @@ namespace MAGE
 	const int defaultPadeOrder = 5;
 	const int defaultGamma = 0;
 	
+	// --- Stream Index --- 
 	const int mgcStreamIndex = 0;
 	const int lf0StreamIndex = 1;
 	const int lpfStreamIndex = 2;
 	
+	// --- Parameter Length ---
 	const int mgcLen = nOfDers * nOfMGCs;
 	const int lf0Len = nOfDers * nOfLF0s;
 	const int lpfLen = nOfDers * nOfLPFs;
 	
+	// --- Actions ---
 	const int noaction	= -1;
 	const int overwrite = 0;
 	const int shift		= 1;

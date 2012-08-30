@@ -26,7 +26,7 @@
  /* 																								*/
  /* ----------------------------------------------------------------------------------------------- */
 
- /** 
+/** 
  * 	 @file	Mage.cpp
  * 	 @author M. Astrinaki
  */
@@ -75,18 +75,17 @@ MAGE::Mage::Mage( int argc, char ** argv )
 	init( this->argc, this->argv );
 }
 
+// destructor
 MAGE::Mage::~Mage( void )
 {
+	// --- Queues ---
 	delete this->labelQueue;
 	delete this->modelQueue;
 	delete this->frameQueue;
 	
 	// --- HTS Engine ---
 	delete this->engine;
-	
-	// --- Model ---
-	//delete this->model;
-	
+		
 	// --- SPTK Vocoder ---
 	delete this->vocoder;
 }
@@ -366,7 +365,6 @@ void MAGE::Mage::reset( void )
 
 void MAGE::Mage::updateSamples( void )
 {
-	// ATTENTION!!! should we generate the samples from the parameters in the audio thread or befor?!  
 	if( this->sampleCount >= this->hopLen-1 ) // if we hit the hop length
 	{	
 		if( !this->frameQueue->isEmpty() )

@@ -28,11 +28,12 @@
 
 #include "hts.h"
 
-//default constructor
+// constructor
 MAGE::Engine::Engine()
 {
 }
 
+// destructor
 MAGE::Engine::~Engine()
 {
 	 /* free*/
@@ -60,39 +61,7 @@ MAGE::Engine::~Engine()
 	free( this->fn_ts_gvf );
 }
 
-// getters
-HTS_Global MAGE::Engine::getGlobal( void )
-{
-	return( this->global );
-}
-
-HTS_ModelSet MAGE::Engine::getModelSet( void )
-{
-	return( this->ms );
-}
-
-HTS_PStream MAGE::Engine::getPStream( void )
-{
-	return( this->pss );
-}
-
-//setters
-void MAGE::Engine::setGlobal( HTS_Global global )
-{
-	this->global = global;
-}
-
-void MAGE::Engine::setModelSet( HTS_ModelSet ms )
-{
-	this->ms = ms;
-}
-
-void MAGE::Engine::setPStream( HTS_PStream pss )
-{
-	this->pss = pss;
-}
-
-// public methods
+// methods
 void MAGE::Engine::load( int argc, char ** argv )
 {
 	int i;

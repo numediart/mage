@@ -80,6 +80,7 @@ MAGE::ModelQueueMemory::ModelQueueMemory()
 	}	
 }
 
+// destructor
 MAGE::ModelQueueMemory::~ModelQueueMemory( void )
 {
 	int k;
@@ -127,6 +128,7 @@ MAGE::MemQueue<Model>( queueLen )
 	// queueLen to the parent class
 }
 
+// destructor
 MAGE::ModelQueue::~ModelQueue()
 {
 }

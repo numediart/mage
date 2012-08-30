@@ -60,6 +60,7 @@ MAGE::ModelMemory::ModelMemory()
 	this->lpf_vari = ( double * ) calloc( nOfDers * nOfLPFs, sizeof( double ) );	// [nOfDers * nOfLPFs]
 }
 
+// destructor
 MAGE::ModelMemory::~ModelMemory( void )
 {
 	free( this->duration_mean  ); 
@@ -73,13 +74,14 @@ MAGE::ModelMemory::~ModelMemory( void )
 	free( this->lpf_vari );
 }
 
-
+// constructor
 MAGE::Model::Model()
 {
 	this->duration = 0;
 	this->weightsChecked = false;
 }
 
+// destructor
 MAGE::Model::~Model( void )
 {
 }
@@ -151,7 +153,6 @@ void MAGE::Model::checkInterpolationWeights( MAGE::Engine * engine, bool forced 
 							global.gv_iw[i][j] /= temp; // ATTENTION !!! should not change in the model !!!
 			}
 		}
-		
 		this->weightsChecked = true;
 	}
 	return;
