@@ -1,34 +1,34 @@
-/* --------------------------------------------------------------------------------------------	*/
-/*																								*/
-/*	This file is part of MAGE / pHTS( the performative HMM-based speech synthesis system )		*/
-/*																								*/
-/*	MAGE / pHTS is free software: you can redistribute it and/or modify it under the terms		*/
-/*	of the GNU General Public License as published by the Free Software Foundation, either		*/
-/*	version 3 of the license, or any later version.												*/
-/*																								*/
-/*	MAGE / pHTS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;	*/	
-/*	without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	*/
-/*	See the GNU General Public License for more details.										*/
-/*																								*/	
-/*	You should have received a copy of the GNU General Public License along with MAGE / pHTS.	*/ 
-/*	If not, see http://www.gnu.org/licenses/													*/
-/*																								*/
-/*																								*/	
-/*	Copyright 2011 University of Mons :															*/
-/*																								*/	
-/*			Numediart Institute for New Media Art( www.numediart.org )							*/
-/*			Acapela Group ( www.acapela-group.com )												*/
-/*																								*/
-/*																								*/
-/*	 Developed by :																				*/
-/*																								*/
-/*		Maria Astrinaki, Geoffrey Wilfart, Alexis Moinet, Nicolas d'Alessandro, Thierry Dutoit	*/
-/*																								*/
-/* --------------------------------------------------------------------------------------------	*/
+ /* ----------------------------------------------------------------------------------------------- */
+ /* 																								*/
+ /* 	This file is part of MAGE / pHTS( the performative HMM-based speech synthesis system )		*/
+ /* 																								*/
+ /* 	MAGE / pHTS is free software: you can redistribute it and/or modify it under the terms		*/
+ /* 	of the GNU General Public License as published by the Free Software Foundation, either		*/
+ /* 	version 3 of the license, or any later version.												*/
+ /* 																								*/
+ /* 	MAGE / pHTS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;	*/	
+ /* 	without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	*/
+ /* 	See the GNU General Public License for more details.										*/
+ /* 																								*/	
+ /* 	You should have received a copy of the GNU General Public License along with MAGE / pHTS.	*/ 
+ /* 	If not, see http://www.gnu.org/licenses/													*/
+ /* 																								*/
+ /* 																								*/	
+ /* 	Copyright 2011 University of Mons :															*/
+ /* 																								*/	
+ /* 			Numediart Institute for New Media Art( www.numediart.org )							*/
+ /* 			Acapela Group ( www.acapela-group.com )												*/
+ /* 																								*/
+ /* 																								*/
+ /* 	 Developed by :																				*/
+ /* 																								*/
+ /* 		Maria Astrinaki, Geoffrey Wilfart, Alexis Moinet, Nicolas d'Alessandro, Thierry Dutoit	*/
+ /* 																								*/
+ /* ----------------------------------------------------------------------------------------------- */
 
-/**
- *	 @file	Mage.cpp
- *	 @author M. Astrinaki
+ /** 
+ * 	 @file	Mage.cpp
+ * 	 @author M. Astrinaki
  */
 
 #include "mage.h"
@@ -53,7 +53,11 @@ MAGE::Mage::Mage( void )
 	this->argc = 0;
 	this->argv = NULL;
 	this->flag = true;
-	this->speed = 1;
+	this->labelSpeed = 1;
+	this->sampleCount = 0;
+	this->action = synthetic;
+	this->updateFunction = NULL;
+	this->hopLen = defaultFrameRate;
 }
 
 MAGE::Mage::Mage( std::string confFilename )
@@ -63,7 +67,7 @@ MAGE::Mage::Mage( std::string confFilename )
 	init( this->argc, this->argv );
 }
 
-MAGE::Mage::Mage( int argc, char **argv )
+MAGE::Mage::Mage( int argc, char ** argv )
 {	
 	this->argc = argc;
 	this->argv = argv;
@@ -120,8 +124,38 @@ double MAGE::Mage::getDuration( void )
 
 // setters
 void MAGE::Mage::setPitch ( double pitch, int action )
-{
+{	
 	this->vocoder->setPitch( pitch, action );
+	return;
+}
+
+void MAGE::Mage::setSpeed ( double speed, int action )
+{
+	switch( action )
+	{
+		case MAGE::overwrite:
+			this->hopLen = speed;
+			break;
+			
+		case MAGE::shift:
+			this->hopLen = ( this->hopLen ) + ( speed ); 
+			break;
+			
+		case MAGE::scale:
+			this->hopLen = ( this->hopLen ) * ( speed ); 
+			break;
+			
+		case MAGE::synthetic:
+		default:
+			this->hopLen = defaultFrameRate;
+	}
+	
+	if( hopLen < 1 )
+		hopLen = 1;
+
+	if( hopLen > defaultFrameRate * 20 )
+		hopLen = defaultFrameRate * 20;
+	
 	return;
 }
 
@@ -149,9 +183,10 @@ void MAGE::Mage::setVolume( double volume )
 	return;
 }
 
-void MAGE::Mage::setDuration( int *updateFunction, int action )
+void MAGE::Mage::setDuration( int * updateFunction, int action )
 {
-	this->model->updateDuration( updateFunction, action ); 
+	this->action = action;
+	this->updateFunction = updateFunction;
 	return;
 }
 
@@ -184,15 +219,14 @@ void MAGE::Mage::parseConfigFile( std::string confFilename )
 			}
 		}
 	}
-	
-	this->argc = k;
-	
 	confFile.close();
-	
+
+	this->argc = k;
+
 	return;
 }
 
-void MAGE::Mage::init( int argc, char **argv )
+void MAGE::Mage::init( int argc, char ** argv )
 {	
 	// --- Queues ---	
 	this->labelQueue = new MAGE::LabelQueue( maxLabelQueueLen );
@@ -203,10 +237,6 @@ void MAGE::Mage::init( int argc, char **argv )
 	this->engine = new MAGE::Engine();
 	this->engine->load( argc, argv );
 	
-	// --- Model ---
-	//this->model = new MAGE::Model::Model();
-	//this->model->checkInterpolationWeights( this->engine );
-	
 	// --- SPTK Vocoder ---
 	this->vocoder = new MAGE::Vocoder::Vocoder();
 	
@@ -214,8 +244,11 @@ void MAGE::Mage::init( int argc, char **argv )
 	this->labelQueue->get( this->label );
 	
 	this->flag = true;
-	this->speed = 1;
-	
+	this->labelSpeed = 1;
+	this->sampleCount = 0;
+	this->action = synthetic;
+	this->updateFunction = NULL;
+	this->hopLen = defaultFrameRate;
 	return;
 }
 
@@ -223,9 +256,9 @@ void MAGE::Mage::run( void )
 {
 	if( popLabel() )
 	{
-		this->prepareModel      ();
-		this->computeDuration   ();
-		//this->updateDuration
+		this->prepareModel();
+		this->computeDuration();
+		this->updateDuration ();
 		this->computeParameters ();
 		this->optimizeParameters();
 	}
@@ -248,7 +281,7 @@ bool MAGE::Mage::popLabel( void )
 	if( !this->labelQueue->isEmpty() )
 	{
 		this->labelQueue->pop( this->label );
-		this->label.setSpeed ( this->speed );
+		this->label.setSpeed ( this->labelSpeed );
 		return( true );
 	}
 	else
@@ -261,16 +294,27 @@ void MAGE::Mage::prepareModel( void )
 {
 	this->model = this->modelQueue->next();
 	this->model->checkInterpolationWeights( this->engine );
+	return;
 }
 
 void MAGE::Mage::checkInterpolationWeights( bool forced )
 {
 	this->model->checkInterpolationWeights( this->engine, forced );
+	return;
 }
 
 void MAGE::Mage::computeDuration( void )
 {
 	this->model->computeDuration( this->engine, &(this->label) );
+	return;
+}
+
+void MAGE::Mage::updateDuration( void )
+{
+	this->model->updateDuration( this->updateFunction, this->action ); 
+	this->action = synthetic;
+	this->updateFunction = NULL;
+	return;
 }
 
 void MAGE::Mage::computeParameters( void )
@@ -312,10 +356,9 @@ void MAGE::Mage::updateSamples( void )
 	{				 
 		this->frameQueue->pop( &this->frame, 1 ); // we pop a speech parameter frame
 		
-		//any modification to f0 can go here
-		//frame.f0 = frame.f0*f0scale + f0shift;
 		this->vocoder->push( this->frame );
-	} 	return;
+	}
+ 	return;
 }
 
 double MAGE::Mage::popSamples ( void )

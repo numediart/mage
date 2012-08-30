@@ -1,30 +1,30 @@
-/* --------------------------------------------------------------------------------------------	*/
-/*																								*/
-/*	This file is part of MAGE / pHTS( the performative HMM-based speech synthesis system )		*/
-/*																								*/
-/*	MAGE / pHTS is free software: you can redistribute it and/or modify it under the terms		*/
-/*	of the GNU General Public License as published by the Free Software Foundation, either		*/
-/*	version 3 of the license, or any later version.												*/
-/*																								*/
-/*	MAGE / pHTS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;	*/	
-/*	without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	*/
-/*	See the GNU General Public License for more details.										*/
-/*																								*/	
-/*	You should have received a copy of the GNU General Public License along with MAGE / pHTS.	*/ 
-/*	If not, see http://www.gnu.org/licenses/													*/
-/*																								*/
-/*																								*/	
-/*	Copyright 2011 University of Mons :															*/
-/*																								*/	
-/*			Numediart Institute for New Media Art( www.numediart.org )							*/
-/*			Acapela Group ( www.acapela-group.com )												*/
-/*																								*/
-/*																								*/
-/*	 Developed by :																				*/
-/*																								*/
-/*		Maria Astrinaki, Geoffrey Wilfart, Alexis Moinet, Nicolas d'Alessandro, Thierry Dutoit	*/
-/*																								*/
-/* --------------------------------------------------------------------------------------------	*/
+ /* ----------------------------------------------------------------------------------------------- */
+ /* 																								*/
+ /* 	This file is part of MAGE / pHTS( the performative HMM-based speech synthesis system )		*/
+ /* 																								*/
+ /* 	MAGE / pHTS is free software: you can redistribute it and/or modify it under the terms		*/
+ /* 	of the GNU General Public License as published by the Free Software Foundation, either		*/
+ /* 	version 3 of the license, or any later version.												*/
+ /* 																								*/
+ /* 	MAGE / pHTS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;	*/	
+ /* 	without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	*/
+ /* 	See the GNU General Public License for more details.										*/
+ /* 																								*/	
+ /* 	You should have received a copy of the GNU General Public License along with MAGE / pHTS.	*/ 
+ /* 	If not, see http://www.gnu.org/licenses/													*/
+ /* 																								*/
+ /* 																								*/	
+ /* 	Copyright 2011 University of Mons :															*/
+ /* 																								*/	
+ /* 			Numediart Institute for New Media Art( www.numediart.org )							*/
+ /* 			Acapela Group ( www.acapela-group.com )												*/
+ /* 																								*/
+ /* 																								*/
+ /* 	 Developed by :																				*/
+ /* 																								*/
+ /* 		Maria Astrinaki, Geoffrey Wilfart, Alexis Moinet, Nicolas d'Alessandro, Thierry Dutoit	*/
+ /* 																								*/
+ /* ----------------------------------------------------------------------------------------------- */
 
 #include "testApp.h"
 
@@ -128,7 +128,7 @@ void testApp::update( void )
 			
 			if( oscAction == overwrite )
 			{
-				pitch = 65.406395 *( ( oscPitch/12 )*( oscPitch/12 ) );
+				pitch = 65.406395 * ( ( oscPitch/12 ) * ( oscPitch/12 ) );
 				printf( "pitch_overwrite : %f\n", pitch );
 				this->mage->setPitch( pitch, overwrite );
 			}
@@ -136,7 +136,7 @@ void testApp::update( void )
 			if( oscAction == shift )
 			{
 				//pitch = ofMap( oscPitch, -3, 3, -3, 3, true );
-				pitch = 65.406395 *( ( oscPitch/12 )*( oscPitch/12 ) );
+				pitch = 65.406395 * ( ( oscPitch/12 ) * ( oscPitch/12 ) );
 				printf( "pitch_shift : %f\n", pitch );
 				this->mage->setPitch( pitch, shift );				
 			}
@@ -199,7 +199,7 @@ void testApp::draw( void )
 	}
 }
 
-void testApp::audioOut( float *outBuffer, int bufSize, int nChan )
+void testApp::audioOut( float * outBuffer, int bufSize, int nChan )
 {
 	static int c, indchan;
 
@@ -227,7 +227,7 @@ void testApp::audioOut( float *outBuffer, int bufSize, int nChan )
 
 //---
 
-testApp::testApp( int argc, char **argv )
+testApp::testApp( int argc, char ** argv )
 {
 	Argc = argc; // we use this trick to pass the HTS command line flags
 	Argv = argv; // to the openFrameworks app and use them at launch
@@ -247,10 +247,10 @@ void testApp::keyPressed( int key )
 	if( key == 'd' )
 		this->mage->setAlpha( 0.8 );
 	
-// --- Speed contor :: we keep one? we embed also the hopLen in the Mage API?
+// --- Speed control :: we keep one? we embed also the hopLen in the Mage API?
 	
 	if( key == 'e' )
-		this->mage->setSpeed( 4 );
+		this->mage->setLabelSpeed( 4 );
 	
 	if( key == 'f' )
 	{
@@ -283,8 +283,8 @@ void testApp::keyPressed( int key )
 
 	if( key == 'k' )
 	{
-		int updateFunction[nOfStates] = { 1, 1, 5, 1, 1 };
-		//this->mage->setDuration( updateFunction, MAGE::scale );
+		int updateFunction[nOfStates] = { 1, 1, 30, 1, 1 };
+		this->mage->setDuration( updateFunction, MAGE::shift );
 	}
 	
 	

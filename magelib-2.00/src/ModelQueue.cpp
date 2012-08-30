@@ -1,37 +1,37 @@
-/* --------------------------------------------------------------------------------------------	*/
-/*																								*/
-/*	This file is part of MAGE / pHTS( the performative HMM-based speech synthesis system )		*/
-/*																								*/
-/*	MAGE / pHTS is free software: you can redistribute it and/or modify it under the terms		*/
-/*	of the GNU General Public License as published by the Free Software Foundation, either		*/
-/*	version 3 of the license, or any later version.												*/
-/*																								*/
-/*	MAGE / pHTS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;	*/	
-/*	without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	*/
-/*	See the GNU General Public License for more details.										*/
-/*																								*/	
-/*	You should have received a copy of the GNU General Public License along with MAGE / pHTS.	*/ 
-/*	If not, see http://www.gnu.org/licenses/													*/
-/*																								*/
-/*																								*/	
-/*	Copyright 2011 University of Mons :															*/
-/*																								*/	
-/*			Numediart Institute for New Media Art( www.numediart.org )							*/
-/*			Acapela Group ( www.acapela-group.com )												*/
-/*																								*/
-/*																								*/
-/*	 Developed by :																				*/
-/*																								*/
-/*		Maria Astrinaki, Geoffrey Wilfart, Alexis Moinet, Nicolas d'Alessandro, Thierry Dutoit	*/
-/*																								*/
-/* --------------------------------------------------------------------------------------------	*/
+ /* ----------------------------------------------------------------------------------------------- */
+ /* 																								*/
+ /* 	This file is part of MAGE / pHTS( the performative HMM-based speech synthesis system )		*/
+ /* 																								*/
+ /* 	MAGE / pHTS is free software: you can redistribute it and/or modify it under the terms		*/
+ /* 	of the GNU General Public License as published by the Free Software Foundation, either		*/
+ /* 	version 3 of the license, or any later version.												*/
+ /* 																								*/
+ /* 	MAGE / pHTS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;	*/	
+ /* 	without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	*/
+ /* 	See the GNU General Public License for more details.										*/
+ /* 																								*/	
+ /* 	You should have received a copy of the GNU General Public License along with MAGE / pHTS.	*/ 
+ /* 	If not, see http://www.gnu.org/licenses/													*/
+ /* 																								*/
+ /* 																								*/	
+ /* 	Copyright 2011 University of Mons :															*/
+ /* 																								*/	
+ /* 			Numediart Institute for New Media Art( www.numediart.org )							*/
+ /* 			Acapela Group ( www.acapela-group.com )												*/
+ /* 																								*/
+ /* 																								*/
+ /* 	 Developed by :																				*/
+ /* 																								*/
+ /* 		Maria Astrinaki, Geoffrey Wilfart, Alexis Moinet, Nicolas d'Alessandro, Thierry Dutoit	*/
+ /* 																								*/
+ /* ----------------------------------------------------------------------------------------------- */
 
-/**
- *	 @file	ModelQueue.cpp
- *	 @author	N. d'Alessandro, M. Astrinaki
- *	 @brief	 Model ringbuffer: used to store statistical
- *			models + special generate()function that takes
- *			a lookup window and generates oldest-label frames
+/** 
+ * 	 @file	ModelQueue.cpp
+ * 	 @author	N. d'Alessandro, M. Astrinaki
+ * 	 @brief	 Model ringbuffer: used to store statistical
+ * 			models + special generate()function that takes
+ * 			a lookup window and generates oldest-label frames
  */
 
 #include "ModelQueue.h"
@@ -42,19 +42,19 @@ MAGE::ModelQueueMemory::ModelQueueMemory()
 	int k;
 	
 	// for every stream, for every frame, every mean / ivar / optimized parameters / gv_mean / gv_vari / gv_switch
-	this->mean	= ( double *** ) calloc( nOfStreams, sizeof( double ** ) );	// [nOfStreams][maxNumOfFrames][nOfDers*nOfMGCs]
-	this->ivar	= ( double *** ) calloc( nOfStreams, sizeof( double ** ) );	// [nOfStreams][maxNumOfFrames][nOfDers*nOfMGCs]
-	this->par	= ( double *** ) calloc( nOfStreams, sizeof( double ** ) );	// [nOfStreams][maxNumOfFrames][nOfDers*nOfMGCs]
+	this->mean	= ( double *** ) calloc( nOfStreams, sizeof( double ** ) );	// [nOfStreams][maxNumOfFrames][nOfDers * nOfMGCs]
+	this->ivar	= ( double *** ) calloc( nOfStreams, sizeof( double ** ) );	// [nOfStreams][maxNumOfFrames][nOfDers * nOfMGCs]
+	this->par	= ( double *** ) calloc( nOfStreams, sizeof( double ** ) );	// [nOfStreams][maxNumOfFrames][nOfDers * nOfMGCs]
 	
-	this->gv_mean	= ( double ** ) calloc( nOfStreams, sizeof( double * ) );	// [nOfStreams][nOfDers*nOfMGCs]
-	this->gv_vari	= ( double ** ) calloc( nOfStreams, sizeof( double * ) );	// [nOfStreams][nOfDers*nOfMGCs]
-	this->gv_switch = ( int    ** ) calloc( nOfStreams, sizeof( int    * ) );	// [nOfStreams][nOfDers*nOfMGCs]
+	this->gv_mean	= ( double ** ) calloc( nOfStreams, sizeof( double * ) );	// [nOfStreams][nOfDers * nOfMGCs]
+	this->gv_vari	= ( double ** ) calloc( nOfStreams, sizeof( double * ) );	// [nOfStreams][nOfDers * nOfMGCs]
+	this->gv_switch = ( int    ** ) calloc( nOfStreams, sizeof( int   * ) );	// [nOfStreams][nOfDers * nOfMGCs]
 	
 	this->voiced_unvoiced = ( int * ) calloc( maxNumOfFrames, sizeof( int ) );	// [maxNumOfFrames]
 	
 	// HTS_SMatrixies needed
-	this->g		= ( double **  ) calloc( nOfStreams, sizeof( double *  ) );	// [nOfStreams][maxNumOfFrames]
-	this->wum	= ( double **  ) calloc( nOfStreams, sizeof( double *  ) );	// [nOfStreams][maxNumOfFrames]
+	this->g		= ( double **  ) calloc( nOfStreams, sizeof( double * ) );	// [nOfStreams][maxNumOfFrames]
+	this->wum	= ( double **  ) calloc( nOfStreams, sizeof( double * ) );	// [nOfStreams][maxNumOfFrames]
 	this->wuw	= ( double *** ) calloc( nOfStreams, sizeof( double ** ) );	// [nOfStreams][maxNumOfFrames][maxWindowWidth]
 	
 	for( k = 0; k < nOfStreams; k++ )
@@ -63,12 +63,12 @@ MAGE::ModelQueueMemory::ModelQueueMemory()
 		this->ivar[k] = ( double ** ) calloc( maxNumOfFrames, sizeof( double * ) );
 		this->par [k] = ( double ** ) calloc( maxNumOfFrames, sizeof( double * ) );
 		this->wuw [k] = ( double ** ) calloc( maxNumOfFrames, sizeof( double * ) );
-		this->wum [k] = ( double *  ) calloc( maxNumOfFrames, sizeof( double   ) );
-		this->g	  [k] = ( double *  ) calloc( maxNumOfFrames, sizeof( double   ) );
+		this->wum [k] = ( double * ) calloc( maxNumOfFrames, sizeof( double   ) );
+		this->g	  [k] = ( double * ) calloc( maxNumOfFrames, sizeof( double   ) );
 		
 		this->gv_mean[k]	= ( double * ) calloc( nOfStreams * nOfDers * nOfMGCs, sizeof( double ) );	
 		this->gv_vari[k]	= ( double * ) calloc( nOfStreams * nOfDers * nOfMGCs, sizeof( double ) );	
-		this->gv_switch[k]	= ( int    * ) calloc( nOfStreams * nOfDers * nOfMGCs, sizeof( int    ) );	
+		this->gv_switch[k]	= ( int   * ) calloc( nOfStreams * nOfDers * nOfMGCs, sizeof( int    ) );	
 		
 		for( int j = 0; j < maxNumOfFrames; j++ )
 		{
@@ -132,7 +132,7 @@ MAGE::ModelQueue::~ModelQueue()
 }
 
 // methods
-void MAGE::ModelQueue::generate( FrameQueue *frameQueue, unsigned int backup )
+void MAGE::ModelQueue::generate( FrameQueue * frameQueue, unsigned int backup )
 {
 	//TODO actual frame generation with vocoder
 	unsigned int k, s, q, qmgc, qlf0, qlpf, w, ind;
@@ -200,7 +200,7 @@ void MAGE::ModelQueue::generate( FrameQueue *frameQueue, unsigned int backup )
 	return;
 }
 
-void MAGE::ModelQueue::optimizeParameters( MAGE::Engine *engine, unsigned int backup, unsigned int lookup )
+void MAGE::ModelQueue::optimizeParameters( MAGE::Engine * engine, unsigned int backup, unsigned int lookup )
 {	
 	int window = backup + lookup + 1;//how many model do we use
 	head = read; // hopefuly we land on the oldest model wich is 'backup' earlier than current model

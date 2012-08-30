@@ -1,32 +1,32 @@
-/* --------------------------------------------------------------------------------------------	*/
-/*																								*/
-/*	This file is part of MAGE / pHTS( the performative HMM-based speech synthesis system )		*/
-/*																								*/
-/*	MAGE / pHTS is free software: you can redistribute it and/or modify it under the terms		*/
-/*	of the GNU General Public License as published by the Free Software Foundation, either		*/
-/*	version 3 of the license, or any later version.												*/
-/*																								*/
-/*	MAGE / pHTS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;	*/	
-/*	without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	*/
-/*	See the GNU General Public License for more details.										*/
-/*																								*/	
-/*	You should have received a copy of the GNU General Public License along with MAGE / pHTS.	*/ 
-/*	If not, see http://www.gnu.org/licenses/													*/
-/*																								*/
-/*																								*/	
-/*	Copyright 2011 University of Mons :															*/
-/*																								*/	
-/*			Numediart Institute for New Media Art( www.numediart.org )							*/
-/*			Acapela Group ( www.acapela-group.com )												*/
-/*																								*/
-/*																								*/
-/*	 Developed by :																				*/
-/*																								*/
-/*		Maria Astrinaki, Geoffrey Wilfart, Alexis Moinet, Nicolas d'Alessandro, Thierry Dutoit	*/
-/*																								*/
-/* --------------------------------------------------------------------------------------------	*/
+ /* ----------------------------------------------------------------------------------------------- */
+ /* 																								*/
+ /* 	This file is part of MAGE / pHTS( the performative HMM-based speech synthesis system )		*/
+ /* 																								*/
+ /* 	MAGE / pHTS is free software: you can redistribute it and/or modify it under the terms		*/
+ /* 	of the GNU General Public License as published by the Free Software Foundation, either		*/
+ /* 	version 3 of the license, or any later version.												*/
+ /* 																								*/
+ /* 	MAGE / pHTS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;	*/	
+ /* 	without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	*/
+ /* 	See the GNU General Public License for more details.										*/
+ /* 																								*/	
+ /* 	You should have received a copy of the GNU General Public License along with MAGE / pHTS.	*/ 
+ /* 	If not, see http://www.gnu.org/licenses/													*/
+ /* 																								*/
+ /* 																								*/	
+ /* 	Copyright 2011 University of Mons :															*/
+ /* 																								*/	
+ /* 			Numediart Institute for New Media Art( www.numediart.org )							*/
+ /* 			Acapela Group ( www.acapela-group.com )												*/
+ /* 																								*/
+ /* 																								*/
+ /* 	 Developed by :																				*/
+ /* 																								*/
+ /* 		Maria Astrinaki, Geoffrey Wilfart, Alexis Moinet, Nicolas d'Alessandro, Thierry Dutoit	*/
+ /* 																								*/
+ /* ----------------------------------------------------------------------------------------------- */
 
-/* 
+/** 
  * File:	 Vocoder.cpp
  * Author: alexis
  * 
@@ -62,15 +62,15 @@ MAGE::Vocoder::Vocoder( int am, double aalpha, int afprd, int aiprd, int astage,
 	
 	this->volume = 1.0;
 	
-	if( stage != 0 )/* MGLSA */
+	if( stage != 0 ) /* MGLSA*/
 		gamma = -1 / ( double )stage;
 	
 	this->csize = 0;
 	
 	if( stage != 0 )
-		this->csize = m + m + m + 3 + ( m + 1 ) * stage; /* MGLSA */
+		this->csize = m + m + m + 3 + ( m + 1 ) * stage;  /* MGLSA*/
 	else
-		this->csize = 3 * ( m + 1 )+ 3 * ( pd + 1 ) + pd * ( m + 2 ); /* MLSA	*/
+		this->csize = 3 * ( m + 1 )+ 3 * ( pd + 1 ) + pd * ( m + 2 );  /* MLSA	*/
 	
 	c = new double[this->csize];
 	
@@ -112,7 +112,7 @@ MAGE::Vocoder::~Vocoder()
 
 // setters
 
-/**
+ /** 
  * This function forces the value of the pitch used by the vocoder instead of the
  * one in frame.f0. Note that this will get overwritten at the next push( frame ).
  * Therefore it is needed to call setPitch()after every push().
@@ -121,9 +121,9 @@ MAGE::Vocoder::~Vocoder()
  * 
  * @param pitch pitch value in Hz
  * @param forceVoiced in case the current frame is unvoiced, you can force it to 
- *					become voiced with the given pitch otherwise it would ignore
- *					the pitch set until next frame
- */
+ * 					become voiced with the given pitch otherwise it would ignore
+ * 					the pitch set until next frame
+*/
 void MAGE::Vocoder::setPitch( double pitch, int action, bool forceVoiced )
 {
 	switch( action )
@@ -133,11 +133,11 @@ void MAGE::Vocoder::setPitch( double pitch, int action, bool forceVoiced )
 			break;
 			
 		case MAGE::shift:
-			this->f0 = ( this->f0 )+( pitch ); //Hz
+			this->f0 = ( this->f0 ) + ( pitch ); //Hz
 			break;
 			
 		case MAGE::scale:
-			this->f0 = ( this->f0 )*( pitch ); //Hz
+			this->f0 = ( this->f0 ) * ( pitch ); //Hz
 			break;
 			
 		case MAGE::synthetic:
@@ -169,22 +169,22 @@ void MAGE::Vocoder::setVoiced( bool forceVoiced )
 
 
 // methods
-/**
+ /** 
  * 
  * @param frame an instance of class Frame
  * @param ignoreVoicing if true, ignore frame.voiced information and use latest known information
- */
+*/
 void MAGE::Vocoder::push( Frame &frame, bool ignoreVoicing )
 {
 	int i;
 	
 	if( !flagFirstPush )
 	{
-		movem( cc, c, sizeof( *cc ), m + 1 );
+		movem( cc, c, sizeof( * cc ), m + 1 );
 		
 		mc2b( frame.mgc, cc, m, alpha );
 		
-		if( stage != 0 )/* MGLSA */
+		if( stage != 0 ) /* MGLSA*/
 		{
 			gnorm( cc, cc, m, gamma );
 			cc[0] = log( cc[0] );
@@ -199,7 +199,7 @@ void MAGE::Vocoder::push( Frame &frame, bool ignoreVoicing )
 		
 		mc2b( frame.mgc, c, m, alpha );
 		
-		if( stage != 0 )/* MGLSA */
+		if( stage != 0 ) /* MGLSA*/
 		{ 
 			gnorm( c, c, m, gamma );
 			c[0] = log( c[0] );
@@ -222,11 +222,11 @@ void MAGE::Vocoder::push( Frame &frame, bool ignoreVoicing )
 			break;
 			
 		case MAGE::shift:
-			this->f0 = ( frame.f0 )+( this->actionValue ); //Hz
+			this->f0 = ( frame.f0 ) + ( this->actionValue ); //Hz
 			break;
 			
 		case MAGE::scale:
-			this->f0 = ( frame.f0 )*( this->actionValue );  //Hz
+			this->f0 = ( frame.f0 ) * ( this->actionValue );  //Hz
 			break;
 			
 		case MAGE::synthetic:
@@ -246,22 +246,22 @@ void MAGE::Vocoder::push( Frame &frame, bool ignoreVoicing )
 	return;
 }
 
-/**
+ /** 
  * 
  * @param frame a pointer to an instance of class Frame
  * @param ignoreVoicing if true, ignore frame->voiced information and use latest known information
- */
-void MAGE::Vocoder::push( Frame *frame, bool ignoreVoicing )
+*/
+void MAGE::Vocoder::push( Frame * frame, bool ignoreVoicing )
 {
 	int i;
 	
 	if( !flagFirstPush )
 	{
-		movem( cc, c, sizeof( *cc ), m + 1 );
+		movem( cc, c, sizeof( * cc ), m + 1 );
 		
 		mc2b( frame->mgc, cc, m, alpha );
 		
-		if( stage != 0 )/* MGLSA */
+		if( stage != 0 ) /* MGLSA*/
 		{
 			gnorm( cc, cc, m, gamma );
 			cc[0] = log( cc[0] );
@@ -276,7 +276,7 @@ void MAGE::Vocoder::push( Frame *frame, bool ignoreVoicing )
 		
 		mc2b( frame->mgc, c, m, alpha );
 		
-		if( stage != 0 )/* MGLSA */
+		if( stage != 0 ) /* MGLSA*/
 		{ 
 			gnorm( c, c, m, gamma );
 			c[0] = log( c[0] );
@@ -299,11 +299,11 @@ void MAGE::Vocoder::push( Frame *frame, bool ignoreVoicing )
 			break;
 			
 		case MAGE::shift:
-			this->f0 = ( frame->f0 )+( this->actionValue ); //Hz
+			this->f0 = ( frame->f0 ) + ( this->actionValue ); //Hz
 			break;
 			
 		case MAGE::scale:
-			this->f0 = ( frame->f0 )*( this->actionValue );  //Hz
+			this->f0 = ( frame->f0 ) * ( this->actionValue );  //Hz
 			break;
 			
 		case MAGE::synthetic:
@@ -323,10 +323,10 @@ void MAGE::Vocoder::push( Frame *frame, bool ignoreVoicing )
 	return;
 }
 
-/**
+ /** 
  * 
  * @return one sample from the vocoder given current mgc and lf0
- */
+*/
 double MAGE::Vocoder::pop()
 {
 	int i;
@@ -350,14 +350,14 @@ double MAGE::Vocoder::pop()
 		count = 0;
 	}
 	
-	if( stage != 0 ) /* MGLSA */
+	if( stage != 0 )  /* MGLSA*/
 	{ 
 		if( !ngain )
 			x *= exp( c[0] );
 		
 		x = mglsadf( x, c, m, alpha, stage, d );
 	} 
-	else /* MLSA */
+	else  /* MLSA*/
 	{ 
 		if( !ngain )
 			x *= exp( c[0] );
@@ -381,19 +381,19 @@ double MAGE::Vocoder::pop()
 	return( x );
 }
 
-/**
+ /** 
  * 
  * @return true if at least one frame has been pushed, false otherwise
- */
+*/
 bool MAGE::Vocoder::ready()
 { 
 	return (!this->flagFirstPush); 
 }
 
-/**
+ /** 
  * Set the internal members of Vocoder to the contructor values.
  * To be used in case the vocoder becomes irremediably unstable
- */
+*/
 void MAGE::Vocoder::reset()
 {
 	for( int i=0; i<this->csize; i++ )
@@ -413,40 +413,40 @@ void MAGE::Vocoder::reset()
 
 // functions imported from SPTK
 
-/********************************************************
+/******************************************************** 
  $Id: movem.c,v 1.10 2011/04/27 13:46:44 mataki Exp $
  
  Data Transfer Function
  
  movem( a, b, size, nitem )
  
- void	 *a	: intput data
- void	 *b	: output data
+ void	 * a	: intput data
+ void	 * b	: output data
  size_t size	: size of data type
  int	nitem : data length
  
- *********************************************************/
-void MAGE::Vocoder::movem( void *a, void *b, const size_t size, const int nitem )
+*********************************************************/
+void MAGE::Vocoder::movem( void * a, void * b, const size_t size, const int nitem )
 {
 	long i;
-	char *c = ( char * )a;
-	char *d = ( char * )b;
+	char * c = ( char * )a;
+	char * d = ( char * )b;
 	
 	i = size * nitem;
 	if( c > d )
 		while( i-- )
-			*d++ = *c++;
+			 * d++ = * c++;
 	else 
 	{
 		c += i;
 		d += i;
 		while( i-- )
-			*--d = *--c;
+			 * --d = * --c;
 	}
 	return;
 }
 
-void MAGE::Vocoder::mc2b( double *mc, double *b, int m, const double a )
+void MAGE::Vocoder::mc2b( double * mc, double * b, int m, const double a )
 {
 	b[m] = mc[m];
 	
@@ -456,7 +456,7 @@ void MAGE::Vocoder::mc2b( double *mc, double *b, int m, const double a )
 	return;
 }
 
-void MAGE::Vocoder::gnorm( double *c1, double *c2, int m, const double g )
+void MAGE::Vocoder::gnorm( double * c1, double * c2, int m, const double g )
 {
 	double k;
 	
@@ -471,13 +471,13 @@ void MAGE::Vocoder::gnorm( double *c1, double *c2, int m, const double g )
 	} 
 	else
 	{
-		movem( &c1[1], &c2[1], sizeof( *c1 ), m );
+		movem( &c1[1], &c2[1], sizeof( * c1 ), m );
 		c2[0] = exp( c1[0] );
 	}	
 	return;
 }
 
-double MAGE::Vocoder::mglsadff( double x, double *b, const int m, const double a, double *d )
+double MAGE::Vocoder::mglsadff( double x, double * b, const int m, const double a, double * d )
 {
 	int i;
 	double y, aa;
@@ -502,7 +502,7 @@ double MAGE::Vocoder::mglsadff( double x, double *b, const int m, const double a
 	return( x );
 }
 
-double MAGE::Vocoder::mglsadf( double x, double *b, const int m, const double a, const int n, double *d )
+double MAGE::Vocoder::mglsadf( double x, double * b, const int m, const double a, const int n, double * d )
 {
 	int i;
 	
@@ -512,7 +512,7 @@ double MAGE::Vocoder::mglsadf( double x, double *b, const int m, const double a,
 	return( x );
 }
 
-double MAGE::Vocoder::mlsafir( double x, double *b, const int m, const double a, double *d )
+double MAGE::Vocoder::mlsafir( double x, double * b, const int m, const double a, double * d )
 {
 	double y = 0.0, aa;
 	int i;
@@ -534,9 +534,9 @@ double MAGE::Vocoder::mlsafir( double x, double *b, const int m, const double a,
 	return( y );
 }
 
-double MAGE::Vocoder::mlsadf1( double x, double *b, const int m, const double a, const int pd, double *d )
+double MAGE::Vocoder::mlsadf1( double x, double * b, const int m, const double a, const int pd, double * d )
 {
-	double v, out = 0.0, *pt, aa;
+	double v, out = 0.0, * pt, aa;
 	int i;
 	
 	aa = 1 - a * a;
@@ -558,9 +558,9 @@ double MAGE::Vocoder::mlsadf1( double x, double *b, const int m, const double a,
 	return( out );
 }
 
-double MAGE::Vocoder::mlsadf2( double x, double *b, const int m, const double a, const int pd, double *d )
+double MAGE::Vocoder::mlsadf2( double x, double * b, const int m, const double a, const int pd, double * d )
 {
-	double v, out = 0.0, *pt, aa;
+	double v, out = 0.0, * pt, aa;
 	int i;
 	
 	aa = 1 - a * a;
@@ -581,7 +581,7 @@ double MAGE::Vocoder::mlsadf2( double x, double *b, const int m, const double a,
 	return( out );
 }
 
-double MAGE::Vocoder::mlsadf( double x, double *b, const int m, const double a, const int pd, double *d )
+double MAGE::Vocoder::mlsadf( double x, double * b, const int m, const double a, const int pd, double * d )
 {
 	ppadesptk = &padesptk[pd * ( pd + 1 ) / 2];
 	

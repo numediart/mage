@@ -1,38 +1,38 @@
-/* --------------------------------------------------------------------------------------------	*/
-/*																								*/
-/*	This file is part of MAGE / pHTS( the performative HMM-based speech synthesis system )		*/
-/*																								*/
-/*	MAGE / pHTS is free software: you can redistribute it and/or modify it under the terms		*/
-/*	of the GNU General Public License as published by the Free Software Foundation, either		*/
-/*	version 3 of the license, or any later version.												*/
-/*																								*/
-/*	MAGE / pHTS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;	*/	
-/*	without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	*/
-/*	See the GNU General Public License for more details.										*/
-/*																								*/	
-/*	You should have received a copy of the GNU General Public License along with MAGE / pHTS.	*/ 
-/*	If not, see http://www.gnu.org/licenses/													*/
-/*																								*/
-/*																								*/	
-/*	Copyright 2011 University of Mons :															*/
-/*																								*/	
-/*			Numediart Institute for New Media Art( www.numediart.org )							*/
-/*			Acapela Group ( www.acapela-group.com )												*/
-/*																								*/
-/*																								*/
-/*	 Developed by :																				*/
-/*																								*/
-/*		Maria Astrinaki, Geoffrey Wilfart, Alexis Moinet, Nicolas d'Alessandro, Thierry Dutoit	*/
-/*																								*/
-/* --------------------------------------------------------------------------------------------	*/
+ /* ----------------------------------------------------------------------------------------------- */
+ /* 																								*/
+ /* 	This file is part of MAGE / pHTS( the performative HMM-based speech synthesis system )		*/
+ /* 																								*/
+ /* 	MAGE / pHTS is free software: you can redistribute it and/or modify it under the terms		*/
+ /* 	of the GNU General Public License as published by the Free Software Foundation, either		*/
+ /* 	version 3 of the license, or any later version.												*/
+ /* 																								*/
+ /* 	MAGE / pHTS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;	*/	
+ /* 	without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	*/
+ /* 	See the GNU General Public License for more details.										*/
+ /* 																								*/	
+ /* 	You should have received a copy of the GNU General Public License along with MAGE / pHTS.	*/ 
+ /* 	If not, see http://www.gnu.org/licenses/													*/
+ /* 																								*/
+ /* 																								*/	
+ /* 	Copyright 2011 University of Mons :															*/
+ /* 																								*/	
+ /* 			Numediart Institute for New Media Art( www.numediart.org )							*/
+ /* 			Acapela Group ( www.acapela-group.com )												*/
+ /* 																								*/
+ /* 																								*/
+ /* 	 Developed by :																				*/
+ /* 																								*/
+ /* 		Maria Astrinaki, Geoffrey Wilfart, Alexis Moinet, Nicolas d'Alessandro, Thierry Dutoit	*/
+ /* 																								*/
+ /* ----------------------------------------------------------------------------------------------- */
 
-/*
- *	Model.cpp
- *	mageOsc
- *
- *	Created by Maria Astrinaki on 11/07/12.
- *	Copyright 2012. All rights reserved.
- *
+/* 
+ * 	Model.cpp
+ * 	mageOsc
+ * 
+ * 	Created by Maria Astrinaki on 11/07/12.
+ * 	Copyright 2012. All rights reserved.
+ * 
  */
 
 #include "Model.h"
@@ -109,7 +109,7 @@ void MAGE::Model::setDuration( int duration )
 }
 
 // methods
-void MAGE::Model::checkInterpolationWeights( MAGE::Engine *engine, bool forced )// ATTENTION !!! it must be run at least once
+void MAGE::Model::checkInterpolationWeights( MAGE::Engine * engine, bool forced )// ATTENTION !!! it must be run at least once
 {
 	int i, j;
 	double temp;
@@ -157,7 +157,7 @@ void MAGE::Model::checkInterpolationWeights( MAGE::Engine *engine, bool forced )
 	return;
 }
 
-void MAGE::Model::computeDuration( MAGE::Engine *engine, MAGE::Label *label )
+void MAGE::Model::computeDuration( MAGE::Engine * engine, MAGE::Label * label )
 {
 	int	i;
 	double temp;
@@ -170,7 +170,7 @@ void MAGE::Model::computeDuration( MAGE::Engine *engine, MAGE::Label *label )
 		
 	double frame_length;
 	
-	// convert string query to char* 
+	// convert string query to char * 
 	string query = label->getQuery();
 	strcpy( this->modelMemory.strQuery, query.c_str() );
 	
@@ -181,11 +181,11 @@ void MAGE::Model::computeDuration( MAGE::Engine *engine, MAGE::Label *label )
 	
 	if( label->getIsForced() ) // use duration set by user : -vp
 	{
-		frame_length = ( label->getEnd()- label->getBegin() )* rate;
+		frame_length = ( label->getEnd()- label->getBegin() ) * rate;
 		
 		if( label->getEnd() > 0 )
 			this->duration = mHTS_set_duration( this->modelMemory.duration_array, this->modelMemory.duration_mean,
-												this->modelMemory.duration_vari, nOfStates, frame_length );
+												this->modelMemory.duration_vari , nOfStates, frame_length );
 		else
 			HTS_error( -1,( char * )"HTS_SStreamSet_create: The time of final label is not specified.\n" );
 	}
@@ -213,7 +213,7 @@ void MAGE::Model::computeDuration( MAGE::Engine *engine, MAGE::Label *label )
 	return;
 }
 
-void MAGE::Model::updateDuration( int *updateFunction, int action )
+void MAGE::Model::updateDuration( int * updateFunction, int action )
 {
 	int i;
 	int duration = 0;
@@ -237,12 +237,13 @@ void MAGE::Model::updateDuration( int *updateFunction, int action )
 				this->state[i].duration *= updateFunction[i];
 				break;
 				
+			case MAGE::synthetic:	
 			default:
 				break;
 		}
 		
 		if( this->state[i].duration < 0)
-			this->state[i].duration = 0;
+			this->state[i].duration = 1;
 		
 		duration += this->state[i].duration;
 	}
@@ -252,14 +253,14 @@ void MAGE::Model::updateDuration( int *updateFunction, int action )
 }
 
 
-void MAGE::Model::computeParameters( MAGE::Engine *engine, MAGE::Label *label )
+void MAGE::Model::computeParameters( MAGE::Engine * engine, MAGE::Label * label )
 {
 	int i, j;
 	
 	static HTS_ModelSet ms = engine->getModelSet();
 	static HTS_Global global = engine->getGlobal();
 		
-	// convert string query to char* 
+	// convert string query to char * 
 	string query = label->getQuery();
 	strcpy( this->strQuery, query.c_str() );
 	
@@ -299,7 +300,7 @@ void MAGE::Model::computeParameters( MAGE::Engine *engine, MAGE::Label *label )
 	return;
 }
 
-void MAGE::Model::computeGlobalVariances( MAGE::Engine *engine, MAGE::Label *label )
+void MAGE::Model::computeGlobalVariances( MAGE::Engine * engine, MAGE::Label * label )
 {
 	int i, j;
 	
@@ -308,7 +309,7 @@ void MAGE::Model::computeGlobalVariances( MAGE::Engine *engine, MAGE::Label *lab
 	static HTS_ModelSet ms = engine->getModelSet();
 	static HTS_Global global = engine->getGlobal();
 	
-	// convert string query to char* 
+	// convert string query to char * 
 	static string query = label->getQuery();
 	strcpy( this->strQuery, query.c_str() );
 	

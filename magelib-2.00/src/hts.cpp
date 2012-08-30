@@ -1,30 +1,30 @@
-/* --------------------------------------------------------------------------------------------	*/
-/*																								*/
-/*	This file is part of MAGE / pHTS( the performative HMM-based speech synthesis system )		*/
-/*																								*/
-/*	MAGE / pHTS is free software: you can redistribute it and/or modify it under the terms		*/
-/*	of the GNU General Public License as published by the Free Software Foundation, either		*/
-/*	version 3 of the license, or any later version.												*/
-/*																								*/
-/*	MAGE / pHTS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;	*/	
-/*	without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	*/
-/*	See the GNU General Public License for more details.										*/
-/*																								*/	
-/*	You should have received a copy of the GNU General Public License along with MAGE / pHTS.	*/ 
-/*	If not, see http://www.gnu.org/licenses/													*/
-/*																								*/
-/*																								*/	
-/*	Copyright 2011 University of Mons :															*/
-/*																								*/	
-/*			Numediart Institute for New Media Art( www.numediart.org )							*/
-/*			Acapela Group ( www.acapela-group.com )												*/
-/*																								*/
-/*																								*/
-/*	 Developed by :																				*/
-/*																								*/
-/*		Maria Astrinaki, Geoffrey Wilfart, Alexis Moinet, Nicolas d'Alessandro, Thierry Dutoit	*/
-/*																								*/
-/* --------------------------------------------------------------------------------------------	*/
+ /* ----------------------------------------------------------------------------------------------- */
+ /* 																								*/
+ /* 	This file is part of MAGE / pHTS( the performative HMM-based speech synthesis system )		*/
+ /* 																								*/
+ /* 	MAGE / pHTS is free software: you can redistribute it and/or modify it under the terms		*/
+ /* 	of the GNU General Public License as published by the Free Software Foundation, either		*/
+ /* 	version 3 of the license, or any later version.												*/
+ /* 																								*/
+ /* 	MAGE / pHTS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;	*/	
+ /* 	without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	*/
+ /* 	See the GNU General Public License for more details.										*/
+ /* 																								*/	
+ /* 	You should have received a copy of the GNU General Public License along with MAGE / pHTS.	*/ 
+ /* 	If not, see http://www.gnu.org/licenses/													*/
+ /* 																								*/
+ /* 																								*/	
+ /* 	Copyright 2011 University of Mons :															*/
+ /* 																								*/	
+ /* 			Numediart Institute for New Media Art( www.numediart.org )							*/
+ /* 			Acapela Group ( www.acapela-group.com )												*/
+ /* 																								*/
+ /* 																								*/
+ /* 	 Developed by :																				*/
+ /* 																								*/
+ /* 		Maria Astrinaki, Geoffrey Wilfart, Alexis Moinet, Nicolas d'Alessandro, Thierry Dutoit	*/
+ /* 																								*/
+ /* ----------------------------------------------------------------------------------------------- */
 
 #include "hts.h"
 
@@ -35,10 +35,10 @@ MAGE::Engine::Engine()
 
 MAGE::Engine::~Engine()
 {
-	/* free */
+	 /* free*/
 	HTS_Engine_refresh( &(this->engine) );
 	
-	/* free memory */
+	 /* free memory*/
 	HTS_Engine_clear( &(this->engine) );
 	free( this->rate_interp );
 	free( this->fn_ws_mgc );
@@ -93,27 +93,27 @@ void MAGE::Engine::setPStream( HTS_PStream pss )
 }
 
 // public methods
-void MAGE::Engine::load( int argc, char **argv )
+void MAGE::Engine::load( int argc, char ** argv )
 {
 	int i;
 	double f;
-	char *labfn = NULL;
+	char * labfn = NULL;
 	
-	HTS_File *durfp = NULL, *mgcfp = NULL, *lf0fp = NULL, *lpffp = NULL;
-	HTS_File *wavfp = NULL, *rawfp = NULL, *tracefp = NULL;
+	HTS_File * durfp = NULL, * mgcfp = NULL, * lf0fp = NULL, * lpffp = NULL;
+	HTS_File * wavfp = NULL, * rawfp = NULL, * tracefp = NULL;
 	
-	/* number of speakers for interpolation */
+	 /* number of speakers for interpolation*/
 	int num_interp = 0;
 	
-	//double *rate_interp = NULL;
+	//double * rate_interp = NULL;
 	rate_interp = NULL;
 	
 	// HTS_Files
 	
-	/* number of each models for interpolation */
+	 /* number of each models for interpolation*/
 	int num_ms_dur = 0, num_ms_mgc = 0, num_ms_lf0 = 0, num_ms_lpf = 0;
 	
-	/* number of each trees for interpolation */
+	 /* number of each trees for interpolation*/
 	int num_ts_dur = 0, num_ts_mgc = 0, num_ts_lf0 = 0, num_ts_lpf = 0;
 	
 	int num_ws_mgc = 0, num_ws_lf0 = 0, num_ws_lpf = 0;
@@ -122,11 +122,11 @@ void MAGE::Engine::load( int argc, char **argv )
 	
 	fn_gv_switch = NULL;
 	
-	/* global parameter */
+	 /* global parameter*/
 	int sampling_rate = 16000;
 	int fperiod = 80;
 	double alpha = 0.42;
-	int stage = 0;	/* Gamma=-1/stage: if stage=0 then Gamma=0 */
+	int stage = 0;	 /* Gamma=-1/stage: if stage=0 then Gamma=0*/
 	double beta = 0.0;
 	int audio_buff_size = 1600;
 	double uv_threshold = 0.5;
@@ -139,18 +139,18 @@ void MAGE::Engine::load( int argc, char **argv )
 	double speech_speed = 1.0;
 	HTS_Boolean use_log_gain = FALSE;
 	
-	/* parse command line */
+	 /* parse command line*/
 	if( argc == 1 )
 		Usage();
 	
-	/* delta window handler for mel-cepstrum */
+	 /* delta window handler for mel-cepstrum*/
 	fn_ws_mgc = ( char ** ) calloc( argc, sizeof( char * ) );
-	/* delta window handler for log f0 */
+	 /* delta window handler for log f0*/
 	fn_ws_lf0 = ( char ** ) calloc( argc, sizeof( char * ) );
-	/* delta window handler for low-pass filter */
+	 /* delta window handler for low-pass filter*/
 	fn_ws_lpf = ( char ** ) calloc( argc, sizeof( char * ) );
 	
-	/* prepare for interpolation */
+	 /* prepare for interpolation*/
 	num_interp = GetNumInterp( argc, argv );
 	rate_interp = ( double * ) calloc( num_interp, sizeof( double ) );
 	for( i = 0; i < num_interp; i++ )
@@ -171,133 +171,133 @@ void MAGE::Engine::load( int argc, char **argv )
 	fn_ts_gvl = ( char ** ) calloc( num_interp, sizeof( char * ) );
 	fn_ts_gvf = ( char ** ) calloc( num_interp, sizeof( char * ) );
 	
-	/* read command */
+	 /* read command*/
 	while( --argc )
 	{
-		if( **++argv == '-' )
+		if( ** ++argv == '-' )
 		{
-			switch( *( *argv + 1 ) )
+			switch( * ( * argv + 1 ) )
 			{
 				case 'v':
-					switch( *( *argv + 2 ) )
+					switch( * ( * argv + 2 ) )
 				{
 					case 'p':
 						phoneme_alignment = TRUE;
 						break;
 						
 					default:
-						Error( 1,( char * )"hts_engine: Invalid option '-v%c'.\n", *( *argv + 2 ) );
+						Error( 1,( char * )"hts_engine: Invalid option '-v%c'.\n", * ( * argv + 2 ) );
 				}
 					break;
 					
 				case 't':
-					switch( *( *argv + 2 ) )
+					switch( * ( * argv + 2 ) )
 				{
 					case 'd':
-						fn_ts_dur[num_ts_dur++] = *++argv;
+						fn_ts_dur[num_ts_dur++] = * ++argv;
 						break;
 						
 					case 'm':
-						fn_ts_mgc[num_ts_mgc++] = *++argv;
+						fn_ts_mgc[num_ts_mgc++] = * ++argv;
 						break;
 						
 					case 'f':
 					case 'p':
-						fn_ts_lf0[num_ts_lf0++] = *++argv;
+						fn_ts_lf0[num_ts_lf0++] = * ++argv;
 						break;
 						
 					case 'l':
-						fn_ts_lpf[num_ts_lpf++] = *++argv;
+						fn_ts_lpf[num_ts_lpf++] = * ++argv;
 						break;
 						
 					default:
-						Error( 1,( char * )"hts_engine: Invalid option '-t%c'.\n", *( *argv + 2 ) );
+						Error( 1,( char * )"hts_engine: Invalid option '-t%c'.\n", * ( * argv + 2 ) );
 				}
 					--argc;
 					break;
 					
 				case 'm':
-					switch( *( *argv + 2 ) )
+					switch( * ( * argv + 2 ) )
 				{
 					case 'd':
-						fn_ms_dur[num_ms_dur++] = *++argv;
+						fn_ms_dur[num_ms_dur++] = * ++argv;
 						break;
 						
 					case 'm':
-						fn_ms_mgc[num_ms_mgc++] = *++argv;
+						fn_ms_mgc[num_ms_mgc++] = * ++argv;
 						break;
 						
 					case 'f':
 					case 'p':
-						fn_ms_lf0[num_ms_lf0++] = *++argv;
+						fn_ms_lf0[num_ms_lf0++] = * ++argv;
 						break;
 						
 					case 'l':
-						fn_ms_lpf[num_ms_lpf++] = *++argv;
+						fn_ms_lpf[num_ms_lpf++] = * ++argv;
 						break;
 						
 					default:
-						Error( 1,( char * )"hts_engine: Invalid option '-m%c'.\n", *( *argv + 2 ) );
+						Error( 1,( char * )"hts_engine: Invalid option '-m%c'.\n", * ( * argv + 2 ) );
 				}
 					--argc;
 					break;
 					
 				case 'd':
-					switch( *( *argv + 2 ) )
+					switch( * ( * argv + 2 ) )
 				{
 					case 'm':
-						fn_ws_mgc[num_ws_mgc++] = *++argv;
+						fn_ws_mgc[num_ws_mgc++] = * ++argv;
 						break;
 						
 					case 'f':
 					case 'p':
-						fn_ws_lf0[num_ws_lf0++] = *++argv;
+						fn_ws_lf0[num_ws_lf0++] = * ++argv;
 						break;
 						
 					case 'l':
-						fn_ws_lpf[num_ws_lpf++] = *++argv;
+						fn_ws_lpf[num_ws_lpf++] = * ++argv;
 						break;
 						
 					default:
-						Error( 1,( char * )"hts_engine: Invalid option '-d%c'.\n", *( *argv + 2 ) );
+						Error( 1,( char * )"hts_engine: Invalid option '-d%c'.\n", * ( * argv + 2 ) );
 				}
 					--argc;
 					break;
 					
 				case 'o':
-					switch( *( *argv + 2 ) )
+					switch( * ( * argv + 2 ) )
 				{
 					case 'w':
-						wavfp = HTS_fopen( *++argv, "wb" );
+						wavfp = HTS_fopen( * ++argv, "wb" );
 						break;
 						
 					case 'r':
-						rawfp = HTS_fopen( *++argv, "wb" );
+						rawfp = HTS_fopen( * ++argv, "wb" );
 						break;
 						
 					case 'd':
-						durfp = HTS_fopen( *++argv, "wt" );
+						durfp = HTS_fopen( * ++argv, "wt" );
 						break;
 						
 					case 'm':
-						mgcfp = HTS_fopen( *++argv, "wb" );
+						mgcfp = HTS_fopen( * ++argv, "wb" );
 						break;
 						
 					case 'f':
 					case 'p':
-						lf0fp = HTS_fopen( *++argv, "wb" );
+						lf0fp = HTS_fopen( * ++argv, "wb" );
 						break;
 						
 					case 'l':
-						lpffp = HTS_fopen( *++argv, "wb" );
+						lpffp = HTS_fopen( * ++argv, "wb" );
 						break;
 						
 					case 't':
-						tracefp = HTS_fopen( *++argv, "wt" );
+						tracefp = HTS_fopen( * ++argv, "wt" );
 						break;
 						
 					default:
-						Error( 1,( char * )"hts_engine: Invalid option '-o%c'.\n", *( *argv + 2 ) );
+						Error( 1,( char * )"hts_engine: Invalid option '-o%c'.\n", * ( * argv + 2 ) );
 				}
 					--argc;
 					break;
@@ -307,22 +307,22 @@ void MAGE::Engine::load( int argc, char **argv )
 					break;
 					
 				case 's':
-					sampling_rate = atoi( *++argv );
+					sampling_rate = atoi( * ++argv );
 					--argc;
 					break;
 					
 				case 'p':
-					fperiod = atoi( *++argv );
+					fperiod = atoi( * ++argv );
 					--argc;
 					break;
 					
 				case 'a':
-					alpha = atof( *++argv );
+					alpha = atof( * ++argv );
 					--argc;
 					break;
 					
 				case 'g':
-					stage = atoi( *++argv );
+					stage = atoi( * ++argv );
 					--argc;
 					break;
 					
@@ -331,20 +331,20 @@ void MAGE::Engine::load( int argc, char **argv )
 					break;
 					
 				case 'b':
-					beta = atof( *++argv );
+					beta = atof( * ++argv );
 					--argc;
 					break;
 					
 				case 'r':
-					speech_speed = atof( *++argv );
+					speech_speed = atof( * ++argv );
 					--argc;
 					break;
 					
 				case 'f':
-					switch( *( *argv + 2 ) )
+					switch( * ( * argv + 2 ) )
 				{
 					case 'm':
-						f = atof( *++argv );
+						f = atof( * ++argv );
 						if( f < -24.0 )
 							f = -24.0;
 						if( f > 24.0 )
@@ -353,13 +353,13 @@ void MAGE::Engine::load( int argc, char **argv )
 						break;
 						
 					default:
-						Error( 1,( char * )"hts_engine: Invalid option '-f%c'.\n", *( *argv + 2 ) );
+						Error( 1,( char * )"hts_engine: Invalid option '-f%c'.\n", * ( * argv + 2 ) );
 				}
 					--argc;
 					break;
 					
 				case 'u':
-					uv_threshold = atof( *++argv );
+					uv_threshold = atof( * ++argv );
 					--argc;
 					break;
 					
@@ -369,98 +369,98 @@ void MAGE::Engine::load( int argc, char **argv )
 					
 					for( i = 0; i < num_interp; i++ )
 					{
-						rate_interp[i] = atof( *++argv );
+						rate_interp[i] = atof( * ++argv );
 						argc--;
 					}
 					break;
 					
 				case 'e':
-					switch( *( *argv + 2 ) )
+					switch( * ( * argv + 2 ) )
 				{
 					case 'm':
-						fn_ts_gvm[num_ts_gvm++] = *++argv;
+						fn_ts_gvm[num_ts_gvm++] = * ++argv;
 						break;
 						
 					case 'f':
 					case 'p':
-						fn_ts_gvl[num_ts_gvl++] = *++argv;
+						fn_ts_gvl[num_ts_gvl++] = * ++argv;
 						break;
 						
 					case 'l':
-						fn_ts_gvf[num_ts_gvf++] = *++argv;
+						fn_ts_gvf[num_ts_gvf++] = * ++argv;
 						break;
 						
 					default:
-						Error( 1,( char * )"hts_engine: Invalid option '-e%c'.\n", *( *argv + 2 ) );
+						Error( 1,( char * )"hts_engine: Invalid option '-e%c'.\n", * ( * argv + 2 ) );
 				}
 					--argc;
 					break;
 					
 				case 'c':
-					switch( *( *argv + 2 ) )
+					switch( * ( * argv + 2 ) )
 				{
 					case 'm':
-						fn_ms_gvm[num_ms_gvm++] = *++argv;
+						fn_ms_gvm[num_ms_gvm++] = * ++argv;
 						break;
 						
 					case 'f':
 					case 'p':
-						fn_ms_gvl[num_ms_gvl++] = *++argv;
+						fn_ms_gvl[num_ms_gvl++] = * ++argv;
 						break;
 						
 					case 'l':
-						fn_ms_gvf[num_ms_gvf++] = *++argv;
+						fn_ms_gvf[num_ms_gvf++] = * ++argv;
 						break;
 						
 					default:
-						Error( 1,( char * )"hts_engine: Invalid option '-c%c'.\n", *( *argv + 2 ) );
+						Error( 1,( char * )"hts_engine: Invalid option '-c%c'.\n", * ( * argv + 2 ) );
 				}
 					--argc;
 					break;
 					
 				case 'j':
-					switch( *( *argv + 2 ) )
+					switch( * ( * argv + 2 ) )
 				{
 					case 'm':
-						gv_weight_mgc = atof( *++argv );
+						gv_weight_mgc = atof( * ++argv );
 						break;
 						
 					case 'f':
 					case 'p':
-						gv_weight_lf0 = atof( *++argv );
+						gv_weight_lf0 = atof( * ++argv );
 						break;
 						
 					case 'l':
-						gv_weight_lpf = atof( *++argv );
+						gv_weight_lpf = atof( * ++argv );
 						break;
 						
 					default:
-						Error( 1,( char * )"hts_engine: Invalid option '-j%c'.\n", *( *argv + 2 ) );
+						Error( 1,( char * )"hts_engine: Invalid option '-j%c'.\n", * ( * argv + 2 ) );
 				}
 					--argc;
 					break;
 					
 				case 'k':
-					fn_gv_switch = *++argv;
+					fn_gv_switch = * ++argv;
 					--argc;
 					break;
 					
 				case 'z':
-					audio_buff_size = atoi( *++argv );
+					audio_buff_size = atoi( * ++argv );
 					--argc;
 					break;
 					
 				default:
-					Error( 1,( char * )"hts_engine: Invalid option '-%c'.\n", *( *argv + 1 ) );
+					Error( 1,( char * )"hts_engine: Invalid option '-%c'.\n", * ( * argv + 1 ) );
 			}
 		} 
 		else 
 		{
-			labfn = *argv;
+			labfn = * argv;
 		}
 	}
 	
-	/* number of models,trees check */
+	 /* number of models,trees check*/
 	if( num_interp != num_ts_dur || num_interp != num_ts_mgc || num_interp != num_ts_lf0 || num_interp != num_ms_dur || num_interp != num_ms_mgc || num_interp != num_ms_lf0 )
 		Error( 1,( char * )"hts_engine: specify %d models( trees )for each parameter.\n", num_interp );
 	
@@ -468,26 +468,26 @@ void MAGE::Engine::load( int argc, char **argv )
 		if( num_interp != num_ms_lpf || num_interp != num_ts_lpf )
 			Error( 1,( char * )"hts_engine: specify %d models( trees )for each parameter.\n", num_interp );
 	
-	/* initialize( stream[0] = spectrum, stream[1] = lf0, stream[2] = low-pass filter )*/
+	 /* initialize( stream[0] = spectrum, stream[1] = lf0, stream[2] = low-pass filter )*/
 	if( num_ms_lpf > 0 || num_ts_lpf > 0 )
 		HTS_Engine_initialize( &engine, 3 );
 	else
 		HTS_Engine_initialize( &engine, 2 );
 	
-	/* load duration model */
+	 /* load duration model*/
 	HTS_Engine_load_duration_from_fn( &engine, fn_ms_dur, fn_ts_dur, num_interp );
 	
-	/* load stream[0]( spectrum model )*/
+	 /* load stream[0]( spectrum model )*/
 	HTS_Engine_load_parameter_from_fn( &engine, fn_ms_mgc, fn_ts_mgc, fn_ws_mgc, 0, FALSE, num_ws_mgc, num_interp );
 	
-	/* load stream[1]( lf0 model )*/
+	 /* load stream[1]( lf0 model )*/
 	HTS_Engine_load_parameter_from_fn( &engine, fn_ms_lf0, fn_ts_lf0, fn_ws_lf0, 1, TRUE, num_ws_lf0, num_interp );
 	
-	/* load stream[2]( low-pass filter model )*/
+	 /* load stream[2]( low-pass filter model )*/
 	if( num_ms_lpf > 0 || num_ts_lpf > 0 )
 		HTS_Engine_load_parameter_from_fn( &engine, fn_ms_lpf, fn_ts_lpf, fn_ws_lpf, 2, FALSE, num_ws_lpf, num_interp );
 	
-	/* load gv[0]( GV for spectrum )*/
+	 /* load gv[0]( GV for spectrum )*/
 	if( num_interp == num_ms_gvm )
 	{
 		if( num_ms_gvm == num_ts_gvm )
@@ -496,7 +496,7 @@ void MAGE::Engine::load( int argc, char **argv )
 			HTS_Engine_load_gv_from_fn( &engine, fn_ms_gvm, NULL, 0, num_interp );
 	}
 	
-	/* load gv[1]( GV for lf0 )*/
+	 /* load gv[1]( GV for lf0 )*/
 	if( num_interp == num_ms_gvl ){
 		if( num_ms_gvl == num_ts_gvl )
 			HTS_Engine_load_gv_from_fn( &engine, fn_ms_gvl, fn_ts_gvl, 1, num_interp );
@@ -504,7 +504,7 @@ void MAGE::Engine::load( int argc, char **argv )
 			HTS_Engine_load_gv_from_fn( &engine, fn_ms_gvl, NULL, 1, num_interp );
 	}
 	
-	/* load gv[2]( GV for low-pass filter )*/
+	 /* load gv[2]( GV for low-pass filter )*/
 	if( num_interp == num_ms_gvf && ( num_ms_lpf > 0 || num_ts_lpf > 0 ) ){
 		if( num_ms_gvf == num_ts_gvf )
 			HTS_Engine_load_gv_from_fn( &engine, fn_ms_gvf, fn_ts_gvf, 0, num_interp );
@@ -512,11 +512,11 @@ void MAGE::Engine::load( int argc, char **argv )
 			HTS_Engine_load_gv_from_fn( &engine, fn_ms_gvf, NULL, 2, num_interp );
 	}
 	
-	/* load GV switch */
+	 /* load GV switch*/
 	if( fn_gv_switch != NULL )
 		HTS_Engine_load_gv_switch_from_fn( &engine, fn_gv_switch );
 	
-	/* set parameter */
+	 /* set parameter*/
 	HTS_Engine_set_sampling_rate( &engine, sampling_rate );
 	HTS_Engine_set_fperiod( &engine, fperiod );
 	HTS_Engine_set_alpha( &engine, alpha );
@@ -524,7 +524,7 @@ void MAGE::Engine::load( int argc, char **argv )
 	HTS_Engine_set_log_gain( &engine, use_log_gain );
 	HTS_Engine_set_beta( &engine, beta );
 	HTS_Engine_set_audio_buff_size( &engine, audio_buff_size );
-	HTS_Engine_set_msd_threshold( &engine, 1, uv_threshold );	/* set voiced/unvoiced threshold for stream[1] */
+	HTS_Engine_set_msd_threshold( &engine, 1, uv_threshold );	 /* set voiced/unvoiced threshold for stream[1]*/
 	HTS_Engine_set_gv_weight( &engine, 0, gv_weight_mgc );
 	HTS_Engine_set_gv_weight( &engine, 1, gv_weight_lf0 );
 	
@@ -556,7 +556,7 @@ void MAGE::Engine::load( int argc, char **argv )
 	this->global = engine.global;
 	this->ms = engine.ms;
 	
-	/* close files */
+	 /* close files*/
 	if( durfp != NULL )
 		HTS_fclose( durfp );
 	if( mgcfp != NULL )
@@ -578,7 +578,7 @@ void MAGE::Engine::load( int argc, char **argv )
 
 // -- Engine
 
-/* Usage: output usage */
+ /* Usage: output usage*/
 void Usage( void )
 {
 	HTS_show_copyright( stderr );
@@ -639,8 +639,8 @@ void Usage( void )
 	exit( 0 );
 }
 
-/* Error: output error message */
-void Error( const int error, char *message, ... )
+ /* Error: output error message*/
+void Error( const int error, char * message, ... )
 {
 	va_list arg;
 	
@@ -664,16 +664,16 @@ void Error( const int error, char *message, ... )
 	return;
 }
 
-/* GetNumInterp: get number of speakers for interpolation from argv */
-int GetNumInterp( int argc, char **argv_search )
+ /* GetNumInterp: get number of speakers for interpolation from argv*/
+int GetNumInterp( int argc, char ** argv_search )
 {
 	int num_interp = 1;
 	while( --argc ){
-		if( **++argv_search == '-' )
+		if( ** ++argv_search == '-' )
 		{
-			if( *( *argv_search + 1 ) == 'i' )
+			if( * ( * argv_search + 1 ) == 'i' )
 			{
-				num_interp = atoi( *++argv_search );
+				num_interp = atoi( * ++argv_search );
 				
 				if( num_interp < 1 )
 				{
@@ -688,7 +688,7 @@ int GetNumInterp( int argc, char **argv_search )
 
 // -- Labels
 
-bool isdigit_string( char *str )
+bool isdigit_string( char * str )
 {
 	int i;
 	
@@ -699,8 +699,8 @@ bool isdigit_string( char *str )
 }
 
 
-/* HTS_set_duration: set duration from state duration probability distribution */
-double mHTS_set_duration( int *duration, double *mean, double *vari, int size, double frame_length )
+ /* HTS_set_duration: set duration from state duration probability distribution*/
+double mHTS_set_duration( int * duration, double * mean, double * vari, int size, double frame_length )
 {
 	int i, j;
 	double temp1, temp2;
@@ -708,7 +708,7 @@ double mHTS_set_duration( int *duration, double *mean, double *vari, int size, d
 	int sum = 0;
 	int target_length;
 	
-	/* if the frame length is not specified, only the mean vector is used */
+	 /* if the frame length is not specified, only the mean vector is used*/
 	if( frame_length == 0.0 )
 	{
 		for( i = 0; i < size; i++ )
@@ -723,14 +723,14 @@ double mHTS_set_duration( int *duration, double *mean, double *vari, int size, d
 		return( double )sum;
 	}
 	
-	/* get the target frame length */
+	 /* get the target frame length*/
 	target_length = ( int )( frame_length + 0.5 );
 	
-	/* check the specified duration */
+	 /* check the specified duration*/
 	if( target_length <= size )
 	{
 		if( target_length < size )
-			HTS_error( -1,( char* )"HTS_set_duration: Specified frame length is too short.\n" );
+			HTS_error( -1,( char * )"HTS_set_duration: Specified frame length is too short.\n" );
 		
 		for( i = 0; i < size; i++ )
 			duration[i] = 1;
@@ -738,7 +738,7 @@ double mHTS_set_duration( int *duration, double *mean, double *vari, int size, d
 		return( double )size;
 	}
 	
-	/* RHO calculation */
+	 /* RHO calculation*/
 	temp1 = 0.0;
 	temp2 = 0.0;
 	for( i = 0; i < size; i++ )
@@ -749,7 +749,7 @@ double mHTS_set_duration( int *duration, double *mean, double *vari, int size, d
 	
 	rho = ( ( double )target_length - temp1 )/ temp2;
 	
-	/* first estimation */
+	 /* first estimation*/
 	for( i = 0; i < size; i++ )
 	{
 		duration[i] = ( int )( mean[i] + rho * vari[i] + 0.5 );
@@ -760,10 +760,10 @@ double mHTS_set_duration( int *duration, double *mean, double *vari, int size, d
 		sum += duration[i];
 	}
 	
-	/* loop estimation */
+	 /* loop estimation*/
 	while( target_length != sum )
 	{
-		/* sarch flexible state and modify its duration */
+		 /* sarch flexible state and modify its duration*/
 		if( target_length > sum )
 		{
 			j = -1;
@@ -805,7 +805,7 @@ double mHTS_set_duration( int *duration, double *mean, double *vari, int size, d
 	return( double )target_length;
 }
 
-/* HTS_finv: calculate 1.0/variance function */
+ /* HTS_finv: calculate 1.0/variance function*/
 double HTS_finv( const double x )
 {
 	if( x >= INFTY2 )
@@ -820,7 +820,7 @@ double HTS_finv( const double x )
 	return( 1.0 / x );
 }
 
-/* HTS_PStream_mlpg: generate sequence of speech parameter vector maximizing its output probability for given pdf sequence */
+ /* HTS_PStream_mlpg: generate sequence of speech parameter vector maximizing its output probability for given pdf sequence*/
 void HTS_PStream_mlpg( HTS_PStream * pst )
 {
 	int m;
@@ -831,9 +831,9 @@ void HTS_PStream_mlpg( HTS_PStream * pst )
 	for( m = 0; m < pst->static_length; m++ )
 	{
 		HTS_PStream_calc_wuw_and_wum( pst, m );
-		HTS_PStream_ldl_factorization( pst );		 /* LDL factorization */
-		HTS_PStream_forward_substitution( pst );	/* forward substitution	 */
-		HTS_PStream_backward_substitution( pst, m );		/* backward substitution	*/
+		HTS_PStream_ldl_factorization( pst );		  /* LDL factorization*/
+		HTS_PStream_forward_substitution( pst );	 /* forward substitution	*/
+		HTS_PStream_backward_substitution( pst, m );		 /* backward substitution	*/
 		
 		if( pst->gv_length > 0 )
 			HTS_PStream_gv_parmgen( pst, m );
@@ -841,7 +841,7 @@ void HTS_PStream_mlpg( HTS_PStream * pst )
 	return;
 }
 
-/* HTS_PStream_calc_wuw_and_wum: calcurate W'U^{-1}W and W'U^{-1}M */
+ /* HTS_PStream_calc_wuw_and_wum: calcurate W'U^{-1}W and W'U^{-1}M*/
 void HTS_PStream_calc_wuw_and_wum( HTS_PStream * pst, const int m )
 {
 	int t, i, j, k;
@@ -849,12 +849,12 @@ void HTS_PStream_calc_wuw_and_wum( HTS_PStream * pst, const int m )
 	
 	for( t = 0; t < pst->length; t++ )
 	{
-		/* initialize */
+		 /* initialize*/
 		pst->sm.wum[t] = 0.0;
 		for( i = 0; i < pst->width; i++ )
 			pst->sm.wuw[t][i] = 0.0;
 		
-		/* calc WUW & WUM */
+		 /* calc WUW & WUM*/
 		for( i = 0; i < pst->win_size; i++ )
 			for( j = pst->win_l_width[i]; j <= pst->win_r_width[i]; j++ )
 				if( ( t + j >= 0 ) && ( t + j < pst->length )
@@ -871,7 +871,7 @@ void HTS_PStream_calc_wuw_and_wum( HTS_PStream * pst, const int m )
 	return;
 }
 
-/* HTS_PStream_ldl_factorization: Factorize W'*U^{-1}*W to L*D*L'( L: lower triangular, D: diagonal )*/
+ /* HTS_PStream_ldl_factorization: Factorize W' * U^{-1} * W to L * D * L'( L: lower triangular, D: diagonal )*/
 void HTS_PStream_ldl_factorization( HTS_PStream * pst )
 {
 	int t, i, j;
@@ -892,7 +892,7 @@ void HTS_PStream_ldl_factorization( HTS_PStream * pst )
 	return;
 }
 
-/* HTS_PStream_forward_substitution: forward subtitution for mlpg */
+ /* HTS_PStream_forward_substitution: forward subtitution for mlpg*/
 void HTS_PStream_forward_substitution( HTS_PStream * pst )
 {
 	int t, i;
@@ -907,7 +907,7 @@ void HTS_PStream_forward_substitution( HTS_PStream * pst )
 	return;
 }
 
-/* HTS_PStream_backward_substitution: backward subtitution for mlpg */
+ /* HTS_PStream_backward_substitution: backward subtitution for mlpg*/
 void HTS_PStream_backward_substitution( HTS_PStream * pst, const int m )
 {
 	int t, i;
@@ -922,7 +922,7 @@ void HTS_PStream_backward_substitution( HTS_PStream * pst, const int m )
 	return;
 }
 
-/* HTS_PStream_gv_parmgen: function for mlpg using GV */
+ /* HTS_PStream_gv_parmgen: function for mlpg using GV*/
 void HTS_PStream_gv_parmgen( HTS_PStream * pst, const int m )
 {
 	int t, i;
@@ -956,7 +956,7 @@ void HTS_PStream_gv_parmgen( HTS_PStream * pst, const int m )
 	return;
 }
 
-/* HTS_PStream_conv_gv: subfunction for mlpg using GV */
+ /* HTS_PStream_conv_gv: subfunction for mlpg using GV*/
 void HTS_PStream_conv_gv( HTS_PStream * pst, const int m )
 {
 	int t;
@@ -970,11 +970,11 @@ void HTS_PStream_conv_gv( HTS_PStream * pst, const int m )
 	
 	for( t = 0; t < pst->length; t++ )
 		if( pst->gv_switch[t] )
-			pst->par[t][m] = ratio *( pst->par[t][m] - mean )+ mean;
+			pst->par[t][m] = ratio * ( pst->par[t][m] - mean )+ mean;
 	return;
 }
 
-/* HTS_PStream_calc_derivative: subfunction for mlpg using GV */
+ /* HTS_PStream_calc_derivative: subfunction for mlpg using GV*/
 double HTS_PStream_calc_derivative( HTS_PStream * pst, const int m )
 {
 	int t, i;
@@ -987,8 +987,8 @@ double HTS_PStream_calc_derivative( HTS_PStream * pst, const int m )
 	const double w = 1.0 /( pst->win_size * pst->length );
 	
 	HTS_PStream_calc_gv( pst, m, &mean, &vari );
-	gvobj = -0.5 * W2 * vari * pst->gv_vari[m] *( vari - 2.0 * pst->gv_mean[m] );
-	dv = -2.0 * pst->gv_vari[m] *( vari - pst->gv_mean[m] )/ pst->length;
+	gvobj = -0.5 * W2 * vari * pst->gv_vari[m] * ( vari - 2.0 * pst->gv_mean[m] );
+	dv = -2.0 * pst->gv_vari[m] * ( vari - pst->gv_mean[m] )/ pst->length;
 	
 	for( t = 0; t < pst->length; t++ )
 	{
@@ -1006,37 +1006,37 @@ double HTS_PStream_calc_derivative( HTS_PStream * pst, const int m )
 	
 	for( t = 0, hmmobj = 0.0; t < pst->length; t++ )
 	{
-		hmmobj += W1 * w * pst->par[t][m] *( pst->sm.wum[t] - 0.5 * pst->sm.g[t] );
-		h = -W1 * w * pst->sm.wuw[t][1 - 1] - W2 * 2.0 /( pst->length * pst->length )*( ( pst->length - 1 )* pst->gv_vari[m] *( vari - pst->gv_mean[m] )+ 2.0 * pst->gv_vari[m] *( pst->par[t][m] - mean )*( pst->par[t][m] - mean ) );
+		hmmobj += W1 * w * pst->par[t][m] * ( pst->sm.wum[t] - 0.5 * pst->sm.g[t] );
+		h = -W1 * w * pst->sm.wuw[t][1 - 1] - W2 * 2.0 /( pst->length * pst->length ) * ( ( pst->length - 1 ) * pst->gv_vari[m] * ( vari - pst->gv_mean[m] )+ 2.0 * pst->gv_vari[m] * ( pst->par[t][m] - mean ) * ( pst->par[t][m] - mean ) );
 		
 		if( pst->gv_switch[t] )
-			pst->sm.g[t] = 1.0 / h *( W1 * w *( -pst->sm.g[t] + pst->sm.wum[t] )+ W2 * dv *( pst->par[t][m] - mean ) );
+			pst->sm.g[t] = 1.0 / h * ( W1 * w * ( -pst->sm.g[t] + pst->sm.wum[t] )+ W2 * dv * ( pst->par[t][m] - mean ) );
 		else
-			pst->sm.g[t] = 1.0 / h *( W1 * w *( -pst->sm.g[t] + pst->sm.wum[t] ) );
+			pst->sm.g[t] = 1.0 / h * ( W1 * w * ( -pst->sm.g[t] + pst->sm.wum[t] ) );
 	}
 	return( -( hmmobj + gvobj ) );
 }
 
-/* HTS_PStream_calc_gv: subfunction for mlpg using GV */
-void HTS_PStream_calc_gv( HTS_PStream * pst, const int m, double *mean, double *vari )
+ /* HTS_PStream_calc_gv: subfunction for mlpg using GV*/
+void HTS_PStream_calc_gv( HTS_PStream * pst, const int m, double * mean, double * vari )
 {
 	int t;
 	
-	*mean = 0.0;
+	 * mean = 0.0;
 	
 	for( t = 0; t < pst->length; t++ )
 		if( pst->gv_switch[t] )
-			*mean += pst->par[t][m];
+			 * mean += pst->par[t][m];
 	
-	*mean /= pst->gv_length;
+	 * mean /= pst->gv_length;
 	
-	*vari = 0.0;
+	 * vari = 0.0;
 	
 	for( t = 0; t < pst->length; t++ )
 		if( pst->gv_switch[t] )
-			*vari += ( pst->par[t][m] - *mean )*( pst->par[t][m] - *mean );
+			 * vari += ( pst->par[t][m] - * mean ) * ( pst->par[t][m] - * mean );
 	
-	*vari /= pst->gv_length;
+	 * vari /= pst->gv_length;
 	return;
 }
 
