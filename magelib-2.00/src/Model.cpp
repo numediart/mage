@@ -237,7 +237,8 @@ void MAGE::Model::updateDuration( int * updateFunction, int action )
 				this->state[i].duration *= updateFunction[i];
 				break;
 				
-			case MAGE::synthetic:	
+			case MAGE::synthetic:
+			case MAGE::noaction:
 			default:
 				break;
 		}

@@ -53,7 +53,7 @@ MAGE::Vocoder::Vocoder( int am, double aalpha, int afprd, int aiprd, int astage,
 	//excitation
 	this->count = 0;
 	
-	this->action = synthetic;
+	this->action = noaction;
 	
 	this->f0 = 110;//110Hz, default pitch
 	this->t0 = defaultSamplingRate / this->f0; // defaultSamplingRate = 48000
@@ -141,6 +141,7 @@ void MAGE::Vocoder::setPitch( double pitch, int action, bool forceVoiced )
 			break;
 			
 		case MAGE::synthetic:
+		case MAGE::noaction:
 		default:
 			this->f0 = pitch;//Hz
 	}
@@ -230,6 +231,7 @@ void MAGE::Vocoder::push( Frame &frame, bool ignoreVoicing )
 			break;
 			
 		case MAGE::synthetic:
+		case MAGE::noaction:
 		default:
 			this->f0 = frame.f0;
 	}
@@ -307,6 +309,7 @@ void MAGE::Vocoder::push( Frame * frame, bool ignoreVoicing )
 			break;
 			
 		case MAGE::synthetic:
+		case MAGE::noaction:
 		default:
 			this->f0 = frame->f0;
 	}
@@ -401,7 +404,7 @@ void MAGE::Vocoder::reset()
 	
 	this->f0 = 110;
 	this->t0 = defaultSamplingRate / ( this->f0 );
-	this->action = synthetic;
+	this->action = noaction;
 	this->alpha  = defaultAlpha;
 	this->gamma  = defaultGamma;
 	this->stage  = defaultGamma;

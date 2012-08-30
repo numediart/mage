@@ -55,7 +55,7 @@ MAGE::Mage::Mage( void )
 	this->flag = true;
 	this->labelSpeed = 1;
 	this->sampleCount = 0;
-	this->action = synthetic;
+	this->action = noaction;
 	this->updateFunction = NULL;
 	this->hopLen = defaultFrameRate;
 }
@@ -146,6 +146,7 @@ void MAGE::Mage::setSpeed ( double speed, int action )
 			break;
 			
 		case MAGE::synthetic:
+		case MAGE::noaction:
 		default:
 			this->hopLen = defaultFrameRate;
 	}
@@ -246,7 +247,7 @@ void MAGE::Mage::init( int argc, char ** argv )
 	this->flag = true;
 	this->labelSpeed = 1;
 	this->sampleCount = 0;
-	this->action = synthetic;
+	this->action = noaction;
 	this->updateFunction = NULL;
 	this->hopLen = defaultFrameRate;
 	return;
@@ -254,7 +255,7 @@ void MAGE::Mage::init( int argc, char ** argv )
 
 void MAGE::Mage::run( void )
 {
-	if( popLabel() )
+	if( this->popLabel() )
 	{
 		this->prepareModel();
 		this->computeDuration();
@@ -312,7 +313,7 @@ void MAGE::Mage::computeDuration( void )
 void MAGE::Mage::updateDuration( void )
 {
 	this->model->updateDuration( this->updateFunction, this->action ); 
-	this->action = synthetic;
+	this->action = noaction;
 	this->updateFunction = NULL;
 	return;
 }
@@ -350,14 +351,35 @@ void MAGE::Mage::resetVocoder( void )
 	return;
 }
 
+void MAGE::Mage::reset( void )
+{	
+	this->flag = true;
+	this->labelSpeed = 1;
+	this->sampleCount = 0;
+	this->action = noaction;
+	this->updateFunction = NULL;
+	this->hopLen = defaultFrameRate;
+
+	this->resetVocoder();	
+	return;
+}
+
 void MAGE::Mage::updateSamples( void )
 {
-	if( !this->frameQueue->isEmpty() )
-	{				 
-		this->frameQueue->pop( &this->frame, 1 ); // we pop a speech parameter frame
-		
-		this->vocoder->push( this->frame );
-	}
+	// ATTENTION!!! should we generate the samples from the parameters in the audio thread or befor?!  
+	if( this->sampleCount >= this->hopLen-1 ) // if we hit the hop length
+	{	
+		if( !this->frameQueue->isEmpty() )
+		{				 
+			this->frameQueue->pop( &this->frame, 1 ); // we pop a speech parameter frame
+			
+			this->vocoder->push( this->frame );
+		}
+		this->sampleCount = 0; // and reset the sample count for next time
+	} 
+	else 
+		this->sampleCount++; // otherwise increment sample count
+	
  	return;
 }
 

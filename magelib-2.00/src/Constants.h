@@ -69,6 +69,7 @@ namespace MAGE
 	const int lf0Len = nOfDers * nOfLF0s;
 	const int lpfLen = nOfDers * nOfLPFs;
 	
+	const int noaction	= -1;
 	const int overwrite = 0;
 	const int shift		= 1;
 	const int scale		= 2;

@@ -44,7 +44,7 @@ void testApp::setup( void )
 	// -- OLA AND AUDIO ---
 	drawSampleFrame = true; // we don't draw the sample frame at runtime
 	frameLen = defaultFrameRate * 2;
-	hopLen = defaultFrameRate;
+//	hopLen = defaultFrameRate;
 	sampleCount = 0; // initialize OLA variables
 	olaBuffer = new obOlaBuffer( 8 * maxFrameLen ); // allocate memory for the OLA buffer
 	sampleFrame = new float[ maxFrameLen ](); // allocate memory for the speech frame
@@ -90,16 +90,16 @@ void testApp::update( void )
 			//speed = ofMap( oscSpeed, 0, 3, 0.1, 3, true );
 			//setSpeed( speed );
 			
-			hopLen = ( oscSpeed > 1 ) ? oscSpeed : 1;
+//			hopLen = ( oscSpeed > 1 ) ? oscSpeed : 1;
 			//printf( "speed : %d\n", hopLen );
 			
-			hopLen = ( int )defaultFrameRate/oscSpeed;
+			//hopLen = ( int )defaultFrameRate/oscSpeed;
 			
-			if( hopLen < 1 )
+		/*	if( hopLen < 1 )
 				hopLen = 1;
 		
  			if( hopLen > defaultFrameRate * 20 )
-				hopLen = defaultFrameRate * 20;
+				hopLen = defaultFrameRate * 20;*/
 		}
 		
 		if( m.getAddress() == "/alpha" )
@@ -152,8 +152,8 @@ void testApp::update( void )
 		if( m.getAddress() == "/reset" )
 		{
 			this->mage->resetVocoder();
-			hopLen = defaultFrameRate;
-			printf( "Reset \n" );
+//			hopLen = defaultFrameRate;
+//			printf( "Reset \n" );
 		}
 		
 		if( m.getAddress() == "/loop" )
@@ -185,9 +185,9 @@ void testApp::draw( void )
 		
 		// middle line to show the zero
 		ofLine( xOffset, yOffset+( yWidth/2 ),
-			   xOffset+hopLen, yOffset+( yWidth/2 ) );
+			   xOffset+this->mage->getSpeed(), yOffset+( yWidth/2 ) );
 		
-		for( int k = 1; k < hopLen; k++ )
+		for( int k = 1; k < this->mage->getSpeed(); k++ )
 		{
 			// linearly interpolated waveform to look nice on screen
 			ofLine( ( k-1 ) + xOffset, ofMap( sampleFrame[k-1], -1, 1, yOffset + yWidth, yOffset ), 
@@ -195,7 +195,7 @@ void testApp::draw( void )
 		}
 		
 		// rectangle box to show where is the max
-		ofRect( xOffset, yOffset, hopLen, yWidth );
+		ofRect( xOffset, yOffset, this->mage->getSpeed(), yWidth );
 	}
 }
 
@@ -206,13 +206,7 @@ void testApp::audioOut( float * outBuffer, int bufSize, int nChan )
 	for( int k = 0; k < bufSize; k++ )
 	{
 		// ATTENTION!!! should we generate the samples from the parameters in the audio thread or befor?!  
-		if( sampleCount >= hopLen-1 ) // if we hit the hop length
-		{	
-			this->mage->updateSamples();
-			sampleCount = 0; // and reset the sample count for next time
-		} 
-		else 
-			sampleCount++; // otherwise increment sample count
+		this->mage->updateSamples();
 		
 		indchan = k * nChan;
 		outBuffer[indchan] = this->mage->popSamples();
@@ -221,7 +215,7 @@ void testApp::audioOut( float * outBuffer, int bufSize, int nChan )
 			outBuffer[indchan+c] = outBuffer[indchan]; //mono --> stereo / multi-channel
 		
 		if (drawSampleFrame) 
-			sampleFrame[sampleCount] = outBuffer[k];
+			sampleFrame[this->mage->getSampleCounter()] = outBuffer[k];
 	}
 }
 
@@ -246,28 +240,15 @@ void testApp::keyPressed( int key )
 
 	if( key == 'd' )
 		this->mage->setAlpha( 0.8 );
-	
-// --- Speed control :: we keep one? we embed also the hopLen in the Mage API?
-	
+		
 	if( key == 'e' )
 		this->mage->setLabelSpeed( 4 );
 	
 	if( key == 'f' )
-	{
-		hopLen -= 10;
-		if( hopLen < 1 )
-			hopLen = 1;
-	}
+		this->mage->setSpeed( 0.5, MAGE::scale );
 	
 	if( key == 's' )
-	{
-		hopLen += 10;
-		
-		if( hopLen > defaultFrameRate * 20 )
-			hopLen = defaultFrameRate * 20;
-	}
-
-// --- Speed contor :: we keep one? we embed also the hopLen in the Mage API?
+		this->mage->setSpeed( 10, MAGE::shift );
 	
 	if( key == 'g' )
 		this->mage->setPitch( 0.5, MAGE::scale );
@@ -286,7 +267,6 @@ void testApp::keyPressed( int key )
 		int updateFunction[nOfStates] = { 1, 1, 30, 1, 1 };
 		this->mage->setDuration( updateFunction, MAGE::shift );
 	}
-	
 	
 	if( key == 'l' )
 	{
@@ -316,18 +296,16 @@ void testApp::keyPressed( int key )
 	}
 	
 	if ( key == 'p' ) 
-	{
 		pushLabel();
-	}
 	
 	if( key == 'r' )
 	{
 		this->mage->resetVocoder();
-		hopLen = defaultFrameRate;
+		//hopLen = defaultFrameRate;
 	}
 	
-	
-	
+	if( key == 'w' )
+		this->mage->reset();
 }
 
 void testApp::keyReleased( int key )

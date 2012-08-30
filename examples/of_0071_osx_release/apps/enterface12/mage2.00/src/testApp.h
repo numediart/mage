@@ -94,7 +94,8 @@ class testApp : public ofBaseApp
 	
 		float * sampleFrame;		// frame to be OLAed
 		obOlaBuffer * olaBuffer; // overlap-add buffer
-		int frameLen, hopLen;	// frame size and hop size
+		int frameLen; // frame size
+	//	int hopLen;	// hop size
 		int sampleCount;		// sample count for triggering
 		bool drawSampleFrame;	// do we show the frame
 		bool loop;

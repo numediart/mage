@@ -73,6 +73,8 @@ namespace MAGE
 			inline ModelQueue * getModelQueue( void ){ return( this->modelQueue ); };
 			inline FrameQueue * getFrameQueue( void ){ return( this->frameQueue ); };
 
+			inline int getSampleCounter( void ){ return( this->sampleCount ); };
+
 			inline double getSpeed ( void ){ return( this->hopLen ); };
 			inline double getLabelSpeed ( void ){ return( this->labelSpeed ); };
 			
@@ -112,6 +114,7 @@ namespace MAGE
 			bool popLabel ( void );
 			void pushLabel( Label label );
 
+			void reset ( void );
 			void resetVocoder ( void );
 			void updateSamples( void );		
 
