@@ -43,13 +43,13 @@ void genThread::threadedFunction( void )
 
 		// OR 
 
-		//if( popLabel() )
+		//if( this->mage->popLabel() )
 		//{
-		//	this->prepareModel();
-		//	this->computeDuration();
-		//	this->updateDuration ();
-		//	this->computeParameters ();
-		//	this->optimizeParameters();
+		//	this->mage->prepareModel();
+		//	this->mage->computeDuration();
+		//	this->mage->updateDuration ();
+		//	this->mage->computeParameters ();
+		//	this->mage->optimizeParameters();
 		//}
 	}
 	return;
