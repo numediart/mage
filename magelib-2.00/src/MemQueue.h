@@ -83,12 +83,12 @@ namespace MAGE
 	};
 } // namespace
 
-template <class Item>
-unsigned int MAGE::MemQueue<Item>::getNumOfItems( void )
-{
-	return( unsigned int )( nOfItems > 0 ) ? nOfItems : 0;
-}
-
+// constructor 
+/**
+ * 
+ * @param size max size of the LabelQueue. i.e. how many Label the buffer ring 
+ * can contain before it's full.
+ */
 template <class Item>
 MAGE::MemQueue<Item>::MemQueue( unsigned int queueLen )
 {
@@ -99,12 +99,19 @@ MAGE::MemQueue<Item>::MemQueue( unsigned int queueLen )
 	nOfItems = 0;
 }
 
+// destructor
 template <class Item>
 MAGE::MemQueue<Item>::~MemQueue( void )
 {
 	delete[] rawData;
 }
 
+/**
+ * push nItem Items into the queue by copying them from the Item array *item.
+ * 
+ * @param item the array of Items to be copied/pushed into the queue 
+ * @param nItem the number of Items to be copied/pushed into the queue
+ */
 template <class Item>
 void MAGE::MemQueue<Item>::push( Item * item, unsigned int nItem )
 {
@@ -133,9 +140,22 @@ void MAGE::MemQueue<Item>::push( Item * item, unsigned int nItem )
 	return;
 }
 
- /* advance in queue (to be used in case we use the get() to directly access Item from the queue ) 
- * (as opposed to pushing Item instantiated outside)
-*/
+/** 
+ * push a new Item into the FIFO queue. In this case, there is no copy of an item,
+ * instead the next slot of the memory pool is added to the queue. It is supposed
+ * that said slot has been accessed with next() and modified beforehand.
+ * 
+ * Usage is in 3 steps which could be summarized into "access, write, save":
+ * 
+ * Item *item = memQueue->next();//access next memory slot
+ * item->set...(foo);//modify it
+ * memQueue->push();//save it into the queue (advance 'write' pointer to next available memory slot)
+ * 
+ * @param nItem number of item to be pushed in the queue, i.e. number of item the
+ * 'write' pointer will be advanced. If no value is provided, 1 (one) item is pushed.
+ * You will usually want to use it with only one item at a time.
+ * 
+ */
 template <class Item>
 void MAGE::MemQueue<Item>::push( unsigned int nItem )
 {
@@ -149,6 +169,12 @@ void MAGE::MemQueue<Item>::push( unsigned int nItem )
 	return;
 }
 
+/**
+ * Copy nItem Items of the FIFO queue into the Item array *item and erase them from the queue. 
+ * 
+ * @param item a pre-allocated array of Item in which nItem from the queue will be copied
+ * @param nItem the number of Items to be copied and erased
+ */
 template <class Item>
 void MAGE::MemQueue<Item>::pop( Item * item, unsigned int nItem )
 {
@@ -179,6 +205,38 @@ void MAGE::MemQueue<Item>::pop( Item * item, unsigned int nItem )
 	return;
 }
 
+/**
+ * remove the oldest item in the queue. In this case, there is no copy of it,
+ * instead the 'read' pointer that points to the oldest item in the queue is 
+ * incremented to the next item of the queue and the item previously pointed
+ * to is returned into the memory pool.
+ * 
+ * Usage is in 3 steps which could be summarized into "access, read, delete":
+ * 
+ * Item *item = memQueue->get();//access oldest item in the queue
+ * var v = item->get...();//read it, use it, ...
+ * memQueue->pop();//remove it from the queue (advance 'read' pointer)
+ * //never do this after a pop() :
+ * var v2 = item->get...();//don't do this
+ * 
+ * Note that once pop() has been called, the item can be overwritten at any time
+ * by a subsequent next()/push(). Therefore if the Item has to be used but without
+ * blocking/clogging up the queue, it is better to make a copy-pop() with pop(Label&)
+ * 
+ * Item *item = memQueue->get();//access oldest item in the queue
+ * memQueue->pop();//remove it from the queue (advance 'read' pointer)
+ * //never do this after a pop() :
+ * var v = item->get...();//don't do this
+ * 
+ * //do this instead
+ * Item item;
+ * memQueue->pop(item);//remove it from the queue (advance 'read' pointer)
+ * var v = item.get...();//item is a local copy of the Item that has been pop()'d
+ * 
+ * @param nItem number of item to be pop()'d from the queue, i.e. number of item the
+ * 'read' pointer will be advanced. If no value is provided, 1 (one) item is pop()'d.
+ * You will usually want to use it with only one item at a time.
+ */
 template <class Item>
 void MAGE::MemQueue<Item>::pop( unsigned int nItem )
 {
@@ -191,7 +249,13 @@ void MAGE::MemQueue<Item>::pop( unsigned int nItem )
 	return;
 }
 
- /* like pop but does not advance in the queue*/
+/**
+ * Copy nItem Items of the FIFO queue into the Item array *item. 
+ * This is meant to be used with pop(int). See pop(int) doc for more complete explanation
+ * 
+ * @param item a pre-allocated array of Item in which nItem from the queue will be copied
+ * @param nItem the number of Items to be copied
+ */
 template <class Item>
 void MAGE::MemQueue<Item>::get( Item * item, unsigned int nItem )
 {
@@ -218,20 +282,35 @@ void MAGE::MemQueue<Item>::get( Item * item, unsigned int nItem )
 	return;
 }
 
- /* get current item, the one that pop() would remove. get() does not advance in the queue*/
+/**
+ * Access the oldest item of the FIFO queue. This is meant to be used with pop(int).
+ * See pop(int) doc for more complete explanation
+ * 
+ * @return a pointer to the item of the queue that pop() would remove. i.e. the
+ * oldest slot in the FIFO
+ */
 template <class Item>
 Item * MAGE::MemQueue<Item>::get( void )
 {
 	return &rawData[read];
 }
 
- /* get next item, the one that push() would write to. next() does not advance in the queue*/
+/**
+ * Access next available slot of the memory pool. This is meant to be used with
+ * push(int). see push(int) doc for more complete explanations.
+ * 
+ * @return a pointer to the item of the queue that push() would write to. i.e. 
+ * the next available slot in memory that has not yet been pushed into the FIFO
+ */
 template <class Item>
 Item * MAGE::MemQueue<Item>::next( void )
 {
 	return &rawData[write];
 }
 
+/**
+ * @return true if the queue is empty, false otherwise
+ */
 template <class Item>
 bool MAGE::MemQueue<Item>::isEmpty( void )
 {
@@ -239,9 +318,25 @@ bool MAGE::MemQueue<Item>::isEmpty( void )
 	return( nOfItems <= 0 ) ? true : false;
 }
 
+/**
+ * 
+ * @return true if the queue is full, i.e. if it contains the max number of elements
+ * given to the constructor, false otherwise
+ */
 template <class Item>
 bool MAGE::MemQueue<Item>::isFull( void )
 {
 	PaUtil_ReadMemoryBarrier();
 	return( this->getNumOfItems() >= length ) ? true : false;
 }
+
+/**
+ * 
+ * @return number of Item currently stored (i.e. pushed and not pop'd) in the queue
+ */
+template <class Item>
+unsigned int MAGE::MemQueue<Item>::getNumOfItems( void )
+{
+	return( unsigned int )( nOfItems > 0 ) ? nOfItems : 0;
+}
+
