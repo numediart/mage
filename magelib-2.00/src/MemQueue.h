@@ -86,7 +86,7 @@ namespace MAGE
 // constructor 
 /**
  * 
- * @param size max size of the LabelQueue. i.e. how many Label the buffer ring 
+ * @param size max size of the MemQueue. i.e. how many Item the buffer ring
  * can contain before it's full.
  */
 template <class Item>
@@ -122,12 +122,12 @@ void MAGE::MemQueue<Item>::push( Item * item, unsigned int nItem )
 	
 	if( write+nItem <= length )
 	{
-		//TODO either change this for a copy constructor or check that no Item( Model, Label, ... )has dynamically allocated memory
+		//TODO either change this for a copy constructor or check that no Item( Model, Frame, ... )has dynamically allocated memory
 		memcpy( &rawData[write], item, nItem * sizeof( Item ) );
 	} 
 	else
 	{
-		//TODO either change this or check that no Item( Model, Label, ... )has dynamically allocated memory
+		//TODO either change this or check that no Item( Model, Frame, ... )has dynamically allocated memory
 		remain = length - write;
 		memcpy( &rawData[write], item, remain * sizeof( Item ) );
 		memcpy( rawData, &item[remain],( nItem-remain ) * sizeof( Item ) );
@@ -221,7 +221,7 @@ void MAGE::MemQueue<Item>::pop( Item * item, unsigned int nItem )
  * 
  * Note that once pop() has been called, the item can be overwritten at any time
  * by a subsequent next()/push(). Therefore if the Item has to be used but without
- * blocking/clogging up the queue, it is better to make a copy-pop() with pop(Label&)
+ * blocking/clogging up the queue, it is better to make a copy-pop() with pop(Item*,int)
  * 
  * Item *item = memQueue->get();//access oldest item in the queue
  * memQueue->pop();//remove it from the queue (advance 'read' pointer)
