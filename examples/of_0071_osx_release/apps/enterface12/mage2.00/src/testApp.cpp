@@ -35,11 +35,13 @@ void testApp::setup( void )
 	
 	// --- Mage ---
 	//this->mage = new MAGE::Mage( this->Argc, this->Argv );		
-	this->mageSLT = new MAGE::Mage( "./inouts/configSLT.conf" );		
+	//this->mageSLT = new MAGE::Mage( "./inouts/configSLT.conf" );		
 	//this->mageBDL = new MAGE::Mage( "./inouts/configBDL.conf" );		
 	
+	this->mage = new MAGE::Mage( "./inouts/configSLT.conf" );		
+
 	// --- Parameter Generation Thread ---
-	generate = new genThread( this->mageSLT );
+	generate = new genThread( this->mage );
 	generate->startThread();
 	
 	// -- OLA AND AUDIO ---
@@ -97,7 +99,7 @@ void testApp::update( void )
 			oscAlpha = m.getArgAsFloat( 0 );
 			alpha = ofMap( oscAlpha, 0.1, 0.9, 0.1, 0.9, true );
 			//printf( "alpha : %f\n", alpha );
-			this->mageSLT->setAlpha( alpha );
+			this->mage->setAlpha( alpha );
 		}
 		
 		if( m.getAddress() == "/volume" )
@@ -106,7 +108,7 @@ void testApp::update( void )
 			oscVolume = m.getArgAsFloat( 0 );
 			volume = ofMap( oscVolume, 0, 5, 0, 5, true );
 			//printf( "volume : %f\n", volume );
-			this->mageSLT->setVolume( volume );
+			this->mage->setVolume( volume );
 		}
 		
 		if( m.getAddress() == "/pitch" )
@@ -119,7 +121,7 @@ void testApp::update( void )
 			{
 				pitch = 65.406395 * ( ( oscPitch/12 ) * ( oscPitch/12 ) );
 				printf( "pitch_overwrite : %f\n", pitch );
-				this->mageSLT->setPitch( pitch, overwrite );
+				this->mage->setPitch( pitch, overwrite );
 			}
 			
 			if( oscAction == shift )
@@ -127,19 +129,19 @@ void testApp::update( void )
 				//pitch = ofMap( oscPitch, -3, 3, -3, 3, true );
 				pitch = 65.406395 * ( ( oscPitch/12 ) * ( oscPitch/12 ) );
 				printf( "pitch_shift : %f\n", pitch );
-				this->mageSLT->setPitch( pitch, shift );				
+				this->mage->setPitch( pitch, shift );				
 			}
 			
 			if( oscAction == scale )
 			{
 				pitch = ofMap( oscPitch, -3, 3, -3, 3, true );
 				//printf( "pitch_scale : %f\n", pitch );
-				this->mageSLT->setPitch( pitch, scale );				
+				this->mage->setPitch( pitch, scale );				
 			}
 		}
 		
 		if( m.getAddress() == "/reset" )
-			this->mageSLT->reset();
+			this->mage->reset();
 
 		
 		if( m.getAddress() == "/loop" )
@@ -153,7 +155,7 @@ void testApp::update( void )
 	}
 	
 	//TODO check that this is thread-safe( probably not )
-	if( this->fill && this->mageSLT->getLabelQueue()->isEmpty() && this->loop )
+	if( this->fill && this->mage->getLabelQueue()->isEmpty() && this->loop )
 		fillLabelQueue();
 }
 
@@ -171,9 +173,9 @@ void testApp::draw( void )
 		
 		// middle line to show the zero
 		ofLine( xOffset, yOffset+( yWidth/2 ),
-			   xOffset+this->mageSLT->getSpeed(), yOffset+( yWidth/2 ) );
+			   xOffset+this->mage->getSpeed(), yOffset+( yWidth/2 ) );
 		
-		for( int k = 1; k < this->mageSLT->getSpeed(); k++ )
+		for( int k = 1; k < this->mage->getSpeed(); k++ )
 		{
 			// linearly interpolated waveform to look nice on screen
 			ofLine( ( k-1 ) + xOffset, ofMap( sampleFrame[k-1], -1, 1, yOffset + yWidth, yOffset ), 
@@ -181,7 +183,7 @@ void testApp::draw( void )
 		}
 		
 		// rectangle box to show where is the max
-		ofRect( xOffset, yOffset, this->mageSLT->getSpeed(), yWidth );
+		ofRect( xOffset, yOffset, this->mage->getSpeed(), yWidth );
 	}
 }
 
@@ -192,16 +194,16 @@ void testApp::audioOut( float * outBuffer, int bufSize, int nChan )
 	for( int k = 0; k < bufSize; k++ )
 	{
 		// ATTENTION!!! should we generate the samples from the parameters in the audio thread or befor?!  
-		this->mageSLT->updateSamples();
+		this->mage->updateSamples();
 		
 		indchan = k * nChan;
-		outBuffer[indchan] = this->mageSLT->popSamples();
+		outBuffer[indchan] = this->mage->popSamples();
 		
 		for( c = 1; c < nChan; c++ )
 			outBuffer[indchan+c] = outBuffer[indchan]; //mono --> stereo / multi-channel
 		
 		if (drawSampleFrame) 
-			sampleFrame[this->mageSLT->getSampleCounter()] = outBuffer[k];
+			sampleFrame[this->mage->getSampleCounter()] = outBuffer[k];
 	}
 }
 
@@ -216,42 +218,42 @@ testApp::testApp( int argc, char ** argv )
 void testApp::keyPressed( int key )
 {
 	if( key == 'a' )
-		this->mageSLT->setPitch( 440, MAGE::overwrite );
+		this->mage->setPitch( 440, MAGE::overwrite );
 	
 	if( key == 'b' )
-		this->mageSLT->setPitch( 50, MAGE::shift );
+		this->mage->setPitch( 50, MAGE::shift );
 	
 	if( key == 'c' )
-		this->mageSLT->setPitch( 2, MAGE::scale );
+		this->mage->setPitch( 2, MAGE::scale );
 
 	if( key == 'd' )
-		this->mageSLT->setAlpha( 0.8 );
+		this->mage->setAlpha( 0.8 );
 		
 	if( key == 'e' )
-		this->mageSLT->setLabelSpeed( 4 );
+		this->mage->setLabelSpeed( 4 );
 	
 	if( key == 'f' )
-		this->mageSLT->setSpeed( 0.5, MAGE::scale );
+		this->mage->setSpeed( 0.5, MAGE::scale );
 	
 	if( key == 's' )
-		this->mageSLT->setSpeed( 10, MAGE::shift );
+		this->mage->setSpeed( 10, MAGE::shift );
 	
 	if( key == 'g' )
-		this->mageSLT->setPitch( 0.5, MAGE::scale );
+		this->mage->setPitch( 0.5, MAGE::scale );
 
 	if( key == 'h' )
-		this->mageSLT->setPitch( 1000, MAGE::shift );
+		this->mage->setPitch( 1000, MAGE::shift );
 	
 	if( key == 'i' )
-		this->mageSLT->setGamma( 2 );
+		this->mage->setGamma( 2 );
 	
 	if( key == 'j' )
-		this->mageSLT->setVolume( 5 );
+		this->mage->setVolume( 5 );
 
 	if( key == 'k' )
 	{
 		int updateFunction[nOfStates] = { 1, 1, 30, 1, 1 };
-		this->mageSLT->setDuration( updateFunction, MAGE::shift );
+		this->mage->setDuration( updateFunction, MAGE::shift );
 	}
 	
 	if( key == 'l' )
@@ -264,7 +266,7 @@ void testApp::keyPressed( int key )
 						
 			labellist.pop();
 			
-			this->mageSLT->pushLabel( label );
+			this->mage->pushLabel( label );
 		}
 		
 		string s( this->Argv[this->Argc - 1] );
@@ -272,7 +274,7 @@ void testApp::keyPressed( int key )
 	}
 	
 	if( key == 'm' )
-		this->mageSLT->setPOrder( 3 );
+		this->mage->setPOrder( 3 );
 	
 	if( key == 'o' )
 	{
@@ -284,10 +286,10 @@ void testApp::keyPressed( int key )
 		pushLabel();
 	
 	if( key == 'r' )
-		this->mageSLT->resetVocoder();
+		this->mage->resetVocoder();
 	
 	if( key == 'w' )
-		this->mageSLT->reset();
+		this->mage->reset();
 }
 
 void testApp::keyReleased( int key )
@@ -305,7 +307,7 @@ void testApp::pushLabel()
 		
 		labellist.pop();
 
-		this->mageSLT->pushLabel( label );
+		this->mage->pushLabel( label );
 	}
 }
 
@@ -325,7 +327,7 @@ void testApp::fillLabelQueue()
 				
 		labellist.pop();
 		
-		this->mageSLT->pushLabel( label );
+		this->mage->pushLabel( label );
 	}
 	
 	this->fill = true;
