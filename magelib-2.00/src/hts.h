@@ -36,8 +36,6 @@
 #include <stdarg.h>
 #include <cstdlib>
 
-#include "hts.h"
-
 using namespace std;
 
 namespace MAGE 
