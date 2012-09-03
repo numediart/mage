@@ -369,9 +369,10 @@ void MAGE::Mage::updateSamples( void )
 	{	
 		if( !this->frameQueue->isEmpty() )
 		{				 
-			this->frameQueue->pop( &this->frame, 1 ); // we pop a speech parameter frame
+			//this->frameQueue->pop( &this->frame, 1 ); // we pop a speech parameter frame
 			
-			this->vocoder->push( this->frame );
+			this->vocoder->push( this->frameQueue->get() );
+			this->frameQueue->pop();
 		}
 		this->sampleCount = 0; // and reset the sample count for next time
 	} 
