@@ -39,11 +39,10 @@ void genThread::threadedFunction( void )
 {		
 	while( isThreadRunning() )
 	{
-		this->mage->run( );
+		//this->mage->run( );
 
 		// OR 
-
-		/*
+		
 		if( this->mage->popLabel() )
 		{
 			this->mage->prepareModel();
@@ -52,7 +51,6 @@ void genThread::threadedFunction( void )
 			this->mage->computeParameters ();
 			this->mage->optimizeParameters();
 		}
-		*/
 	}
 	return;
 }

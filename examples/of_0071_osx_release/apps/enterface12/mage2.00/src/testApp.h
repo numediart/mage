@@ -93,7 +93,7 @@ class testApp : public ofBaseApp
 		MAGE::Mage * mageJMK;
 		MAGE::Mage * mageRMS;
 		MAGE::Mage * mageSLT;
-	
+
 		genThread * generate;
 	 
 		//---

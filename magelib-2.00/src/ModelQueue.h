@@ -93,7 +93,7 @@ namespace MAGE
 
 			// methods
 			void printQueue( void );
-			void generate( FrameQueue * frameQueue, unsigned int backup = nOfBackup );
+			void generate   ( FrameQueue * frameQueue, unsigned int backup = nOfBackup );
 			void optimizeParameters( MAGE::Engine * engine, unsigned int backup = nOfBackup, unsigned int lookup = nOfLookup );
 
 		protected:

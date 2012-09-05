@@ -36,43 +36,21 @@
 // constructor
 MAGE::Mage::Mage( void )
 {
-	// --- Queues ---	
-	this->labelQueue = NULL;
-	this->modelQueue = NULL;
-	this->frameQueue = NULL;
-	
-	// --- HTS Engine ---
-	this->engine = NULL;
-	
-	// --- Model ---
-	this->model = NULL;
-	
-	// --- SPTK Vocoder ---
-	this->vocoder = NULL;
-	
-	this->argc = 0;
-	this->argv = NULL;
-	this->flag = true;
-	this->labelSpeed = 1;
-	this->sampleCount = 0;
-	this->action = noaction;
-	this->updateFunction = NULL;
-	this->hopLen = defaultFrameRate;
+	init();
 }
 
 MAGE::Mage::Mage( std::string confFilename )
-{	
+{		
+	init();
 	parseConfigFile( confFilename );
-	
-	init( this->argc, this->argv );
 }
 
 MAGE::Mage::Mage( int argc, char ** argv )
 {	
+	init();
+
 	this->argc = argc;
 	this->argv = argv;
-	
-	init( this->argc, this->argv );
 }
 
 // destructor
@@ -84,7 +62,7 @@ MAGE::Mage::~Mage( void )
 	delete this->frameQueue;
 	
 	// --- HTS Engine ---
-	delete this->engine;
+	//delete this->engine;
 		
 	// --- SPTK Vocoder ---
 	delete this->vocoder;
@@ -226,16 +204,12 @@ void MAGE::Mage::parseConfigFile( std::string confFilename )
 	return;
 }
 
-void MAGE::Mage::init( int argc, char ** argv )
+void MAGE::Mage::init( void )
 {	
 	// --- Queues ---	
 	this->labelQueue = new MAGE::LabelQueue( maxLabelQueueLen );
 	this->modelQueue = new MAGE::ModelQueue( maxModelQueueLen );
 	this->frameQueue = new MAGE::FrameQueue( maxFrameQueueLen );
-	
-	// --- HTS Engine ---
-	this->engine = new MAGE::Engine();
-	this->engine->load( argc, argv );
 	
 	// --- SPTK Vocoder ---
 	this->vocoder = new MAGE::Vocoder::Vocoder();
@@ -247,7 +221,7 @@ void MAGE::Mage::init( int argc, char ** argv )
 	this->labelSpeed = 1;
 	this->sampleCount = 0;
 	this->action = noaction;
-	this->updateFunction = NULL;
+	this->updateFunction = NULL; // !!!
 	this->hopLen = defaultFrameRate;
 	return;
 }
@@ -368,9 +342,7 @@ void MAGE::Mage::updateSamples( void )
 	if( this->sampleCount >= this->hopLen-1 ) // if we hit the hop length
 	{	
 		if( !this->frameQueue->isEmpty() )
-		{				 
-			//this->frameQueue->pop( &this->frame, 1 ); // we pop a speech parameter frame
-			
+		{			
 			this->vocoder->push( this->frameQueue->get() );
 			this->frameQueue->pop();
 		}
@@ -379,6 +351,16 @@ void MAGE::Mage::updateSamples( void )
 	else 
 		this->sampleCount++; // otherwise increment sample count
 	
+ 	return;
+}
+
+void MAGE::Mage::addEngine( std::string name, int argc, char ** argv );
+{
+ 	return;
+}
+
+void MAGE::Mage::addEngine( std::string name, std::string confFilename )
+{
  	return;
 }
 
@@ -400,3 +382,4 @@ double MAGE::Mage::popSamples ( void )
 	} 
 	return( 0 );
 }
+

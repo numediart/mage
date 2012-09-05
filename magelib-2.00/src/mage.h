@@ -29,6 +29,7 @@
 #pragma once
 
 #include <fstream>
+#include <map>
 
 #include "Constants.h"
 #include "MathFunctions.h"
@@ -55,8 +56,8 @@ namespace MAGE
 		
 			// constructor
 			Mage( void );
-			Mage( int argc, char ** argv );
-			Mage( std::string confFilename );
+			Mage( std::string name, int argc, char ** argv );
+			Mage( std::string name, std::string confFilename );
 			
 			// destructor
 			~Mage( void );
@@ -66,7 +67,7 @@ namespace MAGE
 			inline Label getLabel ( void ){ return( this->label ); };
 			inline Model * getModel( void ){ return( this->model ); };
 		
-			inline Engine  * getEngine ( void ){ return( this->engine );  };		
+			inline std::map <std::string, Engine> getEngine ( void ){ return( this->engine );  };		
 			inline Vocoder * getVocoder( void ){ return( this->vocoder ); };
 
 			inline LabelQueue * getLabelQueue( void ){ return( this->labelQueue ); };
@@ -91,12 +92,13 @@ namespace MAGE
 			inline void setLabel( Label   alabel ){ this->label = alabel; };
 			inline void setModel( Model * amodel ){ this->model = amodel; };
 		
-			inline void setEngine ( Engine  * aengine  ){ this->engine  = aengine;  };		
 			inline void setVocoder( Vocoder * avocoder ){ this->vocoder = avocoder; };
 
 			inline void setLabelQueue( LabelQueue * alabelQueue ){ this->labelQueue = alabelQueue; };
 			inline void setModelQueue( ModelQueue * amodelQueue ){ this->modelQueue = amodelQueue; };
 			inline void setFrameQueue( FrameQueue * aframeQueue ){ this->frameQueue = aframeQueue; };
+			
+			inline void setEngine ( std::map <std::string, Engine> aengine  ){ this->engine  = aengine;  };		
 
 			inline void setLabelSpeed ( double aLabelSpeed ){ this->labelSpeed = aLabelSpeed; }; // less reactive
 
@@ -110,21 +112,22 @@ namespace MAGE
 			void setDuration( int * updateFunction, int action );
 
 			// methods
-			void run( void );	
 			bool popLabel ( void );
 			void pushLabel( Label label );
 
-			void reset ( void );
+			void run  ( void );	
+			void reset( void );
 			void resetVocoder ( void );
-			void updateSamples( void );		
-
-			void prepareModel( void );
-			void checkInterpolationWeights( bool forced=false );
-			
-			void computeDuration( void );
+			void prepareModel ( void );
+			void updateSamples( void );	
 			void updateDuration ( void );
+			void computeDuration( void );
 			void computeParameters ( void );
 			void optimizeParameters( void );
+			void checkInterpolationWeights( bool forced=false );
+		
+			void addEngine( std::string name, int argc, char ** argv );
+			void addEngine( std::string name, std::string confFilename );
 
 			double popSamples ( void );
 		
@@ -135,7 +138,7 @@ namespace MAGE
 			FrameQueue * frameQueue;
 		
 			// --- HTS Engine ---
-			Engine * engine;
+			std::map <std::string, Engine> engine;
 		
 			// --- Model ---
 			Model * model;
@@ -164,7 +167,7 @@ namespace MAGE
 			int * updateFunction;
 		
 			// methods
-			void init( int argc, char ** argv );
+			void init( void );
 			void parseConfigFile( std::string filename );
 	};
 } // namespace
