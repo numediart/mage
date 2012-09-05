@@ -87,8 +87,12 @@ class testApp : public ofBaseApp
 	
 		//--- Mage
 		MAGE::Mage * mage;
-		//MAGE::Mage * mageSLT;
-		//MAGE::Mage * mageBDL;
+		MAGE::Mage * mageAWB;
+		MAGE::Mage * mageBDL;
+		MAGE::Mage * mageCLB;
+		MAGE::Mage * mageJMK;
+		MAGE::Mage * mageRMS;
+		MAGE::Mage * mageSLT;
 	
 		genThread * generate;
 	 

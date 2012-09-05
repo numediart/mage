@@ -34,11 +34,14 @@ void testApp::setup( void )
 	receiver.setup( PORT );
 	
 	// --- Mage ---
-	//this->mage = new MAGE::Mage( this->Argc, this->Argv );		
-	//this->mageSLT = new MAGE::Mage( "./inouts/configSLT.conf" );		
-	//this->mageBDL = new MAGE::Mage( "./inouts/configBDL.conf" );		
-	
-	this->mage = new MAGE::Mage( "./inouts/configSLT.conf" );		
+	this->mage = new MAGE::Mage( this->Argc, this->Argv );	
+	this->mage    = new MAGE::Mage( "./inouts/configSLT.conf" );		
+	this->mageAWB = new MAGE::Mage( "./inouts/configSLT.conf" );		
+	this->mageBDL = new MAGE::Mage( "./inouts/configSLT.conf" );		
+	this->mageCLB = new MAGE::Mage( "./inouts/configSLT.conf" );		
+	this->mageJMK = new MAGE::Mage( "./inouts/configSLT.conf" );		
+	this->mageRMS = new MAGE::Mage( "./inouts/configBDL.conf" );		
+	this->mageSLT = new MAGE::Mage( "./inouts/configSLT.conf" );		
 
 	// --- Parameter Generation Thread ---
 	generate = new genThread( this->mage );
