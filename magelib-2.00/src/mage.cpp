@@ -65,7 +65,7 @@ MAGE::Mage::~Mage( void )
 	//free memory for all Engine allocated by addEngine
 	map<string, Engine*>::const_iterator it;
 
-	for( it = this->engine.begin(); it != this->engine.end(); ++it )
+	for( it = this->engine.begin(); it != this->engine.end(); it++ )
 	{
 		delete (*it).second;
 	}
