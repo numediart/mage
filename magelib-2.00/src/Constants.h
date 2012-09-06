@@ -50,7 +50,7 @@ namespace MAGE
 	// --- Queues ---
 	const int maxLabelQueueLen = 512; // max amount of labels that can wait
 	const int maxFrameQueueLen = 200; // longest label 1 sec = 200 frames of 5 smsec
-	const int maxModelQueueLen = nOfLookup + nOfBackup + 2; // max stored past models for generation
+	const int maxModelQueueLen = nOfLookup + nOfBackup + 2; // max stored past and future models for generation
 	
 	// --- Vocoder ---
 	const double defaultAlpha = 0.55;
