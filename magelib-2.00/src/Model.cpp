@@ -116,8 +116,8 @@ void MAGE::Model::checkInterpolationWeights( MAGE::Engine * engine, bool forced 
 	int i, j;
 	double temp;
 	
-	static HTS_ModelSet ms = engine->getModelSet();
-	static HTS_Global global = engine->getGlobal();
+	HTS_ModelSet ms = engine->getModelSet();
+	HTS_Global global = engine->getGlobal();
 	
 	//do it only once
 	if( !this->weightsChecked || forced)
@@ -163,8 +163,8 @@ void MAGE::Model::computeDuration( MAGE::Engine * engine, MAGE::Label * label )
 	int	i;
 	double temp;
 	
-	static HTS_ModelSet ms = engine->getModelSet();
-	static HTS_Global global = engine->getGlobal();
+	HTS_ModelSet ms = engine->getModelSet();
+	HTS_Global global = engine->getGlobal();
 	
 	// determine state duration 
 	const double rate = global.sampling_rate / ( global.fperiod * 1e+7 );
@@ -259,14 +259,14 @@ void MAGE::Model::computeParameters( MAGE::Engine * engine, MAGE::Label * label 
 {
 	int i, j;
 	
-	static HTS_ModelSet ms = engine->getModelSet();
-	static HTS_Global global = engine->getGlobal();
+	HTS_ModelSet ms = engine->getModelSet();
+	HTS_Global global = engine->getGlobal();
 		
 	// convert string query to char * 
 	string query = label->getQuery();
 	strcpy( this->strQuery, query.c_str() );
 	
-	static double lf0_msd;
+	double lf0_msd;
 	
 	for( i = 0; i < nOfStates; i++ )
 	{
@@ -308,11 +308,11 @@ void MAGE::Model::computeGlobalVariances( MAGE::Engine * engine, MAGE::Label * l
 	
 	bool gv_switch;
 	
-	static HTS_ModelSet ms = engine->getModelSet();
-	static HTS_Global global = engine->getGlobal();
+	HTS_ModelSet ms = engine->getModelSet();
+	HTS_Global global = engine->getGlobal();
 	
 	// convert string query to char * 
-	static string query = label->getQuery();
+	string query = label->getQuery();
 	strcpy( this->strQuery, query.c_str() );
 	
 	if( HTS_ModelSet_use_gv( &ms, mgcStreamIndex ) )

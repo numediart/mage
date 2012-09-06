@@ -39,18 +39,16 @@ MAGE::Mage::Mage( void )
 	init();
 }
 
-MAGE::Mage::Mage( std::string confFilename )
+MAGE::Mage::Mage( std::string EngineName, std::string confFilename )
 {		
 	init();
-	parseConfigFile( confFilename );
+	addEngine( EngineName, confFilename );
 }
 
-MAGE::Mage::Mage( int argc, char ** argv )
+MAGE::Mage::Mage( std::string EngineName, int argc, char ** argv )
 {	
 	init();
-
-	this->argc = argc;
-	this->argv = argv;
+	addEngine( EngineName, argc, argv );
 }
 
 // destructor
@@ -60,9 +58,6 @@ MAGE::Mage::~Mage( void )
 	delete this->labelQueue;
 	delete this->modelQueue;
 	delete this->frameQueue;
-	
-	// --- HTS Engine ---
-	//delete this->engine;
 		
 	// --- SPTK Vocoder ---
 	delete this->vocoder;
@@ -168,6 +163,17 @@ void MAGE::Mage::setDuration( int * updateFunction, int action )
 	return;
 }
 
+void MAGE::Mage::setDefaultEngine( std::string adefaultEngine )
+{
+	map< std::string, Engine * >::iterator it;
+	
+	it = this->engine.find( adefaultEngine );
+	
+	if( it != this->engine.end() )
+		this->defaultEngine = adefaultEngine;
+	return;
+}
+
 // methods
 void MAGE::Mage::parseConfigFile( std::string confFilename )
 {
@@ -220,7 +226,9 @@ void MAGE::Mage::init( void )
 	this->flag = true;
 	this->labelSpeed = 1;
 	this->sampleCount = 0;
+	
 	this->action = noaction;
+	this->defaultEngine = "";
 	this->updateFunction = NULL; // !!!
 	this->hopLen = defaultFrameRate;
 	return;
@@ -267,19 +275,20 @@ bool MAGE::Mage::popLabel( void )
 void MAGE::Mage::prepareModel( void )
 {
 	this->model = this->modelQueue->next();
-	this->model->checkInterpolationWeights( this->engine );
+	this->model->checkInterpolationWeights( this->engine[this->defaultEngine] );
 	return;
 }
 
 void MAGE::Mage::checkInterpolationWeights( bool forced )
 {
-	this->model->checkInterpolationWeights( this->engine, forced );
+	this->model->checkInterpolationWeights( this->engine[this->defaultEngine], forced );
 	return;
 }
 
 void MAGE::Mage::computeDuration( void )
 {
-	this->model->computeDuration( this->engine, &(this->label) );
+	printf("%s\n", this->defaultEngine.c_str());
+	this->model->computeDuration( this->engine[this->defaultEngine], &(this->label) );
 	return;
 }
 
@@ -293,8 +302,8 @@ void MAGE::Mage::updateDuration( void )
 
 void MAGE::Mage::computeParameters( void )
 {
-	this->model->computeParameters( this->engine, &(this->label) );
-	this->model->computeGlobalVariances( this->engine, &(this->label) );
+	this->model->computeParameters( this->engine[this->defaultEngine], &(this->label) );
+	this->model->computeGlobalVariances( this->engine[this->defaultEngine], &(this->label) );
 
 	this->modelQueue->push( );
 
@@ -306,13 +315,13 @@ void MAGE::Mage::optimizeParameters( void )
 	if( this->modelQueue->getNumOfItems() > nOfLookup + nOfBackup )
 	{
 		this->flag = false;
-		this->modelQueue->optimizeParameters( this->engine, nOfBackup, nOfLookup );
+		this->modelQueue->optimizeParameters( this->engine[this->defaultEngine], nOfBackup, nOfLookup );
 		this->modelQueue->generate( this->frameQueue, nOfBackup );				
 		this->modelQueue->pop();
 	} 
 	else if( this->modelQueue->getNumOfItems() > nOfLookup && this->flag )
 	{
-		this->modelQueue->optimizeParameters( this->engine, this->modelQueue->getNumOfItems() - nOfLookup - 1, nOfLookup );
+		this->modelQueue->optimizeParameters( this->engine[this->defaultEngine], this->modelQueue->getNumOfItems() - nOfLookup - 1, nOfLookup );
 		this->modelQueue->generate( this->frameQueue, this->modelQueue->getNumOfItems() - nOfLookup - 1 );	
 	}	
 	return; 
@@ -354,13 +363,36 @@ void MAGE::Mage::updateSamples( void )
  	return;
 }
 
-void MAGE::Mage::addEngine( std::string name, int argc, char ** argv );
+void MAGE::Mage::addEngine( std::string EngineName, int argc, char ** argv )
 {
+	this->argc = argc;
+	this->argv = argv;
+	
+	if( this->defaultEngine.empty() )
+		this->defaultEngine = EngineName;
+	
+	this->engine[EngineName] = new MAGE::Engine();
+	this->engine[EngineName]->load( this->argc, this->argv);
+	
  	return;
 }
 
-void MAGE::Mage::addEngine( std::string name, std::string confFilename )
+void MAGE::Mage::addEngine( std::string EngineName, std::string confFilename )
 {
+	/*map< std::string, Engine * >::iterator it;
+	
+	it = this->engine.find( EngineName );
+	
+	if( it != this->engine.end() )
+	{*/
+		parseConfigFile( confFilename );
+	
+		if( this->defaultEngine.empty() )
+			this->defaultEngine = EngineName;
+		
+		this->engine[EngineName] = new MAGE::Engine();
+		this->engine[EngineName]->load( this->argc, this->argv);
+	//}
  	return;
 }
 

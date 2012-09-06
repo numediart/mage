@@ -39,17 +39,20 @@ void genThread::threadedFunction( void )
 {		
 	while( isThreadRunning() )
 	{
-		//this->mage->run( );
-
-		// OR 
-		
-		if( this->mage->popLabel() )
+		if( this->mage )
 		{
-			this->mage->prepareModel();
-			this->mage->computeDuration();
-			this->mage->updateDuration ();
-			this->mage->computeParameters ();
-			this->mage->optimizeParameters();
+			//this->mage->run( );
+			
+			// OR 
+			
+			if( this->mage->popLabel() )
+			{
+				this->mage->prepareModel();
+				this->mage->computeDuration();
+				this->mage->updateDuration ();
+				this->mage->computeParameters ();
+				this->mage->optimizeParameters();
+			}
 		}
 	}
 	return;

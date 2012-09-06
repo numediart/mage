@@ -34,15 +34,19 @@ void testApp::setup( void )
 	receiver.setup( PORT );
 	
 	// --- Mage ---
+	this->mage = new MAGE::Mage();
+	this->mage->addEngine( "awb", "./inouts/configAWB.conf" );
+
+/*	
 	this->mage = new MAGE::Mage( this->Argc, this->Argv );
-	//this->mageAWB = new MAGE::Mage( "awb", "./inouts/configAWB.conf" );
+	this->mageAWB = new MAGE::Mage( "awb", "./inouts/configAWB.conf" );
 	this->mageAWB = new MAGE::Mage( "./inouts/configAWB.conf" );
 	this->mageBDL = new MAGE::Mage( "./inouts/configBDL.conf" );
 	this->mageCLB = new MAGE::Mage( "./inouts/configCLB.conf" );
 	this->mageJMK = new MAGE::Mage( "./inouts/configJMK.conf" );
 	this->mageRMS = new MAGE::Mage( "./inouts/configRMS.conf" );
 	this->mageSLT = new MAGE::Mage( "./inouts/configSLT.conf" );
-
+*/
 	// --- Parameter Generation Thread ---
 	generate = new genThread( this->mage );
 	generate->startThread();
@@ -293,6 +297,15 @@ void testApp::keyPressed( int key )
 	
 	if( key == 'w' )
 		this->mage->reset();
+	
+	if( key == 'x' )
+		this->mage->addEngine( "slt", "./inouts/configSLT.conf" );
+	
+	if( key == 'y' )
+		this->mage->setDefaultEngine( "slt" );
+
+	if( key == 'z' )
+		;
 }
 
 void testApp::keyReleased( int key )

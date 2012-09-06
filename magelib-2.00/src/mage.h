@@ -56,8 +56,8 @@ namespace MAGE
 		
 			// constructor
 			Mage( void );
-			Mage( std::string name, int argc, char ** argv );
-			Mage( std::string name, std::string confFilename );
+			Mage( std::string EngineName, int argc, char ** argv );
+			Mage( std::string EngineName, std::string confFilename );
 			
 			// destructor
 			~Mage( void );
@@ -67,7 +67,6 @@ namespace MAGE
 			inline Label getLabel ( void ){ return( this->label ); };
 			inline Model * getModel( void ){ return( this->model ); };
 		
-			inline std::map <std::string, Engine> getEngine ( void ){ return( this->engine );  };		
 			inline Vocoder * getVocoder( void ){ return( this->vocoder ); };
 
 			inline LabelQueue * getLabelQueue( void ){ return( this->labelQueue ); };
@@ -79,6 +78,8 @@ namespace MAGE
 			inline double getSpeed ( void ){ return( this->hopLen ); };
 			inline double getLabelSpeed ( void ){ return( this->labelSpeed ); };
 			
+			inline std::string getDefaultEngine( void ){ return( this->defaultEngine ); };
+		
 			double getPitch ( void );
 			double getAlpha ( void );
 			double getGamma ( void );
@@ -93,15 +94,12 @@ namespace MAGE
 			inline void setModel( Model * amodel ){ this->model = amodel; };
 		
 			inline void setVocoder( Vocoder * avocoder ){ this->vocoder = avocoder; };
-
+		
+			inline void setLabelSpeed( double aLabelSpeed ){ this->labelSpeed = aLabelSpeed; }; // less reactive
 			inline void setLabelQueue( LabelQueue * alabelQueue ){ this->labelQueue = alabelQueue; };
 			inline void setModelQueue( ModelQueue * amodelQueue ){ this->modelQueue = amodelQueue; };
 			inline void setFrameQueue( FrameQueue * aframeQueue ){ this->frameQueue = aframeQueue; };
-			
-			inline void setEngine ( std::map <std::string, Engine> aengine  ){ this->engine  = aengine;  };		
-
-			inline void setLabelSpeed ( double aLabelSpeed ){ this->labelSpeed = aLabelSpeed; }; // less reactive
-
+		
 			void setAlpha ( double alpha  );
 			void setGamma ( double gamma  );
 			void setPOrder( double glitch );
@@ -110,6 +108,7 @@ namespace MAGE
 			void setSpeed ( double aspeed, int action );
 
 			void setDuration( int * updateFunction, int action );
+			void setDefaultEngine( std::string adefaultEngine );
 
 			// methods
 			bool popLabel ( void );
@@ -126,6 +125,8 @@ namespace MAGE
 			void optimizeParameters( void );
 			void checkInterpolationWeights( bool forced=false );
 		
+			void removeEngine( std::string name );
+		
 			void addEngine( std::string name, int argc, char ** argv );
 			void addEngine( std::string name, std::string confFilename );
 
@@ -138,7 +139,7 @@ namespace MAGE
 			FrameQueue * frameQueue;
 		
 			// --- HTS Engine ---
-			std::map <std::string, Engine> engine;
+			std::map < std::string, Engine * > engine;
 		
 			// --- Model ---
 			Model * model;
@@ -152,19 +153,24 @@ namespace MAGE
 			// --- Label ---
 			Label label;
 		
+			// HTS_Engine & Voices (Engine)
+			string defaultEngine;
+		
 			int hopLen;
 			int sampleCount;
 			double labelSpeed;	// we need this because the speed changes on the lable 
 								// level and we need to have memory of this
-		
+
 		private:
 		
+			int * updateFunction; // replace with void * function
+			
 			bool flag;
+			int action;
+		
+			// HTS_Engine & Voices (Engine)
 			int argc;
 			char ** argv;
-			
-			int action;
-			int * updateFunction;
 		
 			// methods
 			void init( void );
