@@ -61,6 +61,14 @@ MAGE::Mage::~Mage( void )
 		
 	// --- SPTK Vocoder ---
 	delete this->vocoder;
+	
+	//free memory for all Engine allocated by addEngine
+	map<string, Engine*>::const_iterator it;
+
+	for( it = this->engine.begin(); it != this->engine.end(); ++it )
+	{
+		delete (*it).second;
+	}
 }
 
 // getters
