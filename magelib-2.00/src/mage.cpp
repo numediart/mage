@@ -61,9 +61,9 @@ MAGE::Mage::~Mage( void )
 		
 	// --- SPTK Vocoder ---
 	delete this->vocoder;
-	
+
 	//free memory for all Engine allocated by addEngine
-	map<string, Engine*>::const_iterator it;
+	map< std::string, Engine * >::const_iterator it;
 
 	for( it = this->engine.begin(); it != this->engine.end(); it++ )
 	{
@@ -173,7 +173,7 @@ void MAGE::Mage::setDuration( int * updateFunction, int action )
 
 void MAGE::Mage::setDefaultEngine( std::string adefaultEngine )
 {
-	map< std::string, Engine * >::iterator it;
+	map< std::string, Engine * >::const_iterator it;
 	
 	it = this->engine.find( adefaultEngine );
 	
@@ -376,13 +376,59 @@ void MAGE::Mage::addEngine( std::string EngineName, int argc, char ** argv )
 	this->argc = argc;
 	this->argv = argv;
 	
+	// check that the Engine doesn't exist already
+	map< std::string, Engine * >::const_iterator it;
+
+	it = this->engine.find( EngineName );
+
+	// then we need to decide what to do:
+	//  - nothing, directly return
+	//  - overwrite the existing Engine with a new one
+	// we could try to modify "load()" so that it can be called a second time
+	// on existing Engine instead of doing a 'delete' and then a 'new'
+	// (or write a "reload()" function ?)
+	if( it != this->engine.end() )
+	{
+		printf("ATTENTION: Engine %s already exists, overwriting it\n",EngineName.c_str());
+		//free existing engine
+		delete this->engine[EngineName];
+	}
+
 	if( this->defaultEngine.empty() )
+	{
 		this->defaultEngine = EngineName;
-	
+		printf("default Engine is %s\n",this->defaultEngine.c_str());
+	}
+
 	this->engine[EngineName] = new MAGE::Engine();
 	this->engine[EngineName]->load( this->argc, this->argv);
 	
  	return;
+}
+
+void MAGE::Mage::removeEngine( std::string EngineName )
+{
+	map< std::string, Engine * >::const_iterator it;
+
+	it = this->engine.find( EngineName );
+
+	if( it != this->engine.end() )
+	{
+		printf("removing Engine %s\n",(*it).first.c_str());
+		delete this->engine[EngineName];
+		this->engine.erase(EngineName);
+
+		// TODO should we set it to the next available engine (if any) instead ?
+		// + add checks everywhere (computeDuration, ...) otherwise it will crash
+		// + add checks for this->engine.empty() everywhere too
+		if( this->defaultEngine.compare(EngineName) == 0 )
+		{
+			printf("ATTENTION: Mage::removeEngine(): defaultEngine is now undefined (was %s)\n",EngineName.c_str());
+			this->defaultEngine = "";
+		}
+	}
+
+	return;
 }
 
 void MAGE::Mage::addEngine( std::string EngineName, std::string confFilename )
