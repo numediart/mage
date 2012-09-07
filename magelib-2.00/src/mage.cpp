@@ -384,8 +384,8 @@ void MAGE::Mage::addEngine( std::string EngineName )
 	if( it != this->engine.end() )
 	{
 		printf("ATTENTION: Engine %s already exists, overwriting it\n",EngineName.c_str());
-		//free existing engine
-		delete this->engine[EngineName];
+		//free existing engine by calling ~Engine
+		delete ( * it ).second;
 	}
 
 	this->engine[EngineName] = new MAGE::Engine();
