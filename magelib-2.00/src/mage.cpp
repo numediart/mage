@@ -371,28 +371,11 @@ void MAGE::Mage::updateSamples( void )
  	return;
 }
 
-void MAGE::Mage::removeEngine( std::string EngineName )
-{
-	map< std::string, Engine * >::iterator it;
-	
-	it = this->engine.find( EngineName );
-	
-	if( it != this->engine.end() )
-		this->engine.erase( it );
-	
-	it = this->engine.begin();
-	
-	if( !this->defaultEngine.compare(EngineName))
-		this->defaultEngine = ( * it ).first;
-		
-	return;
-}
-
 void MAGE::Mage::addEngine( std::string EngineName, int argc, char ** argv )
 {
 	this->argc = argc;
 	this->argv = argv;
-	
+
 	// check that the Engine doesn't exist already
 	map< std::string, Engine * >::const_iterator it;
 
@@ -411,54 +394,60 @@ void MAGE::Mage::addEngine( std::string EngineName, int argc, char ** argv )
 		delete this->engine[EngineName];
 	}
 
+	this->engine[EngineName] = new MAGE::Engine();
+	this->engine[EngineName]->load( this->argc, this->argv);
+
 	if( this->defaultEngine.empty() )
 	{
 		this->defaultEngine = EngineName;
 		printf("default Engine is %s\n",this->defaultEngine.c_str());
 	}
 
-	this->engine[EngineName] = new MAGE::Engine();
-	this->engine[EngineName]->load( this->argc, this->argv);
-	
  	return;
-}
-
-void MAGE::Mage::removeEngine( std::string EngineName )
-{
-	map< std::string, Engine * >::const_iterator it;
-
-	it = this->engine.find( EngineName );
-
-	if( it != this->engine.end() )
-	{
-		printf("removing Engine %s\n",(*it).first.c_str());
-		delete this->engine[EngineName];
-		this->engine.erase(EngineName);
-
-		// TODO should we set it to the next available engine (if any) instead ?
-		// + add checks everywhere (computeDuration, ...) otherwise it will crash
-		// + add checks for this->engine.empty() everywhere too
-		if( this->defaultEngine.compare(EngineName) == 0 )
-		{
-			printf("ATTENTION: Mage::removeEngine(): defaultEngine is now undefined (was %s)\n",EngineName.c_str());
-			this->defaultEngine = "";
-		}
-	}
-
-	return;
 }
 
 void MAGE::Mage::addEngine( std::string EngineName, std::string confFilename )
 {
 	parseConfigFile( confFilename );
-	
-	if( this->defaultEngine.empty() )
-		this->defaultEngine = EngineName;
-	
+
 	this->engine[EngineName] = new MAGE::Engine();
 	this->engine[EngineName]->load( this->argc, this->argv);
-	
+		
+	if( this->defaultEngine.empty() )
+		this->defaultEngine = EngineName;
+
  	return;
+}
+
+void MAGE::Mage::removeEngine( std::string EngineName )
+{
+	map< std::string, Engine * >::iterator it;
+
+	it = this->engine.find( EngineName );
+
+	if( it != this->engine.end() )
+	{
+		printf("removing Engine %s\n",( * it ).first.c_str());
+		delete ( * it ).second;//free memory by calling ~Engine
+		this->engine.erase( it );//remove from std::map
+
+		// TODO add checks for this->engine.empty() in other part of code ?
+		if( this->engine.empty() )
+		{
+			printf("ATTENTION: Mage::removeEngine(): no Engine remaining, defaultEngine is now undefined (was %s)\n",EngineName.c_str());
+			this->defaultEngine = "";
+		}
+		else
+		{
+			if( !this->defaultEngine.compare(EngineName) )
+			{//we removed the default Engine, better switch to another one
+				it = this->engine.begin();
+				this->defaultEngine = ( * it ).first;
+			}
+		}
+	}
+
+	return;
 }
 
 double MAGE::Mage::popSamples ( void )
