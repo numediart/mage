@@ -79,9 +79,9 @@ class testApp : public ofBaseApp
 		float pitch;
 		float speed;
 		float alpha;
-		float gamma;
-		float porder;
 		float volume;
+		int   gamma;
+		int   porder;
 		int	  pitchAction;
 		int	  speedAction;
 		int	  durationAction;

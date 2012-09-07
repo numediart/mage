@@ -295,7 +295,6 @@ void MAGE::Mage::checkInterpolationWeights( bool forced )
 
 void MAGE::Mage::computeDuration( void )
 {
-	printf("%s\n", this->defaultEngine.c_str());
 	this->model->computeDuration( this->engine[this->defaultEngine], &(this->label) );
 	return;
 }
@@ -371,23 +370,6 @@ void MAGE::Mage::updateSamples( void )
  	return;
 }
 
-void MAGE::Mage::removeEngine( std::string EngineName )
-{
-	map< std::string, Engine * >::iterator it;
-	
-	it = this->engine.find( EngineName );
-	
-	if( it != this->engine.end() )
-		this->engine.erase( it );
-	
-	it = this->engine.begin();
-	
-	if( !this->defaultEngine.compare(EngineName))
-		this->defaultEngine = ( * it ).first;
-		
-	return;
-}
-
 void MAGE::Mage::addEngine( std::string EngineName, int argc, char ** argv )
 {
 	this->argc = argc;
@@ -431,7 +413,7 @@ void MAGE::Mage::removeEngine( std::string EngineName )
 
 	if( it != this->engine.end() )
 	{
-		printf("removing Engine %s\n",(*it).first.c_str());
+		printf("removing Engine %s\n",( * it ).first.c_str());
 		delete this->engine[EngineName];
 		this->engine.erase(EngineName);
 

@@ -35,7 +35,7 @@ void testApp::setup( void )
 	
 	// --- Mage ---
 	this->mage = new MAGE::Mage();
-	this->mage->addEngine( "awb", "./inouts/configAWB.conf" );
+	this->mage->addEngine( "awb", "./inouts/awb.conf" );
 
 	// --- Parameter Generation Thread ---
 	generate = new genThread( this->mage );
@@ -65,13 +65,13 @@ void testApp::exit( void )
 
 void testApp::update( void )
 {	
-	int   oscAction;
 	float oscSpeed;
 	float oscAlpha;
 	float oscPitch;
-	float oscGamma;
-	float oscPorder;
 	float oscVolume;
+	int   oscGamma;
+	int   oscPorder;
+	int   oscAction;
 	int   oscUpdateFunction[MAGE::nOfStates];
 
 	string oscEngine;	
@@ -90,32 +90,12 @@ void testApp::update( void )
 		{
 			// --- change pitch ---
 			oscPitch = m.getArgAsFloat( 0 ); 
-			oscAction = m.getArgAsFloat( 1 );
+			oscAction = m.getArgAsInt32( 1 );
 			
 			this->pitchAction = oscAction;
-			
-			switch( oscAction ) 
-			{
-				case MAGE::overwrite :
-					this->pitch = 65.406395 * ( ( oscPitch/12 ) * ( oscPitch/12 ) );
-					this->mage->setPitch( this->pitch, MAGE::overwrite );
-					break;
-					
-				case MAGE::shift :
-					this->pitch = 65.406395 * ( ( oscPitch/12 ) * ( oscPitch/12 ) );
-					this->mage->setPitch( this->pitch, MAGE::shift );
-					break;
-					
-				case MAGE::scale :
-					this->pitch = ofMap( oscPitch, -3, 3, -3, 3, true );
-					this->mage->setPitch( this->pitch, MAGE::scale );	
-					break;
-					
-				case MAGE::noaction :	
-				case MAGE::synthetic :
-				default:
-					break;
-			}
+			this->pitch = oscPitch; 
+			this->mage->setPitch( this->pitch, this->pitchAction );
+			//65.406395 * ( ( oscPitch/12 ) * ( oscPitch/12 ) );
 		}
 		
 		if( m.getAddress() == "/Mage/alpha" ) 
@@ -146,11 +126,12 @@ void testApp::update( void )
 		{
 			// --- change speed	---
 			oscSpeed = m.getArgAsFloat( 0 );
-			oscAction = m.getArgAsFloat( 1 );
+			oscAction = m.getArgAsInt32( 1 );
 			
+			this->speed = oscSpeed;
 			this->speedAction = oscAction;
-			this->speed = ofMap( oscSpeed, 0, 10, 0.1, 10, true );	
-			this->mage->setSpeed( this->speed, oscAction );
+			this->mage->setSpeed( this->speed, this->speedAction );
+			printf("%f\n", this->speed);
 		}
 		
 		if( m.getAddress() == "/Mage/lSpeed" )
@@ -172,7 +153,7 @@ void testApp::update( void )
 		if( m.getAddress() == "/Mage/duration" )
 		{
 			// --- change duration ---
-			oscAction = m.getArgAsFloat( 0 );
+			oscAction = m.getArgAsInt32( 0 );
 			
 			this->durationAction = oscAction;
 			int updateFunction[nOfStates] = { 1, 1, 30, 1, 1 };
@@ -208,6 +189,13 @@ void testApp::update( void )
 			this->mage->setDefaultEngine( this->engine );
 		}
 		
+		if( m.getAddress() == "/Mage/removeEngine" )
+		{
+			// --- change removeEngine ---
+			oscEngine = m.getArgAsString( 0 );
+			this->engine = oscEngine;
+			this->mage->removeEngine( this->engine );
+		}
 		
 		// --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 		if( m.getAddress() == "/Mage/loop" )
