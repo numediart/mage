@@ -363,6 +363,23 @@ void MAGE::Mage::updateSamples( void )
  	return;
 }
 
+void MAGE::Mage::removeEngine( std::string EngineName )
+{
+	map< std::string, Engine * >::iterator it;
+	
+	it = this->engine.find( EngineName );
+	
+	if( it != this->engine.end() )
+		this->engine.erase( it );
+	
+	it = this->engine.begin();
+	
+	if( !this->defaultEngine.compare(EngineName))
+		this->defaultEngine = ( * it ).first;
+		
+	return;
+}
+
 void MAGE::Mage::addEngine( std::string EngineName, int argc, char ** argv )
 {
 	this->argc = argc;
@@ -379,20 +396,14 @@ void MAGE::Mage::addEngine( std::string EngineName, int argc, char ** argv )
 
 void MAGE::Mage::addEngine( std::string EngineName, std::string confFilename )
 {
-	/*map< std::string, Engine * >::iterator it;
+	parseConfigFile( confFilename );
 	
-	it = this->engine.find( EngineName );
+	if( this->defaultEngine.empty() )
+		this->defaultEngine = EngineName;
 	
-	if( it != this->engine.end() )
-	{*/
-		parseConfigFile( confFilename );
+	this->engine[EngineName] = new MAGE::Engine();
+	this->engine[EngineName]->load( this->argc, this->argv);
 	
-		if( this->defaultEngine.empty() )
-			this->defaultEngine = EngineName;
-		
-		this->engine[EngineName] = new MAGE::Engine();
-		this->engine[EngineName]->load( this->argc, this->argv);
-	//}
  	return;
 }
 

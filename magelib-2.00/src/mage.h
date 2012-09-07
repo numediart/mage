@@ -125,7 +125,7 @@ namespace MAGE
 			void optimizeParameters( void );
 			void checkInterpolationWeights( bool forced=false );
 		
-			void removeEngine( std::string name );
+			void removeEngine( std::string EngineName );
 		
 			void addEngine( std::string name, int argc, char ** argv );
 			void addEngine( std::string name, std::string confFilename );

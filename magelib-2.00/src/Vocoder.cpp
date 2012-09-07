@@ -400,7 +400,7 @@ bool MAGE::Vocoder::ready()
  */
 void MAGE::Vocoder::reset()
 {
-	for( int i=0; i<this->csize; i++ )
+	for( int i = 0; i < this->csize; i++ )
 		c[i] = 0;
 	
 	this->f0 = 110;
@@ -410,6 +410,7 @@ void MAGE::Vocoder::reset()
 	this->gamma  = defaultGamma;
 	this->stage  = defaultGamma;
 	this->pd	 = defaultPadeOrder; 
+	this->volume = defaultVolume;
 	this->flagFirstPush = true;
 	
 	return;

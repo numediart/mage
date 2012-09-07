@@ -37,16 +37,6 @@ void testApp::setup( void )
 	this->mage = new MAGE::Mage();
 	this->mage->addEngine( "awb", "./inouts/configAWB.conf" );
 
-/*	
-	this->mage = new MAGE::Mage( this->Argc, this->Argv );
-	this->mageAWB = new MAGE::Mage( "awb", "./inouts/configAWB.conf" );
-	this->mageAWB = new MAGE::Mage( "./inouts/configAWB.conf" );
-	this->mageBDL = new MAGE::Mage( "./inouts/configBDL.conf" );
-	this->mageCLB = new MAGE::Mage( "./inouts/configCLB.conf" );
-	this->mageJMK = new MAGE::Mage( "./inouts/configJMK.conf" );
-	this->mageRMS = new MAGE::Mage( "./inouts/configRMS.conf" );
-	this->mageSLT = new MAGE::Mage( "./inouts/configSLT.conf" );
-*/
 	// --- Parameter Generation Thread ---
 	generate = new genThread( this->mage );
 	generate->startThread();
@@ -75,13 +65,19 @@ void testApp::exit( void )
 
 void testApp::update( void )
 {	
-	static int oscAction;
-	static float oscSpeed;
-	static float oscAlpha;
-	static float oscPitch;
-	static float oscVolume;
+	int   oscAction;
+	float oscSpeed;
+	float oscAlpha;
+	float oscPitch;
+	float oscGamma;
+	float oscPorder;
+	float oscVolume;
+	int   oscUpdateFunction[MAGE::nOfStates];
 
-	static ofxOscMessage m; 
+	string oscEngine;	
+	string oscConfigFile;
+
+	ofxOscMessage m; 
 	
 	if( receiver.hasWaitingMessages() )
 	{
@@ -90,68 +86,131 @@ void testApp::update( void )
 		receiver.getNextMessage( &m );
 		
 		// --- THE LIST OF MESSAGES ---
-		
-		if( m.getAddress() == "/speed" )
-		{
-			// --- change speed	---
-			oscSpeed = m.getArgAsFloat( 0 );
-			//speed = ofMap( oscSpeed, 0, 3, 0.1, 3, true );
-			//setSpeed( speed );
-			//printf( "speed : %d\n", hopLen );
-		}
-		
-		if( m.getAddress() == "/alpha" )
-		{
-			// --- change alpha ---
-			oscAlpha = m.getArgAsFloat( 0 );
-			alpha = ofMap( oscAlpha, 0.1, 0.9, 0.1, 0.9, true );
-			//printf( "alpha : %f\n", alpha );
-			this->mage->setAlpha( alpha );
-		}
-		
-		if( m.getAddress() == "/volume" )
-		{
-			// --- change volume ---
-			oscVolume = m.getArgAsFloat( 0 );
-			volume = ofMap( oscVolume, 0, 5, 0, 5, true );
-			//printf( "volume : %f\n", volume );
-			this->mage->setVolume( volume );
-		}
-		
-		if( m.getAddress() == "/pitch" )
+		if( m.getAddress() == "/Mage/pitch" )
 		{
 			// --- change pitch ---
 			oscPitch = m.getArgAsFloat( 0 ); 
 			oscAction = m.getArgAsFloat( 1 );
 			
-			if( oscAction == overwrite )
-			{
-				pitch = 65.406395 * ( ( oscPitch/12 ) * ( oscPitch/12 ) );
-				printf( "pitch_overwrite : %f\n", pitch );
-				this->mage->setPitch( pitch, overwrite );
-			}
+			this->pitchAction = oscAction;
 			
-			if( oscAction == shift )
+			switch( oscAction ) 
 			{
-				//pitch = ofMap( oscPitch, -3, 3, -3, 3, true );
-				pitch = 65.406395 * ( ( oscPitch/12 ) * ( oscPitch/12 ) );
-				printf( "pitch_shift : %f\n", pitch );
-				this->mage->setPitch( pitch, shift );				
-			}
-			
-			if( oscAction == scale )
-			{
-				pitch = ofMap( oscPitch, -3, 3, -3, 3, true );
-				//printf( "pitch_scale : %f\n", pitch );
-				this->mage->setPitch( pitch, scale );				
+				case MAGE::overwrite :
+					this->pitch = 65.406395 * ( ( oscPitch/12 ) * ( oscPitch/12 ) );
+					this->mage->setPitch( this->pitch, MAGE::overwrite );
+					break;
+					
+				case MAGE::shift :
+					this->pitch = 65.406395 * ( ( oscPitch/12 ) * ( oscPitch/12 ) );
+					this->mage->setPitch( this->pitch, MAGE::shift );
+					break;
+					
+				case MAGE::scale :
+					this->pitch = ofMap( oscPitch, -3, 3, -3, 3, true );
+					this->mage->setPitch( this->pitch, MAGE::scale );	
+					break;
+					
+				case MAGE::noaction :	
+				case MAGE::synthetic :
+				default:
+					break;
 			}
 		}
 		
-		if( m.getAddress() == "/reset" )
-			this->mage->reset();
-
+		if( m.getAddress() == "/Mage/alpha" ) 
+		{
+			// --- change alpha ---
+			oscAlpha = m.getArgAsFloat( 0 );
+			this->alpha = ofMap( oscAlpha, 0.1, 0.9, 0.1, 0.9, true );
+			this->mage->setAlpha( this->alpha );
+		}
 		
-		if( m.getAddress() == "/loop" )
+		if( m.getAddress() == "/Mage/gamma" ) 
+		{
+			// --- change gamma ---
+			oscGamma = m.getArgAsFloat( 0 );
+			this->gamma = ofMap( oscGamma, 0, 5, 0, 5, true );
+			this->mage->setGamma( this->gamma );
+		}		
+		
+		if( m.getAddress() == "/Mage/porder" ) 
+		{
+			// --- change porder ---
+			oscPorder = m.getArgAsFloat( 0 );
+			this->porder = ofMap( oscPorder, 0, 5, 0, 5, true );
+			this->mage->setPOrder( this->porder );
+		}
+		
+		if( m.getAddress() == "/Mage/speed" )
+		{
+			// --- change speed	---
+			oscSpeed = m.getArgAsFloat( 0 );
+			oscAction = m.getArgAsFloat( 1 );
+			
+			this->speedAction = oscAction;
+			this->speed = ofMap( oscSpeed, 0, 10, 0.1, 10, true );	
+			this->mage->setSpeed( this->speed, oscAction );
+		}
+		
+		if( m.getAddress() == "/Mage/lSpeed" )
+		{
+			// --- change labelSpeed ---
+			oscSpeed = m.getArgAsFloat( 0 );
+			this->speed = ofMap( oscSpeed, 0, 10, 0.1, 10, true );
+			this->mage->setLabelSpeed( this->speed );
+		}
+		
+		if( m.getAddress() == "/Mage/volume" )
+		{
+			// --- change volume ---
+			oscVolume = m.getArgAsFloat( 0 );
+			this->volume = ofMap( oscVolume, 0, 5, 0, 5, true );
+			this->mage->setVolume( this->volume );
+		}
+		
+		if( m.getAddress() == "/Mage/duration" )
+		{
+			// --- change duration ---
+			oscAction = m.getArgAsFloat( 0 );
+			
+			this->durationAction = oscAction;
+			int updateFunction[nOfStates] = { 1, 1, 30, 1, 1 };
+			this->mage->setDuration( updateFunction, this->durationAction );
+		}
+		
+		if( m.getAddress() == "/Mage/resetMage" )
+		{
+			// --- change resetMage ---
+			this->mage->reset();
+		}
+		
+		if( m.getAddress() == "/Mage/resetVocoder" )
+		{
+			// --- change resetVocoder ---
+			this->mage->resetVocoder();
+		}
+		
+		if( m.getAddress() == "/Mage/addEngine" )
+		{
+			// --- change addEngine ---
+			oscEngine = m.getArgAsString( 0 );
+			oscConfigFile = m.getArgAsString( 1 );
+			this->engine = oscEngine;
+			this->mage->addEngine( this->engine, oscConfigFile );
+		}
+		
+		if( m.getAddress() == "/Mage/setDefaultEngine" )
+		{
+			// --- change setDefaultEngine ---
+			oscEngine = m.getArgAsString( 0 );
+			this->engine = oscEngine;
+			this->mage->setDefaultEngine( this->engine );
+		}
+		
+		
+		// --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+		if( m.getAddress() == "/Mage/loop" )
 		{
 			this->loop = !this->loop;
 			if( this->loop )
@@ -224,45 +283,6 @@ testApp::testApp( int argc, char ** argv )
 
 void testApp::keyPressed( int key )
 {
-	if( key == 'a' )
-		this->mage->setPitch( 440, MAGE::overwrite );
-	
-	if( key == 'b' )
-		this->mage->setPitch( 50, MAGE::shift );
-	
-	if( key == 'c' )
-		this->mage->setPitch( 2, MAGE::scale );
-
-	if( key == 'd' )
-		this->mage->setAlpha( 0.8 );
-		
-	if( key == 'e' )
-		this->mage->setLabelSpeed( 4 );
-	
-	if( key == 'f' )
-		this->mage->setSpeed( 0.5, MAGE::scale );
-	
-	if( key == 's' )
-		this->mage->setSpeed( 10, MAGE::shift );
-	
-	if( key == 'g' )
-		this->mage->setPitch( 0.5, MAGE::scale );
-
-	if( key == 'h' )
-		this->mage->setPitch( 1000, MAGE::shift );
-	
-	if( key == 'i' )
-		this->mage->setGamma( 2 );
-	
-	if( key == 'j' )
-		this->mage->setVolume( 5 );
-
-	if( key == 'k' )
-	{
-		int updateFunction[nOfStates] = { 1, 1, 30, 1, 1 };
-		this->mage->setDuration( updateFunction, MAGE::shift );
-	}
-	
 	if( key == 'l' )
 	{
 		MAGE::Label label;
@@ -270,7 +290,7 @@ void testApp::keyPressed( int key )
 		{
 			string q = labellist.front();
 			label.setQuery( q );
-						
+			
 			labellist.pop();
 			
 			this->mage->pushLabel( label );
@@ -280,9 +300,6 @@ void testApp::keyPressed( int key )
 		parsefile( s );
 	}
 	
-	if( key == 'm' )
-		this->mage->setPOrder( 3 );
-	
 	if( key == 'o' )
 	{
 		this->loop = !this->loop;
@@ -291,21 +308,6 @@ void testApp::keyPressed( int key )
 	
 	if ( key == 'p' ) 
 		pushLabel();
-	
-	if( key == 'r' )
-		this->mage->resetVocoder();
-	
-	if( key == 'w' )
-		this->mage->reset();
-	
-	if( key == 'x' )
-		this->mage->addEngine( "slt", "./inouts/configSLT.conf" );
-	
-	if( key == 'y' )
-		this->mage->setDefaultEngine( "slt" );
-
-	if( key == 'z' )
-		;
 }
 
 void testApp::keyReleased( int key )

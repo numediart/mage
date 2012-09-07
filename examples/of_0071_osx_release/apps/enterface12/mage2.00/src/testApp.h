@@ -76,28 +76,27 @@ class testApp : public ofBaseApp
 		char ** Argv;	// table of arguments passed to the main()
 	
 		// --- User controls
+		float pitch;
 		float speed;
 		float alpha;
+		float gamma;
+		float porder;
 		float volume;
-		float pitch;
-		int	  action;
-	 
+		int	  pitchAction;
+		int	  speedAction;
+		int	  durationAction;
+	
+		string engine;	
+
 		// --- OSC
 		ofxOscReceiver	receiver;
 	
 		//--- Mage
 		MAGE::Mage * mage;
-		MAGE::Mage * mageAWB;
-		MAGE::Mage * mageBDL;
-		MAGE::Mage * mageCLB;
-		MAGE::Mage * mageJMK;
-		MAGE::Mage * mageRMS;
-		MAGE::Mage * mageSLT;
-
+		
 		genThread * generate;
 	 
 		//---
-	
 		float * sampleFrame;	 // frame to be OLAed
 		obOlaBuffer * olaBuffer; // overlap-add buffer
 		bool drawSampleFrame;	 // do we show the frame

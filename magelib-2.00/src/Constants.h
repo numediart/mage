@@ -59,6 +59,7 @@ namespace MAGE
 	const int defaultSamplingRate = 48000;
 	const int defaultPadeOrder = 5;
 	const int defaultGamma = 0;
+	const int defaultVolume = 1;
 	
 	// --- Stream Index --- 
 	const int mgcStreamIndex = 0;
