@@ -371,11 +371,8 @@ void MAGE::Mage::updateSamples( void )
  	return;
 }
 
-void MAGE::Mage::addEngine( std::string EngineName, int argc, char ** argv )
+void MAGE::Mage::addEngine( std::string EngineName )
 {
-	this->argc = argc;
-	this->argv = argv;
-
 	// check that the Engine doesn't exist already
 	map< std::string, Engine * >::const_iterator it;
 
@@ -406,15 +403,21 @@ void MAGE::Mage::addEngine( std::string EngineName, int argc, char ** argv )
  	return;
 }
 
+void MAGE::Mage::addEngine( std::string EngineName, int argc, char ** argv )
+{
+	this->argc = argc;
+	this->argv = argv;
+
+	addEngine( EngineName );
+	
+	return;
+}
+
 void MAGE::Mage::addEngine( std::string EngineName, std::string confFilename )
 {
 	parseConfigFile( confFilename );
 
-	this->engine[EngineName] = new MAGE::Engine();
-	this->engine[EngineName]->load( this->argc, this->argv);
-		
-	if( this->defaultEngine.empty() )
-		this->defaultEngine = EngineName;
+	addEngine( EngineName );
 
  	return;
 }
