@@ -175,5 +175,6 @@ namespace MAGE
 			// methods
 			void init( void );
 			void parseConfigFile( std::string filename );
+			void addEngine( std::string name );//called by addEngine( string, ...)
 	};
 } // namespace
