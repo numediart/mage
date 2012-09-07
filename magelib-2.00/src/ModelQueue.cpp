@@ -173,11 +173,13 @@ void MAGE::ModelQueue::generate( FrameQueue * frameQueue, unsigned int backup )
 				usleep( 10 );
 			
 			frame = frameQueue->next();
+			//TODO memcpy ? (faster ?)
 			for( k = 0; k < nOfMGCs; k++ )
 				frame->mgc[k] = this->modelQueueMemory.par[mgcStreamIndex][qmgc][k];
 
 			qmgc++;
 			
+			//TODO memcpy ? (faster ?)
 			for( k = 0; k < nOfLPFs; k++ )
 				frame->lpf[k] = this->modelQueueMemory.par[lpfStreamIndex][qlpf][k];
 	
