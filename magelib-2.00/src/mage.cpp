@@ -66,9 +66,7 @@ MAGE::Mage::~Mage( void )
 	map< std::string, Engine * >::const_iterator it;
 
 	for( it = this->engine.begin(); it != this->engine.end(); it++ )
-	{
-		delete (*it).second;
-	}
+		delete( * it ).second;
 }
 
 // getters
@@ -430,13 +428,10 @@ void MAGE::Mage::removeEngine( std::string EngineName )
 	if( it != this->engine.end() )
 	{
 		printf("removing Engine %s\n",( * it ).first.c_str());
-<<<<<<< HEAD
-		delete this->engine[EngineName];
-		this->engine.erase(EngineName);
-=======
+	//	delete this->engine[EngineName];
+	//	this->engine.erase(EngineName);
 		delete ( * it ).second;//free memory by calling ~Engine
 		this->engine.erase( it );//remove from std::map
->>>>>>> db721260001ad2c59497a212212437db6300dd3b
 
 		// TODO add checks for this->engine.empty() in other part of code ?
 		if( this->engine.empty() )
