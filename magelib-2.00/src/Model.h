@@ -93,9 +93,10 @@ namespace MAGE
 			void setDuration( int duration );
 		
 			// methods
+			void initParameters ( void );
 			void updateDuration ( int * updateFunction, int action ); // to put a speed profile on state duration( put it inside compute duration ? )
 			void computeDuration( MAGE::Engine * engine, MAGE::Label * label );
-			void computeParameters( MAGE::Engine * engine, MAGE::Label * label );
+			void computeParameters( MAGE::Engine * engine, MAGE::Label * label, double interpolationWeight = 1 );
 			void computeGlobalVariances( MAGE::Engine * engine, MAGE::Label * label );
 			void checkInterpolationWeights( MAGE::Engine * engine, bool forced = false );
 

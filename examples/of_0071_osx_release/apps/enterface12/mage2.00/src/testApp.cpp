@@ -35,6 +35,8 @@ void testApp::setup( void )
 	
 	// --- Mage ---
 	this->mage = new MAGE::Mage();
+	this->mage->addEngine( "clb", "./inouts/clb.conf" );
+	//this->mage->addEngine( "slt", "./inouts/slt.conf" );
 	this->mage->addEngine( "awb", "./inouts/awb.conf" );
 
 	// --- Parameter Generation Thread ---
@@ -293,9 +295,15 @@ void testApp::keyPressed( int key )
 		this->loop = !this->loop;
 		printf( "loop %d\n",this->loop );
 	}
-	
+		
 	if ( key == 'p' ) 
 		pushLabel();
+
+	if( key == 'q' )
+		this->mage->enableInterpolation( true );
+	if( key == 'w' )
+		this->mage->enableInterpolation( false );
+	
 }
 
 void testApp::keyReleased( int key )

@@ -132,6 +132,9 @@ namespace MAGE
 
 			double popSamples ( void );
 		
+			inline void enableInterpolation( bool aenableInterpolationFlag ){ this->enableInterpolationFlag = aenableInterpolationFlag; };
+
+		
 		protected:		
 			// --- Queues ---	
 			LabelQueue * labelQueue;
@@ -160,6 +163,7 @@ namespace MAGE
 			int sampleCount;
 			double labelSpeed;	// we need this because the speed changes on the lable 
 								// level and we need to have memory of this
+			bool enableInterpolationFlag;
 
 		private:
 		

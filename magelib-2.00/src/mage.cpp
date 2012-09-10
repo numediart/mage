@@ -36,19 +36,19 @@
 // constructor
 MAGE::Mage::Mage( void )
 {
-	init();
+	this->init();
 }
 
 MAGE::Mage::Mage( std::string EngineName, std::string confFilename )
 {		
-	init();
-	addEngine( EngineName, confFilename );
+	this->init();
+	this->addEngine( EngineName, confFilename );
 }
 
 MAGE::Mage::Mage( std::string EngineName, int argc, char ** argv )
 {	
-	init();
-	addEngine( EngineName, argc, argv );
+	this->init();
+	this->addEngine( EngineName, argc, argv );
 }
 
 // destructor
@@ -63,7 +63,7 @@ MAGE::Mage::~Mage( void )
 	delete this->vocoder;
 
 	//free memory for all Engine allocated by addEngine
-	map< std::string, Engine * >::const_iterator it;
+	map < std::string, Engine * >::const_iterator it;
 
 	for( it = this->engine.begin(); it != this->engine.end(); it++ )
 		delete( * it ).second;
@@ -171,7 +171,7 @@ void MAGE::Mage::setDuration( int * updateFunction, int action )
 
 void MAGE::Mage::setDefaultEngine( std::string adefaultEngine )
 {
-	map< std::string, Engine * >::const_iterator it;
+	map < std::string, Engine * >::const_iterator it;
 	
 	it = this->engine.find( adefaultEngine );
 	
@@ -237,6 +237,7 @@ void MAGE::Mage::init( void )
 	this->defaultEngine = "";
 	this->updateFunction = NULL; // !!!
 	this->hopLen = defaultFrameRate;
+	this->enableInterpolationFlag = false;
 	return;
 }
 
@@ -307,7 +308,18 @@ void MAGE::Mage::updateDuration( void )
 
 void MAGE::Mage::computeParameters( void )
 {
-	this->model->computeParameters( this->engine[this->defaultEngine], &(this->label) );
+	double interoplationWheight;
+	map < std::string, Engine * >::iterator it;
+	
+	this->model->initParameters();
+
+	if( !this->enableInterpolationFlag )
+		this->model->computeParameters( this->engine[this->defaultEngine], &(this->label) );
+	else 
+		for( interoplationWheight = 1, it = this->engine.begin(); it != this->engine.end(); it++, interoplationWheight-- )
+			this->model->computeParameters( ( * it ).second, &(this->label), interoplationWheight );
+	
+		
 	this->model->computeGlobalVariances( this->engine[this->defaultEngine], &(this->label) );
 
 	this->modelQueue->push( );
@@ -371,7 +383,7 @@ void MAGE::Mage::updateSamples( void )
 void MAGE::Mage::addEngine( std::string EngineName )
 {
 	// check that the Engine doesn't exist already
-	map< std::string, Engine * >::const_iterator it;
+	map < std::string, Engine * >::const_iterator it;
 
 	it = this->engine.find( EngineName );
 
@@ -405,23 +417,23 @@ void MAGE::Mage::addEngine( std::string EngineName, int argc, char ** argv )
 	this->argc = argc;
 	this->argv = argv;
 
-	addEngine( EngineName );
+	this->addEngine( EngineName );
 	
 	return;
 }
 
 void MAGE::Mage::addEngine( std::string EngineName, std::string confFilename )
 {
-	parseConfigFile( confFilename );
+	this->parseConfigFile( confFilename );
 
-	addEngine( EngineName );
+	this->addEngine( EngineName );
 
  	return;
 }
 
 void MAGE::Mage::removeEngine( std::string EngineName )
 {
-	map< std::string, Engine * >::iterator it;
+	map < std::string, Engine * >::iterator it;
 
 	it = this->engine.find( EngineName );
 

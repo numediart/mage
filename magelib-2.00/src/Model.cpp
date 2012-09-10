@@ -254,14 +254,13 @@ void MAGE::Model::updateDuration( int * updateFunction, int action )
 	return;
 }
 
-
-void MAGE::Model::computeParameters( MAGE::Engine * engine, MAGE::Label * label )
+void MAGE::Model::computeParameters( MAGE::Engine * engine, MAGE::Label * label, double interpolationWeight )
 {
 	int i, j;
 	
 	HTS_ModelSet ms = engine->getModelSet();
 	HTS_Global global = engine->getGlobal();
-		
+	
 	// convert string query to char * 
 	string query = label->getQuery();
 	strcpy( this->strQuery, query.c_str() );
@@ -271,36 +270,37 @@ void MAGE::Model::computeParameters( MAGE::Engine * engine, MAGE::Label * label 
 	for( i = 0; i < nOfStates; i++ )
 	{
 		HTS_ModelSet_get_parameter( &ms, strQuery, this->modelMemory.mgc_mean, this->modelMemory.mgc_vari, 
-									NULL, mgcStreamIndex, i+2, global.parameter_iw[mgcStreamIndex] ); 
+								   NULL, mgcStreamIndex, i+2, global.parameter_iw[mgcStreamIndex] ); 
 		
 		for( j = 0; j < mgcLen; j++ )
 		{
-			this->state[i].mgc[j].mean = this->modelMemory.mgc_mean[j];
-			this->state[i].mgc[j].vari = this->modelMemory.mgc_vari[j];
+			this->state[i].mgc[j].mean += interpolationWeight * this->modelMemory.mgc_mean[j];
+			this->state[i].mgc[j].vari += interpolationWeight * interpolationWeight * this->modelMemory.mgc_vari[j];
 		}
 		
 		HTS_ModelSet_get_parameter( &ms, strQuery, this->modelMemory.lf0_mean, this->modelMemory.lf0_vari, 
-									&lf0_msd, lf0StreamIndex, i+2, global.parameter_iw[lf0StreamIndex] ); 
+								   &lf0_msd, lf0StreamIndex, i+2, global.parameter_iw[lf0StreamIndex] ); 
 		
 		for( j = 0; j < lf0Len; j++ )
 		{
-			this->state[i].lf0[j].mean = this->modelMemory.lf0_mean[j];
-			this->state[i].lf0[j].vari = this->modelMemory.lf0_vari[j];
+			this->state[i].lf0[j].mean += interpolationWeight * this->modelMemory.lf0_mean[j];
+			this->state[i].lf0[j].vari += interpolationWeight * interpolationWeight * this->modelMemory.lf0_vari[j];
 			this->state[i].lf0[j].msdFlag = lf0_msd;
 		}
 		
 		HTS_ModelSet_get_parameter( &ms, strQuery, this->modelMemory.lpf_mean, this->modelMemory.lpf_vari, 
-									NULL, lpfStreamIndex, i+2, global.parameter_iw[lpfStreamIndex] );
+								   NULL, lpfStreamIndex, i+2, global.parameter_iw[lpfStreamIndex] );
 		
 		for( j = 0; j < lpfLen; j++ )
 		{
-			this->state[i].lpf[j].mean = this->modelMemory.lpf_mean[j];
-			this->state[i].lpf[j].vari = this->modelMemory.lpf_vari[j];
+			this->state[i].lpf[j].mean += interpolationWeight * this->modelMemory.lpf_mean[j];
+			this->state[i].lpf[j].vari += interpolationWeight * interpolationWeight * this->modelMemory.lpf_vari[j];
 		}
 	}
 	
 	return;
 }
+
 
 void MAGE::Model::computeGlobalVariances( MAGE::Engine * engine, MAGE::Label * label )
 {
@@ -373,5 +373,33 @@ void MAGE::Model::computeGlobalVariances( MAGE::Engine * engine, MAGE::Label * l
 		this->state[i].lpf_gv_switch = false;
 	}
 		
+	return;
+}
+
+void MAGE::Model::initParameters( void )
+{
+	int i, j;
+	
+	for( i = 0; i < nOfStates; i++ )
+	{
+		for( j = 0; j < mgcLen; j++ )
+		{
+			this->state[i].mgc[j].mean = 0;
+			this->state[i].mgc[j].vari = 0;
+		}
+		
+		for( j = 0; j < lf0Len; j++ )
+		{
+			this->state[i].lf0[j].mean = 0;
+			this->state[i].lf0[j].vari = 0;
+		}
+		
+		for( j = 0; j < lpfLen; j++ )
+		{
+			this->state[i].lpf[j].mean = 0;
+			this->state[i].lpf[j].vari = 0;
+		}
+	}
+	
 	return;
 }
