@@ -36,7 +36,6 @@ void testApp::setup( void )
 	// --- Mage ---
 	this->mage = new MAGE::Mage();
 	this->mage->addEngine( "clb", "./inouts/clb.conf" );
-	//this->mage->addEngine( "slt", "./inouts/slt.conf" );
 	this->mage->addEngine( "awb", "./inouts/awb.conf" );
 
 	// --- Parameter Generation Thread ---
@@ -303,6 +302,13 @@ void testApp::keyPressed( int key )
 		this->mage->enableInterpolation( true );
 	if( key == 'w' )
 		this->mage->enableInterpolation( false );
+	
+	if( key == 'a' )
+	{
+		int updateFunction[5] = {1, 1, 10, 1, 1};
+		this->mage->setDuration( updateFunction, MAGE::shift );	
+	}
+
 	
 }
 

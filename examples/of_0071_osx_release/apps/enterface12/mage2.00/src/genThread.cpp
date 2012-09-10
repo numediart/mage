@@ -49,7 +49,6 @@ void genThread::threadedFunction( void )
 			{
 				this->mage->prepareModel();
 				this->mage->computeDuration();
-				this->mage->updateDuration ();
 				this->mage->computeParameters ();
 				this->mage->optimizeParameters();
 			}

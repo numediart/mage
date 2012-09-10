@@ -119,7 +119,6 @@ namespace MAGE
 			void resetVocoder ( void );
 			void prepareModel ( void );
 			void updateSamples( void );	
-			void updateDuration ( void );
 			void computeDuration( void );
 			void computeParameters ( void );
 			void optimizeParameters( void );

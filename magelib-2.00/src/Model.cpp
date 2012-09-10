@@ -158,7 +158,7 @@ void MAGE::Model::checkInterpolationWeights( MAGE::Engine * engine, bool forced 
 	return;
 }
 
-void MAGE::Model::computeDuration( MAGE::Engine * engine, MAGE::Label * label )
+void MAGE::Model::computeDuration( MAGE::Engine * engine, MAGE::Label * label, double interpolationWeight )
 {
 	int	i;
 	double temp;
@@ -209,7 +209,7 @@ void MAGE::Model::computeDuration( MAGE::Engine * engine, MAGE::Label * label )
 	}
 	
 	for( i = 0; i < nOfStates; i++ )
-		this->state[i].duration = this->modelMemory.duration_array[i];
+		this->state[i].duration += interpolationWeight * this->modelMemory.duration_array[i];
 		
 	return;
 }
@@ -376,6 +376,14 @@ void MAGE::Model::computeGlobalVariances( MAGE::Engine * engine, MAGE::Label * l
 	return;
 }
 
+void MAGE::Model::initDuration( void )
+{
+	for( int i = 0; i < nOfStates; i++ )
+		this->state[i].duration = 0;
+	
+	return;
+}
+
 void MAGE::Model::initParameters( void )
 {
 	int i, j;
@@ -403,3 +411,4 @@ void MAGE::Model::initParameters( void )
 	
 	return;
 }
+
