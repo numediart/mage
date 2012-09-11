@@ -111,8 +111,9 @@ namespace MAGE
 			void setDefaultEngine( std::string adefaultEngine );
 
 			// methods
+			double popSamples( void );
+
 			bool popLabel ( void );
-			void pushLabel( Label label );
 
 			void run  ( void );	
 			void reset( void );
@@ -124,14 +125,19 @@ namespace MAGE
 			void optimizeParameters( void );
 			void checkInterpolationWeights( bool forced=false );
 		
-			void removeEngine( std::string EngineName );
-		
+			void pushLabel( Label label );
 			void addEngine( std::string name, int argc, char ** argv );
 			void addEngine( std::string name, std::string confFilename );
 
-			double popSamples ( void );
+			void removeEngine( std::string EngineName );
 		
-			inline void enableInterpolation( bool aenableInterpolationFlag ){ this->enableInterpolationFlag = aenableInterpolationFlag; };
+			void enableInterpolation( bool aenableInterpolation ); // interpolate duration & parameters
+			
+			// interpolate duration
+			inline void enableDurationInterpolation( bool ainterpolateDuration ){ this->interpolateDuration = ainterpolateDuration; };
+
+			// interpolate parameters
+			inline void enableParameterInterpolation( bool ainterpolateParameters ){ this->interpolateParameters = ainterpolateParameters; };
 
 		
 		protected:		
@@ -162,7 +168,8 @@ namespace MAGE
 			int sampleCount;
 			double labelSpeed;	// we need this because the speed changes on the lable 
 								// level and we need to have memory of this
-			bool enableInterpolationFlag;
+			bool interpolateDuration;
+			bool interpolateParameters;
 
 		private:
 		

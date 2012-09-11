@@ -254,6 +254,11 @@ void MAGE::Model::updateDuration( int * updateFunction, int action )
 	return;
 }
 
+// ToDo ::
+// we have to reduce this function to control 
+// streams one at a time, not using if() but 
+// passing the stream id as an argument
+
 void MAGE::Model::computeParameters( MAGE::Engine * engine, MAGE::Label * label, double interpolationWeight )
 {
 	int i, j;
@@ -301,6 +306,10 @@ void MAGE::Model::computeParameters( MAGE::Engine * engine, MAGE::Label * label,
 	return;
 }
 
+// ToDo ::
+// we have to reduce this function to control 
+// streams one at a time, not using if() but 
+// passing the stream id as an argument 
 
 void MAGE::Model::computeGlobalVariances( MAGE::Engine * engine, MAGE::Label * label )
 {

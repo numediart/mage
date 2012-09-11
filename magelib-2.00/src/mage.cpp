@@ -237,7 +237,9 @@ void MAGE::Mage::init( void )
 	this->defaultEngine = "";
 	this->updateFunction = NULL; // !!!
 	this->hopLen = defaultFrameRate;
-	this->enableInterpolationFlag = false;
+	this->interpolateDuration = false;
+	bool interpolateParameters = false;
+ 
 	return;
 }
 
@@ -292,16 +294,16 @@ void MAGE::Mage::checkInterpolationWeights( bool forced )
 
 void MAGE::Mage::computeDuration( void )
 {
-	double interoplationWheight;
+	double interoplationWheight = 0.5;
 	map < std::string, Engine * >::iterator it;
 	
 	this->model->initDuration();
 	
-	if( !this->enableInterpolationFlag )
+	if( !this->interpolateDuration )
 		this->model->computeDuration( this->engine[this->defaultEngine], &(this->label) );
 	else
-		for( it = this->engine.begin(); it != this->engine.end(); it++, interoplationWheight++ )
-			this->model->computeDuration( this->engine[this->defaultEngine], &(this->label) );
+		for( it = this->engine.begin(); it != this->engine.end(); it++ )
+			this->model->computeDuration( this->engine[this->defaultEngine], &(this->label), interoplationWheight );
 
 	this->model->updateDuration( this->updateFunction, this->action ); 
 	this->action = noaction;
@@ -317,7 +319,7 @@ void MAGE::Mage::computeParameters( void )
 	
 	this->model->initParameters();
 
-	if( !this->enableInterpolationFlag )
+	if( !this->interpolateParameters )
 		this->model->computeParameters( this->engine[this->defaultEngine], &(this->label) );
 	else 
 		for( it = this->engine.begin(); it != this->engine.end(); it++ )
@@ -363,6 +365,9 @@ void MAGE::Mage::reset( void )
 	this->updateFunction = NULL;
 	this->hopLen = defaultFrameRate;
 
+	this->interpolateDuration = false;
+	this->interpolateParameters = false;
+	
 	this->resetVocoder();	
 	return;
 }
@@ -458,7 +463,7 @@ void MAGE::Mage::removeEngine( std::string EngineName )
 		else
 		{
 			if( !this->defaultEngine.compare(EngineName) )
-			{//we removed the default Engine, better switch to another one
+			{	//we removed the default Engine, better switch to another one
 				it = this->engine.begin();
 				this->defaultEngine = ( * it ).first;
 			}
@@ -485,5 +490,12 @@ double MAGE::Mage::popSamples ( void )
 		return( sample );			
 	} 
 	return( 0 );
+}
+
+void MAGE::Mage::enableInterpolation( bool aenableInterpolation ) // interpolate duration & parameters
+{
+	this->interpolateDuration = aenableInterpolation; 
+	this->interpolateParameters = aenableInterpolation; 
+	return;
 }
 

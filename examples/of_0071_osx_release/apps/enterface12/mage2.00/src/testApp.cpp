@@ -299,9 +299,9 @@ void testApp::keyPressed( int key )
 		pushLabel();
 
 	if( key == 'q' )
-		this->mage->enableInterpolation( true );
+		this->mage->enableParameterInterpolation( true );
 	if( key == 'w' )
-		this->mage->enableInterpolation( false );
+		this->mage->enableDurationInterpolation( true );
 	
 	if( key == 'a' )
 	{
@@ -309,7 +309,8 @@ void testApp::keyPressed( int key )
 		this->mage->setDuration( updateFunction, MAGE::shift );	
 	}
 
-	
+	if( key == 'r' )
+		this->mage->reset();
 }
 
 void testApp::keyReleased( int key )
