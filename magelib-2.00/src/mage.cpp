@@ -63,10 +63,14 @@ MAGE::Mage::~Mage( void )
 	delete this->vocoder;
 
 	//free memory for all Engine allocated by addEngine
-	map < std::string, Engine * >::const_iterator it;
+	//map < std::string, Engine * >::const_iterator it;
+	map < std::string, std::pair < double * , Engine * > >::const_iterator it;
 
 	for( it = this->engine.begin(); it != this->engine.end(); it++ )
-		delete( * it ).second;
+	{
+		delete ( * it ).second.first;
+		delete ( * it ).second.second;
+	}
 }
 
 // getters
@@ -171,8 +175,9 @@ void MAGE::Mage::setDuration( int * updateFunction, int action )
 
 void MAGE::Mage::setDefaultEngine( std::string adefaultEngine )
 {
-	map < std::string, Engine * >::const_iterator it;
-	
+	//map < std::string, Engine * >::const_iterator it;
+	map < std::string, std::pair < double * , Engine * > >::const_iterator it;
+
 	it = this->engine.find( adefaultEngine );
 	
 	if( it != this->engine.end() )
@@ -203,7 +208,7 @@ void MAGE::Mage::parseConfigFile( std::string confFilename )
 		{
 			if( s.c_str()[0] != '\0')
 			{
-				this->argv[k] = new char[maxStrLen];  // ATTENTION!!! FREE!!! DISALLOCATE!!!
+				this->argv[k] = new char[maxStrLen];  // ATTENTION :: FREE!!! DISALLOCATE!!!
 				strcpy(this->argv[k], s.c_str() ); 
 				k++;
 			}
@@ -282,13 +287,13 @@ bool MAGE::Mage::popLabel( void )
 void MAGE::Mage::prepareModel( void )
 {
 	this->model = this->modelQueue->next();
-	this->model->checkInterpolationWeights( this->engine[this->defaultEngine] );
+	this->model->checkInterpolationWeights( this->engine[this->defaultEngine].second );
 	return;
 }
 
 void MAGE::Mage::checkInterpolationWeights( bool forced )
 {
-	this->model->checkInterpolationWeights( this->engine[this->defaultEngine], forced );
+	this->model->checkInterpolationWeights( this->engine[this->defaultEngine].second, forced );
 	return;
 }
 
@@ -296,15 +301,16 @@ void MAGE::Mage::computeDuration( void )
 {
 	double interpolationWeight = 0.5;
 
-	map < std::string, Engine * >::iterator it;
-	
+	//map < std::string, Engine * >::iterator it;
+	map < std::string, std::pair < double * , Engine * > >::const_iterator it;
+
 	this->model->initDuration();
 	
 	if( !this->interpolateDuration )
-		this->model->computeDuration( this->engine[this->defaultEngine], &(this->label) );
+		this->model->computeDuration( this->engine[this->defaultEngine].second, &(this->label) );
 	else
 		for( it = this->engine.begin(); it != this->engine.end(); it++ )
-			this->model->computeDuration( this->engine[this->defaultEngine], &(this->label), interpolationWeight );
+			this->model->computeDuration( this->engine[this->defaultEngine].second, &(this->label), interpolationWeight );
 
 	this->model->updateDuration( this->updateFunction, this->action ); 
 	this->action = noaction;
@@ -316,18 +322,18 @@ void MAGE::Mage::computeDuration( void )
 void MAGE::Mage::computeParameters( void )
 {
 	double interpolationWeight = 0.5;
-	map < std::string, Engine * >::iterator it;
-	
+	//map < std::string, Engine * >::iterator it;
+	map < std::string, std::pair < double * , Engine * > >::const_iterator it;
+
 	this->model->initParameters();
 
 	if( !this->interpolateParameters )
-		this->model->computeParameters( this->engine[this->defaultEngine], &(this->label) );
+		this->model->computeParameters( this->engine[this->defaultEngine].second, &(this->label) );
 	else 
 		for( it = this->engine.begin(); it != this->engine.end(); it++ )
-			this->model->computeParameters( ( * it ).second, &(this->label), interpolationWeight );
-	
+			this->model->computeParameters( ( * it ).second.second, &(this->label), interpolationWeight );
 		
-	this->model->computeGlobalVariances( this->engine[this->defaultEngine], &(this->label) );
+	this->model->computeGlobalVariances( this->engine[this->defaultEngine].second, &(this->label) );
 
 	this->modelQueue->push( );
 
@@ -339,13 +345,13 @@ void MAGE::Mage::optimizeParameters( void )
 	if( this->modelQueue->getNumOfItems() > nOfLookup + nOfBackup )
 	{
 		this->flag = false;
-		this->modelQueue->optimizeParameters( this->engine[this->defaultEngine], nOfBackup, nOfLookup );
+		this->modelQueue->optimizeParameters( this->engine[this->defaultEngine].second, nOfBackup, nOfLookup );
 		this->modelQueue->generate( this->frameQueue, nOfBackup );				
 		this->modelQueue->pop();
 	} 
 	else if( this->modelQueue->getNumOfItems() > nOfLookup && this->flag )
 	{
-		this->modelQueue->optimizeParameters( this->engine[this->defaultEngine], this->modelQueue->getNumOfItems() - nOfLookup - 1, nOfLookup );
+		this->modelQueue->optimizeParameters( this->engine[this->defaultEngine].second, this->modelQueue->getNumOfItems() - nOfLookup - 1, nOfLookup );
 		this->modelQueue->generate( this->frameQueue, this->modelQueue->getNumOfItems() - nOfLookup - 1 );	
 	}	
 	return; 
@@ -393,7 +399,8 @@ void MAGE::Mage::updateSamples( void )
 void MAGE::Mage::addEngine( std::string EngineName )
 {
 	// check that the Engine doesn't exist already
-	map < std::string, Engine * >::const_iterator it;
+	//map < std::string, Engine * >::const_iterator it;
+	map < std::string, std::pair < double * , Engine * > >::const_iterator it;
 
 	it = this->engine.find( EngineName );
 
@@ -407,11 +414,12 @@ void MAGE::Mage::addEngine( std::string EngineName )
 	{
 		printf("ATTENTION: Engine %s already exists, overwriting it\n",EngineName.c_str());
 		//free existing engine by calling ~Engine
-		delete ( * it ).second;
+		delete ( * it ).second.first;
+		delete ( * it ).second.second;
 	}
 
-	this->engine[EngineName] = new MAGE::Engine();
-	this->engine[EngineName]->load( this->argc, this->argv);
+	this->engine[EngineName].second = new MAGE::Engine();
+	this->engine[EngineName].second->load( this->argc, this->argv);
 
 	if( this->defaultEngine.empty() )
 	{
@@ -443,7 +451,8 @@ void MAGE::Mage::addEngine( std::string EngineName, std::string confFilename )
 
 void MAGE::Mage::removeEngine( std::string EngineName )
 {
-	map < std::string, Engine * >::iterator it;
+	//map < std::string, Engine * >::iterator it;
+	map < std::string, std::pair < double * , Engine * > >::const_iterator it;
 
 	it = this->engine.find( EngineName );
 
@@ -452,10 +461,12 @@ void MAGE::Mage::removeEngine( std::string EngineName )
 		printf("removing Engine %s\n",( * it ).first.c_str());
 	//	delete this->engine[EngineName];
 	//	this->engine.erase(EngineName);
-		delete ( * it ).second;//free memory by calling ~Engine
-		this->engine.erase( it );//remove from std::map
+		delete ( * it ).second.first;	//free memory by calling ~Engine
+		delete ( * it ).second.second;	//free memory by calling ~Engine
+		//ATTENTION!!!! UNCOMMENT THIS!!!!
+		//this->engine.erase( it );		//remove from std::map
 
-		// TODO add checks for this->engine.empty() in other part of code ?
+		// TODO :: add checks for this->engine.empty() in other part of code ?
 		if( this->engine.empty() )
 		{
 			printf("ATTENTION: Mage::removeEngine(): no Engine remaining, defaultEngine is now undefined (was %s)\n",EngineName.c_str());

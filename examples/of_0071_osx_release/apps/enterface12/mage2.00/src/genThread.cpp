@@ -41,15 +41,27 @@ void genThread::threadedFunction( void )
 	{
 		if( this->mage )
 		{
-			//this->mage->run( );
+			// --- Run mage ---
+			//this->mage->run( ); 
 			
 			// OR 
 			
-			if( this->mage->popLabel() )
+			// --- Run mage step-by-step ---
+			// get the label to be parced
+			if( this->mage->popLabel() ) 
 			{
-				this->mage->prepareModel();
-				this->mage->computeDuration();
+				// prepare the model
+				this->mage->prepareModel(); 
+				
+				// compute the corresponding durations taking into account the model 
+				// and if set, the interpolation and/or duration functions set by the user
+				this->mage->computeDuration(); 
+				
+				// compute the corresponding parameters taking into account the model 
+				// and if set, the interpolation and/or duration functions set by the user
 				this->mage->computeParameters ();
+				
+				// optimize the generated parameters 
 				this->mage->optimizeParameters();
 			}
 		}

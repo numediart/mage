@@ -34,7 +34,7 @@
  * 			and inform on the state of the buffer
  */
 
-// [TODO] maybe build that class around pa_ringbuffer instead
+// TODO :: maybe build that class around pa_ringbuffer instead
 
 #pragma once
 
@@ -115,25 +115,25 @@ MAGE::MemQueue<Item>::~MemQueue( void )
 template <class Item>
 void MAGE::MemQueue<Item>::push( Item * item, unsigned int nItem )
 {
-	// TODO fix case when 'write' pointer loops and passes 'read'( read should be advanced to write )
+	// TODO :: fix case when 'write' pointer loops and passes 'read'( read should be advanced to write )
 	// this bug shouldn't be triggered as long as we check isfull()before any push()in calling functions
 	
 	PaUtil_ReadMemoryBarrier();
 	
 	if( write+nItem <= length )
 	{
-		//TODO either change this for a copy constructor or check that no Item( Model, Frame, ... )has dynamically allocated memory
+		//TODO :: either change this for a copy constructor or check that no Item( Model, Frame, ... )has dynamically allocated memory
 		memcpy( &rawData[write], item, nItem * sizeof( Item ) );
 	} 
 	else
 	{
-		//TODO either change this or check that no Item( Model, Frame, ... )has dynamically allocated memory
+		//TODO :: either change this or check that no Item( Model, Frame, ... )has dynamically allocated memory
 		remain = length - write;
 		memcpy( &rawData[write], item, remain * sizeof( Item ) );
 		memcpy( rawData, &item[remain],( nItem-remain ) * sizeof( Item ) );
 	}
 	
-	// TODO what if write + nItem > 2 * length ?
+	// TODO :: what if write + nItem > 2 * length ?
 	PaUtil_WriteMemoryBarrier();
 	write = ( write + nItem ) % length;
 	nOfItems += nItem;
@@ -159,9 +159,9 @@ void MAGE::MemQueue<Item>::push( Item * item, unsigned int nItem )
 template <class Item>
 void MAGE::MemQueue<Item>::push( unsigned int nItem )
 {
-	// TODO fix case when 'write' pointer loops and passes 'read'( read should be advanced to write )
+	// TODO :: fix case when 'write' pointer loops and passes 'read'( read should be advanced to write )
 	// this bug shouldn't be triggered as long as we check isfull()before any push()in calling functions
-	// TODO what if write + nItem > 2 * length ?
+	// TODO :: what if write + nItem > 2 * length ?
 	
 	PaUtil_WriteMemoryBarrier();
 	write = ( write + nItem ) % length;
@@ -178,10 +178,10 @@ void MAGE::MemQueue<Item>::push( unsigned int nItem )
 template <class Item>
 void MAGE::MemQueue<Item>::pop( Item * item, unsigned int nItem )
 {
-	// TODO fix case when 'write' pointer loops and passes 'read'( read should be advanced to write )
+	// TODO :: fix case when 'write' pointer loops and passes 'read'( read should be advanced to write )
 	// this bug shouldn't be triggered as long as we check isfull()before any push()in calling functions
-	// TODO an isempty()check * is * needed
-	// TODO check for nItem == 0( shouldn't happen except if isempty() )
+	// TODO :: an isempty()check * is * needed
+	// TODO :: check for nItem == 0( shouldn't happen except if isempty() )
 
 	// don't pop()further than available ...
 	if( nItem > this->getNumOfItems() )
@@ -259,10 +259,10 @@ void MAGE::MemQueue<Item>::pop( unsigned int nItem )
 template <class Item>
 void MAGE::MemQueue<Item>::get( Item * item, unsigned int nItem )
 {
-	// TODO fix case when 'write' pointer loops and passes 'read'( read should be advanced to write )
+	// TODO :: fix case when 'write' pointer loops and passes 'read'( read should be advanced to write )
 	// this bug shouldn't be triggered as long as we check isfull()before any push()in calling functions
-	// TODO an isempty()check * is * needed
-	// TODO check for nItem == 0( shouldn't happen except if isempty() )
+	// TODO :: an isempty()check * is * needed
+	// TODO :: check for nItem == 0( shouldn't happen except if isempty() )
 
 	//don't pop()further than available ...
 	if( nItem > this->getNumOfItems() )

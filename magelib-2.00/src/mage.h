@@ -146,9 +146,12 @@ namespace MAGE
 			ModelQueue * modelQueue;
 			FrameQueue * frameQueue;
 		
-			// --- HTS Engine ---
-			std::map < std::string, Engine * > engine;
-		
+			// --- HTS Engine & Voices (Engine) ---
+			//std::map < std::string, Engine * > engine;
+			//std::map < std::string, std::pair < double[nOfStreams+1], Engine * > > engine;
+			// Format :: [ "engineName", interpolationWeightsOfStreams[], HTS Engine ]
+			std::map < std::string, std::pair < double * , Engine * > > engine;
+
 			// --- Model ---
 			Model * model;
 		
@@ -166,7 +169,7 @@ namespace MAGE
 		
 			int hopLen;
 			int sampleCount;
-			double labelSpeed;	// we need this because the speed changes on the lable 
+			double labelSpeed; // we need this because the speed changes on the lable 
 								// level and we need to have memory of this
 			bool interpolateDuration;
 			bool interpolateParameters;

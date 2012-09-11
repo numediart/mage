@@ -111,7 +111,7 @@ void MAGE::Model::setDuration( int duration )
 }
 
 // methods
-void MAGE::Model::checkInterpolationWeights( MAGE::Engine * engine, bool forced )// ATTENTION !!! it must be run at least once
+void MAGE::Model::checkInterpolationWeights( MAGE::Engine * engine, bool forced )// ATTENTION :: it must be run at least once
 {
 	int i, j;
 	double temp;
@@ -130,7 +130,7 @@ void MAGE::Model::checkInterpolationWeights( MAGE::Engine * engine, bool forced 
 		if( temp != 0.0 )
 			for( i = 0; i < HTS_ModelSet_get_duration_interpolation_size( &ms ); i++ )
 				if( global.duration_iw[i] != 0.0 )
-					global.duration_iw[i] /= temp; // ATTENTION !!! should not change in the model !!!
+					global.duration_iw[i] /= temp; // ATTENTION :: should not change in the model !!!
 
 		for( i = 0; i < nOfStreams; i++ )
 		{
@@ -140,7 +140,7 @@ void MAGE::Model::checkInterpolationWeights( MAGE::Engine * engine, bool forced 
 			if( temp != 0.0 )
 				for( j = 0; j < HTS_ModelSet_get_parameter_interpolation_size( &ms, i ); j++ )
 					if( global.parameter_iw[i][j] != 0.0 )
-						global.parameter_iw[i][j] /= temp; // ATTENTION !!! should not change in the model !!!
+						global.parameter_iw[i][j] /= temp; // ATTENTION :: should not change in the model !!!
 
 			if( HTS_ModelSet_use_gv( &ms, i ) )
 			{
@@ -150,7 +150,7 @@ void MAGE::Model::checkInterpolationWeights( MAGE::Engine * engine, bool forced 
 				if( temp != 0.0 )
 					for( j = 0; j < HTS_ModelSet_get_gv_interpolation_size( &ms, i ); j++ )
 						if( global.gv_iw[i][j] != 0.0 )
-							global.gv_iw[i][j] /= temp; // ATTENTION !!! should not change in the model !!!
+							global.gv_iw[i][j] /= temp; // ATTENTION :: should not change in the model !!!
 			}
 		}
 		this->weightsChecked = true;
@@ -254,7 +254,7 @@ void MAGE::Model::updateDuration( int * updateFunction, int action )
 	return;
 }
 
-// ToDo ::
+// TODO ::
 // we have to reduce this function to control 
 // streams one at a time, not using if() but 
 // passing the stream id as an argument
@@ -306,7 +306,7 @@ void MAGE::Model::computeParameters( MAGE::Engine * engine, MAGE::Label * label,
 	return;
 }
 
-// ToDo ::
+// TODO ::
 // we have to reduce this function to control 
 // streams one at a time, not using if() but 
 // passing the stream id as an argument 
@@ -363,7 +363,7 @@ void MAGE::Model::computeGlobalVariances( MAGE::Engine * engine, MAGE::Label * l
 			}
 	}
 	
-	//TODO fix this
+	//TODO :: fix this
 	// 1. one gv_switch per stream
 	// 2. one gv_switch for nstates, not nstates gv_switch
 	if( HTS_ModelSet_have_gv_switch( &ms ) == true )

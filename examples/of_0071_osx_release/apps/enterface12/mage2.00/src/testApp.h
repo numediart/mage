@@ -35,11 +35,12 @@
 
 #include <fstream>
 
-// --- OSC
+// --- OSC --- 
 #include "ofxOsc.h"
 #define PORT 5454 
 
-// --- AUDIO THINGS ---
+// --- Audio ---
+// ATTENTION :: should we move that in constants.h?
 const int maxFrameLen =	4800;
 const int dacBufferLen = 128;
 
@@ -66,6 +67,7 @@ class testApp : public ofBaseApp
 		void keyReleased( int key );
 	
 		void pushLabel();
+	
 		//parse lab file line-by-line
 		void fillLabelQueue();
 		void parsefile( std::string filename );
@@ -75,23 +77,21 @@ class testApp : public ofBaseApp
 		int Argc;		// number of arguments passed to the main()
 		char ** Argv;	// table of arguments passed to the main()
 	
-		// --- User controls
-		float pitch;
-		float speed;
-		float alpha;
-		float volume;
-		int   gamma;
-		int   porder;
-		int	  pitchAction;
-		int	  speedAction;
-		int	  durationAction;
+		// --- User controls ---
+		float pitch;			// pitch value set by the user
+		float speed;			// speed value set by the user
+		float alpha;			// alpha value set by the user
+		float volume;			// volume value set by the user
+		int   gamma;			// gamma value set by the user
+		int   porder;			// porder value set by the user
+		int	  pitchAction;		// pitchAction ( noaction, overwrite, shift, scale, synthetic ) value set by the user
+		int	  speedAction;		// speedAction ( noaction, overwrite, shift, scale, synthetic ) value set by the user
+		int	  durationAction;	// durationAction ( noaction, overwrite, shift, scale, synthetic ) value set by the user
 	
-		string engine;	
-
-		// --- OSC
+		// --- OSC ---
 		ofxOscReceiver	receiver;
 	
-		//--- Mage
+		//--- Mage ---
 		MAGE::Mage * mage;
 		
 		genThread * generate;
@@ -103,5 +103,6 @@ class testApp : public ofBaseApp
 		bool loop;
 		bool fill;
 		
+		// queue of read labels
 		std::queue<std::string> labellist;
 };

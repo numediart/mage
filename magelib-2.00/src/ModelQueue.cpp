@@ -136,7 +136,7 @@ MAGE::ModelQueue::~ModelQueue()
 // methods
 void MAGE::ModelQueue::generate( FrameQueue * frameQueue, unsigned int backup )
 {
-	//TODO actual frame generation with vocoder
+	//TODO :: actual frame generation with vocoder
 	unsigned int k, s, q, qmgc, qlf0, qlpf, w, ind;
 	
 	head = ( read + backup ) % length;	// then we land on the correct model( backup models 
@@ -173,13 +173,13 @@ void MAGE::ModelQueue::generate( FrameQueue * frameQueue, unsigned int backup )
 				usleep( 10 );
 			
 			frame = frameQueue->next();
-			//TODO memcpy ? (faster ?)
+			//TODO :: memcpy ? (faster ?)
 			for( k = 0; k < nOfMGCs; k++ )
 				frame->mgc[k] = this->modelQueueMemory.par[mgcStreamIndex][qmgc][k];
 
 			qmgc++;
 			
-			//TODO memcpy ? (faster ?)
+			//TODO :: memcpy ? (faster ?)
 			for( k = 0; k < nOfLPFs; k++ )
 				frame->lpf[k] = this->modelQueueMemory.par[lpfStreamIndex][qlpf][k];
 	
@@ -221,7 +221,7 @@ void MAGE::ModelQueue::optimizeParameters( MAGE::Engine * engine, unsigned int b
 	
 	frame = 0;
 	
-	//TODO optimize this: some computation will be done exactly the same in next 
+	//TODO :: optimize this: some computation will be done exactly the same in next 
 	//call to this function( only shifted in mem )
 	
 	for( w = 0; w < window; w++ )// for every model 
@@ -275,7 +275,7 @@ void MAGE::ModelQueue::optimizeParameters( MAGE::Engine * engine, unsigned int b
 								
 								for( l = 0; l < static_length; l++ )
 								{
-									// ATTENTION !!! This is not the good way
+									// ATTENTION :: This is not the good way
 									m = static_length * k + l;
 									
 									if( i == 1 )	// lf0
@@ -287,7 +287,7 @@ void MAGE::ModelQueue::optimizeParameters( MAGE::Engine * engine, unsigned int b
 										else
 											this->modelQueueMemory.ivar[i][msd_frame][m] = 0.0;
 										
-										// ATTENTION !!! Loop assignment
+										// ATTENTION :: Loop assignment
 										this->modelQueueMemory.gv_mean[i][m] = rawData[head].getState( 0 ).gv_lf0[m].mean;
 										this->modelQueueMemory.gv_vari[i][m] = rawData[head].getState( 0 ).gv_lf0[m].vari;
 									}
@@ -328,7 +328,7 @@ void MAGE::ModelQueue::optimizeParameters( MAGE::Engine * engine, unsigned int b
 							
 							for( l = 0; l < static_length; l++ )
 							{
-								// ATTENTION !!! This is not the good way
+								// ATTENTION :: This is not the good way
 								m = static_length * k + l;
 								
 								if( i == 0 ) // mgcs
@@ -340,7 +340,7 @@ void MAGE::ModelQueue::optimizeParameters( MAGE::Engine * engine, unsigned int b
 									else
 										this->modelQueueMemory.ivar[i][frame][m] = 0.0;
 									
-									// ATTENTION !!! Loop assignment
+									// ATTENTION :: Loop assignment
 									this->modelQueueMemory.gv_mean[i][m] = rawData[head].getState( 0 ).gv_mgc[m].mean;
 									this->modelQueueMemory.gv_vari[i][m] = rawData[head].getState( 0 ).gv_mgc[m].vari;
 									this->modelQueueMemory.gv_switch[i][m] = rawData[head].getState( 0 ).mgc_gv_switch;
@@ -355,7 +355,7 @@ void MAGE::ModelQueue::optimizeParameters( MAGE::Engine * engine, unsigned int b
 									else
 										this->modelQueueMemory.ivar[i][frame][m] = 0.0;
 									
-									// ATTENTION !!! Loop assignment
+									// ATTENTION :: Loop assignment
 									this->modelQueueMemory.gv_mean[i][m] = rawData[head].getState( 0 ).gv_lpf[m].mean;
 									this->modelQueueMemory.gv_vari[i][m] = rawData[head].getState( 0 ).gv_lpf[m].vari;
 									this->modelQueueMemory.gv_switch[i][m] = rawData[head].getState( 0 ).lpf_gv_switch;

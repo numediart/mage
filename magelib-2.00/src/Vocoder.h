@@ -70,9 +70,9 @@ namespace MAGE
 			inline double getGamma ( void ){ return( this->gamma = this->stage  ); };
 
 			// setters
-			inline void setAlpha ( double aalpha  ){ this->alpha  = aalpha;  };	// ATTENTION no need for correct limit control???
-			inline void setGamma ( double agamma  ){ this->stage  = agamma;  };	// ATTENTION no need for correct limit control???
-			inline void setVolume( double avolume ){ this->volume = avolume; };	// ATTENTION no need for correct limit control???
+			inline void setAlpha ( double aalpha  ){ this->alpha  = aalpha;  };	// ATTENTION :: no need for correct limit control???
+			inline void setGamma ( double agamma  ){ this->stage  = agamma;  };	// ATTENTION :: no need for correct limit control???
+			inline void setVolume( double avolume ){ this->volume = avolume; };	// ATTENTION :: no need for correct limit control???
 			inline void setPadeOrder( double apd  ){ this->pd     = apd;	 };
 
 			void setVoiced( bool forceVoiced );

@@ -34,7 +34,11 @@ void testApp::setup( void )
 	receiver.setup( PORT );
 	
 	// --- Mage ---
+	
+	// create mage
 	this->mage = new MAGE::Mage();
+	
+	// add clb & awb voice models
 	this->mage->addEngine( "clb", "./inouts/clb.conf" );
 	this->mage->addEngine( "awb", "./inouts/awb.conf" );
 
@@ -45,8 +49,9 @@ void testApp::setup( void )
 	// -- OLA AND AUDIO ---
 	drawSampleFrame = true; // we don't draw the sample frame at runtime
 
+	// Question :: shouldn't we put that into mage and be independent from oF?
 	olaBuffer   = new obOlaBuffer( 8 * maxFrameLen ); // allocate memory for the OLA buffer
-	sampleFrame = new float[ maxFrameLen ](); // allocate memory for the speech frame
+	sampleFrame = new float[ maxFrameLen ]();		  // allocate memory for the speech frame
 
 	ofSoundStreamSetup( 2, 0, this, defaultSamplingRate, dacBufferLen, 4 ); // audio setup
 		
@@ -66,136 +71,147 @@ void testApp::exit( void )
 
 void testApp::update( void )
 {	
+	int oscGamma;
+	int oscPorder;
+	int oscAction;
+	
 	float oscSpeed;
 	float oscAlpha;
 	float oscPitch;
 	float oscVolume;
-	int   oscGamma;
-	int   oscPorder;
-	int   oscAction;
+	
+	string oscEngineName;	
+	string oscConfigFile;
+	
+	ofxOscMessage m; 
+
+	// TODO :: this has to be replaced by a function producing 
+	// weights and not to use a static array of weights
 	int   oscUpdateFunction[MAGE::nOfStates];
 
-	string oscEngine;	
-	string oscConfigFile;
-
-	ofxOscMessage m; 
-	
+	// parsing the received OSC messages
 	if( receiver.hasWaitingMessages() )
 	{
-		// --- get new OSC message ---
+		// --- Get new OSC message ---
 		m.clear();
 		receiver.getNextMessage( &m );
 		
-		// --- THE LIST OF MESSAGES ---
+		// --- List of messages ---
+		
+		// --- Change pitch ---
 		if( m.getAddress() == "/Mage/pitch" )
 		{
-			// --- change pitch ---
 			oscPitch = m.getArgAsFloat( 0 ); 
 			oscAction = m.getArgAsInt32( 1 );
 			
-			this->pitchAction = oscAction;
 			this->pitch = oscPitch; 
+			this->pitchAction = oscAction;
 			this->mage->setPitch( this->pitch, this->pitchAction );
-			//65.406395 * ( ( oscPitch/12 ) * ( oscPitch/12 ) );
+			// 65.406395 * ( ( oscPitch/12 ) * ( oscPitch/12 ) );
 		}
 		
+		// --- Change alpha ---
 		if( m.getAddress() == "/Mage/alpha" ) 
 		{
-			// --- change alpha ---
 			oscAlpha = m.getArgAsFloat( 0 );
+			
 			this->alpha = ofMap( oscAlpha, 0.1, 0.9, 0.1, 0.9, true );
 			this->mage->setAlpha( this->alpha );
 		}
 		
+		// --- Change gamma ---
 		if( m.getAddress() == "/Mage/gamma" ) 
 		{
-			// --- change gamma ---
 			oscGamma = m.getArgAsFloat( 0 );
+			
 			this->gamma = ofMap( oscGamma, 0, 5, 0, 5, true );
 			this->mage->setGamma( this->gamma );
 		}		
 		
+		// --- Change porder ---
 		if( m.getAddress() == "/Mage/porder" ) 
 		{
-			// --- change porder ---
 			oscPorder = m.getArgAsFloat( 0 );
+			
 			this->porder = ofMap( oscPorder, 0, 5, 0, 5, true );
 			this->mage->setPOrder( this->porder );
 		}
 		
+		// --- Change speed	---
 		if( m.getAddress() == "/Mage/speed" )
 		{
-			// --- change speed	---
 			oscSpeed = m.getArgAsFloat( 0 );
 			oscAction = m.getArgAsInt32( 1 );
 			
 			this->speed = oscSpeed;
 			this->speedAction = oscAction;
 			this->mage->setSpeed( this->speed, this->speedAction );
-			printf("%f\n", this->speed);
 		}
 		
+		// --- Change labelSpeed ---
 		if( m.getAddress() == "/Mage/lSpeed" )
 		{
-			// --- change labelSpeed ---
 			oscSpeed = m.getArgAsFloat( 0 );
+			
 			this->speed = ofMap( oscSpeed, 0, 10, 0.1, 10, true );
 			this->mage->setLabelSpeed( this->speed );
 		}
 		
+		// --- Change volume ---
 		if( m.getAddress() == "/Mage/volume" )
 		{
-			// --- change volume ---
 			oscVolume = m.getArgAsFloat( 0 );
+			
 			this->volume = ofMap( oscVolume, 0, 5, 0, 5, true );
 			this->mage->setVolume( this->volume );
 		}
 		
+		// --- Change duration ---
 		if( m.getAddress() == "/Mage/duration" )
 		{
-			// --- change duration ---
+			// TODO :: this has to be replaced by a function producing 
+			// weights and not to use a static array of weights
+			int updateFunction[nOfStates] = { 1, 1, 30, 1, 1 };
+
 			oscAction = m.getArgAsInt32( 0 );
 			
 			this->durationAction = oscAction;
-			int updateFunction[nOfStates] = { 1, 1, 30, 1, 1 };
 			this->mage->setDuration( updateFunction, this->durationAction );
 		}
 		
+		// --- Reset Mage ---
 		if( m.getAddress() == "/Mage/resetMage" )
-		{
-			// --- change resetMage ---
 			this->mage->reset();
-		}
 		
+		// --- Reset ONLY the Vocoder ---
 		if( m.getAddress() == "/Mage/resetVocoder" )
-		{
-			// --- change resetVocoder ---
 			this->mage->resetVocoder();
-		}
 		
+		// --- Add an Engine ---
+		// (here a new voice model)
 		if( m.getAddress() == "/Mage/addEngine" )
 		{
-			// --- change addEngine ---
-			oscEngine = m.getArgAsString( 0 );
+			oscEngineName = m.getArgAsString( 0 );
 			oscConfigFile = m.getArgAsString( 1 );
-			this->engine = oscEngine;
-			this->mage->addEngine( this->engine, oscConfigFile );
+			
+			this->mage->addEngine( oscEngineName, oscConfigFile );
 		}
 		
+		// --- Change the default Engine used for the synthesis ---
+		// (here change the default voice model used)
 		if( m.getAddress() == "/Mage/setDefaultEngine" )
 		{
-			// --- change setDefaultEngine ---
-			oscEngine = m.getArgAsString( 0 );
-			this->engine = oscEngine;
-			this->mage->setDefaultEngine( this->engine );
+			oscEngineName = m.getArgAsString( 0 );
+
+			this->mage->setDefaultEngine( oscEngineName );
 		}
 		
+		// --- Remove an Engine existing in the used list od engines ---
+		// (here a voice model)
 		if( m.getAddress() == "/Mage/removeEngine" )
 		{
-			// --- change removeEngine ---
-			oscEngine = m.getArgAsString( 0 );
-			this->engine = oscEngine;
-			this->mage->removeEngine( this->engine );
+			oscEngineName = m.getArgAsString( 0 );
+			this->mage->removeEngine( oscEngineName );
 		}
 		
 		// --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
@@ -209,7 +225,7 @@ void testApp::update( void )
 		}
 	}
 	
-	//TODO check that this is thread-safe( probably not )
+	// TODO :: check that this is thread-safe( probably not )
 	if( this->fill && this->mage->getLabelQueue()->isEmpty() && this->loop )
 		fillLabelQueue();
 }
@@ -248,21 +264,23 @@ void testApp::audioOut( float * outBuffer, int bufSize, int nChan )
 
 	for( int k = 0; k < bufSize; k++ )
 	{
-		// ATTENTION!!! should we generate the samples from the parameters in the audio thread or befor?!  
+		// generate the samples from the computed parameters taking into account the user contol
 		this->mage->updateSamples();
 		
 		indchan = k * nChan;
+		
+		// get the generated samples
 		outBuffer[indchan] = this->mage->popSamples();
 		
+		// mono --> stereo / multi-channel
 		for( c = 1; c < nChan; c++ )
-			outBuffer[indchan+c] = outBuffer[indchan]; //mono --> stereo / multi-channel
+			outBuffer[indchan+c] = outBuffer[indchan]; 
 		
+		// draw samples
 		if (drawSampleFrame) 
 			sampleFrame[this->mage->getSampleCounter()] = outBuffer[k];
 	}
 }
-
-//---
 
 testApp::testApp( int argc, char ** argv )
 {
