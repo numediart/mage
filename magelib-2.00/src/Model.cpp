@@ -158,23 +158,27 @@ void MAGE::Model::checkInterpolationWeights( MAGE::Engine * engine, bool forced 
 	return;
 }
 
-void MAGE::Model::computeDuration( MAGE::Engine * engine, MAGE::Label * label, double interpolationWeight )
+void MAGE::Model::computeDuration( MAGE::Engine * engine, MAGE::Label * label, double * interpolationWeight )
 {
 	int	i;
+	double iw;
 	double temp;
-	
+	double frame_length;
+
 	HTS_ModelSet ms = engine->getModelSet();
 	HTS_Global global = engine->getGlobal();
 	
 	// determine state duration 
 	const double rate = global.sampling_rate / ( global.fperiod * 1e+7 );
-		
-	double frame_length;
 	
 	// convert string query to char * 
 	string query = label->getQuery();
 	strcpy( this->modelMemory.strQuery, query.c_str() );
 	
+	if( interpolationWeight != NULL )
+		iw = interpolationWeight[durStreamIndex];
+	else 
+		iw = 1;
 	
 	// HTS_ModelSet_get_duration: get duration using interpolation weight 
 	HTS_ModelSet_get_duration( &ms, this->modelMemory.strQuery, this->modelMemory.duration_mean, 
@@ -209,7 +213,7 @@ void MAGE::Model::computeDuration( MAGE::Engine * engine, MAGE::Label * label, d
 	}
 	
 	for( i = 0; i < nOfStates; i++ )
-		this->state[i].duration += interpolationWeight * this->modelMemory.duration_array[i];
+		this->state[i].duration += iw * this->modelMemory.duration_array[i];
 		
 	return;
 }
@@ -259,7 +263,7 @@ void MAGE::Model::updateDuration( int * updateFunction, int action )
 // streams one at a time, not using if() but 
 // passing the stream id as an argument
 
-void MAGE::Model::computeParameters( MAGE::Engine * engine, MAGE::Label * label, double interpolationWeight )
+void MAGE::Model::computeParameters( MAGE::Engine * engine, MAGE::Label * label, double * interpolationWeight )
 {
 	int i, j;
 	
@@ -271,25 +275,39 @@ void MAGE::Model::computeParameters( MAGE::Engine * engine, MAGE::Label * label,
 	strcpy( this->strQuery, query.c_str() );
 	
 	double lf0_msd;
+	double mgcIW, lf0IW, lpfIW;
 	
+	if( interpolationWeight != NULL)
+	{
+		mgcIW = interpolationWeight[mgcStreamIndex];
+		lf0IW = interpolationWeight[lf0StreamIndex];
+		lpfIW = interpolationWeight[lpfStreamIndex];
+	}
+	else
+	{
+		mgcIW = 1;
+		lf0IW = 1;
+		lpfIW = 1;
+	}
+
 	for( i = 0; i < nOfStates; i++ )
 	{
 		HTS_ModelSet_get_parameter( &ms, strQuery, this->modelMemory.mgc_mean, this->modelMemory.mgc_vari, 
 								   NULL, mgcStreamIndex, i+2, global.parameter_iw[mgcStreamIndex] ); 
-		
+				
 		for( j = 0; j < mgcLen; j++ )
 		{
-			this->state[i].mgc[j].mean += interpolationWeight * this->modelMemory.mgc_mean[j];
-			this->state[i].mgc[j].vari += interpolationWeight * interpolationWeight * this->modelMemory.mgc_vari[j];
+			this->state[i].mgc[j].mean += mgcIW * this->modelMemory.mgc_mean[j];
+			this->state[i].mgc[j].vari += mgcIW * mgcIW * this->modelMemory.mgc_vari[j];
 		}
 		
 		HTS_ModelSet_get_parameter( &ms, strQuery, this->modelMemory.lf0_mean, this->modelMemory.lf0_vari, 
 								   &lf0_msd, lf0StreamIndex, i+2, global.parameter_iw[lf0StreamIndex] ); 
-		
+
 		for( j = 0; j < lf0Len; j++ )
 		{
-			this->state[i].lf0[j].mean += interpolationWeight * this->modelMemory.lf0_mean[j];
-			this->state[i].lf0[j].vari += interpolationWeight * interpolationWeight * this->modelMemory.lf0_vari[j];
+			this->state[i].lf0[j].mean += lf0IW * this->modelMemory.lf0_mean[j];
+			this->state[i].lf0[j].vari += lf0IW * lf0IW * this->modelMemory.lf0_vari[j];
 			this->state[i].lf0[j].msdFlag = lf0_msd;
 		}
 		
@@ -298,8 +316,8 @@ void MAGE::Model::computeParameters( MAGE::Engine * engine, MAGE::Label * label,
 		
 		for( j = 0; j < lpfLen; j++ )
 		{
-			this->state[i].lpf[j].mean += interpolationWeight * this->modelMemory.lpf_mean[j];
-			this->state[i].lpf[j].vari += interpolationWeight * interpolationWeight * this->modelMemory.lpf_vari[j];
+			this->state[i].lpf[j].mean += lpfIW * this->modelMemory.lpf_mean[j];
+			this->state[i].lpf[j].vari += lpfIW * lpfIW * this->modelMemory.lpf_vari[j];
 		}
 	}
 	

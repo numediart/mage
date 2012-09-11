@@ -317,9 +317,9 @@ void testApp::keyPressed( int key )
 		pushLabel();
 
 	if( key == 'q' )
-		this->mage->enableParameterInterpolation( true );
+		;//	this->mage->enableParameterInterpolation( true );
 	if( key == 'w' )
-		this->mage->enableDurationInterpolation( true );
+		;//	this->mage->enableDurationInterpolation( true );
 	
 	if( key == 'a' )
 	{

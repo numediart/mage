@@ -104,12 +104,15 @@ namespace MAGE
 			void setGamma ( double gamma  );
 			void setPOrder( double glitch );
 			void setVolume( double volume );
-			void setPitch ( double pitch,  int action );
-			void setSpeed ( double aspeed, int action );
+			void setPitch ( double pitch,  int aaction );
+			void setSpeed ( double aspeed, int aaction );
 
 			void setDuration( int * updateFunction, int action );
 			void setDefaultEngine( std::string adefaultEngine );
-
+		
+			// interpolation function for the duration & parameter (streams)  models
+			void setInterpolationFunctions( std::map < std::string, double * > ainterpolationFunctions );
+		
 			// methods
 			double popSamples( void );
 
@@ -131,14 +134,8 @@ namespace MAGE
 
 			void removeEngine( std::string EngineName );
 		
-			void enableInterpolation( bool aenableInterpolation ); // interpolate duration & parameters
-			
-			// interpolate duration
-			inline void enableDurationInterpolation( bool ainterpolateDuration ){ this->interpolateDuration = ainterpolateDuration; };
-
-			// interpolate parameters
-			inline void enableParameterInterpolation( bool ainterpolateParameters ){ this->interpolateParameters = ainterpolateParameters; };
-
+			// enable interpolation for the duration & parameter (streams) models
+			inline void enableInterpolation( bool ainterpolationFlag ){ this->interpolationFlag = ainterpolationFlag; }; 
 		
 		protected:		
 			// --- Queues ---	
@@ -149,9 +146,13 @@ namespace MAGE
 			// --- HTS Engine & Voices (Engine) ---
 			//std::map < std::string, Engine * > engine;
 			//std::map < std::string, std::pair < double[nOfStreams+1], Engine * > > engine;
+		
 			// Format :: [ "engineName", interpolationWeightsOfStreams[], HTS Engine ]
+			// interpolationWeights for number of streams + duration 
 			std::map < std::string, std::pair < double * , Engine * > > engine;
 
+			std::map < std::string, double * > * interpolationFunctions;
+		
 			// --- Model ---
 			Model * model;
 		
@@ -171,8 +172,7 @@ namespace MAGE
 			int sampleCount;
 			double labelSpeed; // we need this because the speed changes on the lable 
 								// level and we need to have memory of this
-			bool interpolateDuration;
-			bool interpolateParameters;
+			bool interpolationFlag;
 
 		private:
 		
@@ -181,13 +181,16 @@ namespace MAGE
 			bool flag;
 			int action;
 		
+			double interpolationWeights[nOfStreams + 1];
+		
 			// HTS_Engine & Voices (Engine)
 			int argc;
 			char ** argv;
 		
 			// methods
 			void init( void );
+			void checkInterpolationFunctions( void );
+			void addEngine( std::string name );// called by addEngine( string, ...)
 			void parseConfigFile( std::string filename );
-			void addEngine( std::string name );//called by addEngine( string, ...)
 	};
 } // namespace

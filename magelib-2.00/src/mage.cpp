@@ -242,8 +242,7 @@ void MAGE::Mage::init( void )
 	this->defaultEngine = "";
 	this->updateFunction = NULL; // !!!
 	this->hopLen = defaultFrameRate;
-	this->interpolateDuration = false;
-	bool interpolateParameters = false;
+	this->interpolationFlag = false;
  
 	return;
 }
@@ -299,18 +298,15 @@ void MAGE::Mage::checkInterpolationWeights( bool forced )
 
 void MAGE::Mage::computeDuration( void )
 {
-	double interpolationWeight = 0.5;
-
-	//map < std::string, Engine * >::iterator it;
 	map < std::string, std::pair < double * , Engine * > >::const_iterator it;
 
 	this->model->initDuration();
 	
-	if( !this->interpolateDuration )
-		this->model->computeDuration( this->engine[this->defaultEngine].second, &(this->label) );
+	if( !this->interpolationFlag )
+		this->model->computeDuration( this->engine[this->defaultEngine].second, &(this->label), NULL );
 	else
 		for( it = this->engine.begin(); it != this->engine.end(); it++ )
-			this->model->computeDuration( this->engine[this->defaultEngine].second, &(this->label), interpolationWeight );
+			this->model->computeDuration( this->engine[this->defaultEngine].second, &(this->label), ( * it ).second.first );
 
 	this->model->updateDuration( this->updateFunction, this->action ); 
 	this->action = noaction;
@@ -321,17 +317,15 @@ void MAGE::Mage::computeDuration( void )
 
 void MAGE::Mage::computeParameters( void )
 {
-	double interpolationWeight = 0.5;
-	//map < std::string, Engine * >::iterator it;
 	map < std::string, std::pair < double * , Engine * > >::const_iterator it;
 
 	this->model->initParameters();
 
-	if( !this->interpolateParameters )
-		this->model->computeParameters( this->engine[this->defaultEngine].second, &(this->label) );
+	if( !this->interpolationFlag )
+		this->model->computeParameters( this->engine[this->defaultEngine].second, &(this->label), NULL );
 	else 
 		for( it = this->engine.begin(); it != this->engine.end(); it++ )
-			this->model->computeParameters( ( * it ).second.second, &(this->label), interpolationWeight );
+			this->model->computeParameters( ( * it ).second.second, &(this->label), ( * it ).second.first );
 		
 	this->model->computeGlobalVariances( this->engine[this->defaultEngine].second, &(this->label) );
 
@@ -351,7 +345,8 @@ void MAGE::Mage::optimizeParameters( void )
 	} 
 	else if( this->modelQueue->getNumOfItems() > nOfLookup && this->flag )
 	{
-		this->modelQueue->optimizeParameters( this->engine[this->defaultEngine].second, this->modelQueue->getNumOfItems() - nOfLookup - 1, nOfLookup );
+		this->modelQueue->optimizeParameters( this->engine[this->defaultEngine].second, 
+											  this->modelQueue->getNumOfItems() - nOfLookup - 1, nOfLookup );
 		this->modelQueue->generate( this->frameQueue, this->modelQueue->getNumOfItems() - nOfLookup - 1 );	
 	}	
 	return; 
@@ -371,9 +366,7 @@ void MAGE::Mage::reset( void )
 	this->action = noaction;
 	this->updateFunction = NULL;
 	this->hopLen = defaultFrameRate;
-
-	this->interpolateDuration = false;
-	this->interpolateParameters = false;
+	this->interpolationFlag = false;
 	
 	this->resetVocoder();	
 	return;
@@ -417,6 +410,11 @@ void MAGE::Mage::addEngine( std::string EngineName )
 		delete ( * it ).second.first;
 		delete ( * it ).second.second;
 	}
+
+	this->engine[EngineName].first = ( double * ) calloc( nOfStreams + 1, sizeof( double ) );
+	
+	for( int i = 0; i < nOfStreams + 1; i++ )
+		this->engine[EngineName].first[i] = 1;
 
 	this->engine[EngineName].second = new MAGE::Engine();
 	this->engine[EngineName].second->load( this->argc, this->argv);
@@ -504,10 +502,45 @@ double MAGE::Mage::popSamples ( void )
 	return( 0 );
 }
 
-void MAGE::Mage::enableInterpolation( bool aenableInterpolation ) // interpolate duration & parameters
+void MAGE::Mage::setInterpolationFunctions( std::map < std::string, double * > interpolationFunctions )
 {
-	this->interpolateDuration = aenableInterpolation; 
-	this->interpolateParameters = aenableInterpolation; 
+	string EngineName;
+	double * itInterpolationFunction;
+	map < std::string, double * >::iterator it; // iterator for the map of interpolationFunctions
+	map < std::string, std::pair < double * , Engine * > >::iterator itEngine; // iterator for the map of engines
+	
+	for( it = interpolationFunctions.begin(); it != interpolationFunctions.end(); it++ ) // for all the interpolation functions
+	{
+		EngineName = ( * it ).first;
+		itInterpolationFunction = ( * it ).second;
+		
+		itEngine = this->engine.find( EngineName );
+		( * itEngine ).second.first = itInterpolationFunction;
+	}
+	
+	this->checkInterpolationFunctions();
+	this->interpolationFunctions = &interpolationFunctions;
 	return;
 }
+
+void MAGE::Mage::checkInterpolationFunctions( void )
+{
+	int i;
+	map < std::string, std::pair < double * , Engine * > >::iterator it; // iterator for the map of engines
+
+	for( i = 0; i < nOfStreams + 1; i++ )
+		this->interpolationWeights[i] = 0;
+	
+	for( it = this->engine.begin(); it != this->engine.end(); it++ )
+		for( i = 0; i < nOfStreams + 1; i++ )
+			this->interpolationWeights[i] += abs( ( * it ).second.first[i] );
+	
+	for( it = this->engine.begin(); it != this->engine.end(); it++ )
+		for( i = 0; i < nOfStreams + 1; i++ )
+			if( this->interpolationWeights[i] )
+				( * it ).second.first[i] /= this->interpolationWeights[i];
+			
+	return;
+}
+
 

@@ -65,7 +65,7 @@ namespace MAGE
 	const int mgcStreamIndex = 0; // mgc stream index
 	const int lf0StreamIndex = 1; // lf0 stream index
 	const int lpfStreamIndex = 2; // lpf stream index
-	const int durStreamIndex = 2; // duration stream index
+	const int durStreamIndex = 3; // duration stream index
 	
 	// --- Parameter Length ---
 	const int mgcLen = nOfDers * nOfMGCs;
