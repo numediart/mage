@@ -292,7 +292,7 @@ void MAGE::Mage::checkInterpolationWeights( bool forced )
 
 void MAGE::Mage::computeDuration( void )
 {
-	double interoplationWheight;
+	double interpolationWeight;
 	map < std::string, Engine * >::iterator it;
 	
 	this->model->initDuration();
@@ -300,7 +300,7 @@ void MAGE::Mage::computeDuration( void )
 	if( !this->enableInterpolationFlag )
 		this->model->computeDuration( this->engine[this->defaultEngine], &(this->label) );
 	else
-		for( it = this->engine.begin(); it != this->engine.end(); it++, interoplationWheight++ )
+		for( it = this->engine.begin(); it != this->engine.end(); it++, interpolationWeight++ )
 			this->model->computeDuration( this->engine[this->defaultEngine], &(this->label) );
 
 	this->model->updateDuration( this->updateFunction, this->action ); 
@@ -312,7 +312,7 @@ void MAGE::Mage::computeDuration( void )
 
 void MAGE::Mage::computeParameters( void )
 {
-	double interoplationWheight = 0.5;
+	double interpolationWeight = 0.5;
 	map < std::string, Engine * >::iterator it;
 	
 	this->model->initParameters();
@@ -321,7 +321,7 @@ void MAGE::Mage::computeParameters( void )
 		this->model->computeParameters( this->engine[this->defaultEngine], &(this->label) );
 	else 
 		for( it = this->engine.begin(); it != this->engine.end(); it++ )
-			this->model->computeParameters( ( * it ).second, &(this->label), interoplationWheight );
+			this->model->computeParameters( ( * it ).second, &(this->label), interpolationWeight );
 	
 		
 	this->model->computeGlobalVariances( this->engine[this->defaultEngine], &(this->label) );
