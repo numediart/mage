@@ -67,7 +67,7 @@ MAGE::Mage::~Mage( void )
 
 	for( it = this->engine.begin(); it != this->engine.end(); it++ )
 	{
-		delete ( * it ).second.first;
+		delete[] ( * it ).second.first;
 		delete ( * it ).second.second;
 	}
 }
@@ -413,7 +413,7 @@ void MAGE::Mage::addEngine( std::string EngineName )
 	{
 		printf("ATTENTION: Engine %s already exists, overwriting it\n",EngineName.c_str());
 		//free existing engine by calling ~Engine
-		delete ( * it ).second.first;	// free interpolation weight vector
+		delete[] ( * it ).second.first;	// free interpolation weight vector
 		delete ( * it ).second.second;	// free engine
 	}
 
@@ -456,7 +456,7 @@ void MAGE::Mage::addEngine( std::string EngineName, std::string confFilename )
 void MAGE::Mage::removeEngine( std::string EngineName )
 {
 	//map < std::string, Engine * >::iterator it;
-	map < std::string, std::pair < double * , Engine * > >::const_iterator it;
+	map < std::string, std::pair < double * , Engine * > >::iterator it;
 
 	it = this->engine.find( EngineName );
 
@@ -464,10 +464,10 @@ void MAGE::Mage::removeEngine( std::string EngineName )
 	{
 		printf("removing Engine %s\n",( * it ).first.c_str());
 
-		delete ( * it ).second.first;	//free memory by calling ~Engine
+		delete[] ( * it ).second.first;	//free double*
 		delete ( * it ).second.second;	//free memory by calling ~Engine
 		//ATTENTION!!!! UNCOMMENT THIS!!!!
-		//this->engine.erase( it );		//remove from std::map
+		this->engine.erase( it );		//remove from std::map
 
 		// TODO :: add checks for this->engine.empty() in other part of code ?
 		if( this->engine.empty() )

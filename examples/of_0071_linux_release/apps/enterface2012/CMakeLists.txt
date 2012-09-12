@@ -5,6 +5,7 @@ SET(MAGE_ROOT_PATH "${MAGE_GIT_PATH}/magelib-2.00/src")
 SET(MAGELIBS_PATH "${MAGE_GIT_PATH}/magelib-2.00/bin")
 SET(OB_ROOT_PATH "${MAGE_GIT_PATH}/magelib-2.00/libs/olabox-0.01")
 SET(PORTAUDIO_ROOT_PATH "${MAGE_GIT_PATH}/magelib-2.00/libs/portaudio-0.19")
+SET(OFXOSC_ROOT_PATH "../ofxosc")
 
 SET(APP_NAME enterface12)
 
@@ -24,7 +25,6 @@ INCLUDE_DIRECTORIES(/usr/include/freetype2)
 INCLUDE_DIRECTORIES(/usr/include/directfb)
 INCLUDE_DIRECTORIES(/usr/include/libpng12)
 INCLUDE_DIRECTORIES(/usr/include/gstreamer-0.10)
-INCLUDE_DIRECTORIES(/usr/include/gstreamer-0.10)
 INCLUDE_DIRECTORIES(/usr/include/libxml2)
 
 INCLUDE_DIRECTORIES(${HTS_ENGINE_ROOT_PATH})
@@ -32,6 +32,12 @@ INCLUDE_DIRECTORIES(${MAGE_ROOT_PATH})
 INCLUDE_DIRECTORIES(${OB_ROOT_PATH})
 INCLUDE_DIRECTORIES(${PORTAUDIO_ROOT_PATH})
 
+#OFx OSC addon - compiled locally
+INCLUDE_DIRECTORIES(${OFXOSC_ROOT_PATH}/src)
+INCLUDE_DIRECTORIES(${OFXOSC_ROOT_PATH}/libs/oscpack/src)
+INCLUDE_DIRECTORIES(${OFXOSC_ROOT_PATH}/libs/oscpack/src/osc)
+INCLUDE_DIRECTORIES(${OFXOSC_ROOT_PATH}/libs/oscpack/src/ip)
+INCLUDE_DIRECTORIES(${OFXOSC_ROOT_PATH}/libs/oscpack/src/ip/posix)
 
 #certainly not the cleanest way to do it, but it matches openframeworks' gcc command from the Makefile
 #besides ... it works
@@ -86,6 +92,7 @@ LINK_DIRECTORIES(${MAGELIBS_PATH})
 
 ADD_EXECUTABLE(${APP_NAME} ${SRC} ${HDR})
 TARGET_LINK_LIBRARIES(${APP_NAME} pthread m)
+TARGET_LINK_LIBRARIES(${APP_NAME} ofxosc)
 TARGET_LINK_LIBRARIES(${APP_NAME} mage htsengine olabox)
 
 #[OPENFRAMEWORKS]

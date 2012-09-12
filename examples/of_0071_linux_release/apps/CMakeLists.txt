@@ -54,6 +54,8 @@ IF(NOT OF_ROOT_PATH)
 	SET(OF_ROOT_PATH "/opt/openframeworks")
 ENDIF()
 
+#osc addons for OFx
+ADD_SUBDIRECTORY(ofxosc)
 #build the apps
 ADD_SUBDIRECTORY(${${CMAKE_PROJECT_NAME}_SRC})
 #test file for memory leak in magelib - use valgrind to run it
