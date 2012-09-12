@@ -34,7 +34,7 @@ void fillLabelQueue( t_mage_tilde * x )
 	Label label;
 	
 	string line;
-	string filename = "/home/alexis/Programmation/pd/mage/inouts/labels/alice01.lab";
+	string filename = "../../data/inouts/labels/alice01.lab";
 
 	ifstream myfile( filename.c_str() );
 	
