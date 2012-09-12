@@ -2,6 +2,7 @@
 *.slo
 *.lo
 *.o
+*.pd_linux
 
 # Compiled Executable (Windows)
 *.exe
