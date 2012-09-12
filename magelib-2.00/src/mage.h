@@ -111,7 +111,7 @@ namespace MAGE
 			void setDefaultEngine( std::string adefaultEngine );
 		
 			// interpolation function for the duration & parameter (streams)  models
-			void setInterpolationFunctions( std::map < std::string, double * > ainterpolationFunctions );
+			void setInterpolationFunctions( std::map < std::string, double * > ainterpolationFunctionsSet );
 		
 			// methods
 			double popSamples( void );
@@ -136,7 +136,8 @@ namespace MAGE
 		
 			// enable interpolation for the duration & parameter (streams) models
 			inline void enableInterpolation( bool ainterpolationFlag ){ this->interpolationFlag = ainterpolationFlag; }; 
-		
+			void print( void );
+
 		protected:		
 			// --- Queues ---	
 			LabelQueue * labelQueue;
@@ -151,7 +152,7 @@ namespace MAGE
 			// interpolationWeights for number of streams + duration 
 			std::map < std::string, std::pair < double * , Engine * > > engine;
 
-			std::map < std::string, double * > * interpolationFunctions;
+			//std::map < std::string, double * > * interpolationFunctions;
 		
 			// --- Model ---
 			Model * model;

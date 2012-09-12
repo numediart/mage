@@ -317,15 +317,39 @@ void testApp::keyPressed( int key )
 		pushLabel();
 
 	if( key == 'q' )
-		;//	this->mage->enableParameterInterpolation( true );
-	if( key == 'w' )
-		;//	this->mage->enableDurationInterpolation( true );
+		this->mage->enableInterpolation( true );   
 	
-	if( key == 'a' )
+	if( key == 'w' )
+		this->mage->enableInterpolation( false );
+	
+	if( key == 'e' )
+	{
+		map < string, double * > interpolationFunctions;
+		
+		/*double a[nOfStreams + 1] = { 1, 0, 1, 0 };
+		interpolationFunctions["clb"] = a;
+		
+		double b[nOfStreams + 1] = { 0, 1, 0, 1 };
+		interpolationFunctions["awb"] = b;*/
+		
+		double a[nOfStreams + 1] = { 1.5, 0.25, 0.5, 0 }; //{ 0.25, 0.75, 0.25, 0.75 };
+		interpolationFunctions["clb"] = a;
+		
+		double b[nOfStreams + 1] = { 1, 1.5, 1, 1 }; //{ 0.75, 0.25, 0.75, 0.25 };
+		interpolationFunctions["awb"] = b;
+		
+		this->mage->setInterpolationFunctions( interpolationFunctions );	
+		
+	}
+
+	
+	/*if( key == 'a' )
 	{
 		int updateFunction[5] = {1, 1, 10, 1, 1};
 		this->mage->setDuration( updateFunction, MAGE::shift );	
-	}
+	}*/
+	if( key == '1' )
+		this->mage->print();
 
 	if( key == 'r' )
 		this->mage->reset();
