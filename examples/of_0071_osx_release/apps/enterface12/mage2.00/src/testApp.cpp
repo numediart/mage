@@ -84,6 +84,9 @@ void testApp::update( void )
 	string oscConfigFile;
 	
 	ofxOscMessage m; 
+	
+	double oscInterpolationWeights[nOfStreams + 1];
+	map < string, double * > oscInterpolationFunctions;   
 
 	// TODO :: this has to be replaced by a function producing 
 	// weights and not to use a static array of weights
@@ -214,6 +217,26 @@ void testApp::update( void )
 			this->mage->removeEngine( oscEngineName );
 		}
 		
+		if( m.getAddress() == "/Mage/enableInterpolation" )
+		{
+			oscEngineName = m.getArgAsString( 0 );
+			
+			if( oscEngineName.compare("off") == 0 )
+				this->mage->enableInterpolation( false );   			
+			else			
+			{
+				for( int i = 0; i < nOfStreams + 1; i++)
+					oscInterpolationWeights[i] = m.getArgAsFloat( i + 1 );
+				
+				oscInterpolationFunctions[oscEngineName] = oscInterpolationWeights;				
+				
+				this->mage->enableInterpolation( true );  
+				this->mage->setInterpolationFunctions( oscInterpolationFunctions );	
+				this->mage->print();
+			}
+		}
+		
+		
 		// --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 		if( m.getAddress() == "/Mage/loop" )
 		{
@@ -324,13 +347,7 @@ void testApp::keyPressed( int key )
 	
 	if( key == 'e' )
 	{
-		map < string, double * > interpolationFunctions;
-		
-		/*double a[nOfStreams + 1] = { 1, 0, 1, 0 };
-		interpolationFunctions["clb"] = a;
-		
-		double b[nOfStreams + 1] = { 0, 1, 0, 1 };
-		interpolationFunctions["awb"] = b;*/
+		map < string, double * > interpolationFunctions;   
 		
 		double a[nOfStreams + 1] = { 1.5, 0.25, 0.5, 0 }; //{ 0.25, 0.75, 0.25, 0.75 };
 		interpolationFunctions["clb"] = a;

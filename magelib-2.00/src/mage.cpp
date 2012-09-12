@@ -360,6 +360,8 @@ void MAGE::Mage::resetVocoder( void )
 
 void MAGE::Mage::reset( void )
 {	
+	map < std::string, std::pair < double * , Engine * > >::iterator it; // iterator for the map of engines
+
 	this->flag = true;
 	this->labelSpeed = 1;
 	this->sampleCount = 0;
@@ -368,7 +370,12 @@ void MAGE::Mage::reset( void )
 	this->updateFunction = NULL;
 	this->interpolationFlag = false;
 	
-	this->resetVocoder();	
+	this->resetVocoder();
+	
+	for( it = this->engine.begin(); it != this->engine.end(); it++ )
+		for( int i = 0; i < nOfStreams + 1; i++ )
+			if( this->interpolationWeights[i] )
+				( * it ).second.first[i] = 1;	
 	return;
 }
 
@@ -536,7 +543,6 @@ void MAGE::Mage::checkInterpolationFunctions( void )
 		for( i = 0; i < nOfStreams + 1; i++ )
 			this->interpolationWeights[i] += abs( ( * it ).second.first[i] );
 	
-	
 	for( it = this->engine.begin(); it != this->engine.end(); it++ )
 		for( i = 0; i < nOfStreams + 1; i++ )
 			if( this->interpolationWeights[i] )
@@ -551,7 +557,7 @@ void MAGE::Mage::print( void )
 
 	for( itEngine = this->engine.begin(); itEngine != this->engine.end(); itEngine++ )
 		for( int i = 0; i < 4; i++ )
-			printf("PRINT TEST weights %s %f\n", ( * itEngine ).first.c_str(), ( * itEngine ).second.first[i]);
+			printf("weights %s %f\n", ( * itEngine ).first.c_str(), ( * itEngine ).second.first[i]);
 	
 
 }
