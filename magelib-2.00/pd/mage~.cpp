@@ -1,3 +1,36 @@
+ /* ----------------------------------------------------------------------------------------------- */
+ /* 																								*/
+ /* 	This file is part of MAGE / pHTS( the performative HMM-based speech synthesis system )		*/
+ /* 																								*/
+ /* 	MAGE / pHTS is free software: you can redistribute it and/or modify it under the terms		*/
+ /* 	of the GNU General Public License as published by the Free Software Foundation, either		*/
+ /* 	version 3 of the license, or any later version.												*/
+ /* 																								*/
+ /* 	MAGE / pHTS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;	*/	
+ /* 	without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	*/
+ /* 	See the GNU General Public License for more details.										*/
+ /* 																								*/	
+ /* 	You should have received a copy of the GNU General Public License along with MAGE / pHTS.	*/ 
+ /* 	If not, see http://www.gnu.org/licenses/													*/
+ /* 																								*/
+ /* 																								*/	
+ /* 	Copyright 2011 University of Mons :															*/
+ /* 																								*/	
+ /* 			Numediart Institute for New Media Art( www.numediart.org )							*/
+ /* 			Acapela Group ( www.acapela-group.com )												*/
+ /* 																								*/
+ /* 																								*/
+ /* 	 Developed by :																				*/
+ /* 																								*/
+ /* 		Maria Astrinaki, Geoffrey Wilfart, Alexis Moinet, Nicolas d'Alessandro, Thierry Dutoit	*/
+ /* 																								*/
+ /* ----------------------------------------------------------------------------------------------- */
+
+/** 
+ * 	 @file	mage~.cpp
+ * 	 @author A. Moinet
+ */
+
 #include "m_pd.h"
 #include <cstdio>
 #include <cstdlib>
@@ -86,11 +119,11 @@ void * mage_tilde_new( void )
 void mage_tilde_setup( void )
 {
 	mage_tilde_class = class_new(gensym("mage~"),(t_newmethod)mage_tilde_new,(t_method)mage_tilde_free,sizeof(t_mage_tilde),CLASS_DEFAULT, (t_atomtype) 0);
+	
 	class_addbang(mage_tilde_class, mage_tilde_bang);
 	post("_setup : blocksize = %d",sys_getblksize());
 
-    class_addmethod(mage_tilde_class, (t_method)mage_tilde_dsp,
-        gensym("dsp"), (t_atomtype) 0);
+	class_addmethod(mage_tilde_class, (t_method)mage_tilde_dsp, gensym("dsp"), (t_atomtype) 0);
 }
 
 void mage_tilde_free( t_mage_tilde * x )
@@ -102,16 +135,16 @@ void mage_tilde_free( t_mage_tilde * x )
 
 void mage_tilde_dsp( t_mage_tilde * x, t_signal ** sp )
 {
-    dsp_add( mage_tilde_perform, 3, x, sp[0]->s_vec, sp[0]->s_n );
+	dsp_add( mage_tilde_perform, 3, x, sp[0]->s_vec, sp[0]->s_n );
 }
 
 t_int *mage_tilde_perform( t_int * w )
 {
-    float tmp;
+	float tmp;
 
-    t_mage_tilde * x = ( t_mage_tilde * )( w[1] );
-    t_float * out = ( t_float * )( w[2] );
-    int n = ( int )( w[3] );
+	t_mage_tilde * x = ( t_mage_tilde * )( w[1] );
+	t_float * out = ( t_float * )( w[2] );
+	int n = ( int )( w[3] );
 
 	while( n-- )
 	{
@@ -121,7 +154,7 @@ t_int *mage_tilde_perform( t_int * w )
 			*out++ = x->mage->popSamples();
 	}
 
-    return ( w+4 );
+	return ( w+4 );
 }
 
 void * genThread(void * argv)
