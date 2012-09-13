@@ -1,0 +1,12 @@
+#N canvas -1202 115 633 431 10;
+#X declare -lib mrpeach;
+#X declare -path ./;
+#X obj 32 25 import mrpeach;
+#X obj 97 96 mage;
+#X obj 225 102 getdir;
+#X obj 225 82 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 225 126 print;
+#X obj 32 47 declare -path ./;
+#X connect 2 0 4 0;
+#X connect 3 0 2 0;
