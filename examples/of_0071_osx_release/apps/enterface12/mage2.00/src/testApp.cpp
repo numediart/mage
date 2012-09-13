@@ -50,7 +50,6 @@ void testApp::setup( void )
 	drawSampleFrame = true; // we don't draw the sample frame at runtime
 
 	// Question :: shouldn't we put that into mage and be independent from oF?
-	olaBuffer   = new obOlaBuffer( 8 * maxFrameLen ); // allocate memory for the OLA buffer
 	sampleFrame = new float[ maxFrameLen ]();		  // allocate memory for the speech frame
 
 	ofSoundStreamSetup( 2, 0, this, defaultSamplingRate, dacBufferLen, 4 ); // audio setup
@@ -65,7 +64,6 @@ void testApp::exit( void )
 	
 	delete mage;
 	delete generate;
-	delete olaBuffer;
 	delete sampleFrame;
 }
 

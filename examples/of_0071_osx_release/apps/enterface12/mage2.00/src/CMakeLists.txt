@@ -24,7 +24,6 @@ INCLUDE_DIRECTORIES(/usr/include/freetype2)
 INCLUDE_DIRECTORIES(/usr/include/directfb)
 INCLUDE_DIRECTORIES(/usr/include/libpng12)
 INCLUDE_DIRECTORIES(/usr/include/gstreamer-0.10)
-INCLUDE_DIRECTORIES(/usr/include/gstreamer-0.10)
 INCLUDE_DIRECTORIES(/usr/include/libxml2)
 
 INCLUDE_DIRECTORIES(${HTS_ENGINE_ROOT_PATH})

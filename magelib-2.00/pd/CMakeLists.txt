@@ -1,15 +1,14 @@
+# This is the CMakeLists.txt for mage~ the pd external for MAGE
+#
+# Copyright UMons - 2012
+#
+# @author A. Moinet
+
 SET(SRC mage~.cpp)
-
-INCLUDE_DIRECTORIES(../src)
-INCLUDE_DIRECTORIES(../libs/hts_engine-1.06)
-INCLUDE_DIRECTORIES(../libs/portaudio-0.19)
-
 SET(PD_OBJECT_NAME mage~)
 
 SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DPD -O2 -funroll-loops -fomit-frame-pointer -fPIC")
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DPD -O2 -funroll-loops -fomit-frame-pointer -fPIC")
-
-ADD_LIBRARY(${PD_OBJECT_NAME} SHARED ${SRC})
 
 IF(UNIX)
 	IF(NOT APPLE)
@@ -20,6 +19,12 @@ IF(UNIX)
 ELSE()
 	SET(PD_OBJECT_SUFFIX ".dll")
 ENDIF()
+
+INCLUDE_DIRECTORIES(../src)
+INCLUDE_DIRECTORIES(../libs/hts_engine-1.06)
+INCLUDE_DIRECTORIES(../libs/portaudio-0.19)
+
+ADD_LIBRARY(${PD_OBJECT_NAME} SHARED ${SRC})
 
 SET_TARGET_PROPERTIES(${PD_OBJECT_NAME} PROPERTIES PREFIX "")
 SET_TARGET_PROPERTIES(${PD_OBJECT_NAME} PROPERTIES SUFFIX ${PD_OBJECT_SUFFIX})
