@@ -67,7 +67,7 @@ void fillLabelQueue( t_mage_tilde * x )
 	Label label;
 	
 	string line;
-	string filename = "../../data/inouts/labels/alice01.lab";
+	string filename = "./inouts/labels/alice01.lab";
 
 	ifstream myfile( filename.c_str() );
 	
