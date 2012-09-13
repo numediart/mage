@@ -61,6 +61,12 @@ void mage_tilde_free( t_mage_tilde * x );
 void mage_tilde_setup( void );
 void * genThread( void * argv );
 
+//access to MAGE controls
+void mage_tilde_alpha( t_mage_tilde * x, t_floatarg alpha );
+void mage_tilde_reset( t_mage_tilde * x );
+void mage_tilde_speed( t_mage_tilde * x, t_floatarg speed );
+void mage_tilde_volume( t_mage_tilde * x, t_floatarg volume );
+
 void fillLabelQueue( t_mage_tilde * x )
 {	
 	int k;
@@ -94,7 +100,6 @@ void mage_tilde_bang( t_mage_tilde * x )
 
 void * mage_tilde_new( void )
 {
-	int k;
 	t_mage_tilde *x = (t_mage_tilde *) pd_new(mage_tilde_class);
 	post("_new: starting");
 	//std::cout << "Hello C++ World !" << std::endl;
@@ -122,6 +127,11 @@ void mage_tilde_setup( void )
 	
 	class_addbang(mage_tilde_class, mage_tilde_bang);
 	post("_setup : blocksize = %d",sys_getblksize());
+	
+	class_addmethod(mage_tilde_class, (t_method)mage_tilde_alpha, gensym("alpha"), A_FLOAT, 0);
+	class_addmethod(mage_tilde_class, (t_method)mage_tilde_reset, gensym("reset"), (t_atomtype) 0);
+	class_addmethod(mage_tilde_class, (t_method)mage_tilde_speed, gensym("speed"), A_FLOAT, 0);
+	class_addmethod(mage_tilde_class, (t_method)mage_tilde_volume, gensym("volume"), A_FLOAT, 0);
 
 	class_addmethod(mage_tilde_class, (t_method)mage_tilde_dsp, gensym("dsp"), (t_atomtype) 0);
 }
@@ -140,8 +150,6 @@ void mage_tilde_dsp( t_mage_tilde * x, t_signal ** sp )
 
 t_int *mage_tilde_perform( t_int * w )
 {
-	float tmp;
-
 	t_mage_tilde * x = ( t_mage_tilde * )( w[1] );
 	t_float * out = ( t_float * )( w[2] );
 	int n = ( int )( w[3] );
@@ -195,6 +203,34 @@ void * genThread(void * argv)
 	}
 
 	return ( NULL );
+}
+
+void mage_tilde_alpha( t_mage_tilde * x, t_floatarg alpha )
+{
+	x->mage->setAlpha( alpha );
+	
+	return;
+}
+
+void mage_tilde_reset( t_mage_tilde * x )
+{
+	x->mage->reset();
+	
+	return;
+}
+
+void mage_tilde_speed( t_mage_tilde * x, t_floatarg speed )
+{
+	x->mage->setSpeed( speed, MAGE::overwrite );
+	
+	return;
+}
+
+void mage_tilde_volume( t_mage_tilde * x, t_floatarg volume )
+{
+	x->mage->setVolume( volume );
+	
+	return;
 }
 
 }

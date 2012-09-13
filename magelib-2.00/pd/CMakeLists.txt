@@ -1,3 +1,9 @@
+# This is the CMakeLists.txt for mage~ the pd external for MAGE
+#
+# Copyright UMons - 2012
+#
+# @author A. Moinet
+
 SET(SRC mage~.cpp)
 SET(PD_OBJECT_NAME mage~)
 
