@@ -22,7 +22,7 @@
  /* 																								*/
  /* 	 Developed by :																				*/
  /* 																								*/
- /* 		Maria Astrinaki, Geoffrey Wilfart, Alexis Moinet, Nicolas d'Alessandro, Thierry Dutoit	*/
+ /* 		Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit	*/
  /* 																								*/
  /* ----------------------------------------------------------------------------------------------- */
 
@@ -107,7 +107,7 @@ namespace MAGE
 			void setPitch ( double pitch,  int aaction );
 			void setSpeed ( double aspeed, int aaction );
 
-			void setDuration( int * updateFunction, int action );
+			void setDuration( double * updateFunction, int action );
 			void setDefaultEngine( std::string adefaultEngine );
 		
 			// interpolation function for the duration & parameter (streams)  models
@@ -177,7 +177,7 @@ namespace MAGE
 
 		private:
 		
-			int * updateFunction; // replace with void * function
+			double updateFunction[nOfStates]; // replace with void * function
 			
 			bool flag;
 			int action;

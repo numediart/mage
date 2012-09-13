@@ -22,7 +22,7 @@
  /* 																								*/
  /* 	 Developed by :																				*/
  /* 																								*/
- /* 		Maria Astrinaki, Geoffrey Wilfart, Alexis Moinet, Nicolas d'Alessandro, Thierry Dutoit	*/
+ /* 		Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit	*/
  /* 																								*/
  /* ----------------------------------------------------------------------------------------------- */
 
@@ -79,11 +79,14 @@ namespace MAGE
 	const int scale		= 2;
 	const int synthetic	= 3;
 	
-	// configuration files
+	// --- Configuration files ---
 	const int maxNumOfArguments = 100;
 	
-	// max sting lenght
+	// --- Max sting lenght ---
 	const int maxStrLen = 1024;
+	
+	// --- Interpolation Wheight ---
+	const double defaultInterpolationWeight = 1;
 
 } // namespace	
 

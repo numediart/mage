@@ -22,7 +22,7 @@
  /* 																								*/
  /* 	 Developed by :																				*/
  /* 																								*/
- /* 		Maria Astrinaki, Geoffrey Wilfart, Alexis Moinet, Nicolas d'Alessandro, Thierry Dutoit	*/
+ /* 		Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit	*/
  /* 																								*/
  /* ----------------------------------------------------------------------------------------------- */
 
@@ -165,10 +165,13 @@ void MAGE::Mage::setVolume( double volume )
 	return;
 }
 
-void MAGE::Mage::setDuration( int * updateFunction, int action )
+void MAGE::Mage::setDuration( double * updateFunction, int action )
 {
 	this->action = action;
-	this->updateFunction = updateFunction;
+	
+	for( int i = 0; i < nOfStates; i++ )
+		this->updateFunction[i] = updateFunction[i];
+	
 	return;
 }
 
@@ -239,7 +242,6 @@ void MAGE::Mage::init( void )
 	
 	this->action = noaction;
 	this->defaultEngine = "";
-	this->updateFunction = NULL; // !!!
 	this->hopLen = defaultFrameRate;
 	this->interpolationFlag = false;
  
@@ -309,7 +311,6 @@ void MAGE::Mage::computeDuration( void )
 	
 	this->model->updateDuration( this->updateFunction, this->action ); 
 	this->action = noaction;
-	this->updateFunction = NULL;
 	
 	return;
 }
@@ -367,7 +368,6 @@ void MAGE::Mage::reset( void )
 	this->sampleCount = 0;
 	this->action = noaction;
 	this->hopLen = defaultFrameRate;
-	this->updateFunction = NULL;
 	this->interpolationFlag = false;
 	
 	this->resetVocoder();
@@ -420,7 +420,7 @@ void MAGE::Mage::addEngine( std::string EngineName )
 	this->engine[EngineName].first = new double[nOfStreams + 1];
 	
 	for( int i = 0; i < nOfStreams + 1; i++ )
-		this->engine[EngineName].first[i] = 1;
+		this->engine[EngineName].first[i] = defaultInterpolationWeight;
 
 	this->engine[EngineName].second = new MAGE::Engine();
 	this->engine[EngineName].second->load( this->argc, this->argv);

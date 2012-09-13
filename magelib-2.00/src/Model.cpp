@@ -22,7 +22,7 @@
  /* 																								*/
  /* 	 Developed by :																				*/
  /* 																								*/
- /* 		Maria Astrinaki, Geoffrey Wilfart, Alexis Moinet, Nicolas d'Alessandro, Thierry Dutoit	*/
+ /* 		Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit	*/
  /* 																								*/
  /* ----------------------------------------------------------------------------------------------- */
 
@@ -218,15 +218,14 @@ void MAGE::Model::computeDuration( MAGE::Engine * engine, MAGE::Label * label, d
 	return;
 }
 
-void MAGE::Model::updateDuration( int * updateFunction, int action )
+void MAGE::Model::updateDuration( double * updateFunction, int action )
 {
-	int i;
-	int duration = 0;
+	int duration;
 	
 	if( updateFunction == NULL )
 		return;
 	
-	for( i = 0; i < nOfStates; i++ )
+	for( int i = 0; i < nOfStates; i++ )
 	{
 		switch( action )
 		{

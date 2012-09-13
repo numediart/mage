@@ -22,7 +22,7 @@
  /* 																								*/
  /* 	 Developed by :																				*/
  /* 																								*/
- /* 		Maria Astrinaki, Geoffrey Wilfart, Alexis Moinet, Nicolas d'Alessandro, Thierry Dutoit	*/
+ /* 		Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit	*/
  /* 																								*/
  /* ----------------------------------------------------------------------------------------------- */
 
@@ -95,7 +95,7 @@ namespace MAGE
 			// methods
 			void initDuration  ( void );
 			void initParameters( void );
-			void updateDuration( int * updateFunction, int action ); // to put a speed profile on state duration( put it inside compute duration ? )
+			void updateDuration( double * updateFunction, int action ); // to put a speed profile on state duration( put it inside compute duration ? )
 			void computeDuration  ( MAGE::Engine * engine, MAGE::Label * label, double * interpolationWeight );
 			void computeParameters( MAGE::Engine * engine, MAGE::Label * label, double * interpolationWeight );
 			void computeGlobalVariances( MAGE::Engine * engine, MAGE::Label * label );
