@@ -170,7 +170,7 @@ void MAGE::ModelQueue::generate( FrameQueue * frameQueue, unsigned int backup )
 		for( q = 0; q < rawData[head].getState( s ).duration; q++ )
 		{
 			while( frameQueue->isFull() )
-				usleep( 10 );
+				usleep( 1000 );
 			
 			frame = frameQueue->next();
 			//TODO :: memcpy ? (faster ?)
