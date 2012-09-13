@@ -29,7 +29,6 @@
 #pragma once
 
 #include "ofMain.h"
-#include "obOlaBuffer.h"
 #include "mage.h"
 #include "genThread.h"
 
@@ -98,7 +97,6 @@ class testApp : public ofBaseApp
 	 
 		//---
 		float * sampleFrame;	 // frame to be OLAed
-		obOlaBuffer * olaBuffer; // overlap-add buffer
 		bool drawSampleFrame;	 // do we show the frame
 		bool loop;
 		bool fill;
