@@ -134,6 +134,7 @@ extern "C"
 	void mage_tilde_free( t_mage_tilde * x )
 	{
 		pthread_cancel(x->thread);
+		pthread_join(x->thread,NULL);
 		post("free mage memory");
 		delete x->mage;
 	}
