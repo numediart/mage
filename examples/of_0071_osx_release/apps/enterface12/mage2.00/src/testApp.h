@@ -101,6 +101,7 @@ class testApp : public ofBaseApp
 		bool loop;
 		bool fill;
 		
+		string labelFile;
 		// queue of read labels
 		std::queue<std::string> labellist;
 };

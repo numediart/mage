@@ -40,7 +40,7 @@ void testApp::setup( void )
 	
 	// add clb & awb voice models
 	this->mage->addEngine( "clb", "./inouts/clb.conf" );
-	this->mage->addEngine( "awb", "./inouts/awb.conf" );
+	//this->mage->addEngine( "awb", "./inouts/awb.conf" );
 
 	// --- Parameter Generation Thread ---
 	generate = new genThread( this->mage );
@@ -54,8 +54,9 @@ void testApp::setup( void )
 
 	ofSoundStreamSetup( 2, 0, this, defaultSamplingRate, dacBufferLen, 4 ); // audio setup
 		
-	loop = true;
-	fill = true;
+	this->loop = true;
+	this->fill = true;
+	this->labelFile = "./inouts/labels/alice01.lab";
 }
 
 void testApp::exit( void )
@@ -304,8 +305,8 @@ void testApp::audioOut( float * outBuffer, int bufSize, int nChan )
 
 testApp::testApp( int argc, char ** argv )
 {
-	Argc = argc; // we use this trick to pass the HTS command line flags
-	Argv = argv; // to the openFrameworks app and use them at launch
+	this->Argc = argc; // we use this trick to pass the HTS command line flags
+	this->Argv = argv; // to the openFrameworks app and use them at launch
 }
 
 void testApp::keyPressed( int key )
@@ -323,7 +324,7 @@ void testApp::keyPressed( int key )
 			this->mage->pushLabel( label );
 		}
 		
-		string s( this->Argv[this->Argc - 1] );
+		string s( this->labelFile );
 		parsefile( s );
 	}
 	
@@ -386,7 +387,7 @@ void testApp::fillLabelQueue()
 {	
 	MAGE::Label label;
 	
-	string s( this->Argv[this->Argc - 1] );
+	string s( this->labelFile );
 	parsefile( s );
 	
 	this->fill = false;

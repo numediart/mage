@@ -196,7 +196,7 @@ void MAGE::Mage::parseConfigFile( std::string confFilename )
 	
 	if( !confFile.is_open() )
 	{
-		printf( "could not open file %s",confFilename.c_str() );
+		printf( "could not open file %s\n",confFilename.c_str() );
 		return;
 	}
 	
@@ -307,7 +307,7 @@ void MAGE::Mage::computeDuration( void )
 		this->model->computeDuration( this->engine[this->defaultEngine].second, &(this->label), NULL );
 	else
 		for( it = this->engine.begin(); it != this->engine.end(); it++ )			
-			this->model->computeDuration( this->engine[this->defaultEngine].second, &(this->label), ( * it ).second.first );
+			this->model->computeDuration( ( * it ).second.second, &(this->label), ( * it ).second.first );
 	
 	this->model->updateDuration( this->updateFunction, this->action ); 
 	this->action = noaction;
