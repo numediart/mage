@@ -231,7 +231,7 @@ void MAGE::Mage::init( void )
 	this->frameQueue = new MAGE::FrameQueue( maxFrameQueueLen );
 	
 	// --- SPTK Vocoder ---
-	this->vocoder = new MAGE::Vocoder::Vocoder();
+	this->vocoder = new MAGE::Vocoder();
 	
 	// --- Label ---
 	this->labelQueue->get( this->label );
