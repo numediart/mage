@@ -26,15 +26,6 @@
  /* 																								*/
  /* ----------------------------------------------------------------------------------------------- */
 
-/** 
- *	@file		State.h
- *
- *	@author		Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
- *
- *	@brief		HMM state class, it contains the state duration and distributions
- *
- */
-
 #pragma once
 
 #include "Distribution.h"
@@ -45,7 +36,7 @@ namespace MAGE
 {
 	/** 
 	 *  \brief     Definition of the HMMs.
-	 *  \details   This class is used to define every state of the HMMs used. Here it contains the duration and distributions used in every state of HMM.
+	 *  \details   This struct is used to define every state of the HMMs used. Here it contains the duration and distributions used in every state of HMM.
 	 *
 	 *  \authors    Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
 	 *
@@ -64,37 +55,70 @@ namespace MAGE
 		 */
 		int duration;
 	
-		// global variances switch
+// global variances switch
+
 		/** 
 		 *	\var bool mgc_gv_switch.
-		 *	\brief It contains the global variance flag of the mgc stream for every state of a given HMM.
+		 *	\brief It contains the global variance flag of the spectral stream for every state of a given HMM.
 		 */
 		bool mgc_gv_switch;
 		
 		/** 
 		 *	\var bool lf0_gv_switch.
-		 *	\brief It contains the global variance flag of the lf0 stream for every state of a given HMM.
+		 *	\brief It contains the global variance flag of the fundamental frequency stream for every state of a given HMM.
 		 */
 		bool lf0_gv_switch;
 		
 		/** 
 		 *	\var bool lpf_gv_switch.
-		 *	\brief It contains the global variance flag of the lpf stream for every state of a given HMM.
+		 *	\brief It contains the global variance flag of the low-pass filtering stream for every state of a given HMM.
 		 */
 		bool lpf_gv_switch;
 	
-		// parameters loaded from trees
+// parameters loaded from trees
+		
 		/** 
 		 *	\var Distribution mgc.
-		 *	\brief It contains the global variance flag of the lpf stream for every state of a given HMM.
+		 *	\brief It contains the gaussian distribution (including static and dynamic features) 
+		 *			of the spectral stream for every state of a given HMM.
 		 */
-		Distribution	mgc[nOfDers * nOfMGCs];
-		MSDistribution	lf0[nOfDers * nOfLF0s];
-		Distribution	lpf[nOfDers * nOfLPFs];
+		Distribution mgc[nOfDers * nOfMGCs];
+		
+		/** 
+		 *	\var MSDistribution lf0.
+		 *	\brief It contains the gaussian distribution (including static and dynamic features) 
+		 *			of the fundamental frequency stream for every state of a given HMM.
+		 */
+		MSDistribution lf0[nOfDers * nOfLF0s];
+		
+		/** 
+		 *	\var Distribution lpf.
+		 *	\brief It contains the gaussian distribution (including static and dynamic features) 
+		 *			of the low-pass filtering stream for every state of a given HMM.
+		 */
+		Distribution lpf[nOfDers * nOfLPFs];
 	
-		// global variances
+// global variances
+		
+		/** 
+		 *	\var Distribution gv_mgc.
+		 *	\brief It contains the gaussian distribution (including static and dynamic features) 
+		 *			of the global variance of the spectral stream for every state of a given HMM.
+		 */
 		Distribution gv_mgc[nOfDers * nOfMGCs];
+		
+		/** 
+		 *	\var Distribution gv_lf0.
+		 *	\brief It contains the gaussian distribution (including static and dynamic features) 
+		 *			of the global variance of the fundamental frequency stream for every state of a given HMM.
+		 */
 		Distribution gv_lf0[nOfDers * nOfLF0s];
+		
+		/** 
+		 *	\var Distribution gv_lpf.
+		 *	\brief It contains the gaussian distribution (including static and dynamic features) 
+		 *			of the global variance of the low-pass filtering stream for every state of a given HMM.
+		 */
 		Distribution gv_lpf[nOfDers * nOfLPFs];
 	};
 } // namespace

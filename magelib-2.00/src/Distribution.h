@@ -31,8 +31,8 @@
 namespace MAGE 
 {
 	/** 
-	 *  \brief     Definition of a Gaussian distribution.
-	 *  \details   This struct is used to define a Gaussian distribution given the mean and variance as parameters.
+	 *  \brief     Definition of a gaussian distribution.
+	 *  \details   This struct is used to define a gaussian distribution given the mean and variance as parameters.
 	 *
 	 *  \authors    Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
 	 *
@@ -42,19 +42,18 @@ namespace MAGE
 	 *				Numediart Institute for New Media Art ( www.numediart.org )	\n
 	 *				Acapela Group ( www.acapela-group.com )						\n
 	 *				GNU Public License (see the licence in the file).
-	 */
-	
+	 */	
 	struct Distribution 
 	{
 		/** 
 		 *	\var double mean.
-		 *	\brief It contains the mean value of a Gaussian distribution.
+		 *	\brief It contains the mean value of a gaussian distribution.
 		 */
 		double mean;
 		
 		/** 
 		 *	\var double vari.
-		 *	\brief It contains the variance value of a Gaussian distribution.
+		 *	\brief It contains the variance value of a gaussian distribution.
 		 */
 		double vari;
 	};

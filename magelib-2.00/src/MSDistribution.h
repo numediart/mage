@@ -26,23 +26,31 @@
  /* 																								*/
  /* ----------------------------------------------------------------------------------------------- */
 
-/** 
- *	@file		Distribution.h
- *
- *	@author		Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
- *
- * 	@brief		MSD Gaussian parameters
- *
- */
-
 #pragma once
 
 #include "Distribution.h"
 
 namespace MAGE 
 {
+	/** 
+	 *  \brief     Definition of an NSD gaussian distribution.
+	 *  \details   This struct is used to define a gaussian distribution given the mean and variance as parameters.
+	 *
+	 *  \authors    Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
+	 *
+	 *  \version   2.00 beta
+	 *  \date      2011 - 2012
+	 *  \copyright 
+	 *				Numediart Institute for New Media Art ( www.numediart.org )	\n
+	 *				Acapela Group ( www.acapela-group.com )						\n
+	 *				GNU Public License (see the licence in the file).
+	 */	
 	struct MSDistribution : public Distribution 
 	{
+		/** 
+		 *	\var double msdFlag.
+		 *	\brief It contains the MSD value of a gaussian distribution.
+		 */
 		double msdFlag;
 	};
 } // namespace

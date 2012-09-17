@@ -37,6 +37,11 @@
 
 namespace MAGE 
 {
+	/**
+	 *	\def nOfDers
+	 *	\brief Number of derivations: ∆( 0 ), ∆( 1 ), ∆( 3 )
+	 *
+	 */
 	const unsigned int nOfDers = 3;		// # of derivations: ∆( 0 ), ∆( 1 ), ∆( 3 )
 	const unsigned int nOfMGCs = 35;	// # of MGC coefficients for the MLSA filter
 	const unsigned int nOfLF0s = 1;		// fundamental frequency is a single value
