@@ -48,7 +48,7 @@ namespace MAGE
 	//fix for memory overflow in optimizeParameters.
 	//ModelQueueMemory has only maxNumOfFrames allocated) which means 
 	//'maxNumOfFrames/(nofLookup+nofBackup+1)' frames per model.
-	const int maxDuration = (int) maxNumOfFrames / ( nOfBackup + nOfLookup + 1 ); 
+	const int maxDuration = ( int ) maxNumOfFrames / ( nOfBackup + nOfLookup + 1 );
 
 	// --- Queues ---
 	const int maxLabelQueueLen = 512; // max amount of labels that can wait
