@@ -39,7 +39,8 @@ void testApp::setup( void )
 	this->mage = new MAGE::Mage();
 	
 	// add clb & awb voice models
-	this->mage->addEngine( "clb", "./inouts/clb.conf" );
+	//this->mage->addEngine( "clb", "./inouts/clb.conf" );
+	this->mage->addEngine( "slt", "./inouts/slt.conf" );
 	//this->mage->addEngine( "awb", "./inouts/awb.conf" );
 
 	// --- Parameter Generation Thread ---
@@ -70,7 +71,7 @@ void testApp::exit( void )
 
 void testApp::update( void )
 {	
-	int oscGamma;
+/*	int oscGamma;
 	int oscPorder;
 	int oscAction;
 	
@@ -245,6 +246,7 @@ void testApp::update( void )
 				printf( "No Loop\n" );
 		}
 	}
+ */
 	
 	// TODO :: check that this is thread-safe( probably not )
 	if( this->fill && this->mage->getLabelQueue()->isEmpty() && this->loop )
