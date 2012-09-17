@@ -43,16 +43,51 @@
 
 namespace MAGE 
 {
+	/** 
+	 *  \brief     Definition of the HMMs.
+	 *  \details   This class is used to define every state of the HMMs used. Here it contains the duration and distributions used in every state of HMM.
+	 *
+	 *  \authors    Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
+	 *
+	 *  \version   2.00 beta
+	 *  \date      2011 - 2012
+	 *  \copyright 
+	 *				Numediart Institute for New Media Art ( www.numediart.org )	\n
+	 *				Acapela Group ( www.acapela-group.com )						\n
+	 *				GNU Public License (see the licence in the file).
+	 */	
 	struct State 
 	{
+		/** 
+		 *	\var int duration.
+		 *	\brief It contains the duration of every state of a given HMM.
+		 */
 		int duration;
 	
 		// global variances switch
+		/** 
+		 *	\var bool mgc_gv_switch.
+		 *	\brief It contains the global variance flag of the mgc stream for every state of a given HMM.
+		 */
 		bool mgc_gv_switch;
+		
+		/** 
+		 *	\var bool lf0_gv_switch.
+		 *	\brief It contains the global variance flag of the lf0 stream for every state of a given HMM.
+		 */
 		bool lf0_gv_switch;
+		
+		/** 
+		 *	\var bool lpf_gv_switch.
+		 *	\brief It contains the global variance flag of the lpf stream for every state of a given HMM.
+		 */
 		bool lpf_gv_switch;
 	
 		// parameters loaded from trees
+		/** 
+		 *	\var Distribution mgc.
+		 *	\brief It contains the global variance flag of the lpf stream for every state of a given HMM.
+		 */
 		Distribution	mgc[nOfDers * nOfMGCs];
 		MSDistribution	lf0[nOfDers * nOfLF0s];
 		Distribution	lpf[nOfDers * nOfLPFs];
