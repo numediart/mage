@@ -220,7 +220,7 @@ void MAGE::Model::computeDuration( MAGE::Engine * engine, MAGE::Label * label, d
 
 void MAGE::Model::updateDuration( double * updateFunction, int action )
 {
-	int duration;
+	int duration = 0;
 	
 	if( updateFunction == NULL )
 		return;
