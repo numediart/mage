@@ -27,10 +27,12 @@
  /* ----------------------------------------------------------------------------------------------- */
 
 /** 
- * 	 @file	State.h
- * 	 @author	N. d'Alessandro, M. Astrinaki
- * 	 @brief	 HMM state class, it contains the
- * 			state duration and distributions
+ *	@file		State.h
+ *
+ *	@author		Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
+ *
+ *	@brief		HMM state class, it contains the state duration and distributions
+ *
  */
 
 #pragma once

@@ -27,12 +27,13 @@
  /* ----------------------------------------------------------------------------------------------- */
 
 /** 
- * 	 @file	LabelQueue.h
- * 	 @author	N. d'Alessandro, M. Astrinaki
- * 	 @brief	 Label queue class: used to exchange the
- * 			labels between the different threads; we
- * 			could not inherint from MemQueue because
- * 			Label is not a POD type -> memory issues
+ *	@file		LabelQueue.h
+ *
+ *	@author		Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
+ *
+ *	@brief		Label queue class: used to exchange the labels between the different threads; we
+ *				could not inherint from MemQueue because Label is not a POD type -> memory issues
+ * 			
  */
 
 #pragma once

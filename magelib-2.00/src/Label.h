@@ -27,10 +27,12 @@
  /* ----------------------------------------------------------------------------------------------- */
 
 /** 
- * 	 @file	Label.h
- * 	 @author	N. d'Alessandro, M. Astrinaki
- * 	 @brief	 Label class: store the label string +
- * 			time tags and either duration is forced
+ *	@file		Label.h
+ *
+ *	@author		Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
+ *
+ *	@brief		Label class: store the label string + time tags and either duration is forced
+ * 			
  */
 
 #pragma once

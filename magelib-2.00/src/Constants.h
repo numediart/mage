@@ -26,6 +26,13 @@
  /* 																								*/
  /* ----------------------------------------------------------------------------------------------- */
 
+/** 
+ *	@file		Constants.h
+ *
+ *	@author		Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
+ * 			
+ */
+
 #pragma once 
 
 namespace MAGE 

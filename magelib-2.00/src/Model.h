@@ -27,9 +27,12 @@
  /* ----------------------------------------------------------------------------------------------- */
 
 /** 
- * 	 @file	Model.h
- * 	 @author	N. d'Alessandro, M. Astrinaki
- * 	 @brief	 HMM class: a bunch of states
+ *	@file		Model.h
+ *
+ *	@author		Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
+ *
+ *	@brief		HMM class: a bunch of states
+ *
  */
 
 #pragma once

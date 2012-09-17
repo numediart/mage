@@ -27,10 +27,12 @@
  /* ----------------------------------------------------------------------------------------------- */
 
 /** 
- * 	 @file	FrameQueue.cpp
- * 	 @author	N. d'Alessandro, M. Astrinaki
- * 	 @brief	 Frame ringbuffer: used to exchange speech
- * 			parameters with the synthesis thread
+ *	@file		FrameQueue.cpp
+ *
+ *	@author		Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
+ *
+ *	@brief		Frame ringbuffer: used to exchange speech parameters with the synthesis thread
+ * 			
  */
 
 #include "FrameQueue.h"

@@ -27,13 +27,12 @@
  /* ----------------------------------------------------------------------------------------------- */
 
 /** 
- * File:	 Vocoder.h
- * Author: alexis
- * 
- * Created on 24 juillet 2012, 16:54
- * 
- * Most of these functions come from SPTK, which is distributed under 
- * a Modified BSD License. See http://sp-tk.sourceforge.net/ for details
+ *	@file		Vocoder.h
+ *
+ *	@author		Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
+ *  
+ *	Most of these functions come from SPTK, which is distributed under 
+ *	a Modified BSD License. See http://sp-tk.sourceforge.net/ for details
  * 
  */
 

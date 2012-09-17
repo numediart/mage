@@ -27,10 +27,12 @@
  /* ----------------------------------------------------------------------------------------------- */
 
 /** 
- * 	 @file	Label.cpp
- * 	 @author	N. d'Alessandro, M. Astrinaki
- * 	 @brief	 Label class: store the label string +
- * 			time tags and either duration is forced
+ *	@file		Label.cpp
+ *
+ *	@author		Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
+ *
+ *	@brief		Label class: store the label string + time tags and either duration is forced
+ * 			
  */
 
 #include "Label.h"

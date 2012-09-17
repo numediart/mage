@@ -26,19 +26,35 @@
  /* 																								*/
  /* ----------------------------------------------------------------------------------------------- */
 
-/** 
- * 	 @file	Distribution.h
- * 	 @author	N. d'Alessandro, M. Astrinaki
- * 	 @brief	 Gaussian distribution parameters
- */
-
 #pragma once
 
 namespace MAGE 
 {
+	/** 
+	 *  \brief     Definition of a Gaussian distribution.
+	 *  \details   This struct is used to define a Gaussian distribution given the mean and variance as parameters.
+	 *
+	 *  \authors    Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
+	 *
+	 *  \date      2012
+	 *  \copyright 
+	 *				Numediart Institute for New Media Art ( www.numediart.org )	\n
+	 *				Acapela Group ( www.acapela-group.com )						\n
+	 *				GNU Public License (see the licence in the file).
+	 */
+	
 	struct Distribution 
 	{
+		/** 
+		 *	\var double mean.
+		 *	\brief It contains the mean value of a Gaussian distribution.
+		 */
 		double mean;
+		
+		/** 
+		 *	\var double vari.
+		 *	\brief It contains the variance value of a Gaussian distribution.
+		 */
 		double vari;
 	};
 } // namespace

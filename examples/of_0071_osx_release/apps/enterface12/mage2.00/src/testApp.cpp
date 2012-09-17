@@ -26,6 +26,13 @@
  /* 																								*/
  /* ----------------------------------------------------------------------------------------------- */
 
+/** 
+ *	@file		testApp.cpp
+ *
+ *	@author		Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
+ * 			
+ */
+
 #include "testApp.h"
 
 void testApp::setup( void )
@@ -71,7 +78,7 @@ void testApp::exit( void )
 
 void testApp::update( void )
 {	
-/*	int oscGamma;
+	int oscGamma;
 	int oscPorder;
 	int oscAction;
 	
@@ -246,7 +253,7 @@ void testApp::update( void )
 				printf( "No Loop\n" );
 		}
 	}
- */
+ 
 	
 	// TODO :: check that this is thread-safe( probably not )
 	if( this->fill && this->mage->getLabelQueue()->isEmpty() && this->loop )

@@ -26,12 +26,10 @@
  /* 																								*/
  /* ----------------------------------------------------------------------------------------------- */
 
-/* 
- * 	Model.cpp
- * 	mageOsc
- * 
- * 	Created by Maria Astrinaki on 11/07/12.
- * 	Copyright 2012. All rights reserved.
+/** 
+ *	@file		Model.cpp
+ *
+ *	@author		Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
  * 
  */
 

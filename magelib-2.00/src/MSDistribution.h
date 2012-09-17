@@ -27,9 +27,12 @@
  /* ----------------------------------------------------------------------------------------------- */
 
 /** 
- * 	 @file	Distribution.h
- * 	 @author	N. d'Alessandro, M. Astrinaki
- * 	 @brief	 MSD Gaussian parameters
+ *	@file		Distribution.h
+ *
+ *	@author		Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
+ *
+ * 	@brief		MSD Gaussian parameters
+ *
  */
 
 #pragma once

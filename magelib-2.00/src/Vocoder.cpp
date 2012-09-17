@@ -27,13 +27,12 @@
  /* ----------------------------------------------------------------------------------------------- */
 
 /** 
- * File:	 Vocoder.cpp
- * Author: alexis
+ *	@file		Vocoder.cpp
+ *
+ *	@author		Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
  * 
- * Created on 24 juillet 2012, 16:54
- * 
- * Most of these functions come from SPTK, which is distributed under 
- * a Modified BSD License. See http://sp-tk.sourceforge.net/ for details
+ *	Most of these functions come from SPTK, which is distributed under 
+ *	a Modified BSD License. See http://sp-tk.sourceforge.net/ for details
  * 
  */
 

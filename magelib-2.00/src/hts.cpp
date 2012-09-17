@@ -26,6 +26,13 @@
  /* 																								*/
  /* ----------------------------------------------------------------------------------------------- */
 
+/** 
+ *	@file		hts.cpp
+ *
+ *	@author		Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
+ * 			
+ */
+
 #include "hts.h"
 
 // constructor

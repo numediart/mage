@@ -26,6 +26,13 @@
  /* 																								*/
  /* ----------------------------------------------------------------------------------------------- */
 
+/** 
+ *	@file		genThread.cpp
+ *
+ *	@author		Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
+ * 			
+ */
+
 #include "genThread.h"
 
 // constructor

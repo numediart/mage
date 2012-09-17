@@ -27,9 +27,12 @@
  /* ----------------------------------------------------------------------------------------------- */
 
 /** 
- * 	 @file	Frame.h
- * 	 @author	N. d'Alessandro, M. Astrinaki
- * 	 @brief	 Synthesis frame class
+ *	@file		Frame.h
+ *
+ *	@author		Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
+ *
+ *	@brief		Synthesis frame class
+ *
  */
 
 #pragma once

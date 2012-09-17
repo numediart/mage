@@ -27,11 +27,12 @@
  /* ----------------------------------------------------------------------------------------------- */
 
 /** 
- * 	 @file	MemQueue.h
- * 	 @author	N. d'Alessandro, M. Astrinaki
- * 	 @brief	 Memory-efficient lock-free ringbuffer:
- * 			push and template POD data with memcpy()
- * 			and inform on the state of the buffer
+ *	@file		MemQueue.h
+ *
+ *	@author		Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
+ *
+ *	@brief		Memory-efficient lock-free ringbuffer: push and template POD data with memcpy()
+ *				and inform on the state of the buffer
  */
 
 // TODO :: maybe build that class around pa_ringbuffer instead

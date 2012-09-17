@@ -27,11 +27,13 @@
  /* ----------------------------------------------------------------------------------------------- */
 
 /** 
- * 	 @file	ModelQueue.cpp
- * 	 @author	N. d'Alessandro, M. Astrinaki
- * 	 @brief	 Model ringbuffer: used to store statistical
- * 			models + special generate()function that takes
- * 			a lookup window and generates oldest-label frames
+ *	@file		ModelQueue.cpp
+ *
+ *	@author		Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
+ *
+ *	@brief		Model ringbuffer: used to store statistical models + special generate()function that takes
+ *				a lookup window and generates oldest-label frames
+ * 			
  */
 
 #include "ModelQueue.h"
