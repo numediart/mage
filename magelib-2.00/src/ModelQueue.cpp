@@ -209,9 +209,9 @@ void MAGE::ModelQueue::optimizeParameters( MAGE::Engine * engine, unsigned int b
 	int window = backup + lookup + 1;//how many model do we use
 	head = read; // hopefuly we land on the oldest model wich is 'backup' earlier than current model
 	
-	static HTS_ModelSet ms = engine->getModelSet();
-	static HTS_Global global = engine->getGlobal();
-	static HTS_PStream pss = engine->getPStream();
+	HTS_ModelSet ms = engine->getModelSet();
+	HTS_Global global = engine->getGlobal();
+	HTS_PStream pss = engine->getPStream();
 	
 	int i, j, k, l, m, w;
 	int state, frame, msd_frame, static_length;
