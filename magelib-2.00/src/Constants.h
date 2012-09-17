@@ -51,13 +51,16 @@ namespace MAGE
 	const unsigned int nOfStreams = 3;	// # of streams : mgcs, lf0, lpf
 	
 	const unsigned int nOfLookup = 1;	// # of looked-up labels
-										// # of backed-up labels( models in modelqueue actually )
+	const unsigned int nOfBackup = 2;	// # of backed-up labels( models in modelqueue actually )
 										// this is the number of labels/models already used that 
 										// we keep in memory for smoother parameters computation
-	const unsigned int nOfBackup = 2; 
-	
+	 	
 	const int maxWindowWidth = 50;
 	const int maxNumOfFrames = 512;		// maximum # of frames per phoneme
+	//fix for memory overflow in optimizeParameters.
+	//ModelQueueMemory has only maxNumOfFrames allocated) which means 
+	//'maxNumOfFrames/(nofLookup+nofBackup+1)' frames per model.
+	const int maxDuration = ( int ) maxNumOfFrames / ( nOfBackup + nOfLookup + 1 );
 
 	// --- Queues ---
 	const int maxLabelQueueLen = 512; // max amount of labels that can wait

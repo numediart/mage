@@ -239,6 +239,7 @@ void MAGE::Mage::init( void )
 	this->labelQueue->get( this->label );
 	
 	this->flag = true;
+	this->flagReady = false;
 	this->labelSpeed = 1;
 	this->sampleCount = 0;
 	
@@ -399,21 +400,21 @@ void MAGE::Mage::updateSamples( void )
 }
 
 void MAGE::Mage::addEngine( std::string EngineName )
-{
-	// check that the Engine doesn't exist already
+{//this function is not thread safe (exactly like the MemQueue) it should never be called simultaneously in different threads
 	map < std::string, std::pair < double * , Engine * > >::const_iterator it;
 
+	// check that the Engine doesn't exist already
 	it = this->engine.find( EngineName );
 
 	// then we need to decide what to do:
 	//  - nothing, directly return
-	//  - overwrite the existing Engine with a new one
+	//  - overwrite the existing Engine with a new one --> DONE
 	// we could try to modify "load()" so that it can be called a second time
 	// on existing Engine instead of doing a 'delete' and then a 'new'
 	// (or write a "reload()" function ?)
 	if( it != this->engine.end() )
 	{
-		printf("ATTENTION: Engine %s already exists, overwriting it\n",EngineName.c_str());
+		this->engineReady[EngineName] = false;
 		//free existing engine by calling ~Engine
 		delete[] ( * it ).second.first;	// free interpolation weight vector
 		delete ( * it ).second.second;	// free engine
@@ -430,8 +431,11 @@ void MAGE::Mage::addEngine( std::string EngineName )
 	if( this->defaultEngine.empty() )
 	{
 		this->defaultEngine = EngineName;
+		this->flagReady = true;
 		printf("default Engine is %s\n",this->defaultEngine.c_str());
 	}
+	
+	this->engineReady[EngineName] = true;
 
  	return;
 }
@@ -456,19 +460,17 @@ void MAGE::Mage::addEngine( std::string EngineName, std::string confFilename )
 }
 
 void MAGE::Mage::removeEngine( std::string EngineName )
-{
-	//map < std::string, Engine * >::iterator it;
+{//this function is not thread safe (exactly like the MemQueue) it should never be called simultaneously in different threads
 	map < std::string, std::pair < double * , Engine * > >::iterator it;
 
 	it = this->engine.find( EngineName );
 
 	if( it != this->engine.end() )
 	{
-		printf("removing Engine %s\n",( * it ).first.c_str());
+		this->engineReady[EngineName] = false;
 
 		delete[] ( * it ).second.first;	//free double*
 		delete ( * it ).second.second;	//free memory by calling ~Engine
-		//ATTENTION!!!! UNCOMMENT THIS!!!!
 		this->engine.erase( it );		//remove from std::map
 
 		// TODO :: add checks for this->engine.empty() in other part of code ?
@@ -476,6 +478,7 @@ void MAGE::Mage::removeEngine( std::string EngineName )
 		{
 			printf("ATTENTION: Mage::removeEngine(): no Engine remaining, defaultEngine is now undefined (was %s)\n",EngineName.c_str());
 			this->defaultEngine = "";
+			this->flagReady = false;
 		}
 		else
 		{
@@ -483,8 +486,11 @@ void MAGE::Mage::removeEngine( std::string EngineName )
 			{	//we removed the default Engine, better switch to another one
 				it = this->engine.begin();
 				this->defaultEngine = ( * it ).first;
+				this->flagReady = true;
 			}
 		}
+		
+		this->engineReady.erase(EngineName);
 	}
 
 	return;
@@ -563,3 +569,52 @@ void MAGE::Mage::print( void )
 	
 
 }
+
+bool MAGE::Mage::ready( void )
+{
+	return this->flagReady;
+}
+
+void MAGE::Mage::checkReady( void )
+{
+	// CAUTION if this function becomes too heavy, it will cause problems if it is
+	// called in an infinite loop such as the one in genThread.cpp (cf. OFx app)
+	// TODO since most of it won't change, it should be changed for a cached version ?
+	// IOW I'm not happy with this code, it's suboptimal as hell
+
+	this->flagReady = false;
+	
+	if( this->engine.empty() )
+		return;
+	
+	if( this->defaultEngine.empty() )
+		return;
+
+	// The first engine instance is added into the map BEFORE being load()'d
+	// so we check that the engine has been fully loaded (or not)
+	// TODO we probably should adapt this to check that all the engines _in use_
+	// are completely loaded (we don't care about the one loaded/loading but _not in use_)
+	map < std::string, bool >::const_iterator it;
+
+	if( !this->interpolationFlag )
+	{
+		if( !this->engineReady[this->defaultEngine] )
+			return;
+	}
+	else
+	{
+		for( it = this->engineReady.begin(); it != this->engineReady.end(); it++ )
+		{
+			if( !(*it).second )
+				return;
+		}
+	}
+	
+
+	//add any other meaningful condition here
+
+	this->flagReady = true;
+	
+	return;
+}
+

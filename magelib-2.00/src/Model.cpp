@@ -251,6 +251,20 @@ void MAGE::Model::updateDuration( double * updateFunction, int action )
 		duration += this->state[i].duration;
 	}
 	
+	//fix for memory overflow (ModelQueueMemory has only maxNumOfFrames allocated)
+	//see maxDuration in Constant.h
+	if( duration > maxDuration )
+	{
+		int tmp = 0;
+		for( int i = 0; i < nOfStates; i++ )
+		{
+			this->state[i].duration *= maxDuration;
+			this->state[i].duration /= duration;//(int) --> will round to floor
+			tmp += this->state[i].duration;
+		}
+		duration = tmp;
+	}
+	
 	this->duration = duration;
 	return;
 }

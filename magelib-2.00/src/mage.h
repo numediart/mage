@@ -134,7 +134,7 @@ namespace MAGE
 			void computeParameters ( void );
 			void optimizeParameters( void );
 			void checkInterpolationWeights( bool forced=false );
-		
+
 			void pushLabel( Label label );
 			void addEngine( std::string name, int argc, char ** argv );
 			void addEngine( std::string name, std::string confFilename );
@@ -144,6 +144,9 @@ namespace MAGE
 			// enable interpolation for the duration & parameter (streams) models
 			inline void enableInterpolation( bool ainterpolationFlag ){ this->interpolationFlag = ainterpolationFlag; }; 
 			void print( void );
+
+			bool ready( void );
+			void checkReady( void );
 
 		protected:		
 			// --- Queues ---	
@@ -158,6 +161,7 @@ namespace MAGE
 			// Format :: [ "engineName", interpolationWeightsOfStreams[], HTS Engine ]
 			// interpolationWeights for number of streams + duration 
 			std::map < std::string, std::pair < double * , Engine * > > engine;
+			std::map < std::string, bool > engineReady;
 
 			//std::map < std::string, double * > * interpolationFunctions;
 		
@@ -187,6 +191,7 @@ namespace MAGE
 			double updateFunction[nOfStates]; // replace with void * function
 			
 			bool flag;
+			bool flagReady;
 			int action;
 		
 			double interpolationWeights[nOfStreams + 1];
