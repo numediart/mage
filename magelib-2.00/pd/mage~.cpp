@@ -49,6 +49,7 @@ extern "C"
 	{
 		t_object x_obj;
 		pthread_t thread;
+		char labelPath[1024];
 		Mage *mage;
 	} t_mage_tilde;
 	
@@ -63,6 +64,7 @@ extern "C"
 	
 	//access to MAGE controls
 	void mage_tilde_alpha( t_mage_tilde * x, t_floatarg alpha );
+	void mage_tilde_label( t_mage_tilde * x, t_symbol *label );
 	void mage_tilde_pitch_overwrite( t_mage_tilde * x, t_floatarg pitch );
 	void mage_tilde_pitch_scale( t_mage_tilde * x, t_floatarg pitch );
 	void mage_tilde_pitch_shift( t_mage_tilde * x, t_floatarg pitch );
@@ -77,7 +79,7 @@ extern "C"
 		Label label;
 		
 		string line;
-		string filename = "./inouts/labels/alice01.lab";
+		string filename = string(x->labelPath);
 		
 		ifstream myfile( filename.c_str() );
 		
@@ -108,6 +110,7 @@ extern "C"
 		
 		post("_new: starting");
 		
+		strcpy(x->labelPath, "./inouts/labels/alice01.lab");
 		x->mage = new Mage();
 		
 		post("_new: loading engine");
@@ -134,6 +137,7 @@ extern "C"
 		
 		class_addmethod(mage_tilde_class, (t_method)mage_tilde_dsp, gensym("dsp"), (t_atomtype) 0);
 		class_addmethod(mage_tilde_class, (t_method)mage_tilde_alpha, gensym("alpha"), A_FLOAT, 0);
+		class_addmethod(mage_tilde_class, (t_method)mage_tilde_label, gensym("label"), A_SYMBOL, 0);
 		class_addmethod(mage_tilde_class, (t_method)mage_tilde_pitch_overwrite, gensym("pitchoverwrite"), A_FLOAT, 0);
 		class_addmethod(mage_tilde_class, (t_method)mage_tilde_pitch_scale, gensym("pitchscale"), A_FLOAT, 0);
 		class_addmethod(mage_tilde_class, (t_method)mage_tilde_pitch_shift, gensym("pitchshift"), A_FLOAT, 0);
@@ -216,6 +220,13 @@ extern "C"
 	void mage_tilde_alpha( t_mage_tilde * x, t_floatarg alpha )
 	{
 		x->mage->setAlpha( alpha );
+
+		return;
+	}
+	
+	void mage_tilde_label( t_mage_tilde * x, t_symbol *label )
+	{
+		strcpy(x->labelPath, label->s_name);
 
 		return;
 	}
