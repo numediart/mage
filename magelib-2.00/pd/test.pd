@@ -1,24 +1,41 @@
-#N canvas 745 406 921 686 10;
-#X obj 148 245 mage~;
-#X obj 145 287 dac~;
+#N canvas 3 65 1899 1087 24;
+#X obj 124 251 mage~;
+#X obj 114 305 dac~;
 #X msg 44 134 alpha \$1;
-#X msg 142 134 speed \$1;
-#X msg 235 134 volume \$1;
-#X obj 47 48 hsl 64 15 0.1 0.9 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 3544 1;
-#X obj 145 48 hsl 64 15 12 1200 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 1209 1;
-#X obj 238 48 hsl 64 15 0 1 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 6300 1;
-#X floatatom 68 112 5 0 0 0 - - -;
-#X floatatom 166 114 5 0 0 0 - - -;
-#X floatatom 275 115 5 0 0 0 - - -;
-#X obj 166 73 / 240;
-#X obj 166 93 pow -1;
-#X msg 142 24 set 240;
-#X msg 235 24 set 1;
+#X msg 160 151 speed \$1;
+#X msg 278 135 volume \$1;
+#X obj 55 74 hsl 64 15 0.1 0.9 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 0 1;
+#X obj 167 44 hsl 64 15 12 1200 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 0 1;
+#X obj 281 51 hsl 64 15 0 1 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 0 1;
+#X floatatom 80 96 5 0 0 0 - - -;
+#X floatatom 174 123 5 0 0 0 - - -;
+#X floatatom 309 98 5 0 0 0 - - -;
+#X obj 182 67 / 240;
+#X obj 172 93 pow -1;
+#X msg 170 11 set 240;
+#X msg 276 12 set 1;
 #X msg 44 25 set 0.55;
-#X msg 205 213 reset;
+#X msg 15 202 reset;
+#X msg 278 135 volume \$1;
+#X obj 430 54 hsl 64 15 20 1000 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 0 1;
+#X floatatom 455 98 5 0 0 0 - - -;
+#X msg 426 11 set 1;
+#X msg 426 136 pitchoverwrite \$1;
+#X obj 661 54 hsl 64 15 0.25 4 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 0 1;
+#X floatatom 686 98 5 0 0 0 - - -;
+#X msg 657 11 set 1;
+#X msg 657 136 pitchscale \$1;
+#X obj 847 53 hsl 64 15 -200 1000 0 0 empty empty empty -2 -8 0 10
+-262144 -1 -1 0 1;
+#X floatatom 872 97 5 0 0 0 - - -;
+#X msg 843 10 set 1;
+#X msg 843 135 pitchshift \$1;
+#X msg 465 219 pitchsynth;
 #X connect 0 0 1 0;
 #X connect 0 0 1 1;
 #X connect 2 0 0 0;
@@ -36,3 +53,16 @@
 #X connect 14 0 7 0;
 #X connect 15 0 5 0;
 #X connect 16 0 0 0;
+#X connect 18 0 21 0;
+#X connect 18 0 19 0;
+#X connect 20 0 18 0;
+#X connect 21 0 0 0;
+#X connect 22 0 25 0;
+#X connect 22 0 23 0;
+#X connect 24 0 22 0;
+#X connect 25 0 0 0;
+#X connect 26 0 29 0;
+#X connect 26 0 27 0;
+#X connect 28 0 26 0;
+#X connect 29 0 0 0;
+#X connect 30 0 0 0;

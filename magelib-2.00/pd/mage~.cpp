@@ -63,6 +63,10 @@ extern "C"
 	
 	//access to MAGE controls
 	void mage_tilde_alpha( t_mage_tilde * x, t_floatarg alpha );
+	void mage_tilde_pitch_overwrite( t_mage_tilde * x, t_floatarg pitch );
+	void mage_tilde_pitch_scale( t_mage_tilde * x, t_floatarg pitch );
+	void mage_tilde_pitch_shift( t_mage_tilde * x, t_floatarg pitch );
+	void mage_tilde_pitch_synth( t_mage_tilde * x );
 	void mage_tilde_reset( t_mage_tilde * x );
 	void mage_tilde_speed( t_mage_tilde * x, t_floatarg speed );
 	void mage_tilde_volume( t_mage_tilde * x, t_floatarg volume );
@@ -130,10 +134,13 @@ extern "C"
 		
 		class_addmethod(mage_tilde_class, (t_method)mage_tilde_dsp, gensym("dsp"), (t_atomtype) 0);
 		class_addmethod(mage_tilde_class, (t_method)mage_tilde_alpha, gensym("alpha"), A_FLOAT, 0);
+		class_addmethod(mage_tilde_class, (t_method)mage_tilde_pitch_overwrite, gensym("pitchoverwrite"), A_FLOAT, 0);
+		class_addmethod(mage_tilde_class, (t_method)mage_tilde_pitch_scale, gensym("pitchscale"), A_FLOAT, 0);
+		class_addmethod(mage_tilde_class, (t_method)mage_tilde_pitch_shift, gensym("pitchshift"), A_FLOAT, 0);
+		class_addmethod(mage_tilde_class, (t_method)mage_tilde_pitch_synth, gensym("pitchsynth"), (t_atomtype) 0);
 		class_addmethod(mage_tilde_class, (t_method)mage_tilde_reset, gensym("reset"), (t_atomtype) 0);
 		class_addmethod(mage_tilde_class, (t_method)mage_tilde_speed, gensym("speed"), A_FLOAT, 0);
 		class_addmethod(mage_tilde_class, (t_method)mage_tilde_volume, gensym("volume"), A_FLOAT, 0);
-
 	}
 	
 	void mage_tilde_free( t_mage_tilde * x )
@@ -212,7 +219,35 @@ extern "C"
 
 		return;
 	}
+	
+	void mage_tilde_pitch_overwrite( t_mage_tilde * x, t_floatarg pitch )
+	{
+		x->mage->setPitch(pitch,MAGE::overwrite);
 
+		return;
+	}
+
+	void mage_tilde_pitch_scale( t_mage_tilde * x, t_floatarg pitch )
+	{
+		x->mage->setPitch(pitch,MAGE::scale);
+
+		return;
+	}
+	
+	void mage_tilde_pitch_shift( t_mage_tilde * x, t_floatarg pitch )
+	{
+		x->mage->setPitch(pitch,MAGE::shift);
+
+		return;
+	}
+	
+	void mage_tilde_pitch_synth( t_mage_tilde * x )
+	{
+		x->mage->setPitch(0,MAGE::synthetic);
+
+		return;
+	}
+	
 	void mage_tilde_reset( t_mage_tilde * x )
 	{
 		x->mage->reset();
