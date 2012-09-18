@@ -27,10 +27,7 @@
  /* ----------------------------------------------------------------------------------------------- */
 
 /** 
- *	@file		Vocoder.h
  *
- *	@author		Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
- *  
  *	Most of these functions come from SPTK, which is distributed under 
  *	a Modified BSD License. See http://sp-tk.sourceforge.net/ for details
  * 
@@ -46,58 +43,238 @@
 
 namespace MAGE 
 {
+	/** 
+	 *  \brief     Definition of the Vocoder.
+	 *  \details   This class is used to define the Vocoder used to synthesize every frame of the output.
+	 *
+	 *  \authors    Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
+	 *
+	 *  \version   2.00 beta
+	 *  \date      2011 - 2012
+	 *  \copyright 
+	 *				Numediart Institute for New Media Art ( www.numediart.org )	\n
+	 *				Acapela Group ( www.acapela-group.com )						\n
+	 *				GNU Public License (see the licence in the file).
+	 */	
 	class Vocoder 
 	{
 		public:
 		
-			// constructor 
-			Vocoder( int am = ( nOfMGCs-1 ), double aalpha = defaultAlpha, int afprd = defaultFrameRate, int aiprd = defaultInterpFrameRate, 
-					 int astage = defaultGamma, int apd = defaultPadeOrder, bool angain = false );
+			/**
+			 *	Constructor that allocates and initializes all the parameters needed for the Vocoder.
+			 */
+			Vocoder( int am = ( nOfMGCs-1 ),		double aalpha = defaultAlpha, 
+					 int afprd = defaultFrameRate,	int aiprd = defaultInterpFrameRate, 
+					 int astage = defaultGamma,		int apd = defaultPadeOrder, 
+					 bool angain = false );
+		
+			/**
+			 *	Constructor that allocates and initializes all the parameters needed for the Vocoder.
+			 */
 			Vocoder( const Vocoder& orig );
 		
-			// destructor	
+			/**
+			 *	Destructor that disallocates all the memory used from the Vocoder.
+			 */		
 			virtual ~Vocoder();
 			
-			// getters
-			inline double getAlpha ( void ){ return( this->alpha  ); };
-			inline double getPitch ( void ){ return( this->f0	  ); };
-			inline double getPeriod( void ){ return( this->t0	  ); };
+// getters
+		
+			/**
+			 *	This function gets the current value of the alpha parameter used in the Vocoder.
+			 *
+			 *	@return The alpha parameter value used in the Vocoder.
+			 */
+			inline double getAlpha ( void ){ return( this->alpha ); };
+		
+			/**
+			 *	This function gets the current value of the pitch parameter used in the Vocoder.
+			 *
+			 *	@return The pitch parameter value used in the Vocoder.
+			 */
+			inline double getPitch ( void ){ return( this->f0 ); };
+		
+			/**
+			 *	This function gets the current value of the period parameter used in the Vocoder.
+			 *
+			 *	@return The period parameter value used in the Vocoder.
+			 */
+			inline double getPeriod( void ){ return( this->t0 ); };
+		
+			/**
+			 *	This function gets the current value of the volume parameter used in the Vocoder.
+			 *
+			 *	@return The volume parameter value used in the Vocoder.
+			 */
 			inline double getVolume( void ){ return( this->volume ); };
-			inline double getPadeOrder( void ){ return( this->pd  ); };
+		
+			/**
+			 *	This function gets the current value of the pade order parameter used in the Vocoder.
+			 *
+			 *	@return The pade order parameter value used in the Vocoder.
+			 */
+			inline double getPadeOrder( void ){ return( this->pd ); };
 			
-			inline int    getAction( void ){ return( this->action  ); };
-			inline double getGamma ( void ){ return( this->gamma = this->stage  ); };
+			/**
+			 *	This function gets the current action over the pitch control used in the Vocoder.
+			 *
+			 *	@return The action over the pitch control used in the Vocoder (overwrite, shift, scale, etc.).
+			 */		
+			inline int getAction( void ){ return( this->action ); };
+		
+			/**
+			 *	This function gets the current value of the gamma parameter used in the Vocoder.
+			 *
+			 *	@return The gamma parameter value used in the Vocoder.
+			 */
+			inline double getGamma ( void ){ return( this->gamma = this->stage ); };
 
-			// setters
-			inline void setAlpha ( double aalpha  ){ this->alpha  = aalpha;  };	// ATTENTION :: no need for correct limit control???
-			inline void setGamma ( double agamma  ){ this->stage  = agamma;  };	// ATTENTION :: no need for correct limit control???
-			inline void setVolume( double avolume ){ this->volume = avolume; };	// ATTENTION :: no need for correct limit control???
-			inline void setPadeOrder( double apd  ){ this->pd     = apd;	 };
+// setters
+		
+			/**
+			 *	This function sets a new value of the alpha parameter to be used in the Vocoder.
+			 *
+			 *	@param alpha The new value of the alpha parameter.
+			 */
+			inline void setAlpha ( double alpha ){ this->alpha  = alpha; };	
+		
+			/**
+			 *	This function sets a new value of the gamma parameter to be used in the Vocoder.
+			 *
+			 *	@param gamma The new value of the gamma parameter.
+			 */
+			inline void setGamma ( double gamma ){ this->stage  = gamma; };	
+		
+			/**
+			 *	This function sets a new value of the volume parameter to be used in the Vocoder.
+			 *
+			 *	@param volume The new value of the volume parameter.
+			 */
+			inline void setVolume( double volume ){ this->volume = volume; };	
+		
+			/**
+			 *	This function sets a new value of the pade order parameter to be used in the Vocoder.
+			 *
+			 *	@param padeOrder The new value of the pade order parameter.
+			 */
+			inline void setPadeOrder( double padeOrder ){ this->pd = padeOrder; };
 
+			/**
+			 *	This function forces a frame to be voiced or unvoiced.
+			 *
+			 *	@param forceVoiced The new volume of the voiced / unvoiced flag.
+			 */
 			void setVoiced( bool forceVoiced );
+		
+			/** 
+			 *	This function forces the value of the pitch used by the Vocoder instead of the one in frame (f0).
+			 *
+			 *  \brief	Note that this will get overwritten at the next push( frame ). Therefore it is needed to 
+			 *			call setPitch() after every push(). Another solution is to call push( frame,true ) which
+			 *			explicitely tells push to ignore voicing information.
+			 *
+			 *	@param pitch The pitch value in Hz.
+			 *	@param action The action over the pitch control (overwrite, shift, scale, etc.).
+			 *	@param forceVoiced In case the current frame is unvoiced, you can force it to become voiced with
+			 *						the given pitch otherwise it would ignore the pitch set until next frame.
+			 */
 			void setPitch( double pitch, int action, bool forceVoiced=false );
 		
-			// methods
+// methods
+		
+			/** 
+			 *	This function generates a frame.
+			 * 
+			 *	@param frame An instance of class Frame.
+			 *	@param ignoreVoicing If true, then ignore the voiced / unvoiced information of the frame and use latest known information.
+			 */
 			void push( Frame &frame, bool ignoreVoicing=false );
+		
+			/**
+			 *	This function generates a frame.
+			 * 
+			 *	@param frame A pointer to an instance of class Frame.
+			 *	@param ignoreVoicing If true, then ignore the voiced / unvoiced information of the frame and use latest known information.
+			 */
 			void push( Frame * frame, bool ignoreVoicing=false );
+		
+			/** 
+			 *	This function resets the Vocoder to its default values.
+			 *
+			 *	\brief It sets the internal members of the Vocoder class to the constructor (defaults) values.
+			 *			To be used in case the Vocoder becomes irremediably unstable or to reset all the changes.
+			 */		
 			void reset( void );
+
+			/** 
+			 *	This function returns true if at least one frame has been pushed, otherwise false.
+			 * 
+			 *	@return True if at least one frame has been pushed, otherwise false.
+			 */
 			bool ready( void );
+		
+			/** 
+			 *	This function returns a single sample from the Vocoder.
+			 * 
+			 *	@return One sample from the Vocoder given current spectral coefficients and fundamental frequency.
+			 */
 			double pop( void );
 
-			// accessors
+// accessors
+
+			/** 
+			 *	This function returns true if a frame is voiced and false otherwise.
+			 * 
+			 *	@return True if a frame is voiced and false otherwise.
+			 */
 			bool isVoiced( void );
 		
 		protected:
 			
+			/** 
+			 *	\var double alpha.
+			 *	\brief It contains the alpha parameter used by the Vocoder.
+			 */
 			double alpha; // [0. 1]
+		
+			/** 
+			 *	\var double gamma.
+			 *	\brief It contains the gamma parameter used by the Vocoder.
+			 */
 			double gamma;
 		
-			// excitation
-			double f0;
-			double t0;
-			bool voiced;
-			int  action;
+// excitation
 		
+			/** 
+			 *	\var int action.
+			 *	\brief It contains the action over the pitch control (overwrite, shift, scale, etc.).
+			 */
+			int action;
+		
+			/** 
+			 *	\var bool voiced.
+			 *	\brief It contains the voiced / unvoiced information of the frame.
+			 */
+			bool voiced;
+		
+			/** 
+			 *	\var double f0.
+			 *	\brief It contains the current pitch (Hz) used by the Vocoder.
+			 */
+			double f0;
+		
+			/** 
+			 *	\var double t0.
+			 *	\brief It contains the period used by the Vocoder.
+			 */
+			double t0;
+		
+			/** 
+			 *	\var double volume.
+			 *	\brief It contains the volume used by the Vocoder.
+			 */
+			double volume; // >= 0
+
 		private:
 		
 			int m;
@@ -122,7 +299,6 @@ namespace MAGE
 			int count;
 			double actionValue;
 		
-			double volume; // >= 0
 			int nOfPopSinceLastPush;
 		
 			// functions imported from SPTK

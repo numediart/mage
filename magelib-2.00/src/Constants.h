@@ -57,6 +57,7 @@ namespace MAGE
 	 	
 	const int maxWindowWidth = 50;
 	const int maxNumOfFrames = 512;		// maximum # of frames per phoneme
+	
 	//fix for memory overflow in optimizeParameters.
 	//ModelQueueMemory has only maxNumOfFrames allocated) which means 
 	//'maxNumOfFrames/(nofLookup+nofBackup+1)' frames per model.
@@ -75,6 +76,7 @@ namespace MAGE
 	const int defaultPadeOrder = 5;
 	const int defaultGamma = 0;
 	const int defaultVolume = 1;
+	const int defaultPitch = 110; // Hz, 
 	
 	// --- Stream Index --- 
 	const int mgcStreamIndex = 0; // mgc stream index

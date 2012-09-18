@@ -27,10 +27,7 @@
  /* ----------------------------------------------------------------------------------------------- */
 
 /** 
- *	@file		Vocoder.cpp
  *
- *	@author		Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
- * 
  *	Most of these functions come from SPTK, which is distributed under 
  *	a Modified BSD License. See http://sp-tk.sourceforge.net/ for details
  * 
@@ -54,8 +51,8 @@ MAGE::Vocoder::Vocoder( int am, double aalpha, int afprd, int aiprd, int astage,
 	
 	this->action = noaction;
 	
-	this->f0 = 110;// 110Hz, default pitch
-	this->t0 = defaultSamplingRate / this->f0; // defaultSamplingRate = 48000
+	this->f0 = MAGE::defaultPitch;// 110Hz, default pitch
+	this->t0 = MAGE::defaultSamplingRate / this->f0; // defaultSamplingRate = 48000
 	
 	this->voiced = false;
 	
@@ -111,19 +108,6 @@ MAGE::Vocoder::~Vocoder()
 
 
 // setters
-
-/** 
- * This function forces the value of the pitch used by the vocoder instead of the
- * one in frame.f0. Note that this will get overwritten at the next push( frame ).
- * Therefore it is needed to call setPitch()after every push().
- * Another solution is to call push( frame,true )which explicitely tells push to 
- * ignore voicing information.
- * 
- * @param pitch pitch value in Hz
- * @param forceVoiced in case the current frame is unvoiced, you can force it to 
- * 					become voiced with the given pitch otherwise it would ignore
- * 					the pitch set until next frame
- */
 void MAGE::Vocoder::setPitch( double pitch, int action, bool forceVoiced )
 {
 	switch( action )
@@ -152,9 +136,9 @@ void MAGE::Vocoder::setPitch( double pitch, int action, bool forceVoiced )
 	// ATTENTION!! Should I do that???
 	//set a default value for the pitch in case a negative value is entered
 	if( this->f0 < 0 )
-		this->f0 = 110; 
+		this->f0 = MAGE::defaultPitch; 
 	
-	this->t0 = defaultSamplingRate / this->f0;	// defaultSamplingRate = 48000
+	this->t0 = MAGE::defaultSamplingRate / this->f0;	// defaultSamplingRate = 48000
 	
 	if( forceVoiced )
 		this->voiced = true;
@@ -168,13 +152,7 @@ void MAGE::Vocoder::setVoiced( bool forceVoiced )
 	return;
 }
 
-
 // methods
-/** 
- * 
- * @param frame an instance of class Frame
- * @param ignoreVoicing if true, ignore frame.voiced information and use latest known information
- */
 void MAGE::Vocoder::push( Frame &frame, bool ignoreVoicing )
 {
 	int i;
@@ -237,9 +215,9 @@ void MAGE::Vocoder::push( Frame &frame, bool ignoreVoicing )
 	}
 	
 	if( this->f0 < 0 )
-		this->f0 = 110; 
+		this->f0 = MAGE::defaultPitch; 
 	
-	this->t0 = defaultSamplingRate / this->f0; // defaultSamplingRate = 48000
+	this->t0 = MAGE::defaultSamplingRate / this->f0; // defaultSamplingRate = 48000
 	
 	if( !ignoreVoicing )
 		this->voiced = frame.voiced;
@@ -248,11 +226,6 @@ void MAGE::Vocoder::push( Frame &frame, bool ignoreVoicing )
 	return;
 }
 
-/** 
- * 
- * @param frame a pointer to an instance of class Frame
- * @param ignoreVoicing if true, ignore frame->voiced information and use latest known information
- */
 void MAGE::Vocoder::push( Frame * frame, bool ignoreVoicing )
 {
 	int i;
@@ -315,9 +288,9 @@ void MAGE::Vocoder::push( Frame * frame, bool ignoreVoicing )
 	}
 	
 	if( this->f0 < 0 )
-		this->f0 = 110; 
+		this->f0 = MAGE::defaultPitch; 
 	
-	this->t0 = defaultSamplingRate / this->f0; // defaultSamplingRate = 48000
+	this->t0 = MAGE::defaultSamplingRate / this->f0; // defaultSamplingRate = 48000
 	
 	if( !ignoreVoicing )
 		this->voiced = frame->voiced;
@@ -326,10 +299,6 @@ void MAGE::Vocoder::push( Frame * frame, bool ignoreVoicing )
 	return;
 }
 
-/** 
- * 
- * @return one sample from the vocoder given current mgc and lf0
- */
 double MAGE::Vocoder::pop()
 {
 	int i;
@@ -384,35 +353,33 @@ double MAGE::Vocoder::pop()
 	return( x );
 }
 
-/** 
- * 
- * @return true if at least one frame has been pushed, false otherwise
- */
 bool MAGE::Vocoder::ready()
 { 
 	return (!this->flagFirstPush); 
 }
 
-/** 
- * Set the internal members of Vocoder to the contructor values.
- * To be used in case the vocoder becomes irremediably unstable
- */
 void MAGE::Vocoder::reset()
 {
 	for( int i = 0; i < this->csize; i++ )
 		c[i] = 0;
 	
-	this->f0 = 110;
-	this->t0 = defaultSamplingRate / ( this->f0 );
-	this->action = noaction;
-	this->alpha  = defaultAlpha;
-	this->gamma  = defaultGamma;
-	this->stage  = defaultGamma;
-	this->pd	 = defaultPadeOrder; 
-	this->volume = defaultVolume;
+	this->f0 = MAGE::defaultPitch;
+	this->t0 = MAGE::defaultSamplingRate / ( this->f0 );
+	this->action = MAGE::noaction;
+	this->alpha  = MAGE::defaultAlpha;
+	this->gamma  = MAGE::defaultGamma;
+	this->stage  = MAGE::defaultGamma;
+	this->pd	 = MAGE::defaultPadeOrder; 
+	this->volume = MAGE::defaultVolume;
 	this->flagFirstPush = true;
 	
 	return;
+}
+
+// accessors
+bool MAGE::Vocoder::isVoiced( void )
+{
+	return( this->voiced );
 }
 
 // functions imported from SPTK
@@ -593,11 +560,5 @@ double MAGE::Vocoder::mlsadf( double x, double * b, const int m, const double a,
 	x = mlsadf2( x, b, m, a, pd, &d[2 * ( pd + 1 )] );
 	
 	return( x );
-}
-
-// accessors
-bool MAGE::Vocoder::isVoiced( void )
-{
-	return( this->voiced );
 }
 

@@ -26,13 +26,6 @@
  /* 																								*/
  /* ----------------------------------------------------------------------------------------------- */
 
-/** 
- *	@file		Model.cpp
- *
- *	@author		Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
- * 
- */
-
 #include "Model.h"
 
 // constructor
@@ -118,7 +111,7 @@ void MAGE::Model::checkInterpolationWeights( MAGE::Engine * engine, bool forced 
 	HTS_Global global = engine->getGlobal();
 	
 	//do it only once
-	if( !this->weightsChecked || forced)
+	if( !this->weightsChecked || forced )
 	{
 
 		// check interpolation weights 

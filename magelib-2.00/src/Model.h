@@ -26,15 +26,6 @@
  /* 																								*/
  /* ----------------------------------------------------------------------------------------------- */
 
-/** 
- *	@file		Model.h
- *
- *	@author		Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
- *
- *	@brief		HMM class: a bunch of states
- *
- */
-
 #pragma once
 
 #include "Constants.h"
@@ -96,14 +87,14 @@ namespace MAGE
 		
 			/** 
 			 *	\var double * mgc_mean.
-			 *	\brief It contains the mean value of the spectral stream (including static and dynamic features) 
+			 *	\brief It contains the mean value of the spectral coefficients stream (including static and dynamic features) 
 			 *			for every state of a given HMM.
 			 */
 			double * mgc_mean; // [nOfDers * nOfMGCs]
 		
 			/** 
 			 *	\var double * mgc_vari.
-			 *	\brief It contains the variance value of the spectral stream (including static and dynamic features) 
+			 *	\brief It contains the variance value of the spectral coefficients stream (including static and dynamic features) 
 			 *			for every state of a given HMM.
 			 */
 			double * mgc_vari; // [nOfDers * nOfMGCs]
@@ -112,7 +103,7 @@ namespace MAGE
 		
 			/** 
 			 *	\var double * lf0_mean.
-			 *	\brief It contains the mean value of the spectral stream (including static and dynamic features) 
+			 *	\brief It contains the mean value of the fundamental frequency stream (including static and dynamic features) 
 			 *			for every state of a given HMM.
 			 */
 			double * lf0_mean; // [nOfDers * nOfLF0s]
@@ -128,21 +119,22 @@ namespace MAGE
 		
 			/** 
 			 *	\var double * lpf_mean.
-			 *	\brief It contains the mean value of the low-pass filter stream (including static and dynamic features) 
+			 *	\brief It contains the mean value of the low-pass filter coefficients stream (including static and dynamic features) 
 			 *			for every state of a given HMM.
 			 */
 			double * lpf_mean; // [nOfDers * nOfLPFs]
 			
 			/** 
 			 *	\var double * lpf_vari.
-			 *	\brief It contains the variance value of the low-pass filter stream (including static and dynamic features) 
+			 *	\brief It contains the variance value of the low-pass filter coefficients stream (including static and dynamic features) 
 			 *			for every state of a given HMM.
 			 */
 			double * lpf_vari; // [nOfDers * nOfLPFs]
 			
 			/** 
 			 *	\var char strQuery.
-			 *	\brief It contains the string query to retrieve the stream data (mean & variance) that corresponds to a model.
+			 *	\brief It contains the string query to retrieve the coefficients for every stream (mean & variance) for every 
+			 *			state of the model model.
 			 */
 			char strQuery[maxStrLen];
 	};
@@ -164,7 +156,7 @@ namespace MAGE
 // getters
 
 			/**
-			 *	Get a model state.
+			 *	This function gets a model state.
 			 *
 			 *	@param index Number / index of the state to be returned.
 			 *	@return A model state given an index.
@@ -172,7 +164,7 @@ namespace MAGE
 			State getState( int index );
 		
 			/**
-			 *	Get the total duration of the model.
+			 *	This function gets the total duration of the model.
 			 *
 			 *	@return The total duration of the model.
 			 */
@@ -181,7 +173,7 @@ namespace MAGE
 //setters
 		
 			/**
-			 *	Set a model state.
+			 *	This function sets a model state.
 			 *
 			 *	@param state The state to be set.
 			 *	@param index Number / index of the state to be set.
@@ -189,7 +181,7 @@ namespace MAGE
 			void setState( State state, int index );
 		
 			/**
-			 *	Set the total duration of the model.
+			 *	This function sets the total duration of the model.
 			 *
 			 *	@param duration The total duration to be set for the model.
 			 */
@@ -198,32 +190,89 @@ namespace MAGE
 // methods
 		
 			/**
-			 *	Initialize the duration of every state of the model to zero.
+			 *	This function initializes the duration of every state of the model to zero.
 			 *
 			 */
 			void initDuration  ( void );
 			
 			/**
-			 *	Initialize the the mean and variance of evey stream to zero.
+			 *	This function initializes the mean and variance of every coefficients stream to zero.
 			 *
 			 */
 			void initParameters( void );
 		
+			/**
+			 *	This function changes the duration of every state of the model.
+			 *
+			 *	@param updateFunction The new durations to be passed.
+			 *	@param action The action that will be taken between the existing and the passed durations ( overwritten, shifted or scaled ).
+			 */
 			void updateDuration( double * updateFunction, int action ); // to put a speed profile on state duration( put it inside compute duration ? )
+		
+			/**
+			 *	This function computes the duration of every state of the model.
+			 *
+			 *	@param engine The engine to be used.
+			 *	@param label The string query for which the durations are going to be computed.
+			 *	@param interpolationWeight The possible interpolation weights to be taken into account for the computation.
+			 *			If this argument is set to NULL then by default the interpolation weight taken into account are set to 1.
+			 */
 			void computeDuration  ( MAGE::Engine * engine, MAGE::Label * label, double * interpolationWeight );
+		
+			/**
+			 *	This function computes the parameters for every coefficients stream of every state of the model.
+			 *
+			 *	@param engine The engine to be used.
+			 *	@param label The string query for which the parameters are going to be computed.
+			 *	@param interpolationWeight The possible interpolation weights to be taken into account for the computation.
+			 *			If this argument is set to NULL then by default the interpolation weight taken into account are set 
+			 *			to one as default value.
+			 */
 			void computeParameters( MAGE::Engine * engine, MAGE::Label * label, double * interpolationWeight );
+		
+			/**
+			 *	This function computes the global variances for every coefficients stream of every state of the model.
+			 *
+			 *	@param engine The engine to be used.
+			 *	@param label The string query for which the global variances are going to be computed.
+			 */
 			void computeGlobalVariances( MAGE::Engine * engine, MAGE::Label * label );
+		
+			/**
+			 *	This function checks and normalizes the interpolation weights for every coefficients stream of every state of  
+			 *		the model that are passed directly to the used engine from the configuration file.
+			 *
+			 *	@param engine The engine to be used.
+			 *	@param forced The flag to recall this function several times.
+			 */
 			void checkInterpolationWeights( MAGE::Engine * engine, bool forced = false );
 
 		protected :
 		
+			/** 
+			 *	\var int duration.
+			 *	\brief It contains the total duration of the model.
+			 */
 			int duration;
+		
+			/** 
+			 *	\var State state.
+			 *	\brief It contains the total number of states discribing the model.
+			 */
 			State state[nOfStates];
+		
+			/** 
+			 *	\var ModelMemory modelMemory.
+			 *	\brief It contains the total amount used by the model.
+			 */
 			ModelMemory modelMemory;
 		
 		private :
 		
+			// The string query for which all the coefficients are going to be computed.
 			char strQuery[maxStrLen];
+		
+			// Flag checking if the wheights have been already checked.
 			bool weightsChecked;
 	};
 } // namespace

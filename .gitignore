@@ -12,6 +12,9 @@
 *~
 \#
 
+#ignore doc
+[dD]ocumentation
+
 # build directory (build, builds, Build, Builds, ...)
 [bB]uild*
 bin

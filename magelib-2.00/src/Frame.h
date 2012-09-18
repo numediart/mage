@@ -26,26 +26,49 @@
  /* 																								*/
  /* ----------------------------------------------------------------------------------------------- */
 
-/** 
- *	@file		Frame.h
- *
- *	@author		Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
- *
- *	@brief		Synthesis frame class
- *
- */
-
 #pragma once
 
 #include "Constants.h"
 
 namespace MAGE 
 {
+	/** 
+	 *  \brief     Definition of a synthesis frame.
+	 *  \details   This struct is used to define every frame used for the synthesis of the output.
+	 *
+	 *  \authors    Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
+	 *
+	 *  \version   2.00 beta
+	 *  \date      2011 - 2012
+	 *  \copyright 
+	 *				Numediart Institute for New Media Art ( www.numediart.org )	\n
+	 *				Acapela Group ( www.acapela-group.com )						\n
+	 *				GNU Public License (see the licence in the file).
+	 */	
 	struct Frame 
 	{
+		/** 
+		 *	\var double mgc.
+		 *	\brief It contains the spectral coefficients (including only the static features) that will be used for the synthesis
+		 */
 		double mgc[nOfMGCs];
+
+		/** 
+		 *	\var double lpf.
+		 *	\brief It contains the low-pass filter coefficients (including only the static features) that will be used for the synthesis.
+		 */
 		double lpf[nOfLPFs];
+		
+		/** 
+		 *	\var double f0.
+		 *	\brief It contains the fundamental frequency that will be used for the synthesis.
+		 */
 		double f0;
+		
+		/** 
+		 *	\var bool voiced.
+		 *	\brief It contains the flag determining if the given frame is voiced or unvoiced.
+		 */
 		bool voiced;
 	};
 } // namespace

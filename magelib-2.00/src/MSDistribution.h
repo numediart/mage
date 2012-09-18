@@ -33,7 +33,7 @@
 namespace MAGE 
 {
 	/** 
-	 *  \brief     Definition of an NSD gaussian distribution.
+	 *  \brief     Definition of an MSD gaussian distribution.
 	 *  \details   This struct is used to define a gaussian distribution given the mean and variance as parameters.
 	 *
 	 *  \authors    Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
