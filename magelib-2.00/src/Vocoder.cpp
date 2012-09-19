@@ -350,11 +350,11 @@ double MAGE::Vocoder::pop()
 		for( i = 0; i <= m; i++ )
 			c[i] += inc[i];
 	
+	this->nOfPopSinceLastPush++;
+	
 	// ATTENTION volume??? correct place???
 	if( this->volume >= 0 )
-		x = this->volume * x;
-	
-	this->nOfPopSinceLastPush++;
+		return( this->volume * x );
 	
 	return( x );
 }
