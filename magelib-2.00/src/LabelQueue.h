@@ -37,7 +37,7 @@ using namespace std;
 namespace MAGE 
 {
 	/** 
-	 *  \brief		The memory queues of Label instances used in Mage.
+	 *  \brief		The memory queue of Label instances used in Mage (Label ringbuffer).
 	 *  \details	This class is used to exchange the Label instances between the different threads; 
 	 *				we could not inherint from MemQueue because Label is not a POD type.
 	 *
@@ -54,27 +54,123 @@ namespace MAGE
 	{
 		public:
 	
-			// constructor
+			/**
+			 *	Constructor that allocates the required memory for a LabelQueue.
+			 * 
+			 *	@param size The max size of the LabelQueue. i.e. how many Label the buffer ring 
+			 *					can contain before it's full.
+			 */
 			LabelQueue( unsigned int size );
 	
-			// methods
+// methods
+		
+			/**
+			 *	This function pushes a new Label instance into the FIFO queue by copying it.
+			 * 
+			 *	@param label An instance of a Label that will be copied into the youngest
+			 *					item of the memory queue.
+			 */
 			void push( Label &label );
+		
+			/**
+			 *	This function pushes a new MAGE::Label into the FIFO queue. In this case, there is 
+			 *	no copy of a label, instead the next slot of the memory pool is added to the queue. 
+			 *	It is supposed that said slot has been accessed with next() and modified beforehand.
+			 *
+			 *	Usage is in 3 steps which could be summarized into "access, write, save":
+			 * 
+			 *	Label *label = labelQueue->next();//access next memory slot \n
+			 *	label->setQuery("ae^l-ax+s=w@...");//modify it \n
+			 *	labelQueue->push();//save it into the queue (advance 'write' pointer) \n
+			 * 
+			 */
 			void push( void );
+		
+			/**
+			 *	This function removes the oldest item in the queue.
+			 * 
+			 *	@param label An instance of Label into which the pop()'d label will be 
+			 *					copied before being removed from the queue
+			 */
 			void pop ( Label &label );
+		
+			/**
+			 *	This function removes the oldest item in the queue. In this case, there is no copy 
+			 *	of a label, instead the 'read' pointer that points to the oldest item in the queue
+			 *	is incremented to the next item of the queue and the item previously pointed to is
+			 *  returned into the memory pool.
+			 *
+			 *	Usage is in 3 steps which could be summarized into "access, read, delete":
+			 * 
+			 *	Label *label = labelQueue->get();//access oldest item in the queue \n
+			 *	string s = label->getQuery();//read it, use it, ... \n
+			 *	labelQueue->pop();//remove it from the queue (advance 'read' pointer) \n
+			 *	//never do this after a pop() : \n
+			 *	string s2 = label->getQuery();//don't do this \n
+			 * 
+			 *	Note that once pop() has been called, the item can be overwritten at any time
+			 *	by a subsequent next()/push(). Therefore if the Label has to be used but without
+			 *	blocking/clogging up the queue, it is better to make a copy-pop() with pop(Label&)
+			 * 
+			 *	Label *label = labelQueue->get();//access oldest item in the queue \n
+			 *	labelQueue->pop();//remove it from the queue (advance 'read' pointer) \n
+			 *	//never do this after a pop() : \n
+			 *	string s = label->getQuery();//don't do this \n
+			 * 
+			 *	//do this instead \n
+			 *	Label label; \n
+			 *	labelQueue->pop(label);//remove it from the queue (advance 'read' pointer) \n
+			 *	string s = label.getQuery();//label is a local copy of the label that has been pop()'d \n
+			 */
 			void pop( void );
+		
+			/**
+			 *	This function is like pop(Label&) but does not advance in the queue.
+			 *
+			 *	@param label An instance of Label into which the get()'d label will be copied.
+			 */
 			void get ( Label &label );
+		
+			/**
+			 *	This function accesses the oldest item of the FIFO queue. This is meant to be used with pop(void).
+			 *	\see pop(void) doc for more complete explanation.
+			 * 
+			 *	@return A pointer to the item of the queue that pop() would remove. i.e. the
+			 *			oldest slot in the FIFO
+			 */
 			Label * get( void );
+		
+			/**
+			 *	This function accesses the next available slot of the memory pool. This is meant to 
+			 *	be used with push(void). see push(void) doc for more complete explanations.
+			 * 
+			 *	@return A pointer to the item of the queue that push() would write to. i.e. 
+			 *			the next available slot in memory that has not yet been pushed into the FIFO.
+			 */
 			Label * next( void );
 
-			void print( void );
+// accessors 
 
-			// accessors 
+			/**
+			 *	This function returns true if the queue is empty, false otherwise. 
+			 *
+			 *	@return True if the queue is empty, false otherwise.
+			 */
 			bool isEmpty( void );
+		
+			/**
+			 *	This function returns true if the queue is full, i.e. if it contains the max number 
+			 *	of elements given to the constructor, false otherwise. 
+			 * 
+			 *	@return True if the queue is full, i.e. if it contains the max number of elements
+			 *			given to the constructor, false otherwise.
+			 */
 			bool isFull ( void );
 	
 	
 		protected:
 	
+		// TODO :: documentation
 			vector<Label> queue;
 			unsigned int read, write;
 			unsigned int nOfLabels;

@@ -37,13 +37,14 @@
 
 #include "FrameQueue.h"
 
-// constructor
+//	Constructor that allocates the required memory for a FrameQueue.
 MAGE::FrameQueue::FrameQueue( unsigned int queueLen ):
 MAGE::MemQueue<Frame>( queueLen )
 {	
 }
 
 // methods
+//	This function prints the content of a FrameQueue.
 void MAGE::FrameQueue::printQueue( void )
 {
 	int head;
