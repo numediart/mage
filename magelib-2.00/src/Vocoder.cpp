@@ -126,6 +126,7 @@ void MAGE::Vocoder::setPitch( double pitch, int action, bool forceVoiced )
 			
 		case MAGE::synthetic:
 		case MAGE::noaction:
+			break;
 		default:
 			this->f0 = pitch;//Hz
 	}
