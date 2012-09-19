@@ -26,16 +26,6 @@
  /* 																								*/
  /* ----------------------------------------------------------------------------------------------- */
 
-/** 
- *	@file		ModelQueue.h
- *
- *	@author		Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
- *
- *	@brief		Model ringbuffer: used to store statistical models + special generate()function that takes
- *				a lookup window and generates oldest-label frames
- * 			
- */
-
 #pragma once
 
 #include "MemQueue.h"
@@ -48,6 +38,19 @@
 
 namespace MAGE 
 {	
+	/** 
+	 *  \brief		The memory used of a model queue used in Mage.
+	 *  \details	This class is used to define the memory structures that are needed for a ModelQueue.
+	 *
+	 *  \authors    Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
+	 *
+	 *  \version	2.00 beta
+	 *  \date		2011 - 2012
+	 *  \copyright 
+	 *				Numediart Institute for New Media Art ( www.numediart.org )	\n
+	 *				Acapela Group ( www.acapela-group.com )						\n
+	 *				GNU Public License (see the licence in the file).
+	 */	
 	class ModelQueueMemory 
 	{
 		public :
@@ -80,6 +83,21 @@ namespace MAGE
 			int * voiced_unvoiced; // [maxNumOfFrames]
 	};
 	
+	/** 
+	 *  \brief		The memory queues of Model instances used in Mage.
+	 *  \details	This class is used to exchange the Model instances between the different threads; 
+	 *				it stores statistical models and the special generate() function takes a short
+	 *				lookup window and generates oldest-label frames.
+	 *
+	 *  \authors    Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
+	 *
+	 *  \version	2.00 beta
+	 *  \date		2011 - 2012
+	 *  \copyright 
+	 *				Numediart Institute for New Media Art ( www.numediart.org )	\n
+	 *				Acapela Group ( www.acapela-group.com )						\n
+	 *				GNU Public License (see the licence in the file).
+	 */	
 	class ModelQueue : public MemQueue<Model> 
 	{
 		public:

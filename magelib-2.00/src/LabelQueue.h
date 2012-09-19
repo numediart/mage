@@ -26,16 +26,6 @@
  /* 																								*/
  /* ----------------------------------------------------------------------------------------------- */
 
-/** 
- *	@file		LabelQueue.h
- *
- *	@author		Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
- *
- *	@brief		Label queue class: used to exchange the labels between the different threads; we
- *				could not inherint from MemQueue because Label is not a POD type -> memory issues
- * 			
- */
-
 #pragma once
 
 #include <vector>
@@ -46,6 +36,20 @@ using namespace std;
 
 namespace MAGE 
 {
+	/** 
+	 *  \brief		The memory queues of Label instances used in Mage.
+	 *  \details	This class is used to exchange the Label instances between the different threads; 
+	 *				we could not inherint from MemQueue because Label is not a POD type.
+	 *
+	 *  \authors    Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
+	 *
+	 *  \version	2.00 beta
+	 *  \date		2011 - 2012
+	 *  \copyright 
+	 *				Numediart Institute for New Media Art ( www.numediart.org )	\n
+	 *				Acapela Group ( www.acapela-group.com )						\n
+	 *				GNU Public License (see the licence in the file).
+	 */	
 	class LabelQueue 
 	{
 		public:

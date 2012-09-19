@@ -26,16 +26,14 @@
  /* 																								*/
  /* ----------------------------------------------------------------------------------------------- */
 
-/** 
- *
- *	Most of these functions come from SPTK, which is distributed under 
- *	a Modified BSD License. See http://sp-tk.sourceforge.net/ for details
- * 
+/* 
+ 	Most of these functions come from SPTK, which is distributed under 
+ 	a Modified BSD License. See http://sp-tk.sourceforge.net/ for details
  */
 
 #include "Vocoder.h"
 
-// constructor
+//	Constructor that allocates and initializes all the parameters needed for the Vocoder.
 MAGE::Vocoder::Vocoder( int am, double aalpha, int afprd, int aiprd, int astage, int apd, bool angain )
 {
 	this->m = am;			// nOfMGCs-1;
@@ -94,11 +92,12 @@ MAGE::Vocoder::Vocoder( int am, double aalpha, int afprd, int aiprd, int astage,
 		padesptk[k] = lpadesptk[k];
 }
 
+//	Constructor that allocates and initializes all the parameters needed for the Vocoder.
 MAGE::Vocoder::Vocoder( const Vocoder& orig )
 {
 }
 
-// destructor
+//	Destructor that disallocates all the memory used from the Vocoder.
 MAGE::Vocoder::~Vocoder()
 {
 	delete[] c;
@@ -108,6 +107,8 @@ MAGE::Vocoder::~Vocoder()
 
 
 // setters
+
+//	This function forces the value of the pitch used by the Vocoder instead of the one in Frame (f0).
 void MAGE::Vocoder::setPitch( double pitch, int action, bool forceVoiced )
 {
 	switch( action )
@@ -147,6 +148,7 @@ void MAGE::Vocoder::setPitch( double pitch, int action, bool forceVoiced )
 	return;
 }
 
+//	This function forces a Frame to be voiced or unvoiced.
 void MAGE::Vocoder::setVoiced( bool forceVoiced )
 {
 	this->voiced = forceVoiced;
@@ -154,6 +156,8 @@ void MAGE::Vocoder::setVoiced( bool forceVoiced )
 }
 
 // methods
+
+//	This function generates a Frame.
 void MAGE::Vocoder::push( Frame &frame, bool ignoreVoicing )
 {
 	int i;
@@ -227,6 +231,7 @@ void MAGE::Vocoder::push( Frame &frame, bool ignoreVoicing )
 	return;
 }
 
+//	This function generates a Frame.
 void MAGE::Vocoder::push( Frame * frame, bool ignoreVoicing )
 {
 	int i;
@@ -299,7 +304,7 @@ void MAGE::Vocoder::push( Frame * frame, bool ignoreVoicing )
 	this->nOfPopSinceLastPush = 0;
 	return;
 }
-
+//	This function returns a single sample from the Vocoder.
 double MAGE::Vocoder::pop()
 {
 	int i;
@@ -354,11 +359,13 @@ double MAGE::Vocoder::pop()
 	return( x );
 }
 
+//	This function returns true if at least one Frame has been pushed, otherwise false.
 bool MAGE::Vocoder::ready()
 { 
 	return (!this->flagFirstPush); 
 }
 
+//	This function resets the Vocoder to its default values.
 void MAGE::Vocoder::reset()
 {
 	for( int i = 0; i < this->csize; i++ )
@@ -378,6 +385,7 @@ void MAGE::Vocoder::reset()
 }
 
 // accessors
+//	This function returns true if a Frame is voiced and false otherwise.
 bool MAGE::Vocoder::isVoiced( void )
 {
 	return( this->voiced );

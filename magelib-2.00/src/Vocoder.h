@@ -26,11 +26,9 @@
  /* 																								*/
  /* ----------------------------------------------------------------------------------------------- */
 
-/** 
- *
- *	Most of these functions come from SPTK, which is distributed under 
- *	a Modified BSD License. See http://sp-tk.sourceforge.net/ for details
- * 
+/* 
+ 	Most of these functions come from SPTK, which is distributed under 
+ 	a Modified BSD License. See http://sp-tk.sourceforge.net/ for details
  */
 
 #pragma once
@@ -44,13 +42,13 @@
 namespace MAGE 
 {
 	/** 
-	 *  \brief     Definition of the Vocoder.
-	 *  \details   This class is used to define the Vocoder used to synthesize every frame of the output.
+	 *  \brief		Definition of the Vocoder.
+	 *  \details	This class is used to define the Vocoder used to synthesize every Frame of the output.
 	 *
 	 *  \authors    Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
 	 *
-	 *  \version   2.00 beta
-	 *  \date      2011 - 2012
+	 *  \version	2.00 beta
+	 *  \date		2011 - 2012
 	 *  \copyright 
 	 *				Numediart Institute for New Media Art ( www.numediart.org )	\n
 	 *				Acapela Group ( www.acapela-group.com )						\n
@@ -160,41 +158,41 @@ namespace MAGE
 			inline void setPadeOrder( double padeOrder ){ this->pd = padeOrder; };
 
 			/**
-			 *	This function forces a frame to be voiced or unvoiced.
+			 *	This function forces a Frame to be voiced or unvoiced.
 			 *
 			 *	@param forceVoiced The new volume of the voiced / unvoiced flag.
 			 */
 			void setVoiced( bool forceVoiced );
 		
 			/** 
-			 *	This function forces the value of the pitch used by the Vocoder instead of the one in frame (f0).
+			 *	This function forces the value of the pitch used by the Vocoder instead of the one in Frame (f0).
 			 *
-			 *  \brief	Note that this will get overwritten at the next push( frame ). Therefore it is needed to 
-			 *			call setPitch() after every push(). Another solution is to call push( frame,true ) which
+			 *  \brief	Note that this will get overwritten at the next push( Frame ). Therefore it is needed to 
+			 *			call setPitch() after every push(). Another solution is to call push( Frame, true ) which
 			 *			explicitely tells push to ignore voicing information.
 			 *
 			 *	@param pitch The pitch value in Hz.
 			 *	@param action The action over the pitch control (overwrite, shift, scale, etc.).
-			 *	@param forceVoiced In case the current frame is unvoiced, you can force it to become voiced with
-			 *						the given pitch otherwise it would ignore the pitch set until next frame.
+			 *	@param forceVoiced In case the current Frame is unvoiced, you can force it to become voiced with
+			 *						the given pitch otherwise it would ignore the pitch set until next Frame.
 			 */
 			void setPitch( double pitch, int action, bool forceVoiced=false );
 		
 // methods
 		
 			/** 
-			 *	This function generates a frame.
+			 *	This function generates a Frame.
 			 * 
 			 *	@param frame An instance of class Frame.
-			 *	@param ignoreVoicing If true, then ignore the voiced / unvoiced information of the frame and use latest known information.
+			 *	@param ignoreVoicing If true, then ignore the voiced / unvoiced information of the Frame and use latest known information.
 			 */
 			void push( Frame &frame, bool ignoreVoicing=false );
 		
 			/**
-			 *	This function generates a frame.
+			 *	This function generates a Frame.
 			 * 
 			 *	@param frame A pointer to an instance of class Frame.
-			 *	@param ignoreVoicing If true, then ignore the voiced / unvoiced information of the frame and use latest known information.
+			 *	@param ignoreVoicing If true, then ignore the voiced / unvoiced information of the Frame and use latest known information.
 			 */
 			void push( Frame * frame, bool ignoreVoicing=false );
 		
@@ -207,9 +205,9 @@ namespace MAGE
 			void reset( void );
 
 			/** 
-			 *	This function returns true if at least one frame has been pushed, otherwise false.
+			 *	This function returns true if at least one Frame has been pushed, otherwise false.
 			 * 
-			 *	@return True if at least one frame has been pushed, otherwise false.
+			 *	@return True if at least one Frame has been pushed, otherwise false.
 			 */
 			bool ready( void );
 		
@@ -223,9 +221,9 @@ namespace MAGE
 // accessors
 
 			/** 
-			 *	This function returns true if a frame is voiced and false otherwise.
+			 *	This function returns true if a Frame is voiced and false otherwise.
 			 * 
-			 *	@return True if a frame is voiced and false otherwise.
+			 *	@return True if a Frame is voiced and false otherwise.
 			 */
 			bool isVoiced( void );
 		
@@ -253,7 +251,7 @@ namespace MAGE
 		
 			/** 
 			 *	\var bool voiced.
-			 *	\brief It contains the voiced / unvoiced information of the frame.
+			 *	\brief It contains the voiced / unvoiced information of the Frame.
 			 */
 			bool voiced;
 		

@@ -33,13 +33,13 @@
 namespace MAGE 
 {
 	/** 
-	 *  \brief     Definition of a synthesis frame.
-	 *  \details   This struct is used to define every frame used for the synthesis of the output.
+	 *  \brief		Definition of a synthesis Frame.
+	 *  \details	This struct is used to define every Frame used for the synthesis of the output.
 	 *
 	 *  \authors    Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
 	 *
-	 *  \version   2.00 beta
-	 *  \date      2011 - 2012
+	 *  \version	2.00 beta
+	 *  \date		2011 - 2012
 	 *  \copyright 
 	 *				Numediart Institute for New Media Art ( www.numediart.org )	\n
 	 *				Acapela Group ( www.acapela-group.com )						\n
@@ -67,7 +67,7 @@ namespace MAGE
 		
 		/** 
 		 *	\var bool voiced.
-		 *	\brief It contains the flag determining if the given frame is voiced or unvoiced.
+		 *	\brief It contains the flag determining if the given Frame is voiced or unvoiced.
 		 */
 		bool voiced;
 	};

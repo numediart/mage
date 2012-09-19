@@ -175,7 +175,7 @@ void MAGE::Model::computeDuration( MAGE::Engine * engine, MAGE::Label * label, d
 	HTS_ModelSet_get_duration( &ms, this->modelMemory.strQuery, this->modelMemory.duration_mean, 
 									this->modelMemory.duration_vari, global.duration_iw );
 	
-	if( label->getIsForced() ) // use duration set by user : -vp
+	if( label->isDurationForced() ) // use duration set by user : -vp
 	{
 		frame_length = ( label->getEnd()- label->getBegin() ) * rate;
 		

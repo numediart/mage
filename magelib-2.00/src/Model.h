@@ -39,13 +39,13 @@
 namespace MAGE 
 {
 	/** 
-	 *  \brief     The memory used for every model.
-	 *  \details   This class is used to define the memory structures that are needed for a single model.
+	 *  \brief		The memory used for every Model.
+	 *  \details	This class is used to define the memory structures that are needed for a single Model.
 	 *
 	 *  \authors    Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
 	 *
-	 *  \version   2.00 beta
-	 *  \date      2011 - 2012
+	 *  \version	2.00 beta
+	 *  \date		2011 - 2012
 	 *  \copyright 
 	 *				Numediart Institute for New Media Art ( www.numediart.org )	\n
 	 *				Acapela Group ( www.acapela-group.com )						\n
@@ -56,30 +56,30 @@ namespace MAGE
 		public :
 		
 			/**
-			 *	Constructor that allocates the required memory for a single model.
+			 *	Constructor that allocates the required memory for a single Model.
 			 */
 			ModelMemory();
 		
 			/**
-			 *	Destructor that disallocates all the memory used from a single model.
+			 *	Destructor that disallocates all the memory used from a single Model.
 			 */	
 			~ModelMemory();
 				
 			/** 
 			 *	\var double * duration_mean.
-			 *	\brief It contains the mean value of the duration for every state of a given HMM.
+			 *	\brief It contains the mean value of the duration for every State of a given HMM.
 			 */
 			double * duration_mean; 
 
 			/** 
 			 *	\var double * duration_vari.
-			 *	\brief It contains the variance value of the duration for every state of a given HMM.
+			 *	\brief It contains the variance value of the duration for every State of a given HMM.
 			 */
 			double * duration_vari;
 		
 			/** 
 			 *	\var double * duration_array.
-			 *	\brief It contains the duration for every state of a given HMM.
+			 *	\brief It contains the duration for every State of a given HMM.
 			 */
 			int * duration_array;
 		
@@ -88,14 +88,14 @@ namespace MAGE
 			/** 
 			 *	\var double * mgc_mean.
 			 *	\brief It contains the mean value of the spectral coefficients stream (including static and dynamic features) 
-			 *			for every state of a given HMM.
+			 *			for every State of a given HMM.
 			 */
 			double * mgc_mean; // [nOfDers * nOfMGCs]
 		
 			/** 
 			 *	\var double * mgc_vari.
 			 *	\brief It contains the variance value of the spectral coefficients stream (including static and dynamic features) 
-			 *			for every state of a given HMM.
+			 *			for every State of a given HMM.
 			 */
 			double * mgc_vari; // [nOfDers * nOfMGCs]
 		
@@ -104,14 +104,14 @@ namespace MAGE
 			/** 
 			 *	\var double * lf0_mean.
 			 *	\brief It contains the mean value of the fundamental frequency stream (including static and dynamic features) 
-			 *			for every state of a given HMM.
+			 *			for every State of a given HMM.
 			 */
 			double * lf0_mean; // [nOfDers * nOfLF0s]
 		
 			/** 
 			 *	\var double * lf0_vari.
 			 *	\brief It contains the variance value of the fundamental frequency stream (including static and dynamic features) 
-			 *			for every state of a given HMM.
+			 *			for every State of a given HMM.
 			 */
 			double * lf0_vari; // [nOfDers * nOfLF0s]
 		
@@ -120,77 +120,90 @@ namespace MAGE
 			/** 
 			 *	\var double * lpf_mean.
 			 *	\brief It contains the mean value of the low-pass filter coefficients stream (including static and dynamic features) 
-			 *			for every state of a given HMM.
+			 *			for every State of a given HMM.
 			 */
 			double * lpf_mean; // [nOfDers * nOfLPFs]
 			
 			/** 
 			 *	\var double * lpf_vari.
 			 *	\brief It contains the variance value of the low-pass filter coefficients stream (including static and dynamic features) 
-			 *			for every state of a given HMM.
+			 *			for every State of a given HMM.
 			 */
 			double * lpf_vari; // [nOfDers * nOfLPFs]
 			
 			/** 
 			 *	\var char strQuery.
 			 *	\brief It contains the string query to retrieve the coefficients for every stream (mean & variance) for every 
-			 *			state of the model model.
+			 *			State of the Model.
 			 */
 			char strQuery[maxStrLen];
 	};
 
+	/** 
+	 *  \brief     The HMM Model used.
+	 *  \details   This class is used to define the Model structures that are needed for an HMM Model.
+	 *
+	 *  \authors    Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
+	 *
+	 *  \version   2.00 beta
+	 *  \date      2011 - 2012
+	 *  \copyright 
+	 *				Numediart Institute for New Media Art ( www.numediart.org )	\n
+	 *				Acapela Group ( www.acapela-group.com )						\n
+	 *				GNU Public License (see the licence in the file).
+	 */	
 	class Model 
 	{	
 		public :
 		
 			/**
-			 *	Constructor that allocates the required memory for a model and initiallizes the parameters used.
+			 *	Constructor that allocates the required memory for a Model and initiallizes the parameters used.
 			 */
 			Model();
 		
 			/**
-			 *	Destructor that disallocates all the memory used from a model.
+			 *	Destructor that disallocates all the memory used from a Model.
 			 */
 			~Model();
 		
 // getters
 
 			/**
-			 *	This function gets a model state.
+			 *	This function gets a Model State.
 			 *
-			 *	@param index Number / index of the state to be returned.
-			 *	@return A model state given an index.
+			 *	@param index Number / index of the State to be returned.
+			 *	@return A Model State given an index.
 			 */
 			State getState( int index );
 		
 			/**
-			 *	This function gets the total duration of the model.
+			 *	This function gets the total duration of the Model.
 			 *
-			 *	@return The total duration of the model.
+			 *	@return The total duration of the Model.
 			 */
 			int getDuration( void );
 
 //setters
 		
 			/**
-			 *	This function sets a model state.
+			 *	This function sets a Model State.
 			 *
-			 *	@param state The state to be set.
-			 *	@param index Number / index of the state to be set.
+			 *	@param state The State to be set.
+			 *	@param index Number / index of the State to be set.
 			 */
 			void setState( State state, int index );
 		
 			/**
-			 *	This function sets the total duration of the model.
+			 *	This function sets the total duration of the Model.
 			 *
-			 *	@param duration The total duration to be set for the model.
+			 *	@param duration The total duration to be set for the Model.
 			 */
 			void setDuration( int duration );
 		
 // methods
 		
 			/**
-			 *	This function initializes the duration of every state of the model to zero.
+			 *	This function initializes the duration of every State of the Model to zero.
 			 *
 			 */
 			void initDuration  ( void );
@@ -202,15 +215,15 @@ namespace MAGE
 			void initParameters( void );
 		
 			/**
-			 *	This function changes the duration of every state of the model.
+			 *	This function changes the duration of every State of the Model.
 			 *
 			 *	@param updateFunction The new durations to be passed.
 			 *	@param action The action that will be taken between the existing and the passed durations ( overwritten, shifted or scaled ).
 			 */
-			void updateDuration( double * updateFunction, int action ); // to put a speed profile on state duration( put it inside compute duration ? )
+			void updateDuration( double * updateFunction, int action ); // to put a speed profile on State duration( put it inside compute duration ? )
 		
 			/**
-			 *	This function computes the duration of every state of the model.
+			 *	This function computes the duration of every State of the Model.
 			 *
 			 *	@param engine The engine to be used.
 			 *	@param label The string query for which the durations are going to be computed.
@@ -220,7 +233,7 @@ namespace MAGE
 			void computeDuration  ( MAGE::Engine * engine, MAGE::Label * label, double * interpolationWeight );
 		
 			/**
-			 *	This function computes the parameters for every coefficients stream of every state of the model.
+			 *	This function computes the parameters for every coefficients stream of every State of the Model.
 			 *
 			 *	@param engine The engine to be used.
 			 *	@param label The string query for which the parameters are going to be computed.
@@ -231,7 +244,7 @@ namespace MAGE
 			void computeParameters( MAGE::Engine * engine, MAGE::Label * label, double * interpolationWeight );
 		
 			/**
-			 *	This function computes the global variances for every coefficients stream of every state of the model.
+			 *	This function computes the global variances for every coefficients stream of every State of the Model.
 			 *
 			 *	@param engine The engine to be used.
 			 *	@param label The string query for which the global variances are going to be computed.
@@ -239,8 +252,8 @@ namespace MAGE
 			void computeGlobalVariances( MAGE::Engine * engine, MAGE::Label * label );
 		
 			/**
-			 *	This function checks and normalizes the interpolation weights for every coefficients stream of every state of  
-			 *		the model that are passed directly to the used engine from the configuration file.
+			 *	This function checks and normalizes the interpolation weights for every coefficients stream of every State of  
+			 *		the Model that are passed directly to the used engine from the configuration file.
 			 *
 			 *	@param engine The engine to be used.
 			 *	@param forced The flag to recall this function several times.
@@ -251,19 +264,19 @@ namespace MAGE
 		
 			/** 
 			 *	\var int duration.
-			 *	\brief It contains the total duration of the model.
+			 *	\brief It contains the total duration of the Model.
 			 */
 			int duration;
 		
 			/** 
 			 *	\var State state.
-			 *	\brief It contains the total number of states discribing the model.
+			 *	\brief It contains the total number of states discribing the Model.
 			 */
 			State state[nOfStates];
 		
 			/** 
 			 *	\var ModelMemory modelMemory.
-			 *	\brief It contains the total amount used by the model.
+			 *	\brief It contains the total amount used by the Model.
 			 */
 			ModelMemory modelMemory;
 		

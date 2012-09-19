@@ -26,43 +26,35 @@
  /* 																								*/
  /* ----------------------------------------------------------------------------------------------- */
 
-/** 
- *	@file		Label.cpp
- *
- *	@author		Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
- *
- *	@brief		Label class: store the label string + time tags and either duration is forced
- * 			
- */
-
 #include "Label.h"
 
-// constructor
+//	Constructor that allocates the required memory for a single Label query.
 MAGE::LabelMemory::LabelMemory()
 {
 }
 
-// destructor
+//	Destructor that disallocates all the memory used from a single Label query.
 MAGE::LabelMemory::~LabelMemory( void )
 {
 }
 
-// constructor
+//	Constructor that initializes all the parameters needed for a single Label query in default values.
 MAGE::Label::Label( void )
 {
 	this->query = "";
-	this->isForced = false;
+	this->isDurationForcedFlag = false;
 	this->begin = this->end = -1;
 	this->speed = 1.0;
 }
 
+//	Constructor that initializes all the parameters needed for a single Label query given a string query.
 MAGE::Label::Label( string q )
 {
 	this->parseQuery( q );
 	this->speed = 1.0;
 }
 
-// destructor
+//	Destructor that disallocates all the memory used from a Label.
 MAGE::Label::~Label( void )
 {
 }
@@ -71,6 +63,7 @@ MAGE::Label::~Label( void )
 
 
 //setters
+//	This function sets a new value of the query to be used in the Label.
 void MAGE::Label::setQuery( string q )
 {
 	this->parseQuery( q );
@@ -78,6 +71,8 @@ void MAGE::Label::setQuery( string q )
 }
 
 // methods 
+
+//	This function parses a sting query and initializes a Label.
 void MAGE::Label::parseQuery( string q )
 {
 	static string first, middle, last;
@@ -98,14 +93,14 @@ void MAGE::Label::parseQuery( string q )
 		this->begin = atof( this->labelMemory.strBegin );
 		this->end	= atof( this->labelMemory.strEnd   );
 		this->query.assign( this->labelMemory.strQuery );
-		this->isForced = true;
+		this->isDurationForcedFlag = true;
 	} 
 	else 
 	{
 		this->begin = -1.0;
 		this->end	= -1.0;
 		this->query.assign( this->labelMemory.strBegin );
-		this->isForced = false;
+		this->isDurationForcedFlag = false;
 	}
 	
 	this->speed = 1.0;
@@ -113,6 +108,7 @@ void MAGE::Label::parseQuery( string q )
 	return;
 }
 
+//	This function prints the query string of a Label.
 void MAGE::Label::printQuery( void )
 {	
 	printf( "label: %s\n", this->query.c_str() );
