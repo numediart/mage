@@ -26,13 +26,6 @@
  /* 																								*/
  /* ----------------------------------------------------------------------------------------------- */
 
-/** 
- *	@file		hts.h
- *
- *	@author		Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
- * 			
- */
-
 #pragma once
 
 #include "MathFunctions.h"
@@ -46,36 +39,77 @@
 using namespace std;
 
 namespace MAGE 
-{		
+{
+	/** 
+	 *  \brief		The the default HTS Engine used for HMM-based Speech Synthesis as provided by http://hts.sp.nitech.ac.jp/.
+	 *  \details	This class is used to define the default HTS Engine instance to be used in Mage.
+	 *
+	 *  \authors    Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
+	 *
+	 *  \version	2.00 beta
+	 *  \date		2011 - 2012
+	 *  \copyright 
+	 *				Numediart Institute for New Media Art ( www.numediart.org )	\n
+	 *				Acapela Group ( www.acapela-group.com )						\n
+	 *				GNU Public License (see the licence in the file).
+	 */	
+	
 	class Engine
 	{
-	public:
+		public:
 		
-		// constructor
-		Engine();
+			/**
+			 *	Constructor that allocates the required memory for an HTS Engine instance and initializes 
+			 *	all the parameters in default values.
+			 */	
+			Engine();
 		
-		// destructor
-		~Engine();
+			/**
+			 *	Destructor that disallocates all the memory used from an HTS Engine instance.
+			 */	
+			~Engine();
 		
-		// getters
-		inline HTS_Global   getGlobal  ( void ){ return( this->global ); };
-		inline HTS_PStream  getPStream ( void ){ return( this->pss	  ); };
-		inline HTS_ModelSet getModelSet( void ){ return( this->ms     ); };
+// getters
+		
+			/**
+			 *	This function gets the global settings used by an HTS Engine instance.
+			 *
+			 *	@return The global settings used by an HTS Engine instance.
+			 */
+			inline HTS_Global getGlobal( void ){ return( this->global ); };
+		
+			/**
+			 *	This function gets an individual PDF stream used by an HTS Engine instance.
+			 *
+			 *	@return The individual PDF stream used by an HTS Engine instance.
+			 */
+			inline HTS_PStream getPStream( void ){ return( this->pss ); };
+		
+			/**
+			 *	This function gets the set of duration models, HMMs and global variance models used by an HTS Engine instance.
+			 *
+			 *	@return The set of duration models, HMMs and global variance models used by an HTS Engine instance.
+			 */
+			inline HTS_ModelSet getModelSet( void ){ return( this->ms ); };
 
-		//setters
-		inline void setGlobal  ( HTS_Global   aglobal ){ this->global = aglobal; };
-		inline void setPStream ( HTS_PStream  apss    ){ this->pss	  = apss;    };
-		inline void setModelSet( HTS_ModelSet ams     ){ this->ms	  = ams;     };
+//setters
+			/**
+			 *	This function sets new global settings to the HTS Engine instance.
+			 *
+			 *	@param global The new global settings to the HTS Engine instance.
+			 */	
+			inline void setGlobal( HTS_Global global ){ this->global = global; };
+			inline void setPStream( HTS_PStream pss ){ this->pss = pss; };
+			inline void setModelSet( HTS_ModelSet ms ){ this->ms = ms; };
 
-		// methods
-		void load( int argc, char ** argv );
+// methods
+			void load( int argc, char ** argv );
 		
 	protected:
 		
-		//int nOfLabels;
-		HTS_Global   global;// global settings 
-		HTS_PStream  pss;	// set of PDF streams
-		HTS_ModelSet ms;	// set of duration models, HMMs and GV models 
+			HTS_Global global;	// global settings 
+			HTS_PStream pss;	// set of PDF streams
+			HTS_ModelSet ms;	// set of duration models, HMMs and GV models 
 
 		
 	private:
@@ -109,56 +143,58 @@ namespace MAGE
 		char ** fn_ts_gvl;
 		char ** fn_ts_gvf;
 		char * fn_gv_switch;
+		
 	};
 }// namespace
 
 // --- HTS Engine
 
- /* Usage: output usage*/
+/* Usage: output usage*/
 void Usage( void );
 
- /* Error: output error message*/
+/* Error: output error message*/
 void Error( const int error, char * message, ... );
 
- /* GetNumInterp: get number of speakers for interpolation from argv*/
+/* GetNumInterp: get number of speakers for interpolation from argv*/
 int GetNumInterp( int argc, char ** argv_search );
 
 // -- HTS Labels
 
 bool isdigit_string( char * str );
 
- /* HTS_set_duration: set duration from state duration probability distribution*/
+/* HTS_set_duration: set duration from state duration probability distribution*/
 double mHTS_set_duration( int * duration, double * mean, double * vari, int size, double frame_length );
 
 // --- HTS PStream
 
- /* HTS_finv: calculate 1.0/variance function*/
+/* HTS_finv: calculate 1.0/variance function*/
 double HTS_finv( const double x );
 
- /* HTS_PStream_mlpg: generate sequence of speech parameter vector maximizing its output probability for given pdf sequence*/
+/* HTS_PStream_mlpg: generate sequence of speech parameter vector maximizing its output probability for given pdf sequence*/
 void HTS_PStream_mlpg( HTS_PStream * pst );
 
- /* HTS_PStream_calc_wuw_and_wum: calcurate W'U^{-1}W and W'U^{-1}M*/
+/* HTS_PStream_calc_wuw_and_wum: calcurate W'U^{-1}W and W'U^{-1}M*/
 void HTS_PStream_calc_wuw_and_wum( HTS_PStream * pst, const int m );
 
- /* HTS_PStream_ldl_factorization: Factorize W' * U^{-1} * W to L * D * L'( L: lower triangular, D: diagonal )*/
+/* HTS_PStream_ldl_factorization: Factorize W' * U^{-1} * W to L * D * L'( L: lower triangular, D: diagonal )*/
 void HTS_PStream_ldl_factorization( HTS_PStream * pst );
 
- /* HTS_PStream_forward_substitution: forward subtitution for mlpg*/
+/* HTS_PStream_forward_substitution: forward subtitution for mlpg*/
 void HTS_PStream_forward_substitution( HTS_PStream * pst );
 
- /* HTS_PStream_backward_substitution: backward subtitution for mlpg*/
+/* HTS_PStream_backward_substitution: backward subtitution for mlpg*/
 void HTS_PStream_backward_substitution( HTS_PStream * pst, const int m );
 
- /* HTS_PStream_gv_parmgen: function for mlpg using GV*/
+/* HTS_PStream_gv_parmgen: function for mlpg using GV*/
 void HTS_PStream_gv_parmgen( HTS_PStream * pst, const int m );
 
- /* HTS_PStream_conv_gv: subfunction for mlpg using GV*/
+/* HTS_PStream_conv_gv: subfunction for mlpg using GV*/
 void HTS_PStream_conv_gv( HTS_PStream * pst, const int m );
 
- /* HTS_PStream_calc_derivative: subfunction for mlpg using GV*/
+/* HTS_PStream_calc_derivative: subfunction for mlpg using GV*/
 double HTS_PStream_calc_derivative( HTS_PStream * pst, const int m );
 
- /* HTS_PStream_calc_gv: subfunction for mlpg using GV*/
+/* HTS_PStream_calc_gv: subfunction for mlpg using GV*/
 void HTS_PStream_calc_gv( HTS_PStream * pst, const int m, double * mean, double * vari );
+
 

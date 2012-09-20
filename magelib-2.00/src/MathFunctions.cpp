@@ -26,16 +26,10 @@
  /* 																								*/
  /* ----------------------------------------------------------------------------------------------- */
 
-/** 
- *	@file		MathFunctions.cpp
- *
- *	@author		Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
- * 			
- */
-
 #include "MathFunctions.h"
 
 // methods
+//	This function returns a random number between two numbers.
 float MAGE::Random( float x, float y )
 {
 	float high = 0;
