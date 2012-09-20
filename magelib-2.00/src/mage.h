@@ -432,6 +432,8 @@ namespace MAGE
 
 			bool ready( void );
 			void checkReady( void );
+			
+			std::string timestamp( void );
 
 		protected:		
 			// --- Queues ---	
@@ -444,7 +446,6 @@ namespace MAGE
 			// Format :: [ "engineName", interpolationWeightsOfStreams[], HTS Engine ]
 			// interpolationWeights for number of streams + duration 
 			std::map < std::string, std::pair < double * , Engine * > > engine;
-			std::map < std::string, bool > engineReady;
 
 			//std::map < std::string, double * > * interpolationFunctions;
 		
