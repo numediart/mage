@@ -56,6 +56,8 @@ MAGE::Mage::Mage( std::string EngineName, int argc, char ** argv )
 // destructor
 MAGE::Mage::~Mage( void )
 {
+	this->flagReady = false;
+
 	// --- Queues ---
 	delete this->labelQueue;
 	delete this->modelQueue;
@@ -401,7 +403,8 @@ void MAGE::Mage::updateSamples( void )
 
 void MAGE::Mage::addEngine( std::string EngineName )
 {//this function is not thread safe (exactly like the MemQueue) it should never be called simultaneously in different threads
-	map < std::string, std::pair < double * , Engine * > >::const_iterator it;
+	map < std::string, std::pair < double * , Engine * > >::iterator it;
+	std::pair < double * , Engine * > tmpEngine;
 
 	// check that the Engine doesn't exist already
 	it = this->engine.find( EngineName );
@@ -414,28 +417,37 @@ void MAGE::Mage::addEngine( std::string EngineName )
 	// (or write a "reload()" function ?)
 	if( it != this->engine.end() )
 	{
-		this->engineReady[EngineName] = false;
-		//free existing engine by calling ~Engine
-		delete[] ( * it ).second.first;	// free interpolation weight vector
-		delete ( * it ).second.second;	// free engine
+		// get a copy of the std::pair containing adresses of pointers
+		tmpEngine = ( * it ).second;
+		// this should be fast, but if computeDuration/Parameters/checkInterp...
+		// use this->engine at the same time we might have a problem, if it happens,
+		// a lock will be necessary around this erase (! we're out of audio thread)
+		this->engine.erase( it );
+		//free existing engine
+		delete[] tmpEngine.first;	// free interpolation weight vector (double *)
+		delete tmpEngine.second;	// free engine (call to ~Engine)
 	}
 
-	this->engine[EngineName].first = new double[nOfStreams + 1];
+	tmpEngine.first = new double[nOfStreams + 1];
 	
 	for( int i = 0; i < nOfStreams + 1; i++ )
-		this->engine[EngineName].first[i] = defaultInterpolationWeight;
+		tmpEngine.first[i] = defaultInterpolationWeight;
 
-	this->engine[EngineName].second = new MAGE::Engine();
-	this->engine[EngineName].second->load( this->argc, this->argv);
-
+	// we load outside of this->engine so it shouldn't crash other threads accessing it.
+	tmpEngine.second = new MAGE::Engine();
+	tmpEngine.second->load( this->argc, this->argv);
+	
+	// this should be fast, but if computeDuration/Parameters/checkInterp...
+	// use this->engine at the same time we might have a problem, if it happens,
+	// a lock will be necessary around this insert (! we're out of audio thread)
+	this->engine[EngineName] = tmpEngine;
+	
 	if( this->defaultEngine.empty() )
 	{
 		this->defaultEngine = EngineName;
 		this->flagReady = true;
 		printf("default Engine is %s\n",this->defaultEngine.c_str());
 	}
-	
-	this->engineReady[EngineName] = true;
 
  	return;
 }
@@ -462,17 +474,22 @@ void MAGE::Mage::addEngine( std::string EngineName, std::string confFilename )
 void MAGE::Mage::removeEngine( std::string EngineName )
 {//this function is not thread safe (exactly like the MemQueue) it should never be called simultaneously in different threads
 	map < std::string, std::pair < double * , Engine * > >::iterator it;
+	std::pair < double * , Engine * > tmpEngine;
 
 	it = this->engine.find( EngineName );
 
 	if( it != this->engine.end() )
 	{
-		this->engineReady[EngineName] = false;
-
-		delete[] ( * it ).second.first;	//free double*
-		delete ( * it ).second.second;	//free memory by calling ~Engine
-		this->engine.erase( it );		//remove from std::map
-
+		tmpEngine = ( * it ).second;
+		// this should be fast, but if computeDuration/Parameters/checkInterp...
+		// use this->engine at the same time we might have a problem, if it happens,
+		// a lock will be necessary around this erase (! we're out of audio thread)
+		this->engine.erase( it );		//remove from std::map (fast ?)
+		
+		//this shouldn't impact on other threads
+		delete[] tmpEngine.first;	//free double*
+		delete tmpEngine.second;	//free memory by calling ~Engine
+		
 		// TODO :: add checks for this->engine.empty() in other part of code ?
 		if( this->engine.empty() )
 		{
@@ -489,8 +506,6 @@ void MAGE::Mage::removeEngine( std::string EngineName )
 				this->flagReady = true;
 			}
 		}
-		
-		this->engineReady.erase(EngineName);
 	}
 
 	return;
@@ -588,28 +603,7 @@ void MAGE::Mage::checkReady( void )
 		return;
 	
 	if( this->defaultEngine.empty() )
-		return;
-
-	// The first engine instance is added into the map BEFORE being load()'d
-	// so we check that the engine has been fully loaded (or not)
-	// TODO we probably should adapt this to check that all the engines _in use_
-	// are completely loaded (we don't care about the one loaded/loading but _not in use_)
-	map < std::string, bool >::const_iterator it;
-
-	if( !this->interpolationFlag )
-	{
-		if( !this->engineReady[this->defaultEngine] )
-			return;
-	}
-	else
-	{
-		for( it = this->engineReady.begin(); it != this->engineReady.end(); it++ )
-		{
-			if( !(*it).second )
-				return;
-		}
-	}
-	
+		return;	
 
 	//add any other meaningful condition here
 
