@@ -239,7 +239,7 @@ void testApp::update( void )
 				
 				this->mage->enableInterpolation( true );  
 				this->mage->setInterpolationFunctions( oscInterpolationFunctions );	
-				this->mage->print();
+				this->mage->printInterpolationWeights();
 			}
 		}
 		
@@ -367,7 +367,7 @@ void testApp::keyPressed( int key )
 	}
 	
 	if( key == '1' )
-		this->mage->print();
+		this->mage->printInterpolationWeights();
 
 	if( key == 'r' )
 		this->mage->reset();

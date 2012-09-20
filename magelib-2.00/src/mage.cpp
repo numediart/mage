@@ -567,15 +567,13 @@ void MAGE::Mage::checkInterpolationFunctions( void )
 	return;
 }
 
-void MAGE::Mage::print( void )
+void MAGE::Mage::printInterpolationWeights( void )
 {
 	map < std::string, std::pair < double * , Engine * > >::iterator itEngine; // iterator for the map of engines
 
 	for( itEngine = this->engine.begin(); itEngine != this->engine.end(); itEngine++ )
 		for( int i = 0; i < 4; i++ )
 			printf("weights %s %f\n", ( * itEngine ).first.c_str(), ( * itEngine ).second.first[i]);
-	
-
 }
 
 bool MAGE::Mage::ready( void )
@@ -590,6 +588,9 @@ void MAGE::Mage::checkReady( void )
 	// TODO since most of it won't change, it should be changed for a cached version ?
 	// IOW I'm not happy with this code, it's suboptimal as hell
 
+	// I am sure we can fix it in a way that you would be proud of it :: when do we have the next coding meeting?
+	// Oh I am leeting messages in the code!! And I am sure you will read it geek!!!
+	
 	this->flagReady = false;
 	
 	if( this->engine.empty() )

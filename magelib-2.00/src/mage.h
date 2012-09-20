@@ -366,7 +366,7 @@ namespace MAGE
 			 *	Note that once pop() has been called, the Label item can be overwritten at any time
 			 *	by a subsequent next()/push(). 
 			 *
-			 *	@return True if the Label was pop()'d, otherwise false 
+			 *	@return True if the Label was pop()'d, otherwise false.
 			 */
 			bool popLabel( void );
 
@@ -420,17 +420,55 @@ namespace MAGE
 			 */
 			void optimizeParameters( void );
 
+			/**
+			 *	This function adds a new Label instance in the queue. 
+			 *
+			 *	@param label The new Label instance to be added in the LabelQueue. 
+			 */
 			void pushLabel( Label label );
-			void addEngine( std::string name, int argc, char ** argv );
-			void addEngine( std::string name, std::string confFilename );
+		
+			/**
+			 *	This function creates and adds a new Engine instance in the map of Engine instances. 
+			 *
+			 *	@param EngineName The name of the new Engine instance. 
+			 *	@param argc The number of the command line arguments needed to create and initialize 
+			 *					the new Engine instance. 
+			 *	@param argv The command line arguments needed to create and initialize the new Engine instance. 
+			 */
+			void addEngine( std::string EngineName, int argc, char ** argv );
+		
+			/**
+			 *	This function creates and adds a new Engine instance in the map of Engine instances. 
+			 *
+			 *	@param EngineName The name of the new Engine instance. 
+			 *	@param confFilename The configuration file containing all the arguments needed to create and 
+			 *							initialize the new Engine instance. 
+			 */
+			void addEngine( std::string EngineName, std::string confFilename );
 
+			/**
+			 *	This function removes and disallocates a given Engine instance from the map of Engine instances. 
+			 *
+			 *	@param EngineName The name of the Engine instance to be removed. 
+			 */	
 			void removeEngine( std::string EngineName );
 		
-			// enable interpolation for the duration & parameter (streams) models
-			inline void enableInterpolation( bool interpolationFlag ){ this->interpolationFlag = interpolationFlag; }; 
-			void print( void );
+			/**
+			 *	This function enables the interpolation between all the added Engine instance in the map. 
+			 *
+			 *	@param interpolationFlag True in order to enable the interpolation and false to disable it. 
+			 */	
+			inline void enableInterpolation( bool interpolationFlag ){ this->interpolationFlag = interpolationFlag; };   // enable interpolation 
+																								// for the duration & parameter (streams) models
+		
+			/**
+			 *	This function prints the current interpolation weights for evert Engine instance in the map. 
+			 *
+			 */
+			void printInterpolationWeights( void );
 
 			bool ready( void );
+		
 			void checkReady( void );
 			
 			std::string timestamp( void );
