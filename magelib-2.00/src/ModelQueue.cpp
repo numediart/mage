@@ -26,19 +26,9 @@
  /* 																								*/
  /* ----------------------------------------------------------------------------------------------- */
 
-/** 
- *	@file		ModelQueue.cpp
- *
- *	@author		Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
- *
- *	@brief		Model ringbuffer: used to store statistical models + special generate()function that takes
- *				a lookup window and generates oldest-label frames
- * 			
- */
-
 #include "ModelQueue.h"
 
-// constructor
+//	Constructor that allocates the required memory for a Model queue.
 MAGE::ModelQueueMemory::ModelQueueMemory()
 {
 	int k;
@@ -82,7 +72,7 @@ MAGE::ModelQueueMemory::ModelQueueMemory()
 	}	
 }
 
-// destructor
+//	Destructor that disallocates all the memory used from a Model queue.
 MAGE::ModelQueueMemory::~ModelQueueMemory( void )
 {
 	int k;
@@ -121,7 +111,7 @@ MAGE::ModelQueueMemory::~ModelQueueMemory( void )
 }
 
 
-// constructor
+//	Constructor that allocates the required memory for a ModelQueue.
 MAGE::ModelQueue::ModelQueue( unsigned int queueLen ):
 MAGE::MemQueue<Model>( queueLen )
 {
@@ -130,12 +120,13 @@ MAGE::MemQueue<Model>( queueLen )
 	// queueLen to the parent class
 }
 
-// destructor
+//	Destructor that disallocates all the memory used from a ModelQueue.
 MAGE::ModelQueue::~ModelQueue()
 {
 }
 
 // methods
+//	This function generates the PDF parameters of every stream.
 void MAGE::ModelQueue::generate( FrameQueue * frameQueue, unsigned int backup )
 {
 	//TODO :: actual frame generation with vocoder
@@ -175,6 +166,7 @@ void MAGE::ModelQueue::generate( FrameQueue * frameQueue, unsigned int backup )
 				usleep( 1000 );
 			
 			frame = frameQueue->next();
+			
 			//TODO :: memcpy ? (faster ?)
 			for( k = 0; k < nOfMGCs; k++ )
 				frame->mgc[k] = this->modelQueueMemory.par[mgcStreamIndex][qmgc][k];
@@ -206,6 +198,7 @@ void MAGE::ModelQueue::generate( FrameQueue * frameQueue, unsigned int backup )
 	return;
 }
 
+//	This function optimizes the generated parameters of every stream.
 void MAGE::ModelQueue::optimizeParameters( MAGE::Engine * engine, unsigned int backup, unsigned int lookup )
 {	
 	int window = backup + lookup + 1;//how many model do we use
@@ -226,7 +219,7 @@ void MAGE::ModelQueue::optimizeParameters( MAGE::Engine * engine, unsigned int b
 	//TODO :: optimize this: some computation will be done exactly the same in next 
 	//call to this function( only shifted in mem )
 	
-	for( w = 0; w < window; w++ )// for every model 
+	for( w = 0; w < window; w++ )	// for every model 
 	{ 
 		for( state = 0; state < ms.nstate; state++ )// for every state
 		{
@@ -409,6 +402,7 @@ void MAGE::ModelQueue::optimizeParameters( MAGE::Engine * engine, unsigned int b
 	return;
 }
 
+//	This function prints the content of a ModelQueue.
 void MAGE::ModelQueue::printQueue( void )
 {
 	unsigned int k, s;

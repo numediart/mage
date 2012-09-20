@@ -26,15 +26,6 @@
  /* 																								*/
  /* ----------------------------------------------------------------------------------------------- */
 
-/** 
- *	@file		FrameQueue.cpp
- *
- *	@author		Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
- *
- *	@brief		Frame ringbuffer: used to exchange speech parameters with the synthesis thread
- * 			
- */
-
 #include "FrameQueue.h"
 
 //	Constructor that allocates the required memory for a FrameQueue.

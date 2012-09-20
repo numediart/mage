@@ -55,36 +55,87 @@ namespace MAGE
 	{
 		public :
 		
-			// destructor
+			/**
+			 *	Constructor that allocates the required memory for a Model queue.
+			 */
 			ModelQueueMemory();
 			
-			// destructor
+			/**
+			 *	Destructor that disallocates all the memory used from a Model queue.
+			 */	
 			~ModelQueueMemory();
 		
-			// for every stream, for every frame, every mean
-			double *** mean;		// [nOfStreams][maxNumOfFrames][nOfDers * nOfMGCs] 
-			// for every stream, for every frame, every ivar
-			double *** ivar;		// [nOfStreams][maxNumOfFrames][nOfDers * nOfMGCs] 
-			// for every stream, every gv_mean
-			double ** gv_mean;		// [nOfStreams][maxNumOfFrames][nOfDers * nOfMGCs] 
-			// for every stream, every gv_var
-			double ** gv_vari;		// [nOfStreams][maxNumOfFrames][nOfDers * nOfMGCs] 
-			// for every stream, every gv_switch
-			int ** gv_switch;		// [nOfStreams][maxNumOfFrames][nOfDers * nOfMGCs] 
+			/** 
+			 *	\var double mean.
+			 *	\brief It contains the mean vector sequence of every stream, of every Frame.
+			 */
+			double *** mean;	// for every stream, for every frame, every mean
+								// [nOfStreams][maxNumOfFrames][nOfDers * nOfMGCs]
 		
-			// for every stream
-			double **  g;	// [nOfStreams][maxNumOfFrames];
-			double **  wum;	// [nOfStreams][maxNumOfFrames];
-			double *** wuw;	// [nOfStreams][maxNumOfFrames][maxWindowWidth]
-
-			// output parameter vector for otimized mgc, lf0 and lpf for every stream, for every frame
-			double *** par;	// [nOfStreams][maxNumOfFrames][nOfDers * nOfMGCs] 
+			/** 
+			 *	\var double ivar.
+			 *	\brief It contains the inverse diag variance sequence of every stream, of every Frame.
+			 */
+			double *** ivar;	// for every stream, for every frame, every ivar
+								// [nOfStreams][maxNumOfFrames][nOfDers * nOfMGCs] 
+			
+			/** 
+			 *	\var double gv_mean.
+			 *	\brief It contains the global variance mean vector sequence of every stream.
+			 */
+			double ** gv_mean;	// for every stream, every gv_mean
+								// [nOfStreams][maxNumOfFrames][nOfDers * nOfMGCs] 
 		
+			/** 
+			 *	\var double gv_vari.
+			 *	\brief It contains the global variance variance vector sequence of every stream.
+			 */
+			double ** gv_vari;	// for every stream, every gv_var
+								// [nOfStreams][maxNumOfFrames][nOfDers * nOfMGCs] 
+			
+			/** 
+			 *	\var int gv_switch.
+			 *	\brief It contains the global variance flag sequence of every stream.
+			 */
+			int ** gv_switch;	// for every stream, every gv_switch
+								// [nOfStreams][maxNumOfFrames][nOfDers * nOfMGCs] 
+		
+			/** 
+			 *	\var double g.
+			 *	\brief It contains the vector used in the forward substitution of every stream.
+			 */
+			double ** g;		// for every stream	// [nOfStreams][maxNumOfFrames];
+		
+			/** 
+			 *	\var double wum.
+			 *	\brief It contains the " W' U^-1 mu " vector of every stream.
+			 */
+			double ** wum;		// for every stream	// [nOfStreams][maxNumOfFrames];
+		
+			/** 
+			 *	\var double wuw.
+			 *	\brief It contains the " W' U^-1 W " vector of every stream.
+			 */
+			double *** wuw;		// for every stream	// [nOfStreams][maxNumOfFrames][maxWindowWidth]
+		
+			/** 
+			 *	\var double par.
+			 *	\brief It contains the output parameter vector for the otimized spectral coefficients, 
+			 *			fundamental frequency and low-pass filter coefficients of every stream 
+			 *			(including static and dynamic features).
+			 */
+			double *** par;		// output parameter vector for otimized mgc, lf0 and lpf for every stream, 
+								// for every frame // [nOfStreams][maxNumOfFrames][nOfDers * nOfMGCs] 
+		
+			/** 
+			 *	\var int voiced_unvoiced.
+			 *	\brief It contains the voiced / unvoiced flag sequence of every Frame.
+			 */		
 			int * voiced_unvoiced; // [maxNumOfFrames]
 	};
 	
 	/** 
-	 *  \brief		The memory queue of Model instances used in Mage.
+	 *  \brief		The memory queue of Model instances used in Mage (Model ringbuffer).
 	 *  \details	This class is used to exchange the Model instances between the different threads; 
 	 *				it stores statistical models and the special generate() function takes a short
 	 *				lookup window and generates oldest-label frames.
@@ -102,22 +153,58 @@ namespace MAGE
 	{
 		public:
 		
-			// constructor
+			/**
+			 *	Constructor that allocates the required memory for a ModelQueue.
+			 * 
+			 *	@param queueLen The max size of the ModelQueue. i.e. how many Model instances the ringbuffer 
+			 *					can contain before it's full.
+			 */
 			ModelQueue( unsigned int queueLen );
 		
-			// destructor
+			/**
+			 *	Destructor that disallocates all the memory used from a ModelQueue.
+			 */	
 			~ModelQueue();
 			
-			// getters 
+// getters 
+		
+			/**
+			 *	This function gets the current memory used by the ModelQueue.
+			 *
+			 *	@return The memory used by the ModelQueue.
+			 */
 			inline ModelQueueMemory *getModelQueueMemory( void ){ return( &this->modelQueueMemory ); };
 
-			// methods
-			void printQueue( void );
-			void generate   ( FrameQueue * frameQueue, unsigned int backup = nOfBackup );
+// methods
+		
+			/**
+			 *	This function generates the PDF parameters of every stream.
+			 *
+			 *	@param frameQueue The FrameQueue used to store the generated parameters of every Frame.
+			 *	@param backup The number of Model instances already used that we keep in memory 
+			 *			for smoother parameters computation.
+			 */
+			void generate( FrameQueue * frameQueue, unsigned int backup = nOfBackup );
+		
+			/**
+			 *	This function optimizes the generated parameters of every stream.
+			 *
+			 *	@param engine The Engine used to store the Model and Global parameter structures.
+			 *	@param backup The number of Model instances already used that we keep in memory 
+			 *			for smoother parameters computation.
+			 *	@param lookup The number of Model instances not yet used that we keep in memory 
+			 *			for smoother parameters computation.
+			 */
 			void optimizeParameters( MAGE::Engine * engine, unsigned int backup = nOfBackup, unsigned int lookup = nOfLookup );
+		
+			/**
+			 *	This function prints the content of a ModelQueue.
+			 */
+			void printQueue( void );
 
 		protected:
-		
+
+		// TODO :: documentation
 			Frame * frame;
 
 			unsigned int head;

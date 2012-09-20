@@ -26,13 +26,6 @@
  /* 																								*/
  /* ----------------------------------------------------------------------------------------------- */
 
-/** 
- *	@file		mage.h
- *
- *	@author		Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
- * 			
- */
-
 #pragma once
 
 #include <fstream>
@@ -57,83 +50,375 @@
 
 namespace MAGE 
 {
+	/** 
+	 *  \brief		The implemented Mage API for Performative HMM-based Speech & Singing Synthesis.
+	 *  \details	This class is used to define the Mage API to be used in various platforms and applications.
+	 *
+	 *  \authors    Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
+	 *
+	 *  \version	2.00 beta
+	 *  \date		2011 - 2012
+	 *  \copyright 
+	 *				Numediart Institute for New Media Art ( www.numediart.org )	\n
+	 *				Acapela Group ( www.acapela-group.com )						\n
+	 *				GNU Public License (see the licence in the file).
+	 */	
 	class Mage 
 	{
 		public:
 		
-			// constructor
+			/**
+			 *	Constructor that allocates the required memory for a Mage instance and initializes 
+			 *	all the parameters in default values.
+			 */		
 			Mage( void );
+		
+			/**
+			 *	Constructor that allocates the required memory for a Mage instance and initializes 
+			 *	all the parameters in values passed from command line arguments.
+			 *
+			 *	@param EngineName The name of the engine to be added
+			 *	@param argc The number of arguments passed
+			 *	@param argv The actual arguments passed to be used for the initialization 
+			 */	
 			Mage( std::string EngineName, int argc, char ** argv );
+		
+			/**
+			 *	Constructor that allocates the required memory for a Mage instance and initializes 
+			 *	all the parameters in values passed from a configuration file.
+			 *
+			 *	@param EngineName The name of the engine to be added
+			 *	@param confFilename The path and name of the configuration file.
+			 */			
 			Mage( std::string EngineName, std::string confFilename );
 			
-			// destructor
+			/**
+			 *	Destructor that disallocates all the memory used from a Mage instance.
+			 */	
 			~Mage( void );
 		
-			// getters
-			inline Frame getFrame ( void ){ return( this->frame ); };
-			inline Label getLabel ( void ){ return( this->label ); };
+// getters
+		
+			/**
+			 *	This function gets the currently used Frame.
+			 *
+			 *	@return The currently used Frame.
+			 */
+			inline Frame getFrame( void ){ return( this->frame ); };
+		
+			/**
+			 *	This function gets the currently used Label.
+			 *
+			 *	@return The currently used Label.
+			 */
+			inline Label getLabel( void ){ return( this->label ); };
+		
+			/**
+			 *	This function gets the currently used Model.
+			 *
+			 *	@return The currently used Model.
+			 */
 			inline Model * getModel( void ){ return( this->model ); };
 		
+			/**
+			 *	This function gets the currently used Vocoder.
+			 *
+			 *	@return The currently used Vocoder.
+			 */
 			inline Vocoder * getVocoder( void ){ return( this->vocoder ); };
 
+			/**
+			 *	This function gets the currently used Label ringbuffer (LabelQueue).
+			 *
+			 *	@return The currently used LabelQueue.
+			 */
 			inline LabelQueue * getLabelQueue( void ){ return( this->labelQueue ); };
+		
+			/**
+			 *	This function gets the currently used Model ringbuffer (ModelQueue).
+			 *
+			 *	@return The currently used ModelQueue.
+			 */
 			inline ModelQueue * getModelQueue( void ){ return( this->modelQueue ); };
+		
+			/**
+			 *	This function gets the currently used Frame ringbuffer (FrameQueue).
+			 *
+			 *	@return The currently used FrameQueue.
+			 */
 			inline FrameQueue * getFrameQueue( void ){ return( this->frameQueue ); };
 
+			/**
+			 *	This function gets the current index / number of samples.
+			 *
+			 *	@return The current index / number of samples.
+			 */
 			inline int getSampleCounter( void ){ return( this->sampleCount ); };
 
-			inline double getSpeed ( void ){ return( this->hopLen ); };
-			inline double getLabelSpeed ( void ){ return( this->labelSpeed ); };
-			
-			inline std::string getDefaultEngine( void ){ return( this->defaultEngine ); };
+			/**
+			 *	This function gets the current speed used in the Vocoder.
+			 *
+			 *	@return The speed value used in the Vocoder.
+			 */
+			inline double getSpeed( void ){ return( this->hopLen ); };
 		
-			double getPitch ( void );
-			double getAlpha ( void );
-			double getGamma ( void );
+			/**
+			 *	This function gets the speed used in the pop()'d Label.
+			 *
+			 *	@return The speed value used in the pop()'d Label.
+			 */
+			inline double getLabelSpeed( void ){ return( this->labelSpeed ); };
+			
+			/**
+			 *	This function gets the name of the default engine used.
+			 *
+			 *	@return The name of the default engine used.
+			 */
+			inline std::string getDefaultEngine( void ){ return( this->defaultEngine ); };		
+		
+			/**
+			 *	This function gets the pitch value used in the Vocoder.
+			 *
+			 *	@return The pitch value used in the Vocoder.
+			 */
+			double getPitch( void );
+		
+			/**
+			 *	This function gets the alpha value used in the Vocoder.
+			 *
+			 *	@return The alpha value used in the Vocoder.
+			 */		
+			double getAlpha( void );
+		
+			/**
+			 *	This function gets the gamma value used in the Vocoder.
+			 *
+			 *	@return The gamma value used in the Vocoder.
+			 */
+			double getGamma( void );
+		
+			/**
+			 *	This function gets the pade order value used in the Vocoder.
+			 *
+			 *	@return The pade order value used in the Vocoder.
+			 */
 			double getPOrder( void );
+		
+			/**
+			 *	This function gets the volume value used in the Vocoder.
+			 *
+			 *	@return The volume value used in the Vocoder.
+			 */
 			double getVolume( void );
 		
+			/**
+			 *	This function gets the duration value of the Model used.
+			 *
+			 *	@return The duration value of the Model used.
+			 */
 			double getDuration( void );
 
-			//setters
-			inline void setFrame( Frame   aframe ){ this->frame = aframe; };
-			inline void setLabel( Label   alabel ){ this->label = alabel; };
-			inline void setModel( Model * amodel ){ this->model = amodel; };
+//setters
 		
-			inline void setVocoder( Vocoder * avocoder ){ this->vocoder = avocoder; };
+			/**
+			 *	This function sets a new Frame instance of the curently used.
+			 *
+			 *	@param frame The new Frame instance.
+			 */	
+			inline void setFrame( Frame frame ){ this->frame = frame; };
 		
-			inline void setLabelSpeed( double aLabelSpeed ){ this->labelSpeed = aLabelSpeed; }; // less reactive
-			inline void setLabelQueue( LabelQueue * alabelQueue ){ this->labelQueue = alabelQueue; };
-			inline void setModelQueue( ModelQueue * amodelQueue ){ this->modelQueue = amodelQueue; };
-			inline void setFrameQueue( FrameQueue * aframeQueue ){ this->frameQueue = aframeQueue; };
+			/**
+			 *	This function sets a new Label instance of the curently used.
+			 *
+			 *	@param label The new Label instance.
+			 */	
+			inline void setLabel( Label label ){ this->label = label; };
 		
-			void setAlpha ( double alpha  );
-			void setGamma ( double gamma  );
-			void setPOrder( double glitch );
+			/**
+			 *	This function sets a new Model instance of the curently used.
+			 *
+			 *	@param model The new Model instance.
+			 */	
+			inline void setModel( Model * model ){ this->model = model; };
+		
+			/**
+			 *	This function sets a new Vocoder instance of the curently used.
+			 *
+			 *	@param vocoder The new Vocoder instance.
+			 */	
+			inline void setVocoder( Vocoder * vocoder ){ this->vocoder = vocoder; };
+		
+			/**
+			 *	This function sets a new speed value in the pop()'d Labels. This function id less reactive 
+			 *	(it has a delay of nOfLookup Model instances / labels).
+			 *
+			 *	@param labelSpeed The new Vocoder instance.
+			 */	
+			inline void setLabelSpeed( double labelSpeed ){ this->labelSpeed = labelSpeed; }; // less reactive
+		
+			/**
+			 *	This function sets a new LabelQueue instance of the curently used.
+			 *
+			 *	@param labelQueue The new LabelQueue instance.
+			 */	
+			inline void setLabelQueue( LabelQueue * labelQueue ){ this->labelQueue = labelQueue; };
+		
+			/**
+			 *	This function sets a new ModelQueue instance of the curently used.
+			 *
+			 *	@param modelQueue The new ModelQueue instance.
+			 */	
+			inline void setModelQueue( ModelQueue * modelQueue ){ this->modelQueue = modelQueue; };
+		
+			/**
+			 *	This function sets a new FrameQueue instance of the curently used.
+			 *
+			 *	@param frameQueue The new FrameQueue instance.
+			 */	
+			inline void setFrameQueue( FrameQueue * frameQueue ){ this->frameQueue = frameQueue; };
+		
+			/**
+			 *	This function sets a new alpha value to be used in the Vocoder.
+			 *
+			 *	@param alpha The new alpha value.
+			 */	
+			void setAlpha( double alpha );
+		
+			/**
+			 *	This function sets a new gamma value to be used in the Vocoder.
+			 *
+			 *	@param gamma The new gamma value.
+			 */	
+			void setGamma( double gamma );
+		
+			/**
+			 *	This function sets a new pade order value to be used in the Vocoder.
+			 *
+			 *	@param pd The new pade order value.
+			 */	
+			void setPOrder( double pd );
+		
+			/**
+			 *	This function sets a new volume value to be used in the Vocoder.
+			 *
+			 *	@param volume The new volume value.
+			 */	
 			void setVolume( double volume );
-			void setPitch ( double pitch,  int aaction );
-			void setSpeed ( double aspeed, int aaction );
+		
+			/**
+			 *	This function sets a new pitch value to be used in the Vocoder, taking into account a given action. 
+			 *	The existing pitch value can  be :: replaced / overwritten, shifted, scaled, or decide to take no action 
+			 *	or use the pitch trajectory generated by the Model.
+			 *
+			 *	@param pitch The new pitch value.
+			 *	@param action The action to be taken over the existing pitch value.
+			 */
+			void setPitch( double pitch, int action );
+		
+			/**
+			 *	This function sets a new speed value to be used in the Vocoder, taking into account a given action. 
+			 *	The existing speed value can  be :: replaced / overwritten, shifted, scaled, or decide to take no action 
+			 *	or use the default speed. 
+			 *
+			 *	@param speed The new speed value.
+			 *	@param action The action to be taken over the existing speed value.
+			 */
+			void setSpeed( double speed, int action );
 
+			/**
+			 *	This function sets a new set of duration values for every State of the current Model.
+			 *	The existing set of duration values can be :: replaced / overwritten, shifted, scaled, or decide to take no action 
+			 *	or use the default State Model durations. 
+			 *
+			 *	@param updateFunction The new set of duration values.
+			 *	@param action The action to be taken over the existing speed value.
+			 */		
 			void setDuration( double * updateFunction, int action );
-			void setDefaultEngine( std::string adefaultEngine );
 		
-			// interpolation function for the duration & parameter (streams)  models
-			void setInterpolationFunctions( std::map < std::string, double * > ainterpolationFunctionsSet );
+			/**
+			 *	This function sets a different existing engine as the default to be used.
+			 *
+			 *	@param defaultEngine The name of new engine to be set as the default.
+			 */	
+			void setDefaultEngine( std::string defaultEngine );
 		
-			// methods
+			/**
+			 *	This function sets a different set of interpolation wheights for every stream of a given engine used.
+			 *
+			 *	@param interpolationFunctionsSet The name of the engine and the set of interpolation wheights to be set.
+			 */	
+			void setInterpolationFunctions( std::map < std::string, double * > interpolationFunctionsSet ); // interpolation function 
+																					// for the duration & parameter (streams)  models
+		
+// methods
+
+			/** 
+			 *	This function returns a single sample from the Vocoder.
+			 * 
+			 *	@return One sample from the Vocoder given current user controls over the Model 
+			 *			the instances spectral coefficients, the fundamental frequency, etc.
+			 */
 			double popSamples( void );
 
-			bool popLabel ( void );
+			/**
+			 *	This function removes the oldest Label instance from the queue. 
+			 * 
+			 *	Note that once pop() has been called, the Label item can be overwritten at any time
+			 *	by a subsequent next()/push(). 
+			 *
+			 *	@return True if the Label was pop()'d, otherwise false 
+			 */
+			bool popLabel( void );
 
-			void run  ( void );	
+			/**
+			 *	This function runs all the Mage controls until the speech sample generation. 
+			 * 
+			 */
+			void run( void );	
+		
+			/**
+			 *	This function resets Mage to its default values, discarding all user controls. 
+			 * 
+			 */
 			void reset( void );
-			void resetVocoder ( void );
-			void prepareModel ( void );
+		
+			/**
+			 *	This function resets the Vocoder of Mage to its default values, discarding all user controls. 
+			 * 
+			 */
+			void resetVocoder( void );
+		
+			/**
+			 *	This function initializes and controls the Model queue of Mage as well as the initial 
+			 *	interpolation weights passed to the Engine by command line or a configuration file. 
+			 * 
+			 */
+			void prepareModel( void );
+		
+			/**
+			 *	This function generates the speech samples. 
+			 * 
+			 */
 			void updateSamples( void );	
+		
+			/**
+			 *	This function computes the durations from the Model by taking also into account 
+			 *	the user control over the passed durations. 
+			 * 
+			 */
 			void computeDuration( void );
-			void computeParameters ( void );
+		
+			/**
+			 *	This function computes the parameters for every coefficients stream. 
+			 * 
+			 */
+			void computeParameters( void );
+		
+			/**
+			 *	This function optimizes the generated parameters for every coefficients stream. 
+			 * 
+			 */
 			void optimizeParameters( void );
-			void checkInterpolationWeights( bool forced=false );
 
 			void pushLabel( Label label );
 			void addEngine( std::string name, int argc, char ** argv );
@@ -142,7 +427,7 @@ namespace MAGE
 			void removeEngine( std::string EngineName );
 		
 			// enable interpolation for the duration & parameter (streams) models
-			inline void enableInterpolation( bool ainterpolationFlag ){ this->interpolationFlag = ainterpolationFlag; }; 
+			inline void enableInterpolation( bool interpolationFlag ){ this->interpolationFlag = interpolationFlag; }; 
 			void print( void );
 
 			bool ready( void );
@@ -155,8 +440,6 @@ namespace MAGE
 			FrameQueue * frameQueue;
 		
 			// --- HTS Engine & Voices (Engine) ---
-			//std::map < std::string, Engine * > engine;
-			//std::map < std::string, std::pair < double[nOfStreams+1], Engine * > > engine;
 		
 			// Format :: [ "engineName", interpolationWeightsOfStreams[], HTS Engine ]
 			// interpolationWeights for number of streams + duration 
@@ -202,8 +485,11 @@ namespace MAGE
 		
 			// methods
 			void init( void );
-			void checkInterpolationFunctions( void );
+		
 			void addEngine( std::string name );// called by addEngine( string, ...)
 			void parseConfigFile( std::string filename );
+		
+			void checkInterpolationWeights( bool forced=false );
+			void checkInterpolationFunctions( void );
 	};
 } // namespace

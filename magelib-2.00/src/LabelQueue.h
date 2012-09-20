@@ -57,7 +57,7 @@ namespace MAGE
 			/**
 			 *	Constructor that allocates the required memory for a LabelQueue.
 			 * 
-			 *	@param size The max size of the LabelQueue. i.e. how many Label the buffer ring 
+			 *	@param size The max size of the LabelQueue. i.e. how many Label the ringbuffer 
 			 *					can contain before it's full.
 			 */
 			LabelQueue( unsigned int size );

@@ -26,83 +26,293 @@
  /* 																								*/
  /* ----------------------------------------------------------------------------------------------- */
 
-/** 
- *	@file		Constants.h
- *
- *	@author		Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
- * 			
- */
-
 #pragma once 
 
 namespace MAGE 
 {
+
+// --- Parameter Length ---
+
 	/**
-	 *	\def nOfDers
-	 *	\brief Number of derivations: ∆( 0 ), ∆( 1 ), ∆( 3 )
+	 *	\var const unsigned int nOfDers.
+	 *	\brief Number of derivations: ∆( 0 ), ∆( 1 ), ∆( 3 ).
 	 *
 	 */
 	const unsigned int nOfDers = 3;		// # of derivations: ∆( 0 ), ∆( 1 ), ∆( 3 )
+	
+	/**
+	 *	\var const unsigned int nOfMGCs.
+	 *	\brief Number of spectral coefficients for the MLSA filter.
+	 *
+	 */
 	const unsigned int nOfMGCs = 35;	// # of MGC coefficients for the MLSA filter
+	
+	/**
+	 *	\var const unsigned int nOfLF0s.
+	 *	\brief Number of fundamental frequency coefficients (here it is a single value).
+	 *
+	 */
 	const unsigned int nOfLF0s = 1;		// fundamental frequency is a single value
+	
+	/**
+	 *	\var const unsigned int nOfLPFs.
+	 *	\brief Number of low-pass filter coefficients.
+	 *
+	 */
 	const unsigned int nOfLPFs = 31;	// # of low-pass filter coefficients
 	
+	/**
+	 *	\var const unsigned int nOfStates.
+	 *	\brief Number of states in the HMM.
+	 *
+	 */
 	const unsigned int nOfStates  = 5;	// # of states in the HMM
+	
+	/**
+	 *	\var const unsigned int nOfStreams.
+	 *	\brief Number of streams, here mgcs, lf0, lpf.
+	 *
+	 */
 	const unsigned int nOfStreams = 3;	// # of streams : mgcs, lf0, lpf
 	
+	/**
+	 *	\var const unsigned int nOfLookup.
+	 *	\brief Number of looked-up Model instances (labels), not used yet that 
+	 *			we keep in memory for smoother parameters computation.
+	 *
+	 */
 	const unsigned int nOfLookup = 1;	// # of looked-up labels
+	
+	/**
+	 *	\var const unsigned int nOfBackup.
+	 *	\brief Number of backed-up Model instances (labels), already used that 
+	 *			we keep in memory for smoother parameters computation.
+	 *
+	 */
 	const unsigned int nOfBackup = 2;	// # of backed-up labels( models in modelqueue actually )
 										// this is the number of labels/models already used that 
 										// we keep in memory for smoother parameters computation
-	 	
+	 
+	/**
+	 *	\var const int maxWindowWidth.
+	 *	\brief Maximum number for the coefficients of a window.
+	 *
+	 */	
 	const int maxWindowWidth = 50;
+	
+	/**
+	 *	\var const int maxNumOfFrames.
+	 *	\brief Maximum number of frames per phoneme.
+	 *
+	 */	
 	const int maxNumOfFrames = 512;		// maximum # of frames per phoneme
 	
-	//fix for memory overflow in optimizeParameters.
-	//ModelQueueMemory has only maxNumOfFrames allocated) which means 
-	//'maxNumOfFrames/(nofLookup+nofBackup+1)' frames per model.
-	const int maxDuration = ( int ) maxNumOfFrames / ( nOfBackup + nOfLookup + 1 );
+	/**
+	 *	\var const int maxDuration.
+	 *	\brief Maximum number of frames per model since ModelQueueMemory has only maxNumOfFrames allocated.
+	 *
+	 */
+	const int maxDuration = ( int ) maxNumOfFrames / ( nOfBackup + nOfLookup + 1 ); //	fix for memory overflow in optimizeParameters.
+																					//	ModelQueueMemory has only maxNumOfFrames allocated) 
+																					//	which means 'maxNumOfFrames/(nofLookup+nofBackup+1)'
+																					//	frames per model.
 
-	// --- Queues ---
-	const int maxLabelQueueLen = 512; // max amount of labels that can wait
-	const int maxFrameQueueLen = 200; // longest label 1 sec = 200 frames of 5 smsec
-	const int maxModelQueueLen = nOfLookup + nOfBackup + 2; // max stored past and future models for generation
-	
-	// --- Vocoder ---
-	const double defaultAlpha = 0.55;
-	const int defaultFrameRate = 240;
-	const int defaultInterpFrameRate = 1;
-	const int defaultSamplingRate = 48000;
-	const int defaultPadeOrder = 5;
-	const int defaultGamma = 0;
-	const int defaultVolume = 1;
-	const int defaultPitch = 110; // Hz, 
-	
-	// --- Stream Index --- 
-	const int mgcStreamIndex = 0; // mgc stream index
-	const int lf0StreamIndex = 1; // lf0 stream index
-	const int lpfStreamIndex = 2; // lpf stream index
-	const int durStreamIndex = 3; // duration stream index
-	
-	// --- Parameter Length ---
+	/**
+	 *	\var const int mgcLen.
+	 *	\brief Number of spectracl coefficients including including static and dynamic features.
+	 *
+	 */		
 	const int mgcLen = nOfDers * nOfMGCs;
+	
+	/**
+	 *	\var const int mgcLen.
+	 *	\brief Number of fundamental frequency coefficients including including static and dynamic features.
+	 *
+	 */	
 	const int lf0Len = nOfDers * nOfLF0s;
+	
+	/**
+	 *	\var const int mgcLen.
+	 *	\brief Number of low-pass filter coefficients including including static and dynamic features.
+	 *
+	 */	
 	const int lpfLen = nOfDers * nOfLPFs;
 	
-	// --- Actions ---
-	const int noaction	= -1;
+	
+// --- Queues ---
+	
+	/**
+	 *	\var const int maxLabelQueueLen.
+	 *	\brief Maximum number of Label inctances (labels) that can be pushed in the LabelQueue.
+	 *
+	 */
+	const int maxLabelQueueLen = 512; // max amount of labels that can wait
+	
+	/**
+	 *	\var const int maxFrameQueueLen.
+	 *	\brief Maximum number of Frame inctances that can be pushed in the FrameQueue
+	 *			( longest Label inctance 1 sec = 200 frames of 5 smsec ). 
+	 *
+	 */
+	const int maxFrameQueueLen = 200; // longest label 1 sec = 200 frames of 5 smsec
+	
+	/**
+	 *	\var const int maxModelQueueLen.
+	 *	\brief Maximum number of stored past and future Model instances for the parameter generation / optimization.
+	 *
+	 */
+	const int maxModelQueueLen = nOfLookup + nOfBackup + 2; // max stored past and future models for generation
+	
+// --- Vocoder ---
+	
+	/**
+	 *	\var const double defaultAlpha.
+	 *	\brief Default value for the alpha parameter used also during the training phase.
+	 *
+	 */
+	const double defaultAlpha = 0.55;
+	
+	/**
+	 *	\var const int defaultFrameRate.
+	 *	\brief Default value for the framerate parameter used also during the training phase.
+	 *
+	 */
+	const int defaultFrameRate = 240;
+	
+	/**
+	 *	\var const int defaultInterpFrameRate.
+	 *	\brief Default value for the interpolation framerate parameter used also during the training phase.
+	 *
+	 */
+	const int defaultInterpFrameRate = 1;
+	
+	/**
+	 *	\var const int defaultSamplingRate.
+	 *	\brief Default value for the sampling rate parameter used also during the training phase.
+	 *
+	 */
+	const int defaultSamplingRate = 48000;
+	
+	/**
+	 *	\var const int defaultPadeOrder.
+	 *	\brief Default value for the pade order parameter used also during the training phase.
+	 *
+	 */
+	const int defaultPadeOrder = 5;
+	
+	/**
+	 *	\var const int defaultGamma.
+	 *	\brief Default value for the gamma parameter used also during the training phase.
+	 *
+	 */
+	const int defaultGamma = 0;
+	
+	/**
+	 *	\var const int defaultVolume.
+	 *	\brief Default value for the volume parameter used also during the training phase.
+	 *
+	 */	
+	const int defaultVolume = 1;
+	
+	/**
+	 *	\var const int defaultPitch.
+	 *	\brief Default value for the pitch parameter.
+	 *
+	 */	
+	const int defaultPitch = 110; // Hz, 
+	
+// --- Stream Index --- 
+	
+	/**
+	 *	\var const int mgcStreamIndex.
+	 *	\brief Index number for the spectracl coefficients stream.
+	 *
+	 */
+	const int mgcStreamIndex = 0; // mgc stream index
+	
+	/**
+	 *	\var const int lf0StreamIndex.
+	 *	\brief Index number for the fundamental frequency stream.
+	 *
+	 */
+	const int lf0StreamIndex = 1; // lf0 stream index
+	
+	/**
+	 *	\var const int lpfStreamIndex.
+	 *	\brief Index number for the low-pass filter coefficients stream.
+	 *
+	 */
+	const int lpfStreamIndex = 2; // lpf stream index
+	
+	/**
+	 *	\var const int durStreamIndex.
+	 *	\brief Index number for the State duration stream.
+	 *
+	 */
+	const int durStreamIndex = 3; // duration stream index
+	
+// --- Actions ---
+
+	/**
+	 *	\var const int noaction.
+	 *	\brief Flag number for taking no action over a variable.
+	 *
+	 */
+	const int noaction = -1;
+	
+	/**
+	 *	\var const int overwrite.
+	 *	\brief Flag number for replacing / overwriting a variable.
+	 *
+	 */
 	const int overwrite = 0;
-	const int shift		= 1;
-	const int scale		= 2;
+	
+	/**
+	 *	\var const int shift.
+	 *	\brief Flag number for shifting a variable (+ the given shift value).
+	 *
+	 */
+	const int shift = 1;
+	
+	/**
+	 *	\var const int scale.
+	 *	\brief Flag number for scaling a variable (* the given scale value).
+	 *
+	 */
+	const int scale	= 2;
+	
+	/**
+	 *	\var const int synthetic.
+	 *	\brief Flag number for keeping the synthetic variable generated by the model.
+	 *
+	 */
 	const int synthetic	= 3;
 	
-	// --- Configuration files ---
+// --- Configuration files ---
+	
+	/**
+	 *	\var const int maxNumOfArguments.
+	 *	\brief Maximum number of arguments passed by the configuration file.
+	 *
+	 */
 	const int maxNumOfArguments = 100;
 	
-	// --- Max sting lenght ---
+// --- Max string lenght ---
+	
+	/**
+	 *	\var const int maxStrLen.
+	 *	\brief Maximum number of characters in a string.
+	 *
+	 */
 	const int maxStrLen = 1024;
 	
-	// --- Interpolation Wheight ---
+// --- Interpolation Wheight ---
+	
+	/**
+	 *	\var const double defaultInterpolationWeight.
+	 *	\brief Default interpolation weight of a given Model.
+	 *
+	 */
 	const double defaultInterpolationWeight = 1;
 
 } // namespace	

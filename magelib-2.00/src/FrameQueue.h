@@ -26,15 +26,6 @@
  /* 																								*/
  /* ----------------------------------------------------------------------------------------------- */
 
-/** 
- *	@file		FrameQueue.h
- *
- *	@author		Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
- *
- *	@brief		Frame ringbuffer: used to exchange speech parameters with the synthesis thread
- * 			
- */
-
 #pragma once
 
 #include "MemQueue.h"

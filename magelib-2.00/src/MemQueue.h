@@ -61,7 +61,7 @@ namespace MAGE
 			/**
 			 *	Constructor that allocates the required memory for a MemQueue.
 			 *
-			 *	@param queueLen Max size of the MemQueue. i.e. how many Item the buffer ring
+			 *	@param queueLen Max size of the MemQueue. i.e. how many Item the ringbuffer
 			 *				can contain before it's full.
 			 */
 			MemQueue( unsigned int queueLen );
@@ -83,15 +83,15 @@ namespace MAGE
 // methods
 		
 			/**
-			 *	This function pushs nItem Items into the queue by copying them from the Item array *item.
+			 *	This function pushes nItem Items into the queue by copying them from the Item array *item.
 			 * 
 			 *	@param item The array of Items to be copied/pushed into the queue.
-			 *	@param nItem The number of Items to be copied/pushed into the queue.
+			 *	@param nOfItems The number of Items to be copied/pushed into the queue.
 			 */
 			void push( Item * item, unsigned int nOfItems = 1 );
 		
 			/** 
-			 *	This function pushs a new Item into the FIFO queue. In this case, there is no copy of an item,
+			 *	This function pushes a new Item into the FIFO queue. In this case, there is no copy of an item,
 			 *	instead the next slot of the memory pool is added to the queue. It is supposed that said slot 
 			 *  has been accessed with next() and modified beforehand.
 			 * 
@@ -101,7 +101,7 @@ namespace MAGE
 			 *	item->set...(foo); //modify it \n
 			 *	memQueue->push(); //save it into the queue (advance 'write' pointer to next available memory slot) \n
 			 * 
-			 *	@param nItem The number of item to be pushed in the queue, i.e. number of item the
+			 *	@param nOfItems The number of item to be pushed in the queue, i.e. number of item the
 			 *			'write' pointer will be advanced. If no value is provided, 1 (one) item is pushed.
 			 *			You will usually want to use it with only one item at a time.
 			 * 
@@ -113,7 +113,7 @@ namespace MAGE
 			 *	erase them from the queue. 
 			 * 
 			 *	@param item A pre-allocated array of Item in which nItem from the queue will be copied.
-			 *	@param nItem The number of Items to be copied and erased.
+			 *	@param nOfItems The number of Items to be copied and erased.
 			 */
 			void pop( Item * item, unsigned int nOfItems = 1 );
 		
@@ -144,7 +144,7 @@ namespace MAGE
 			 *	memQueue->pop(item);//remove it from the queue (advance 'read' pointer) \n
 			 *	var v = item.get...();//item is a local copy of the Item that has been pop()'d \n
 			 * 
-			 *	@param nItem The number of item to be pop()'d from the queue, i.e. number of item the
+			 *	@param nOfItems The number of item to be pop()'d from the queue, i.e. number of item the
 			 *			'read' pointer will be advanced. If no value is provided, 1 (one) item is pop()'d.
 			 *			You will usually want to use it with only one item at a time.
 			 */
@@ -152,10 +152,12 @@ namespace MAGE
 		
 			/**
 			 *	This function copies nItem Items of the FIFO queue into the Item array *item. 
-			 *	This is meant to be used with pop(int). See pop(int) doc for more complete explanation
+			 *	This is meant to be used with pop(int). 
+			 *
+			 *	\see pop(int) doc for more complete explanation.
 			 * 
 			 *	@param item A pre-allocated array of Item in which nItem from the queue will be copied.
-			 *	@param nItem The number of Items to be copied.
+			 *	@param nOfItems The number of Items to be copied.
 			 */
 			void get( Item * item, unsigned int nOfItems = 1 );
 		
@@ -226,7 +228,7 @@ MAGE::MemQueue<Item>::~MemQueue( void )
 	delete[] rawData;
 }
 
-//	This function pushs nItem Items into the queue by copying them from the Item array *item.
+//	This function pushes nItem Items into the queue by copying them from the Item array *item.
 template <class Item>
 void MAGE::MemQueue<Item>::push( Item * item, unsigned int nItem )
 {
@@ -255,7 +257,7 @@ void MAGE::MemQueue<Item>::push( Item * item, unsigned int nItem )
 	return;
 }
 
-//	This function pushs a new Item into the FIFO queue. In this case, there is no copy of an item,
+//	This function pushes a new Item into the FIFO queue. In this case, there is no copy of an item,
 //	instead the next slot of the memory pool is added to the queue. It is supposed that said slot 
 //  has been accessed with next() and modified beforehand.
 template <class Item>
