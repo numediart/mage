@@ -612,3 +612,10 @@ void MAGE::Mage::checkReady( void )
 	return;
 }
 
+std::string MAGE::Mage::timestamp( void )
+{
+	string d( __DATE__ );
+	string t( __TIME__ );
+	
+	return( d + " at " + t );
+}

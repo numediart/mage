@@ -147,6 +147,8 @@ namespace MAGE
 
 			bool ready( void );
 			void checkReady( void );
+			
+			std::string timestamp( void );
 
 		protected:		
 			// --- Queues ---	
