@@ -467,62 +467,70 @@ namespace MAGE
 			 */
 			void printInterpolationWeights( void );
 
+			/**
+			 *	This function returns true if the currently added Engine instance is ready to be accessed, and false otherwise. 
+			 *
+			 *	@return True if the currently added Engine instance is ready to be accessed, and false otherwise. 
+			 */
 			bool ready( void );
 		
+			/**
+			 *	This function checks if the currently added Engine instance is initialized and ready to be used. 
+			 *
+			 */
 			void checkReady( void );
 			
+			/**
+			 *	This function returns the current time and day. 
+			 *
+			 *	@return The current time and day. 
+			 */
 			std::string timestamp( void );
 
 		protected:		
-			// --- Queues ---	
+		
+// --- Queues ---	
 			LabelQueue * labelQueue;
 			ModelQueue * modelQueue;
 			FrameQueue * frameQueue;
 		
-			// --- HTS Engine & Voices (Engine) ---
-		
-			// Format :: [ "engineName", interpolationWeightsOfStreams[], HTS Engine ]
-			// interpolationWeights for number of streams + duration 
-			std::map < std::string, std::pair < double * , Engine * > > engine;
-
-			//std::map < std::string, double * > * interpolationFunctions;
-		
-			// --- Model ---
+// --- HTS Engine & Voices (Engine) ---
+			string defaultEngine;
+			bool interpolationFlag;
+			std::map < std::string, double * > * interpolationFunctions;
+			std::map < std::string, std::pair < double * , Engine * > > engine; // Format :: 
+													// [ "engineName", interpolationWeightsOfStreams[], HTS Engine ]
+													// interpolationWeights for number of streams + duration 		
+// --- Model ---
 			Model * model;
 		
-			// --- SPTK vocoder ---
-			Vocoder * vocoder;
-		
-			// --- Frame ---
-			Frame frame;
-		
-			// --- Label ---
-			Label label;
-		
-			// HTS_Engine & Voices (Engine)
-			string defaultEngine;
-		
+// --- SPTK vocoder ---
 			int hopLen;
 			int sampleCount;
+			Vocoder * vocoder;
+
+// --- Frame ---
+			Frame frame;
+		
+// --- Label ---
+			Label label;
 			double labelSpeed; // we need this because the speed changes on the lable 
 								// level and we need to have memory of this
-			bool interpolationFlag;
 
 		private:
+
+			bool flag;
+			int  action;
 		
 			double updateFunction[nOfStates]; // replace with void * function
-			
-			bool flag;
-			bool flagReady;
-			int action;
-		
 			double interpolationWeights[nOfStreams + 1];
 		
-			// HTS_Engine & Voices (Engine)
+// HTS_Engine & Voices (Engine)
 			int argc;
 			char ** argv;
-		
-			// methods
+			bool flagReady;
+
+// methods
 			void init( void );
 		
 			void addEngine( std::string name );// called by addEngine( string, ...)

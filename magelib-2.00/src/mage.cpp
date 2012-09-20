@@ -493,7 +493,7 @@ void MAGE::Mage::removeEngine( std::string EngineName )
 		else
 		{
 			if( !this->defaultEngine.compare(EngineName) )
-			{	//we removed the default Engine, better switch to another one
+			{	// we removed the default Engine, better switch to another one
 				it = this->engine.begin();
 				this->defaultEngine = ( * it ).first;
 				this->flagReady = true;
