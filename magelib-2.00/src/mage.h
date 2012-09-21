@@ -77,9 +77,9 @@ namespace MAGE
 			 *	Constructor that allocates the required memory for a Mage instance and initializes 
 			 *	all the parameters in values passed from command line arguments.
 			 *
-			 *	@param EngineName The name of the engine to be added
-			 *	@param argc The number of arguments passed
-			 *	@param argv The actual arguments passed to be used for the initialization 
+			 *	@param EngineName The name of the engine to be added.
+			 *	@param argc The number of arguments passed.
+			 *	@param argv The actual arguments passed to be used for the initialization .
 			 */	
 			Mage( std::string EngineName, int argc, char ** argv );
 		
@@ -87,7 +87,7 @@ namespace MAGE
 			 *	Constructor that allocates the required memory for a Mage instance and initializes 
 			 *	all the parameters in values passed from a configuration file.
 			 *
-			 *	@param EngineName The name of the engine to be added
+			 *	@param EngineName The name of the engine to be added.
 			 *	@param confFilename The path and name of the configuration file.
 			 */			
 			Mage( std::string EngineName, std::string confFilename );

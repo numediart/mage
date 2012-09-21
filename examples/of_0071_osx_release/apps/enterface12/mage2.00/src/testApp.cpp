@@ -48,7 +48,8 @@ void testApp::setup( void )
 	// add clb & awb voice models
 	//this->mage->addEngine( "clb", "./inouts/clb.conf" );
 	this->mage->addEngine( "slt", "./inouts/slt.conf" );
-	//this->mage->addEngine( "awb", "./inouts/awb.conf" );
+	this->mage->addEngine( "awb", "./inouts/awb.conf" );
+	this->mage->enableInterpolation(true);
 
 	// --- Parameter Generation Thread ---
 	generate = new genThread( this->mage );
