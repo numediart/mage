@@ -398,7 +398,6 @@ void MAGE::Mage::computeParameters( void )
 void MAGE::Mage::optimizeParameters( void )
 {
 	map < std::string, std::pair < double * , Engine * > >::const_iterator it;
-
 	
 	if( this->modelQueue->getNumOfItems() > nOfLookup + nOfBackup )
 	{
@@ -413,13 +412,6 @@ void MAGE::Mage::optimizeParameters( void )
 		this->modelQueue->generate( this->frameQueue, this->modelQueue->getNumOfItems() - nOfLookup - 1 );	
 	}	
 	
-/*	
-	
-	if( !this->interpolationFlag )
-		optimizeParameters( this->engine[this->defaultEngine].second );
-	else 
-		for( it = this->engine.begin(); it != this->engine.end(); it++ )
-			optimizeParameters( ( * it ).second.second );*/
 	return; 
 }
 
