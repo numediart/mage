@@ -301,6 +301,9 @@ void MAGE::Mage::reset( void )
 		for( int i = 0; i < nOfStreams + 1; i++ )
 			if( this->interpolationWeights[i] )
 				( * it ).second.first[i] = defaultInterpolationWeight;	
+		
+	this->checkInterpolationFunctions();
+
 	return;
 }
 
@@ -318,13 +321,8 @@ void MAGE::Mage::prepareModel( void )
 	map < std::string, std::pair < double * , Engine * > >::iterator it; // iterator for the map of engines
 
 	this->model = this->modelQueue->next();
-	
-	if( !this->interpolationFlag )
-		this->model->checkInterpolationWeights( this->engine[this->defaultEngine].second );
-	/*else
-		for( it = this->engine.begin(); it != this->engine.end(); it++ )
-			this->model->checkInterpolationWeights( ( * it ).second.second );
-*/
+	this->model->checkInterpolationWeights( this->engine[this->defaultEngine].second );
+
 	return;
 }
 
@@ -413,13 +411,6 @@ void MAGE::Mage::optimizeParameters( void )
 		this->modelQueue->generate( this->frameQueue, this->modelQueue->getNumOfItems() - nOfLookup - 1 );	
 	}	
 	
-/*	
-	
-	if( !this->interpolationFlag )
-		optimizeParameters( this->engine[this->defaultEngine].second );
-	else 
-		for( it = this->engine.begin(); it != this->engine.end(); it++ )
-			optimizeParameters( ( * it ).second.second );*/
 	return; 
 }
 
@@ -502,7 +493,7 @@ void MAGE::Mage::printInterpolationWeights( void )
 	map < std::string, std::pair < double * , Engine * > >::iterator itEngine; // iterator for the map of engines
 	
 	for( itEngine = this->engine.begin(); itEngine != this->engine.end(); itEngine++ )
-		for( int i = 0; i < 4; i++ )
+		for( int i = 0; i < nOfStreams + 1; i++ )
 			printf("weights %s %f\n", ( * itEngine ).first.c_str(), ( * itEngine ).second.first[i]);
 }
 
@@ -609,7 +600,6 @@ void MAGE::Mage::addEngine( std::string EngineName )
 	// use this->engine at the same time we might have a problem, if it happens,
 	// a lock will be necessary around this insert (! we're out of audio thread)
 	this->engine[EngineName] = tmpEngine;
-
 	this->checkInterpolationFunctions();
 
 	if( this->defaultEngine.empty() )
@@ -617,6 +607,10 @@ void MAGE::Mage::addEngine( std::string EngineName )
 		this->defaultEngine = EngineName;
 		this->flagReady = true;
 		printf("default Engine is %s\n",this->defaultEngine.c_str());
+	}
+	else
+	{
+		printf("added Engine %s\n",EngineName.c_str());
 	}
 	
  	return;
