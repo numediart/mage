@@ -650,6 +650,11 @@ void MAGE::Mage::parseConfigFile( std::string confFilename )
 	return;
 }
 
+// I know you are going to read this!! thanks for the DVD!! it is just great and I am taking it with me 
+// as well as the other shrek movies you gave me. We have a long way to go with this project so I do not
+// get emotional!! We will keep in touch and i will keep on bothering you all the time you write your 
+// fucking awesome thesis!! Have a great time root, i'll miss ya'll :)
+
 void MAGE::Mage::checkInterpolationFunctions( void )
 {
 	int i;
