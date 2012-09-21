@@ -481,9 +481,9 @@ namespace MAGE
 			void checkReady( void );
 			
 			/**
-			 *	This function returns the current time and day. 
+			 *	This function returns the compilation time and day.
 			 *
-			 *	@return The current time and day. 
+			 *	@return The compilation time and day.
 			 */
 			std::string timestamp( void );
 
