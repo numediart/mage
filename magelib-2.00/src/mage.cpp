@@ -197,14 +197,14 @@ void MAGE::Mage::setDuration( double * updateFunction, int action )
 }
 
 //	This function sets a different existing engine as the default to be used.
-void MAGE::Mage::setDefaultEngine( std::string adefaultEngine )
+void MAGE::Mage::setDefaultEngine( std::string defaultEngine )
 {
 	map < std::string, std::pair < double * , Engine * > >::const_iterator it;
 
-	it = this->engine.find( adefaultEngine );
+	it = this->engine.find( defaultEngine );
 	
 	if( it != this->engine.end() )
-		this->defaultEngine = adefaultEngine;
+		this->defaultEngine = defaultEngine;
 	
 	return;
 }
@@ -293,14 +293,14 @@ void MAGE::Mage::reset( void )
 	this->sampleCount = 0;
 	this->action = noaction;
 	this->hopLen = defaultFrameRate;
-	this->interpolationFlag = false;
+	this->interpolationFlag = false; // if comment this => crap
 	
 	this->resetVocoder();
 	
 	for( it = this->engine.begin(); it != this->engine.end(); it++ )
 		for( int i = 0; i < nOfStreams + 1; i++ )
 			if( this->interpolationWeights[i] )
-				( * it ).second.first[i] = 1;	
+				( * it ).second.first[i] = defaultInterpolationWeight;	
 	return;
 }
 
@@ -315,8 +315,16 @@ void MAGE::Mage::resetVocoder( void )
 //	interpolation weights passed to the Engine by command line or a configuration file. 
 void MAGE::Mage::prepareModel( void )
 {
+	map < std::string, std::pair < double * , Engine * > >::iterator it; // iterator for the map of engines
+
 	this->model = this->modelQueue->next();
-	this->model->checkInterpolationWeights( this->engine[this->defaultEngine].second );
+	
+	if( !this->interpolationFlag )
+		this->model->checkInterpolationWeights( this->engine[this->defaultEngine].second );
+	/*else
+		for( it = this->engine.begin(); it != this->engine.end(); it++ )
+			this->model->checkInterpolationWeights( ( * it ).second.second );
+*/
 	return;
 }
 
@@ -368,12 +376,19 @@ void MAGE::Mage::computeParameters( void )
 	this->model->initParameters();
 	
 	if( !this->interpolationFlag )
+	{
 		this->model->computeParameters( this->engine[this->defaultEngine].second, &(this->label), NULL );
+		this->model->computeGlobalVariances( this->engine[this->defaultEngine].second, &(this->label) );
+	}
 	else 
+	{
 		for( it = this->engine.begin(); it != this->engine.end(); it++ )
+		{
 			this->model->computeParameters( ( * it ).second.second, &(this->label), ( * it ).second.first );
+			this->model->computeGlobalVariances( ( * it ).second.second, &(this->label) );
+		}
+	}
 	
-	this->model->computeGlobalVariances( this->engine[this->defaultEngine].second, &(this->label) );
 	this->modelQueue->push( );
 	
 	return;
@@ -382,6 +397,9 @@ void MAGE::Mage::computeParameters( void )
 //	This function optimizes the generated parameters for every coefficients stream. 
 void MAGE::Mage::optimizeParameters( void )
 {
+	map < std::string, std::pair < double * , Engine * > >::const_iterator it;
+
+	
 	if( this->modelQueue->getNumOfItems() > nOfLookup + nOfBackup )
 	{
 		this->flag = false;
@@ -391,10 +409,17 @@ void MAGE::Mage::optimizeParameters( void )
 	} 
 	else if( this->modelQueue->getNumOfItems() > nOfLookup && this->flag )
 	{
-		this->modelQueue->optimizeParameters( this->engine[this->defaultEngine].second, 
-											 this->modelQueue->getNumOfItems() - nOfLookup - 1, nOfLookup );
+		this->modelQueue->optimizeParameters( this->engine[this->defaultEngine].second, this->modelQueue->getNumOfItems() - nOfLookup - 1, nOfLookup );
 		this->modelQueue->generate( this->frameQueue, this->modelQueue->getNumOfItems() - nOfLookup - 1 );	
 	}	
+	
+/*	
+	
+	if( !this->interpolationFlag )
+		optimizeParameters( this->engine[this->defaultEngine].second );
+	else 
+		for( it = this->engine.begin(); it != this->engine.end(); it++ )
+			optimizeParameters( ( * it ).second.second );*/
 	return; 
 }
 
@@ -543,10 +568,12 @@ void MAGE::Mage::init( void )
 }
 
 void MAGE::Mage::addEngine( std::string EngineName )
-{//this function is not thread safe (exactly like the MemQueue) it should never be called simultaneously in different threads
-	map < std::string, std::pair < double * , Engine * > >::iterator it;
+{
+	// this function is not thread safe (exactly like the MemQueue) 
+	// it should never be called simultaneously in different threads
 	std::pair < double * , Engine * > tmpEngine;
-	
+	map < std::string, std::pair < double * , Engine * > >::iterator it;
+
 	// check that the Engine doesn't exist already
 	it = this->engine.find( EngineName );
 	
@@ -582,7 +609,9 @@ void MAGE::Mage::addEngine( std::string EngineName )
 	// use this->engine at the same time we might have a problem, if it happens,
 	// a lock will be necessary around this insert (! we're out of audio thread)
 	this->engine[EngineName] = tmpEngine;
-	
+
+	this->checkInterpolationFunctions();
+
 	if( this->defaultEngine.empty() )
 	{
 		this->defaultEngine = EngineName;
@@ -625,12 +654,6 @@ void MAGE::Mage::parseConfigFile( std::string confFilename )
 
 	this->argc = k;
 
-	return;
-}
-
-void MAGE::Mage::checkInterpolationWeights( bool forced )
-{
-	this->model->checkInterpolationWeights( this->engine[this->defaultEngine].second, forced );
 	return;
 }
 

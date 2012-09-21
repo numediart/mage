@@ -46,7 +46,7 @@ void genThread::threadedFunction( void )
 {		
 	while( isThreadRunning() )
 	{
-		if( this->mage )
+		if( this->mage->ready() )
 		{
 			// --- Run mage ---
 			//this->mage->run( ); 
@@ -72,6 +72,9 @@ void genThread::threadedFunction( void )
 				this->mage->optimizeParameters();
 			}
 		}
+		else 
+			usleep(100000);
+
 	}
 	return;
 }

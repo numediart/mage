@@ -598,10 +598,9 @@ namespace MAGE
 // methods
 			void init( void );
 		
-			void addEngine( std::string name );// called by addEngine( string, ...)
+			void addEngine( std::string name ); // called by addEngine( string, ...)
 			void parseConfigFile( std::string filename );
-		
-			void checkInterpolationWeights( bool forced=false );
+			void optimizeParameters( Engine * engine );
 			void checkInterpolationFunctions( void );
 	};
 } // namespace

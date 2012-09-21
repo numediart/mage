@@ -49,6 +49,7 @@ void testApp::setup( void )
 	//this->mage->addEngine( "clb", "./inouts/clb.conf" );
 	this->mage->addEngine( "slt", "./inouts/slt.conf" );
 	this->mage->addEngine( "awb", "./inouts/awb.conf" );
+	//this->mage->addEngine( "bdl", "./inouts/bdl.conf" );
 	this->mage->enableInterpolation(true);
 
 	// --- Parameter Generation Thread ---

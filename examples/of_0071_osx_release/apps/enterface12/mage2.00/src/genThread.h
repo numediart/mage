@@ -16,7 +16,7 @@
  /* 																								*/	
  /* 	Copyright 2011 University of Mons :															*/
  /* 																								*/	
- /* 			Numediart Institute for New Media Art( www.numediart.org )							*/
+ /* 			Numediart Institute for New Media Art ( www.numediart.org )							*/
  /* 			Acapela Group ( www.acapela-group.com )												*/
  /* 																								*/
  /* 																								*/
