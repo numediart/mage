@@ -50,6 +50,8 @@ extern "C"
 		t_object x_obj;
 		pthread_t thread;
 		char labelPath[1024];
+		vector < string > labels;
+		int currentLabel;
 		Mage *mage;
 	} t_mage_tilde;
 	
@@ -65,6 +67,11 @@ extern "C"
 	//access to MAGE controls
 	void mage_tilde_alpha( t_mage_tilde * x, t_floatarg alpha );
 	void mage_tilde_label( t_mage_tilde * x, t_symbol *label );
+	void mage_tilde_label_fill( t_mage_tilde * x );
+	void mage_tilde_label_next( t_mage_tilde * x );
+	void mage_tilde_label_insert( t_mage_tilde * x, t_floatarg lab );
+	void mage_tilde_label_replace( t_mage_tilde * x, t_floatarg lab );
+	void mage_tilde_label_switch( t_mage_tilde * x, t_floatarg lab );
 	void mage_tilde_pitch_overwrite( t_mage_tilde * x, t_floatarg pitch );
 	void mage_tilde_pitch_scale( t_mage_tilde * x, t_floatarg pitch );
 	void mage_tilde_pitch_shift( t_mage_tilde * x, t_floatarg pitch );
@@ -73,15 +80,15 @@ extern "C"
 	void mage_tilde_speed( t_mage_tilde * x, t_floatarg speed );
 	void mage_tilde_volume( t_mage_tilde * x, t_floatarg volume );
 	
-	void fillLabelQueue( t_mage_tilde * x )
-	{	
-		int k;
-		Label label;
-		
+	void fillLabels( t_mage_tilde * x )
+	{
 		string line;
 		string filename = string(x->labelPath);
 		
 		ifstream myfile( filename.c_str() );
+	
+		x->currentLabel = -1;
+		x->labels.clear();
 		
 		if( !myfile.is_open() )
 		{
@@ -89,14 +96,17 @@ extern "C"
 			return;
 		}
 		
-		for( k = 0; getline( myfile, line ); k++ )
+		while( getline( myfile, line ) )
 		{
-			//post( "pushing %s",line.c_str() );
-			label.setQuery( line );
-			x->mage->pushLabel( label );
+			x->labels.push_back(line);
 		}
-		
+				
 		myfile.close();
+		
+		if( x->labels.size() > 0 )
+			x->currentLabel = 0;
+		
+		return;
 	}
 	
 	void mage_tilde_bang( t_mage_tilde * x )
@@ -112,9 +122,13 @@ extern "C"
 		
 		strcpy(x->labelPath, "./inouts/labels/alice01.lab");
 		x->mage = new Mage();
+		fillLabels(x);
 		
 		post("_new: loading engine");
 		x->mage->addEngine( "slt", "./inouts/slt.conf" );
+		x->mage->addEngine( "awb", "./inouts/awb.conf" );
+		x->mage->enableInterpolation(true);
+
 		post("_new: done with engine");
 		
 		post("_new: starting genThread");
@@ -138,6 +152,11 @@ extern "C"
 		class_addmethod(mage_tilde_class, (t_method)mage_tilde_dsp, gensym("dsp"), (t_atomtype) 0);
 		class_addmethod(mage_tilde_class, (t_method)mage_tilde_alpha, gensym("alpha"), A_FLOAT, 0);
 		class_addmethod(mage_tilde_class, (t_method)mage_tilde_label, gensym("label"), A_SYMBOL, 0);
+		class_addmethod(mage_tilde_class, (t_method)mage_tilde_label_fill, gensym("labelfill"), (t_atomtype) 0);
+		class_addmethod(mage_tilde_class, (t_method)mage_tilde_label_next, gensym("labelnext"), (t_atomtype) 0);
+		class_addmethod(mage_tilde_class, (t_method)mage_tilde_label_insert, gensym("labelinsert"), A_FLOAT, 0);
+		class_addmethod(mage_tilde_class, (t_method)mage_tilde_label_replace, gensym("labelreplace"), A_FLOAT, 0);
+		class_addmethod(mage_tilde_class, (t_method)mage_tilde_label_switch, gensym("labelswitch"), A_FLOAT, 0);
 		class_addmethod(mage_tilde_class, (t_method)mage_tilde_pitch_overwrite, gensym("pitchoverwrite"), A_FLOAT, 0);
 		class_addmethod(mage_tilde_class, (t_method)mage_tilde_pitch_scale, gensym("pitchscale"), A_FLOAT, 0);
 		class_addmethod(mage_tilde_class, (t_method)mage_tilde_pitch_shift, gensym("pitchshift"), A_FLOAT, 0);
@@ -150,6 +169,7 @@ extern "C"
 	void mage_tilde_free( t_mage_tilde * x )
 	{
 		pthread_cancel(x->thread);
+		printf( "stopping genThread\n" );
 		pthread_join(x->thread,NULL);
 		post("free mage memory");
 		delete x->mage;
@@ -157,6 +177,7 @@ extern "C"
 	
 	void mage_tilde_dsp( t_mage_tilde * x, t_signal ** sp )
 	{
+		post("_dsp");
 		dsp_add( mage_tilde_perform, 3, x, sp[0]->s_vec, sp[0]->s_n );
 	}
 	
@@ -184,8 +205,6 @@ extern "C"
 		
 		t_mage_tilde * x = ( t_mage_tilde * ) argv;
 		
-		fillLabelQueue( x );
-		
 		while( 1 )
 		{ 
 			pthread_testcancel();
@@ -210,7 +229,7 @@ extern "C"
 			}
 			else
 			{
-				fillLabelQueue( x );
+				usleep( 100 );
 			}			
 		}
 		
@@ -227,7 +246,94 @@ extern "C"
 	void mage_tilde_label( t_mage_tilde * x, t_symbol *label )
 	{
 		strcpy(x->labelPath, label->s_name);
+		fillLabels(x);
 
+		return;
+	}
+	
+	void mage_tilde_label_fill( t_mage_tilde * x )
+	{
+		Label label;
+		vector < string >::const_iterator it;
+		
+		for( it = x->labels.begin(); it < x->labels.end(); it++ )
+		{
+			//post( "pushing %s",line.c_str() );
+			label.setQuery( ( * it ) );
+			x->mage->pushLabel( label );
+		}
+		
+		return;
+	}
+	
+	void mage_tilde_label_next( t_mage_tilde * x )
+	{
+		Label label;
+		
+		if( x->labels.size() > 0 )
+		{
+			label.setQuery( x->labels[x->currentLabel] );
+
+			x->mage->pushLabel( label );
+
+			x->currentLabel = ( x->currentLabel + 1 ) % x->labels.size();
+		}
+
+		return;
+	}
+	
+	void mage_tilde_label_insert( t_mage_tilde * x, t_floatarg lab )
+	{	
+		Label label;
+		
+		if( x->labels.size() > 0 )
+		{
+			int k = ( ( int ) lab ) % x->labels.size(); // always 0 <= lab < x->labels.size() ? < 0 ?
+
+			printf("inserting label %d\n",k);
+			label.setQuery( x->labels[k] );
+
+			x->mage->pushLabel( label );
+			
+			// _next() will go to x->currentLabel;
+		}
+		
+		return;
+	}
+	
+	void mage_tilde_label_replace( t_mage_tilde * x, t_floatarg lab )
+	{	
+		Label label;
+		
+		if( x->labels.size() > 0 )
+		{
+			int k = ( ( int ) lab ) % x->labels.size(); // always 0 <= lab < x->labels.size() ? < 0 ?
+
+			printf("replacing label %d with %d\n",x->currentLabel,k);
+			label.setQuery( x->labels[k] );
+			x->mage->pushLabel( label );
+			
+			x->currentLabel = ( x->currentLabel + 1 ) % x->labels.size(); // _next() will go to x->currentLabel+1
+		}
+		
+		return;
+	}
+	
+	void mage_tilde_label_switch( t_mage_tilde * x, t_floatarg lab )
+	{	
+		Label label;
+		
+		if( x->labels.size() > 0 )
+		{
+			int k = ( ( int ) lab ) % x->labels.size(); // always 0 <= lab < x->labels.size() ? < 0 ?
+
+			printf("switching from label %d to %d\n",x->currentLabel,k);
+			label.setQuery( x->labels[k] );
+			x->mage->pushLabel( label );
+			
+			x->currentLabel = ( k + 1 ) % x->labels.size(); // _next() will go to lab+1
+		}
+		
 		return;
 	}
 	

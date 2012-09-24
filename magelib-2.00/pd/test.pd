@@ -1,13 +1,13 @@
 #N canvas 3 65 1899 1087 24;
-#X obj 853 649 mage~;
-#X obj 838 693 dac~;
+#X obj 836 796 mage~;
+#X obj 828 939 dac~;
 #X msg 428 199 alpha \$1;
 #X msg 544 216 speed \$1;
 #X msg 662 200 volume \$1;
 #X obj 439 139 hsl 64 15 0.1 0.9 0 0 empty empty empty -2 -8 0 10 -262144
 -1 -1 0 1;
 #X obj 551 109 hsl 64 15 12 1200 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 1200 1;
+-1 -1 0 1;
 #X obj 665 116 hsl 64 15 0 1 0 0 empty empty empty -2 -8 0 10 -262144
 -1 -1 0 1;
 #X floatatom 464 161 5 0 0 0 - - -;
@@ -18,10 +18,10 @@
 #X msg 554 76 set 240;
 #X msg 660 77 set 1;
 #X msg 428 90 set 0.55;
-#X msg 710 601 reset;
+#X msg 653 725 reset;
 #X msg 662 200 volume \$1;
 #X obj 814 119 hsl 64 15 20 1000 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 0 1;
+-1 -1 2900 1;
 #X floatatom 839 163 5 0 0 0 - - -;
 #X msg 810 76 set 1;
 #X msg 810 201 pitchoverwrite \$1;
@@ -36,7 +36,15 @@
 #X msg 1227 75 set 1;
 #X msg 1227 200 pitchshift \$1;
 #X msg 849 284 pitchsynth;
-#X msg 1079 494 label ./inouts/labels/alice02.lab;
+#X msg 1118 566 labelfill;
+#X msg 1119 597 labelnext;
+#X msg 1078 493 label ./inouts/labels/alice02.lab;
+#X msg 1094 436 label ./inouts/labels/alice01.lab;
+#X msg 1119 663 labelreplace 42;
+#X msg 1121 694 labelswitch -15;
+#X obj 1259 539 hsl 64 15 0 200 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 6100 1;
+#X msg 1119 630 labelinsert \$1;
 #X connect 0 0 1 0;
 #X connect 0 0 1 1;
 #X connect 2 0 0 0;
@@ -68,3 +76,10 @@
 #X connect 29 0 0 0;
 #X connect 30 0 0 0;
 #X connect 31 0 0 0;
+#X connect 32 0 0 0;
+#X connect 33 0 0 0;
+#X connect 34 0 0 0;
+#X connect 35 0 0 0;
+#X connect 36 0 0 0;
+#X connect 37 0 38 0;
+#X connect 38 0 0 0;
