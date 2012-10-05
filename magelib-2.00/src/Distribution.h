@@ -56,5 +56,11 @@ namespace MAGE
 		 *	\brief It contains the variance value of a gaussian distribution.
 		 */
 		double vari;
+		
+		/** 
+		 *	\var double msdFlag.
+		 *	\brief It contains the MSD value of a gaussian distribution.
+		 */
+		double msdFlag;
 	};
 } // namespace

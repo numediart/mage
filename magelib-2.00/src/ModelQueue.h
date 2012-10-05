@@ -180,11 +180,12 @@ namespace MAGE
 			/**
 			 *	This function generates the PDF parameters of every stream.
 			 *
+			 *	@param engine The Engine used to store the Model and Global parameter structures.
 			 *	@param frameQueue The FrameQueue used to store the generated parameters of every Frame.
 			 *	@param backup The number of Model instances already used that we keep in memory 
 			 *			for smoother parameters computation.
 			 */
-			void generate( FrameQueue * frameQueue, unsigned int backup = nOfBackup );
+			void generate( MAGE::Engine * engine, FrameQueue * frameQueue, unsigned int backup = nOfBackup );
 		
 			/**
 			 *	This function optimizes the generated parameters of every stream.

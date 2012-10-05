@@ -401,13 +401,13 @@ void MAGE::Mage::optimizeParameters( void )
 	{
 		this->flag = false;
 		this->modelQueue->optimizeParameters( this->engine[this->defaultEngine].second, nOfBackup, nOfLookup );
-		this->modelQueue->generate( this->frameQueue, nOfBackup );				
+		this->modelQueue->generate( this->engine[this->defaultEngine].second, this->frameQueue, nOfBackup );				
 		this->modelQueue->pop();
 	} 
 	else if( this->modelQueue->getNumOfItems() > nOfLookup && this->flag )
 	{
 		this->modelQueue->optimizeParameters( this->engine[this->defaultEngine].second, this->modelQueue->getNumOfItems() - nOfLookup - 1, nOfLookup );
-		this->modelQueue->generate( this->frameQueue, this->modelQueue->getNumOfItems() - nOfLookup - 1 );	
+		this->modelQueue->generate( this->engine[this->defaultEngine].second, this->frameQueue, this->modelQueue->getNumOfItems() - nOfLookup - 1 );	
 	}	
 	
 	return; 

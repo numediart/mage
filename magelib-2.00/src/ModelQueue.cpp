@@ -127,8 +127,10 @@ MAGE::ModelQueue::~ModelQueue()
 
 // methods
 //	This function generates the PDF parameters of every stream.
-void MAGE::ModelQueue::generate( FrameQueue * frameQueue, unsigned int backup )
+void MAGE::ModelQueue::generate( MAGE::Engine * engine, FrameQueue * frameQueue, unsigned int backup )
 {
+	HTS_Global global = engine->getGlobal();
+
 	//TODO :: actual frame generation with vocoder
 	unsigned int k, s, q, qmgc, qlf0, qlpf, w, ind;
 	
@@ -148,9 +150,8 @@ void MAGE::ModelQueue::generate( FrameQueue * frameQueue, unsigned int backup )
 			
 			//this is totally idiotic because it has already been computed in optimizeparameters
 			//thus it should be saved there and re-used here
-			//besides 0.5 should be a parameter( see global in optimizeparameters )
 			
-			if( rawData[ind].getState( s ).lf0[0].msdFlag > 0.5 )
+			if( rawData[ind].getState( s ).streams[lf0StreamIndex][0].msdFlag > global.msd_threshold[lf0StreamIndex] )
 				qlf0 += rawData[ind].getState( s ).duration;
 		}
 	}
@@ -179,7 +180,7 @@ void MAGE::ModelQueue::generate( FrameQueue * frameQueue, unsigned int backup )
 	
 			qlpf++;
 			
-			if( rawData[head].getState( s ).lf0[0].msdFlag > 0.5 )
+			if( rawData[head].getState( s ).streams[lf0StreamIndex][0].msdFlag > global.msd_threshold[lf0StreamIndex] )
 			{
 				frame->voiced = true;
 				frame->f0 = exp( this->modelQueueMemory.par[lf0StreamIndex][qlf0][0] );
@@ -225,7 +226,7 @@ void MAGE::ModelQueue::optimizeParameters( MAGE::Engine * engine, unsigned int b
 		{
 			for( j = 0; j < rawData[head].getState( state ).duration; j++, frame++ )// for every frame
 			{
-				if( rawData[head].getState( state ).lf0[0].msdFlag > global.msd_threshold[1] )	// if voiced
+				if( rawData[head].getState( state ).streams[lf0StreamIndex][0].msdFlag > global.msd_threshold[lf0StreamIndex] )	// if voiced
 					this->modelQueueMemory.voiced_unvoiced[frame] = true;
 				else
 					this->modelQueueMemory.voiced_unvoiced[frame] = false;
@@ -275,20 +276,20 @@ void MAGE::ModelQueue::optimizeParameters( MAGE::Engine * engine, unsigned int b
 									
 									if( i == 1 )	// lf0
 									{
-										this->modelQueueMemory.mean[i][msd_frame][m] = rawData[head].getState( state ).lf0[m].mean;
+										this->modelQueueMemory.mean[i][msd_frame][m] = rawData[head].getState( state ).streams[lf0StreamIndex][m].mean;
 										
 										if( not_bound || k == 0 )
-											this->modelQueueMemory.ivar[i][msd_frame][m] = HTS_finv( rawData[head].getState( state ).lf0[m].vari );
+											this->modelQueueMemory.ivar[i][msd_frame][m] = HTS_finv( rawData[head].getState( state ).streams[lf0StreamIndex][m].vari );
 										else
 											this->modelQueueMemory.ivar[i][msd_frame][m] = 0.0;
 										
 										// ATTENTION :: Loop assignment
-										this->modelQueueMemory.gv_mean[i][m] = rawData[head].getState( 0 ).gv_lf0[m].mean;
-										this->modelQueueMemory.gv_vari[i][m] = rawData[head].getState( 0 ).gv_lf0[m].vari;
+										this->modelQueueMemory.gv_mean[i][m] = rawData[head].getState( 0 ).gv_streams[lf0StreamIndex][m].mean;
+										this->modelQueueMemory.gv_vari[i][m] = rawData[head].getState( 0 ).gv_streams[lf0StreamIndex][m].vari;
 									}
 								}
 							}
-							this->modelQueueMemory.gv_switch[i][msd_frame] = rawData[head].getState( state ).lf0_gv_switch;
+							this->modelQueueMemory.gv_switch[i][msd_frame] = rawData[head].getState( state ).gv_switch_streams[lf0StreamIndex];
 							msd_frame++;
 						}
 						frame++;
@@ -328,32 +329,32 @@ void MAGE::ModelQueue::optimizeParameters( MAGE::Engine * engine, unsigned int b
 								
 								if( i == 0 ) // mgcs
 								{
-									this->modelQueueMemory.mean[i][frame][m] = rawData[head].getState( state ).mgc[m].mean;
-									
+									this->modelQueueMemory.mean[i][frame][m] = rawData[head].getState( state ).streams[mgcStreamIndex][m].mean;
+
 									if( not_bound || k == 0 )
-										this->modelQueueMemory.ivar[i][frame][m] = HTS_finv( rawData[head].getState( state ).mgc[m].vari );
+										this->modelQueueMemory.ivar[i][frame][m] = HTS_finv( rawData[head].getState( state ).streams[mgcStreamIndex][m].vari );
 									else
 										this->modelQueueMemory.ivar[i][frame][m] = 0.0;
 									
 									// ATTENTION :: Loop assignment
-									this->modelQueueMemory.gv_mean[i][m] = rawData[head].getState( 0 ).gv_mgc[m].mean;
-									this->modelQueueMemory.gv_vari[i][m] = rawData[head].getState( 0 ).gv_mgc[m].vari;
-									this->modelQueueMemory.gv_switch[i][m] = rawData[head].getState( 0 ).mgc_gv_switch;
+									this->modelQueueMemory.gv_mean[i][m] = rawData[head].getState( 0 ).gv_streams[mgcStreamIndex][m].mean;
+									this->modelQueueMemory.gv_vari[i][m] = rawData[head].getState( 0 ).gv_streams[mgcStreamIndex][m].vari;
+									this->modelQueueMemory.gv_switch[i][m] = rawData[head].getState( 0 ).gv_switch_streams[mgcStreamIndex];
 								}
 								
 								if( i == 2 ) // lpf
 								{
-									this->modelQueueMemory.mean[i][frame][m] = rawData[head].getState( state ).lpf[m].mean;
+									this->modelQueueMemory.mean[i][frame][m] = rawData[head].getState( state ).streams[lpfStreamIndex][m].mean;
 									
 									if( not_bound || k == 0 )
-										this->modelQueueMemory.ivar[i][frame][m] = HTS_finv( rawData[head].getState( state ).lpf[m].vari );
+										this->modelQueueMemory.ivar[i][frame][m] = HTS_finv( rawData[head].getState( state ).streams[lpfStreamIndex][m].vari );
 									else
 										this->modelQueueMemory.ivar[i][frame][m] = 0.0;
 									
 									// ATTENTION :: Loop assignment
-									this->modelQueueMemory.gv_mean[i][m] = rawData[head].getState( 0 ).gv_lpf[m].mean;
-									this->modelQueueMemory.gv_vari[i][m] = rawData[head].getState( 0 ).gv_lpf[m].vari;
-									this->modelQueueMemory.gv_switch[i][m] = rawData[head].getState( 0 ).lpf_gv_switch;
+									this->modelQueueMemory.gv_mean[i][m] = rawData[head].getState( 0 ).gv_streams[lpfStreamIndex][m].mean;
+									this->modelQueueMemory.gv_vari[i][m] = rawData[head].getState( 0 ).gv_streams[lpfStreamIndex][m].vari;
+									this->modelQueueMemory.gv_switch[i][m] = rawData[head].getState( 0 ).gv_switch_streams[lpfStreamIndex];
 								}
 							}
 						}

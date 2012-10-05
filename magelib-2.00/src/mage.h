@@ -41,7 +41,6 @@
 #include "State.h"
 #include "Model.h"
 #include "Distribution.h"
-#include "MSDistribution.h"
 
 #include "MemQueue.h"
 #include "LabelQueue.h"

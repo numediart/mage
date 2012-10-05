@@ -117,6 +117,8 @@ namespace MAGE
 																					//	which means 'maxNumOfFrames/(nofLookup+nofBackup+1)'
 																					//	frames per model.
 
+	const int maxStreamLen = nOfDers * nOfMGCs;
+
 	/**
 	 *	\var const int mgcLen.
 	 *	\brief Number of spectracl coefficients including including static and dynamic features.
@@ -314,6 +316,8 @@ namespace MAGE
 	 *
 	 */
 	const double defaultInterpolationWeight = 1;
+	
+	const double defaultMSDflag = 0;
 
 } // namespace	
 

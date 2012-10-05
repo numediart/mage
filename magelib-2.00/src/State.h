@@ -29,7 +29,6 @@
 #pragma once
 
 #include "Distribution.h"
-#include "MSDistribution.h"
 #include "Constants.h"
 
 namespace MAGE 
@@ -61,19 +60,7 @@ namespace MAGE
 		 *	\var bool mgc_gv_switch.
 		 *	\brief It contains the global variance flag of the spectral stream for every state of a given HMM.
 		 */
-		bool mgc_gv_switch;
-		
-		/** 
-		 *	\var bool lf0_gv_switch.
-		 *	\brief It contains the global variance flag of the fundamental frequency stream for every state of a given HMM.
-		 */
-		bool lf0_gv_switch;
-		
-		/** 
-		 *	\var bool lpf_gv_switch.
-		 *	\brief It contains the global variance flag of the low-pass filtering stream for every state of a given HMM.
-		 */
-		bool lpf_gv_switch;
+		bool gv_switch_streams[nOfStreams];
 	
 // parameters loaded from trees
 		
@@ -82,22 +69,8 @@ namespace MAGE
 		 *	\brief It contains the gaussian distribution (including static and dynamic features) 
 		 *			of the spectral stream for every state of a given HMM.
 		 */
-		Distribution mgc[nOfDers * nOfMGCs];
+		Distribution streams[nOfStreams][maxStreamLen];
 		
-		/** 
-		 *	\var MSDistribution lf0.
-		 *	\brief It contains the gaussian distribution (including static and dynamic features) 
-		 *			of the fundamental frequency stream for every state of a given HMM.
-		 */
-		MSDistribution lf0[nOfDers * nOfLF0s];
-		
-		/** 
-		 *	\var Distribution lpf.
-		 *	\brief It contains the gaussian distribution (including static and dynamic features) 
-		 *			of the low-pass filtering stream for every state of a given HMM.
-		 */
-		Distribution lpf[nOfDers * nOfLPFs];
-	
 // global variances
 		
 		/** 
@@ -105,20 +78,7 @@ namespace MAGE
 		 *	\brief It contains the gaussian distribution (including static and dynamic features) 
 		 *			of the global variance of the spectral stream for every state of a given HMM.
 		 */
-		Distribution gv_mgc[nOfDers * nOfMGCs];
+		Distribution gv_streams[nOfStreams][maxStreamLen];
 		
-		/** 
-		 *	\var Distribution gv_lf0.
-		 *	\brief It contains the gaussian distribution (including static and dynamic features) 
-		 *			of the global variance of the fundamental frequency stream for every state of a given HMM.
-		 */
-		Distribution gv_lf0[nOfDers * nOfLF0s];
-		
-		/** 
-		 *	\var Distribution gv_lpf.
-		 *	\brief It contains the gaussian distribution (including static and dynamic features) 
-		 *			of the global variance of the low-pass filtering stream for every state of a given HMM.
-		 */
-		Distribution gv_lpf[nOfDers * nOfLPFs];
 	};
 } // namespace
