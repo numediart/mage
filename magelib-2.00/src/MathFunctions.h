@@ -39,6 +39,7 @@ namespace MAGE
 	 *
 	 *	@param a One of the two numbers to be compared.
 	 *	@param b The other of the two numbers to be compared.
+	 *	@return The maximum between two numbers.
 	 */
 	inline float Max( float a, float b )
 	{
@@ -50,6 +51,7 @@ namespace MAGE
 	 *
 	 *	@param a One of the two numbers to be compared.
 	 *	@param b The other of the two numbers to be compared.
+	 *	@return The minimum between two numbers.
 	 */
 	inline float Min( float a, float b )
 	{
@@ -59,9 +61,19 @@ namespace MAGE
 	/**
 	 *	This function returns a random number between two numbers.
 	 *
-	 *	@param a The left limit for the random number to be computed.
-	 *	@param a The right limit for the random number to be computed.
+	 *	@param x The left limit for the random number to be computed.
+	 *	@param y The right limit for the random number to be computed.
+	 *	@return A random number between two given numbers.
 	 */
 	float Random( float x, float y );
+	
+	/**
+	 *	This function returns the rounded inputed number.
+	 *
+	 *	@param x The number to be rounded.
+	 *	@return The rounded inputed number.
+	 */
+	//	This function returns a the rounded inputed number.
+	double Round( double x );
 	
 } // namespace

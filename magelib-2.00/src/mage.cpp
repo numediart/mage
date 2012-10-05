@@ -355,9 +355,9 @@ void MAGE::Mage::computeDuration( void )
 	if( !this->interpolationFlag )		
 		this->model->computeDuration( this->engine[this->defaultEngine].second, &(this->label), NULL );
 	else
-		for( it = this->engine.begin(); it != this->engine.end(); it++ )			
+		for( it = this->engine.begin(); it != this->engine.end(); it++ )	
 			this->model->computeDuration( ( * it ).second.second, &(this->label), ( * it ).second.first );
-	
+
 	this->model->updateDuration( this->updateFunction, this->action ); 
 	this->action = noaction;
 	
@@ -489,11 +489,12 @@ void MAGE::Mage::removeEngine( std::string EngineName )
 //	This function prints the current interpolation weights for evert Engine instance in the map. 
 void MAGE::Mage::printInterpolationWeights( void )
 {
-	map < std::string, std::pair < double * , Engine * > >::iterator itEngine; // iterator for the map of engines
+	/*map < std::string, std::pair < double * , Engine * > >::iterator itEngine; // iterator for the map of engines
 	
 	for( itEngine = this->engine.begin(); itEngine != this->engine.end(); itEngine++ )
 		for( int i = 0; i < nOfStreams + 1; i++ )
 			printf("weights %s %f\n", ( * itEngine ).first.c_str(), ( * itEngine ).second.first[i]);
+	*/return;
 }
 
 //	This function checks if the currently added Engine instance is initialized and ready to be used. 
@@ -505,7 +506,7 @@ void MAGE::Mage::checkReady( void )
 	// IOW I'm not happy with this code, it's suboptimal as hell
 	
 	// I am sure we can fix it in a way that you would be proud of it :: when do we have the next coding meeting?
-	// Oh I am leeting messages in the code!! And I am sure you will read it geek!!!
+	// Oh I am letting messages in the code!! And I am sure you will read it geek!!!
 	
 	this->flagReady = false;
 	
@@ -649,11 +650,6 @@ void MAGE::Mage::parseConfigFile( std::string confFilename )
 
 	return;
 }
-
-// I know you are going to read this!! thanks for the DVD!! it is just great and I am taking it with me 
-// as well as the other shrek movies you gave me. We have a long way to go with this project so I do not
-// get emotional!! We will keep in touch and i will keep on bothering you all the time you write your 
-// fucking awesome thesis!! Have a great time root, i'll miss ya'll :)
 
 void MAGE::Mage::checkInterpolationFunctions( void )
 {

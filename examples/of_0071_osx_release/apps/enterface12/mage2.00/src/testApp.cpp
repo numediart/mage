@@ -45,11 +45,17 @@ void testApp::setup( void )
 	// create mage
 	this->mage = new MAGE::Mage();
 	
-	// add clb & awb voice models
-	//this->mage->addEngine( "clb", "./inouts/clb.conf" );
 	this->mage->addEngine( "slt", "./inouts/slt.conf" );
 	this->mage->addEngine( "awb", "./inouts/awb.conf" );
-	//this->mage->addEngine( "bdl", "./inouts/bdl.conf" );
+
+//	this->mage->addEngine( "clb", "./inouts/clb.conf" );
+
+	//this->mage->addEngine( "slt", "./inouts/bl11.conf" );
+
+	
+	// add clb & awb voice models
+	//this->mage->addEngine( "awb", "./inouts/awb.conf" );
+	//this->mage->addEngine( "slt", "./inouts/slt.conf" );
 	//this->mage->enableInterpolation(true);
 
 	// --- Parameter Generation Thread ---

@@ -46,3 +46,10 @@ float MAGE::Random( float x, float y )
 	
 	return randNum;
 }
+
+//	This function returns the rounded inputed number.
+double MAGE::Round( double x )
+{
+	return( floor( x + 0.5 ));
+}
+

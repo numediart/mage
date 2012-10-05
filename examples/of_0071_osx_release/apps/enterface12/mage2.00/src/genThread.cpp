@@ -74,7 +74,6 @@ void genThread::threadedFunction( void )
 		}
 		else 
 			usleep(100000);
-
 	}
 	return;
 }

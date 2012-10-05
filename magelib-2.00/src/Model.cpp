@@ -204,8 +204,10 @@ void MAGE::Model::computeDuration( MAGE::Engine * engine, MAGE::Label * label, d
 	}
 	
 	for( i = 0; i < nOfStates; i++ )
-		this->state[i].duration += iw * this->modelMemory.duration_array[i];
-		
+	{
+		this->state[i].duration += Round(iw * this->modelMemory.duration_array[i]);
+		printf("%d : %1.2f * %d = %d == %d\n", i , iw, this->modelMemory.duration_array[i], (int)iw * this->modelMemory.duration_array[i], this->state[i].duration);
+	}
 	return;
 }
 
