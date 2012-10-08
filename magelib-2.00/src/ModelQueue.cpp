@@ -241,7 +241,7 @@ void MAGE::ModelQueue::optimizeParameters( MAGE::Engine * engine, unsigned int b
 		head = ( head + 1 ) % length;
 	}
 	
-	for( i = 0; i < ms.nstream; i++ ) // for every stream : mgc, lf0, lpf
+	for( i = 0; i < nOfStreams; i++ ) // for every stream : mgc, lf0, lpf
 	{
 		head = read;
 		
@@ -274,25 +274,21 @@ void MAGE::ModelQueue::optimizeParameters( MAGE::Engine * engine, unsigned int b
 								
 								for( l = 0; l < static_length; l++ )
 								{
-									// ATTENTION :: This is not the good way
 									m = static_length * k + l;
 									
-									if( i == 1 )	// lf0
-									{
-										this->modelQueueMemory.mean[i][msd_frame][m] = rawData[head].getState( state ).streams[lf0StreamIndex][m].mean;
+									this->modelQueueMemory.mean[i][msd_frame][m] = rawData[head].getState( state ).streams[i][m].mean;
 										
-										if( not_bound || k == 0 )
-											this->modelQueueMemory.ivar[i][msd_frame][m] = HTS_finv( rawData[head].getState( state ).streams[lf0StreamIndex][m].vari );
-										else
-											this->modelQueueMemory.ivar[i][msd_frame][m] = 0.0;
+									if( not_bound || k == 0 )
+										this->modelQueueMemory.ivar[i][msd_frame][m] = HTS_finv( rawData[head].getState( state ).streams[i][m].vari );
+									else
+										this->modelQueueMemory.ivar[i][msd_frame][m] = 0.0;
 										
-										// ATTENTION :: Loop assignment
-										this->modelQueueMemory.gv_mean[i][m] = rawData[head].getState( 0 ).gv_streams[lf0StreamIndex][m].mean;
-										this->modelQueueMemory.gv_vari[i][m] = rawData[head].getState( 0 ).gv_streams[lf0StreamIndex][m].vari;
-									}
+									// ATTENTION :: Loop assignment
+									this->modelQueueMemory.gv_mean[i][m] = rawData[head].getState( 0 ).gv_streams[i][m].mean;
+									this->modelQueueMemory.gv_vari[i][m] = rawData[head].getState( 0 ).gv_streams[i][m].vari;
 								}
 							}
-							this->modelQueueMemory.gv_switch[i][msd_frame] = rawData[head].getState( state ).gv_switch_streams[lf0StreamIndex];
+							this->modelQueueMemory.gv_switch[i][msd_frame] = rawData[head].getState( state ).gv_switch_streams[i];
 							msd_frame++;
 						}
 						frame++;
@@ -314,6 +310,7 @@ void MAGE::ModelQueue::optimizeParameters( MAGE::Engine * engine, unsigned int b
 						for( k = 0; k < ms.stream[i].window.size; k++ )
 						{
 							not_bound = true;
+							
 							for( l = ms.stream[i].window.l_width[k]; l <= ms.stream[i].window.r_width[k]; l++ )
 							{
 								if( frame + l < 0 || total_duration <= frame + l )
@@ -327,38 +324,18 @@ void MAGE::ModelQueue::optimizeParameters( MAGE::Engine * engine, unsigned int b
 							
 							for( l = 0; l < static_length; l++ )
 							{
-								// ATTENTION :: This is not the good way
 								m = static_length * k + l;
 								
-								if( i == 0 ) // mgcs
-								{
-									this->modelQueueMemory.mean[i][frame][m] = rawData[head].getState( state ).streams[mgcStreamIndex][m].mean;
+								this->modelQueueMemory.mean[i][frame][m] = rawData[head].getState( state ).streams[i][m].mean;
 
-									if( not_bound || k == 0 )
-										this->modelQueueMemory.ivar[i][frame][m] = HTS_finv( rawData[head].getState( state ).streams[mgcStreamIndex][m].vari );
-									else
-										this->modelQueueMemory.ivar[i][frame][m] = 0.0;
+								if( not_bound || k == 0 )
+									this->modelQueueMemory.ivar[i][frame][m] = HTS_finv( rawData[head].getState( state ).streams[i][m].vari );
+								else
+									this->modelQueueMemory.ivar[i][frame][m] = 0.0;
 									
-									// ATTENTION :: Loop assignment
-									this->modelQueueMemory.gv_mean[i][m] = rawData[head].getState( 0 ).gv_streams[mgcStreamIndex][m].mean;
-									this->modelQueueMemory.gv_vari[i][m] = rawData[head].getState( 0 ).gv_streams[mgcStreamIndex][m].vari;
-									this->modelQueueMemory.gv_switch[i][m] = rawData[head].getState( 0 ).gv_switch_streams[mgcStreamIndex];
-								}
-								
-								if( i == 2 ) // lpf
-								{
-									this->modelQueueMemory.mean[i][frame][m] = rawData[head].getState( state ).streams[lpfStreamIndex][m].mean;
-									
-									if( not_bound || k == 0 )
-										this->modelQueueMemory.ivar[i][frame][m] = HTS_finv( rawData[head].getState( state ).streams[lpfStreamIndex][m].vari );
-									else
-										this->modelQueueMemory.ivar[i][frame][m] = 0.0;
-									
-									// ATTENTION :: Loop assignment
-									this->modelQueueMemory.gv_mean[i][m] = rawData[head].getState( 0 ).gv_streams[lpfStreamIndex][m].mean;
-									this->modelQueueMemory.gv_vari[i][m] = rawData[head].getState( 0 ).gv_streams[lpfStreamIndex][m].vari;
-									this->modelQueueMemory.gv_switch[i][m] = rawData[head].getState( 0 ).gv_switch_streams[lpfStreamIndex];
-								}
+								this->modelQueueMemory.gv_mean[i][m] = rawData[head].getState( 0 ).gv_streams[i][m].mean;
+								this->modelQueueMemory.gv_vari[i][m] = rawData[head].getState( 0 ).gv_streams[i][m].vari;
+								this->modelQueueMemory.gv_switch[i][m] = rawData[head].getState( 0 ).gv_switch_streams[i];
 							}
 						}
 						frame++;
