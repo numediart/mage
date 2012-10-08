@@ -225,8 +225,11 @@ void MAGE::Mage::setInterpolationFunctions( std::map < std::string, double * > i
 		
 		itEngine = this->engine.find( EngineName );
 		
-		for( int i = 0; i < nOfStreams + 1; i++ )
-			( * itEngine ).second.first[i] = itInterpolationFunction[i];// itInterpolationFunction;
+		if( itEngine != this->engine.end() )
+		{
+			for( int i = 0; i < nOfStreams + 1; i++ )
+				( * itEngine ).second.first[i] = itInterpolationFunction[i];// itInterpolationFunction;
+		}
 	}
 	
 	this->checkInterpolationFunctions();
