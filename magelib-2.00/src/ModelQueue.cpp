@@ -34,13 +34,13 @@ MAGE::ModelQueueMemory::ModelQueueMemory()
 	int k;
 	
 	// for every stream, for every frame, every mean / ivar / optimized parameters / gv_mean / gv_vari / gv_switch
-	this->mean	= ( double *** ) calloc( nOfStreams, sizeof( double ** ) );	// [nOfStreams][maxNumOfFrames][nOfDers * nOfMGCs]
-	this->ivar	= ( double *** ) calloc( nOfStreams, sizeof( double ** ) );	// [nOfStreams][maxNumOfFrames][nOfDers * nOfMGCs]
-	this->par	= ( double *** ) calloc( nOfStreams, sizeof( double ** ) );	// [nOfStreams][maxNumOfFrames][nOfDers * nOfMGCs]
+	this->mean	= ( double *** ) calloc( nOfStreams, sizeof( double ** ) );	// [nOfStreams][maxNumOfFrames][maxStreamLen]
+	this->ivar	= ( double *** ) calloc( nOfStreams, sizeof( double ** ) );	// [nOfStreams][maxNumOfFrames][maxStreamLen]
+	this->par	= ( double *** ) calloc( nOfStreams, sizeof( double ** ) );	// [nOfStreams][maxNumOfFrames][maxStreamLen]
 	
-	this->gv_mean	= ( double ** ) calloc( nOfStreams, sizeof( double * ) );	// [nOfStreams][nOfDers * nOfMGCs]
-	this->gv_vari	= ( double ** ) calloc( nOfStreams, sizeof( double * ) );	// [nOfStreams][nOfDers * nOfMGCs]
-	this->gv_switch = ( int    ** ) calloc( nOfStreams, sizeof( int   * ) );	// [nOfStreams][nOfDers * nOfMGCs]
+	this->gv_mean	= ( double ** ) calloc( nOfStreams, sizeof( double * ) );	// [nOfStreams][maxStreamLen]
+	this->gv_vari	= ( double ** ) calloc( nOfStreams, sizeof( double * ) );	// [nOfStreams][maxStreamLen]
+	this->gv_switch = ( int    ** ) calloc( nOfStreams, sizeof( int   * ) );	// [nOfStreams][maxStreamLen]
 	
 	this->voiced_unvoiced = ( int * ) calloc( maxNumOfFrames, sizeof( int ) );	// [maxNumOfFrames]
 	
@@ -58,15 +58,15 @@ MAGE::ModelQueueMemory::ModelQueueMemory()
 		this->wum [k] = ( double * ) calloc( maxNumOfFrames, sizeof( double   ) );
 		this->g	  [k] = ( double * ) calloc( maxNumOfFrames, sizeof( double   ) );
 		
-		this->gv_mean[k]	= ( double * ) calloc( nOfStreams * nOfDers * nOfMGCs, sizeof( double ) );	
-		this->gv_vari[k]	= ( double * ) calloc( nOfStreams * nOfDers * nOfMGCs, sizeof( double ) );	
-		this->gv_switch[k]	= ( int   * ) calloc( nOfStreams * nOfDers * nOfMGCs, sizeof( int    ) );	
+		this->gv_mean[k]	= ( double * ) calloc( nOfStreams * maxStreamLen, sizeof( double ) );	
+		this->gv_vari[k]	= ( double * ) calloc( nOfStreams * maxStreamLen, sizeof( double ) );	
+		this->gv_switch[k]	= ( int    * ) calloc( nOfStreams * maxStreamLen, sizeof( int    ) );	
 		
 		for( int j = 0; j < maxNumOfFrames; j++ )
 		{
-			this->mean[k][j] = ( double * ) calloc( nOfDers * nOfMGCs, sizeof( double ) );
-			this->ivar[k][j] = ( double * ) calloc( nOfDers * nOfMGCs, sizeof( double ) );
-			this->par [k][j] = ( double * ) calloc( nOfDers * nOfMGCs, sizeof( double ) );
+			this->mean[k][j] = ( double * ) calloc( maxStreamLen, sizeof( double ) );
+			this->ivar[k][j] = ( double * ) calloc( maxStreamLen, sizeof( double ) );
+			this->par [k][j] = ( double * ) calloc( maxStreamLen, sizeof( double ) );
 			this->wuw [k][j] = ( double * ) calloc( maxWindowWidth   , sizeof( double ) );
 		}
 	}	
