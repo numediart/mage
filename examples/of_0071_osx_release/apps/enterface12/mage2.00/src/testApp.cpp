@@ -45,18 +45,12 @@ void testApp::setup( void )
 	// create mage
 	this->mage = new MAGE::Mage();
 	
-	this->mage->addEngine( "slt", "./inouts/slt.conf" );
-	this->mage->addEngine( "awb", "./inouts/awb.conf" );
-
-//	this->mage->addEngine( "clb", "./inouts/clb.conf" );
-
-	//this->mage->addEngine( "slt", "./inouts/bl11.conf" );
-
-	
 	// add clb & awb voice models
-	//this->mage->addEngine( "awb", "./inouts/awb.conf" );
-	//this->mage->addEngine( "slt", "./inouts/slt.conf" );
-	//this->mage->enableInterpolation(true);
+	this->labelFile = "./data/labels/alice01.lab";
+
+	this->mage->addEngine( "slt", "./data/voiceConfig/slt.conf" );
+	this->mage->addEngine( "awb", "./data/voiceConfig/awb.conf" );
+	this->mage->enableInterpolation(true);
 
 	// --- Parameter Generation Thread ---
 	generate = new genThread( this->mage );
@@ -72,7 +66,6 @@ void testApp::setup( void )
 		
 	this->loop = true;
 	this->fill = true;
-	this->labelFile = "./inouts/labels/alice01.lab";
 }
 
 void testApp::exit( void )
