@@ -285,7 +285,7 @@ namespace MAGE
 			// The string query for which all the coefficients are going to be computed.
 			char strQuery[maxStrLen];
 		
-			// Flag checking if the wheights have been already checked.
+			// Flag checking if the weights have been already checked.
 			bool weightsChecked;
 	};
 } // namespace

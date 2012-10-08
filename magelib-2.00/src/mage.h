@@ -349,9 +349,9 @@ namespace MAGE
 			void setDefaultEngine( std::string defaultEngine );
 		
 			/**
-			 *	This function sets a different set of interpolation wheights for every stream of a given engine used.
+			 *	This function sets a different set of interpolation weights for every stream of a given engine used.
 			 *
-			 *	@param interpolationFunctionsSet The name of the engine and the set of interpolation wheights to be set.
+			 *	@param interpolationFunctionsSet The name of the engine and the set of interpolation weights to be set.
 			 */	
 			void setInterpolationFunctions( std::map < std::string, double * > interpolationFunctionsSet ); // interpolation function 
 																					// for the duration & parameter (streams)  models
