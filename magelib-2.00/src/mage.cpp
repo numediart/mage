@@ -212,6 +212,7 @@ void MAGE::Mage::setDefaultEngine( std::string defaultEngine )
 //	This function sets a different set of interpolation weights for every stream of a given engine used.
 void MAGE::Mage::setInterpolationFunctions( std::map < std::string, double * > interpolationFunctionsSet )
 {
+	bool somethingChanged = false;
 	string EngineName;
 	double * itInterpolationFunction;
 	
@@ -227,12 +228,14 @@ void MAGE::Mage::setInterpolationFunctions( std::map < std::string, double * > i
 		
 		if( itEngine != this->engine.end() )
 		{
+			somethingChanged = true;
 			for( int i = 0; i < nOfStreams + 1; i++ )
 				( * itEngine ).second.first[i] = itInterpolationFunction[i];// itInterpolationFunction;
 		}
 	}
 	
-	this->checkInterpolationFunctions();
+	if( somethingChanged )
+		this->checkInterpolationFunctions();
 	
 	return;
 }
