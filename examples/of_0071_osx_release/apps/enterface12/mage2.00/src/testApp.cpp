@@ -45,12 +45,15 @@ void testApp::setup( void )
 	// create mage
 	this->mage = new MAGE::Mage();
 	
+	//this->labelFile = "/Users/Maipn/Documents/PhD/CSTR/Models/bl11/labels/meg_arctic_a0001.lab";
+	//this->mage->addEngine( "bl11", "./data/voiceConfig/bl11.conf" );
+
 	// add clb & awb voice models
 	this->labelFile = "./data/labels/alice01.lab";
 
 	this->mage->addEngine( "slt", "./data/voiceConfig/slt.conf" );
-	this->mage->addEngine( "awb", "./data/voiceConfig/awb.conf" );
-	this->mage->enableInterpolation(true);
+	//this->mage->addEngine( "awb", "./data/voiceConfig/awb.conf" );
+	//this->mage->enableInterpolation(true);
 
 	// --- Parameter Generation Thread ---
 	generate = new genThread( this->mage );

@@ -267,6 +267,7 @@ bool MAGE::Mage::popLabel( void )
 	if( !this->labelQueue->isEmpty() )
 	{
 		this->labelQueue->pop( this->label );
+		printf("Label :: %s\n", this->label.getQuery().c_str());
 		this->label.setSpeed ( this->labelSpeed );
 		return( true );
 	}

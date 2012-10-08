@@ -184,7 +184,10 @@ void MAGE::ModelQueue::generate( MAGE::Engine * engine, FrameQueue * frameQueue,
 			{
 				frame->voiced = true;
 				frame->f0 = exp( this->modelQueueMemory.par[lf0StreamIndex][qlf0][0] );
-
+				
+				// ATTENTION!!! This is for my new models!!!
+				//frame->f0 = 700 * (exp ( this->modelQueueMemory.par[lf0StreamIndex][qlf0][0] / 1127 ) - 1 );
+				//printf("freq : %f\n", frame->f0);
 				qlf0++;
 			} 
 			else

@@ -84,52 +84,22 @@ namespace MAGE
 			int * duration_array;
 		
 // # of MGC coefficients for the MLSA filter & # of derivations: ∆( 0 ), ∆( 1 ), ∆( 3 )
-		
+// fundamental frequency & # of derivations: ∆( 0 ), ∆( 1 ), ∆( 3 )
+// # of low-pass filter coefficients & # of derivations: ∆( 0 ), ∆( 1 ), ∆( 3 )
+
 			/** 
 			 *	\var double * mgc_mean.
 			 *	\brief It contains the mean value of the spectral coefficients stream (including static and dynamic features) 
 			 *			for every State of a given HMM.
 			 */
-			double * mgc_mean; // [nOfDers * nOfMGCs]
+			double ** stream_mean; // [nOfStreams][maxStreamLen]
 		
 			/** 
 			 *	\var double * mgc_vari.
 			 *	\brief It contains the variance value of the spectral coefficients stream (including static and dynamic features) 
 			 *			for every State of a given HMM.
 			 */
-			double * mgc_vari; // [nOfDers * nOfMGCs]
-		
-// fundamental frequency & # of derivations: ∆( 0 ), ∆( 1 ), ∆( 3 )
-		
-			/** 
-			 *	\var double * lf0_mean.
-			 *	\brief It contains the mean value of the fundamental frequency stream (including static and dynamic features) 
-			 *			for every State of a given HMM.
-			 */
-			double * lf0_mean; // [nOfDers * nOfLF0s]
-		
-			/** 
-			 *	\var double * lf0_vari.
-			 *	\brief It contains the variance value of the fundamental frequency stream (including static and dynamic features) 
-			 *			for every State of a given HMM.
-			 */
-			double * lf0_vari; // [nOfDers * nOfLF0s]
-		
-// # of low-pass filter coefficients & # of derivations: ∆( 0 ), ∆( 1 ), ∆( 3 )
-		
-			/** 
-			 *	\var double * lpf_mean.
-			 *	\brief It contains the mean value of the low-pass filter coefficients stream (including static and dynamic features) 
-			 *			for every State of a given HMM.
-			 */
-			double * lpf_mean; // [nOfDers * nOfLPFs]
-			
-			/** 
-			 *	\var double * lpf_vari.
-			 *	\brief It contains the variance value of the low-pass filter coefficients stream (including static and dynamic features) 
-			 *			for every State of a given HMM.
-			 */
-			double * lpf_vari; // [nOfDers * nOfLPFs]
+			double ** stream_vari; // [nOfStreams][maxStreamLen]
 			
 			/** 
 			 *	\var char strQuery.
