@@ -52,6 +52,7 @@ extern "C"
 		char labelPath[1024];
 		vector < string > labels;
 		int currentLabel;
+		
 		Mage *mage;
 	} t_mage_tilde;
 	
@@ -66,6 +67,8 @@ extern "C"
 	
 	//access to MAGE controls
 	void mage_tilde_alpha( t_mage_tilde * x, t_floatarg alpha );
+	void mage_tilde_debug( t_mage_tilde * x );
+	void mage_tilde_interpolation( t_mage_tilde * x, t_symbol *voice, t_floatarg weight );
 	void mage_tilde_label( t_mage_tilde * x, t_symbol *label );
 	void mage_tilde_label_fill( t_mage_tilde * x );
 	void mage_tilde_label_next( t_mage_tilde * x );
@@ -151,6 +154,8 @@ extern "C"
 		
 		class_addmethod(mage_tilde_class, (t_method)mage_tilde_dsp, gensym("dsp"), (t_atomtype) 0);
 		class_addmethod(mage_tilde_class, (t_method)mage_tilde_alpha, gensym("alpha"), A_FLOAT, 0);
+		class_addmethod(mage_tilde_class, (t_method)mage_tilde_debug, gensym("debug"), (t_atomtype) 0);
+		class_addmethod(mage_tilde_class, (t_method)mage_tilde_interpolation, gensym("interpolate"), A_SYMBOL, A_FLOAT, 0);
 		class_addmethod(mage_tilde_class, (t_method)mage_tilde_label, gensym("label"), A_SYMBOL, 0);
 		class_addmethod(mage_tilde_class, (t_method)mage_tilde_label_fill, gensym("labelfill"), (t_atomtype) 0);
 		class_addmethod(mage_tilde_class, (t_method)mage_tilde_label_next, gensym("labelnext"), (t_atomtype) 0);
@@ -240,6 +245,32 @@ extern "C"
 	{
 		x->mage->setAlpha( alpha );
 
+		return;
+	}
+	
+	void mage_tilde_debug( t_mage_tilde * x )
+	{
+		x->mage->printInterpolationWeights();
+
+		return;
+	}
+	
+	void mage_tilde_interpolation( t_mage_tilde * x, t_symbol *voice, t_floatarg weight )
+	{
+		string s(voice->s_name);
+		
+		double interpolationWeights[nOfStreams + 1];
+		map < string, double * > interpolationFunctions;
+		
+		for( unsigned int i = 0; i < nOfStreams + 1; i++ ) 
+		{
+			interpolationWeights[i] = (double) weight;
+		}
+		
+		interpolationFunctions[s] = interpolationWeights;
+		
+		x->mage->setInterpolationFunctions( interpolationFunctions );	
+		
 		return;
 	}
 	

@@ -21,7 +21,7 @@
 #X msg 653 725 reset;
 #X msg 662 200 volume \$1;
 #X obj 814 119 hsl 64 15 20 1000 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 2900 1;
+-1 -1 0 1;
 #X floatatom 839 163 5 0 0 0 - - -;
 #X msg 810 76 set 1;
 #X msg 810 201 pitchoverwrite \$1;
@@ -43,8 +43,18 @@
 #X msg 1119 663 labelreplace 42;
 #X msg 1121 694 labelswitch -15;
 #X obj 1259 539 hsl 64 15 0 200 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 6100 1;
+-1 -1 0 1;
 #X msg 1119 630 labelinsert \$1;
+#X msg 1625 590 bang;
+#X msg 1687 583 stop;
+#X obj 1666 634 metro 250;
+#X obj 284 496 hsl 128 15 0 1 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 12700 1;
+#X obj 39 495 hsl 128 15 0 1 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 5600 1;
+#X msg 281 529 interpolate awb \$1;
+#X msg 34 528 interpolate slt \$1;
+#X msg 562 726 debug;
 #X connect 0 0 1 0;
 #X connect 0 0 1 1;
 #X connect 2 0 0 0;
@@ -83,3 +93,11 @@
 #X connect 36 0 0 0;
 #X connect 37 0 38 0;
 #X connect 38 0 0 0;
+#X connect 39 0 41 0;
+#X connect 40 0 41 0;
+#X connect 41 0 32 0;
+#X connect 42 0 44 0;
+#X connect 43 0 45 0;
+#X connect 44 0 0 0;
+#X connect 45 0 0 0;
+#X connect 46 0 0 0;

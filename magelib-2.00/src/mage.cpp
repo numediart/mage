@@ -507,6 +507,7 @@ void MAGE::Mage::checkReady( void )
 	
 	// I am sure we can fix it in a way that you would be proud of it :: when do we have the next coding meeting?
 	// Oh I am letting messages in the code!! And I am sure you will read it geek!!!
+	// Of course I will ... but will you ? ;-p
 	
 	this->flagReady = false;
 	
