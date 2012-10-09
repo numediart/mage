@@ -332,14 +332,17 @@ void MAGE::Model::computeGlobalVariances( MAGE::Engine * engine, MAGE::Label * l
 	
 	for( k = 0; k < nOfStreams; k++ )
 	{
-		HTS_ModelSet_get_gv( &ms, strQuery, this->modelMemory.stream_mean[k], this->modelMemory.stream_vari[k], k, global.gv_iw[k] );
-		
-		for( i = 0; i < nOfStates; i++ )
+		if( HTS_ModelSet_use_gv( &ms, k ) )
 		{
-			for( j = 0; j < HTS_ModelSet_get_vector_length(&ms, k); j++ )
+			HTS_ModelSet_get_gv( &ms, strQuery, this->modelMemory.stream_mean[k], this->modelMemory.stream_vari[k], k, global.gv_iw[k] );
+		
+			for( i = 0; i < nOfStates; i++ )
 			{
-				this->state[i].gv_streams[k][j].mean = this->modelMemory.stream_mean[k][j];
-				this->state[i].gv_streams[k][j].vari = this->modelMemory.stream_vari[k][j];
+				for( j = 0; j < HTS_ModelSet_get_vector_length(&ms, k); j++ )
+				{
+					this->state[i].gv_streams[k][j].mean = this->modelMemory.stream_mean[k][j];
+					this->state[i].gv_streams[k][j].vari = this->modelMemory.stream_vari[k][j];
+				}
 			}
 		}
 	}	
@@ -358,13 +361,13 @@ void MAGE::Model::computeGlobalVariances( MAGE::Engine * engine, MAGE::Label * l
 	for( i = 0; i < nOfStates; i++ )
 	{
 		//set manually for now
-		this->state[i].gv_switch_streams[mgcStreamIndex] = true;
+		/*this->state[i].gv_switch_streams[mgcStreamIndex] = true;
 		this->state[i].gv_switch_streams[lf0StreamIndex] = true;
 		this->state[i].gv_switch_streams[lpfStreamIndex] = false;
-		
-		/*this->state[i].gv_switch_streams[mgcStreamIndex] = false;
+		*/
+		this->state[i].gv_switch_streams[mgcStreamIndex] = false;
 		this->state[i].gv_switch_streams[lf0StreamIndex] = false;
-		this->state[i].gv_switch_streams[lpfStreamIndex] = false;*/
+		this->state[i].gv_switch_streams[lpfStreamIndex] = false;
 	}
 		
 	return;

@@ -50,7 +50,6 @@ void testApp::setup( void )
 
 	// add clb & awb voice models
 	this->labelFile = "./data/labels/alice01.lab";
-
 	this->mage->addEngine( "slt", "./data/voiceConfig/slt.conf" );
 	//this->mage->addEngine( "awb", "./data/voiceConfig/awb.conf" );
 	//this->mage->enableInterpolation(true);
