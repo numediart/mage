@@ -449,6 +449,8 @@ void MAGE::Mage::addEngine( std::string EngineName, std::string confFilename )
 	
 	this->addEngine( EngineName );
 	
+	this->freeArgv();
+	
  	return;
 }
 
@@ -637,7 +639,7 @@ void MAGE::Mage::parseConfigFile( std::string confFilename )
 	}
 	
 	// configuration arguments
-	this->argv	= ( char ** ) calloc( maxNumOfArguments,sizeof( char * ) );
+	this->argv	= new char*[maxNumOfArguments];
 	
 	while( getline( confFile, line ) )
 	{
@@ -657,6 +659,16 @@ void MAGE::Mage::parseConfigFile( std::string confFilename )
 	this->argc = k;
 
 	return;
+}
+
+void MAGE::Mage::freeArgv( void )
+{
+		
+	for( int k = 0; k < this->argc ; k++ ) {
+		delete[] this->argv[k];
+	}
+	
+	delete[] this->argv;
 }
 
 void MAGE::Mage::checkInterpolationFunctions( void )

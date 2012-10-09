@@ -599,6 +599,11 @@ namespace MAGE
 		
 			void addEngine( std::string name ); // called by addEngine( string, ...)
 			void parseConfigFile( std::string filename );
+			/**
+			 * free memory of this->argv allocated in parseConfigFile
+			 * @return 
+			 */
+			void freeArgv( void );
 			void optimizeParameters( Engine * engine );
 			void checkInterpolationFunctions( void );
 	};
