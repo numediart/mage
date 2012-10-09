@@ -259,6 +259,8 @@ extern "C"
 	{
 		string s(voice->s_name);
 		
+		x->mage->enableInterpolation(true);
+		
 		double interpolationWeights[nOfStreams + 1];
 		map < string, double * > interpolationFunctions;
 		
