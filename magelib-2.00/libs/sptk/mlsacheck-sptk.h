@@ -25,8 +25,7 @@ extern "C" {
 #endif
 	double * mlsacheck(double *mcep, int m, int fftlen, int frame,
 				   double a, double R1, double R2,
-				   Boolean modify_filter, int stable_condition);
-
+				   bool modify_filter, int stable_condition);
 #ifdef	__cplusplus
 }
 #endif
