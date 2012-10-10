@@ -171,6 +171,13 @@ void MAGE::ModelQueue::generate( MAGE::Engine * engine, FrameQueue * frameQueue,
 			//TODO :: memcpy ? (faster ?)
 			for( k = 0; k < nOfMGCs; k++ )
 				frame->mgc[k] = this->modelQueueMemory.par[mgcStreamIndex][qmgc][k];
+			
+			//TODO ::   this is idiotic but it will do for now 
+			double *tmp = mlsacheck(frame->mgc, nOfMGCs, fftLen, qmgc, defaultAlpha, R1, R2, true, 0);
+			
+			//TODO ::   this is idiotic but it will do for now 
+			for( k = 0; k < nOfMGCs; k++ )
+				frame->mgc[k] = tmp[k];
 
 			qmgc++;
 			
