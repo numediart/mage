@@ -221,7 +221,12 @@ namespace MAGE
 	 *	\brief Default value for the pitch parameter.
 	 *
 	 */	
-	const int defaultPitch = 110; // Hz, 
+	const int defaultPitch = 110; // Hz
+	
+	const int useLF0 = 1;
+	
+	const int useMELF0 = 0;
+
 	
 // --- Stream Index --- 
 	

@@ -183,11 +183,13 @@ void MAGE::ModelQueue::generate( MAGE::Engine * engine, FrameQueue * frameQueue,
 			if( rawData[head].getState( s ).streams[lf0StreamIndex][0].msdFlag > global.msd_threshold[lf0StreamIndex] )
 			{
 				frame->voiced = true;
-				frame->f0 = exp( this->modelQueueMemory.par[lf0StreamIndex][qlf0][0] );
 				
-				// ATTENTION!!! This is for my new models!!!
-				//frame->f0 = 700 * (exp ( this->modelQueueMemory.par[lf0StreamIndex][qlf0][0] / 1127 ) - 1 );
-				//printf("freq : %f\n", frame->f0);
+				if( useLF0 )
+					frame->f0 = exp( this->modelQueueMemory.par[lf0StreamIndex][qlf0][0] );
+				
+				if( useMELF0 )
+					frame->f0 = 700 * (exp ( this->modelQueueMemory.par[lf0StreamIndex][qlf0][0] / 1127 ) - 1 );
+			
 				qlf0++;
 			} 
 			else
