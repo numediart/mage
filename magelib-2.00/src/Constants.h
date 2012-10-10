@@ -195,12 +195,19 @@ namespace MAGE
 	 */
 	const int defaultSamplingRate = 48000;
 	
+	const int fftLen = 256;
+	
 	/**
 	 *	\var const int defaultPadeOrder.
 	 *	\brief Default value for the pade order parameter used also during the training phase.
 	 *
 	 */
 	const int defaultPadeOrder = 5;
+	const double R1 = 6.0;
+	const double R2 = 7.65;
+	// const int defaultPadeOrder =  4:
+	// const double R1 = 4.5;
+	// const double R2 = 6.2;
 	
 	/**
 	 *	\var const int defaultGamma.

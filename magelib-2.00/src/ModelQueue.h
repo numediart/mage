@@ -28,6 +28,8 @@
 
 #pragma once
 
+#include "mlsacheck-sptk.h"
+
 #include "MemQueue.h"
 #include "Model.h"
 
