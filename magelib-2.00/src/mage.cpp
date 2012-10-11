@@ -267,7 +267,6 @@ bool MAGE::Mage::popLabel( void )
 	if( !this->labelQueue->isEmpty() )
 	{
 		this->labelQueue->pop( this->label );
-		printf("Label :: %s\n", this->label.getQuery().c_str());
 		this->label.setSpeed ( this->labelSpeed );
 		return( true );
 	}
@@ -465,6 +464,7 @@ void MAGE::Mage::removeEngine( std::string EngineName )
 	if( it != this->engine.end() )
 	{
 		tmpEngine = ( * it ).second;
+		
 		// this should be fast, but if computeDuration/Parameters/checkInterp...
 		// use this->engine at the same time we might have a problem, if it happens,
 		// a lock will be necessary around this erase (! we're out of audio thread)
@@ -498,12 +498,12 @@ void MAGE::Mage::removeEngine( std::string EngineName )
 //	This function prints the current interpolation weights for evert Engine instance in the map. 
 void MAGE::Mage::printInterpolationWeights( void )
 {
-	/*map < std::string, std::pair < double * , Engine * > >::iterator itEngine; // iterator for the map of engines
+	map < std::string, std::pair < double * , Engine * > >::iterator itEngine; // iterator for the map of engines
 	
 	for( itEngine = this->engine.begin(); itEngine != this->engine.end(); itEngine++ )
 		for( int i = 0; i < nOfStreams + 1; i++ )
 			printf("weights %s %f\n", ( * itEngine ).first.c_str(), ( * itEngine ).second.first[i]);
-	*/return;
+	return;
 }
 
 //	This function checks if the currently added Engine instance is initialized and ready to be used. 
@@ -588,10 +588,12 @@ void MAGE::Mage::addEngine( std::string EngineName )
 	{
 		// get a copy of the std::pair containing adresses of pointers
 		tmpEngine = ( * it ).second;
+		
 		// this should be fast, but if computeDuration/Parameters/checkInterp...
 		// use this->engine at the same time we might have a problem, if it happens,
 		// a lock will be necessary around this erase (! we're out of audio thread)
 		this->engine.erase( it );
+		
 		//free existing engine
 		delete[] tmpEngine.first;	// free interpolation weight vector (double *)
 		delete tmpEngine.second;	// free engine (call to ~Engine)

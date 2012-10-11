@@ -81,7 +81,8 @@ namespace MAGE
 	 *			we keep in memory for smoother parameters computation.
 	 *
 	 */
-	const unsigned int nOfLookup = 1;	// # of looked-up labels
+	//const unsigned int nOfLookup = 1;	// # of looked-up labels
+	const unsigned int nOfLookup = 0;	// # of looked-up labels
 	
 	/**
 	 *	\var const unsigned int nOfBackup.

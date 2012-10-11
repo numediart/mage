@@ -107,7 +107,7 @@ double * mlsacheck(double *mcep, int m, int fftlen, int frame,
 		if (mag[i] > R1 || mag[i] > R2)  /* unstable */
 		{
 			/* output ascii report */
-			fprintf(stderr, "[ unstable frame number : %d ]\n", frame);
+		//	fprintf(stderr, "[ unstable frame number : %d ]\n", frame);
 		
 		//	for (i = 0; i < m + 1; i++) 
 		//		fprintf(stderr, "%f\n", mcep[i]);
