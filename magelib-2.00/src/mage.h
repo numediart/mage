@@ -472,6 +472,8 @@ namespace MAGE
 			 *
 			 */
 			void printInterpolationWeights( void );
+			
+			void resetInterpolationWeights( void );
 		
 			/**
 			 *	This function checks if the currently added Engine instance is initialized and ready to be used. 

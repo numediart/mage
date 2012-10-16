@@ -513,6 +513,18 @@ void MAGE::Mage::printInterpolationWeights( void )
 	return;
 }
 
+void MAGE::Mage::resetInterpolationWeights( void )
+{
+	map < std::string, std::pair < double * , Engine * > >::iterator itEngine; // iterator for the map of engines
+	
+	// so that for the interoplation we take into account only the engines passed 
+	// from interpolationFunctionsSet and not all the engines existing into mage
+	for( itEngine = this->engine.begin(); itEngine != this->engine.end(); itEngine++ )
+		for( int i = 0; i < nOfStreams + 1; i++ )
+			( * itEngine ).second.first[i] = 0;
+	return;
+}
+
 //	This function checks if the currently added Engine instance is initialized and ready to be used. 
 void MAGE::Mage::checkReady( void )
 {
