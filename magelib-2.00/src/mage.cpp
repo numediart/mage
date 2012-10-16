@@ -240,8 +240,9 @@ void MAGE::Mage::setInterpolationFunctions( std::map < std::string, double * > i
 		}
 	}
 	
-	if( somethingChanged )
-		this->checkInterpolationFunctions();
+	// NO check for the interpolation weights
+	//if( somethingChanged )
+	//	this->checkInterpolationFunctions();
 	
 	return;
 }
@@ -313,7 +314,7 @@ void MAGE::Mage::reset( void )
 		for( int i = 0; i < nOfStreams + 1; i++ )
 			if( this->interpolationWeights[i] )
 				( * it ).second.first[i] = defaultInterpolationWeight;	
-		
+	
 	this->checkInterpolationFunctions();
 
 	return;
@@ -625,7 +626,9 @@ void MAGE::Mage::addEngine( std::string EngineName )
 	// use this->engine at the same time we might have a problem, if it happens,
 	// a lock will be necessary around this insert (! we're out of audio thread)
 	this->engine[EngineName] = tmpEngine;
-	this->checkInterpolationFunctions();
+	
+	// NO check for the interpolation weights
+	//this->checkInterpolationFunctions();
 
 	if( this->defaultEngine.empty() )
 	{
