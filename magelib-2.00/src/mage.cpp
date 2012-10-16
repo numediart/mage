@@ -219,6 +219,12 @@ void MAGE::Mage::setInterpolationFunctions( std::map < std::string, double * > i
 	map < std::string, double * >::iterator it; // iterator for the map of interpolationFunctions
 	map < std::string, std::pair < double * , Engine * > >::iterator itEngine; // iterator for the map of engines
 	
+	// so that for the interoplation we take into account only the engines passed 
+	// from interpolationFunctionsSet and not all the engines existing into mage
+	//for( itEngine = this->engine.begin(); itEngine != this->engine.end(); itEngine++ )
+	//	for( int i = 0; i < nOfStreams + 1; i++ )
+	//		( * itEngine ).second.first[i] = 0;
+	
 	for( it = interpolationFunctionsSet.begin(); it != interpolationFunctionsSet.end(); it++ ) // for all the interpolation functions
 	{
 		EngineName = ( * it ).first;
@@ -586,6 +592,12 @@ void MAGE::Mage::addEngine( std::string EngineName )
 	// (or write a "reload()" function ?)
 	if( it != this->engine.end() )
 	{
+// OPTION :: nothing, directly return
+		printf("Warning :: Enigine %s already exists\n", EngineName.c_str());
+		return;
+		
+// OPTION :: overwrite the existing Engine
+/*
 		// get a copy of the std::pair containing adresses of pointers
 		tmpEngine = ( * it ).second;
 		
@@ -597,6 +609,7 @@ void MAGE::Mage::addEngine( std::string EngineName )
 		//free existing engine
 		delete[] tmpEngine.first;	// free interpolation weight vector (double *)
 		delete tmpEngine.second;	// free engine (call to ~Engine)
+*/
 	}
 	
 	tmpEngine.first = new double[nOfStreams + 1];
