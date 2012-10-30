@@ -14,6 +14,9 @@
 
 #ignore doc
 [dD]ocumentation
+html
+latex
+*.png
 
 # build directory (build, builds, Build, Builds, ...)
 [bB]uild*
