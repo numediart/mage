@@ -263,7 +263,7 @@ namespace MAGE
 	const int useMELF0 = 1;
 #endif
 	
-	const bool enableMLSAcheck = true; // Hz
+	const bool enableMLSAcheck = true; 
 
 // --- Stream Index --- 
 
