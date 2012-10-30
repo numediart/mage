@@ -28,6 +28,13 @@
 
 #pragma once 
 
+#define Alpha 0.55
+#define PadeOrder 5
+#define NumberOfStreams 3
+
+#define logF0 1
+#define melF0 0
+
 namespace MAGE 
 {
 
@@ -48,6 +55,13 @@ namespace MAGE
 	const unsigned int nOfMGCs = 35;	// # of MGC coefficients for the MLSA filter
 	
 	/**
+	 *	\var const int mgcLen.
+	 *	\brief Number of spectracl coefficients including including static and dynamic features.
+	 *
+	 */		
+	const int mgcLen = nOfDers * nOfMGCs;
+	
+	/**
 	 *	\var const unsigned int nOfLF0s.
 	 *	\brief Number of fundamental frequency coefficients (here it is a single value).
 	 *
@@ -55,11 +69,34 @@ namespace MAGE
 	const unsigned int nOfLF0s = 1;		// fundamental frequency is a single value
 	
 	/**
+	 *	\var const int mgcLen.
+	 *	\brief Number of fundamental frequency coefficients including including static and dynamic features.
+	 *
+	 */	
+	const int lf0Len = nOfDers * nOfLF0s;	
+	
+	/**
 	 *	\var const unsigned int nOfLPFs.
 	 *	\brief Number of low-pass filter coefficients.
 	 *
 	 */
 	const unsigned int nOfLPFs = 31;	// # of low-pass filter coefficients
+	
+	/**
+	 *	\var const int mgcLen.
+	 *	\brief Number of low-pass filter coefficients including including static and dynamic features.
+	 *
+	 */	
+	const int lpfLen = nOfDers * nOfLPFs;
+	
+	const int maxStreamLen = nOfDers * nOfMGCs;
+
+	/**
+	 *	\var const int maxWindowWidth.
+	 *	\brief Maximum number for the coefficients of a window.
+	 *
+	 */	
+	const int maxWindowWidth = 50;
 	
 	/**
 	 *	\var const unsigned int nOfStates.
@@ -73,7 +110,10 @@ namespace MAGE
 	 *	\brief Number of streams, here mgcs, lf0, lpf.
 	 *
 	 */
-	const unsigned int nOfStreams = 3;	// # of streams : mgcs, lf0, lpf
+	const unsigned int nOfStreams = NumberOfStreams;	// # of streams : mgcs, lf0, lpf
+	
+	
+// --- Queues ---
 	
 	/**
 	 *	\var const unsigned int nOfLookup.
@@ -90,16 +130,11 @@ namespace MAGE
 	 *			we keep in memory for smoother parameters computation.
 	 *
 	 */
-	const unsigned int nOfBackup = 2;	// # of backed-up labels( models in modelqueue actually )
-										// this is the number of labels/models already used that 
-										// we keep in memory for smoother parameters computation
-	 
-	/**
-	 *	\var const int maxWindowWidth.
-	 *	\brief Maximum number for the coefficients of a window.
-	 *
-	 */	
-	const int maxWindowWidth = 50;
+	const unsigned int nOfBackup = 2;	
+	// # of backed-up labels( models in modelqueue actually )
+	// this is the number of labels/models already used that 
+	// we keep in memory for smoother parameters computation
+	
 	
 	/**
 	 *	\var const int maxNumOfFrames.
@@ -113,36 +148,11 @@ namespace MAGE
 	 *	\brief Maximum number of frames per model since ModelQueueMemory has only maxNumOfFrames allocated.
 	 *
 	 */
-	const int maxDuration = ( int ) maxNumOfFrames / ( nOfBackup + nOfLookup + 1 ); //	fix for memory overflow in optimizeParameters.
-																					//	ModelQueueMemory has only maxNumOfFrames allocated) 
-																					//	which means 'maxNumOfFrames/(nofLookup+nofBackup+1)'
-																					//	frames per model.
-
-	const int maxStreamLen = nOfDers * nOfMGCs;
-
-	/**
-	 *	\var const int mgcLen.
-	 *	\brief Number of spectracl coefficients including including static and dynamic features.
-	 *
-	 */		
-	const int mgcLen = nOfDers * nOfMGCs;
-	
-	/**
-	 *	\var const int mgcLen.
-	 *	\brief Number of fundamental frequency coefficients including including static and dynamic features.
-	 *
-	 */	
-	const int lf0Len = nOfDers * nOfLF0s;
-	
-	/**
-	 *	\var const int mgcLen.
-	 *	\brief Number of low-pass filter coefficients including including static and dynamic features.
-	 *
-	 */	
-	const int lpfLen = nOfDers * nOfLPFs;
-	
-	
-// --- Queues ---
+	const int maxDuration = ( int ) maxNumOfFrames / ( nOfBackup + nOfLookup + 1 ); 
+	//	fix for memory overflow in optimizeParameters.
+	//	ModelQueueMemory has only maxNumOfFrames allocated) 
+	//	which means 'maxNumOfFrames/(nofLookup+nofBackup+1)'
+	//	frames per model.
 	
 	/**
 	 *	\var const int maxLabelQueueLen.
@@ -173,7 +183,7 @@ namespace MAGE
 	 *	\brief Default value for the alpha parameter used also during the training phase.
 	 *
 	 */
-	const double defaultAlpha = 0.55;
+	const double defaultAlpha = Alpha;
 	
 	/**
 	 *	\var const int defaultFrameRate.
@@ -203,12 +213,17 @@ namespace MAGE
 	 *	\brief Default value for the pade order parameter used also during the training phase.
 	 *
 	 */
-	const int defaultPadeOrder = 5;
+	const int defaultPadeOrder = PadeOrder;
+
+#if PadeOrder == 5
 	const double R1 = 6.0;
 	const double R2 = 7.65;
-	// const int defaultPadeOrder =  4:
-	// const double R1 = 4.5;
-	// const double R2 = 6.2;
+#endif
+
+#if PadeOrder == 4
+	const double R1 = 4.5;
+	const double R2 = 6.2;
+#endif	
 	
 	/**
 	 *	\var const int defaultGamma.
@@ -230,14 +245,45 @@ namespace MAGE
 	 *
 	 */	
 	const int defaultPitch = 110; // Hz
-	
-	const int useLF0 = 1;
-	
-	const int useMELF0 = 0;
 
+#if logF0 == 1
+	const int useLF0 = 1;
+	const int useMELF0 = 0;
+#endif
+	
+#if melF0 == 1
+	const int useLF0 = 0;
+	const int useMELF0 = 1;
+#endif
+	
 	
 // --- Stream Index --- 
+
+#if NumberOfStreams == 2
+	/**
+	 *	\var const int mgcStreamIndex.
+	 *	\brief Index number for the spectracl coefficients stream.
+	 *
+	 */
+	const int mgcStreamIndex = 0; // mgc stream index
 	
+	/**
+	 *	\var const int lf0StreamIndex.
+	 *	\brief Index number for the fundamental frequency stream.
+	 *
+	 */
+	const int lf0StreamIndex = 1; // lf0 stream index
+	
+	/**
+	 *	\var const int durStreamIndex.
+	 *	\brief Index number for the State duration stream.
+	 *
+	 */
+	const int durStreamIndex = 2; // duration stream index
+#endif
+
+	
+#if NumberOfStreams == 3
 	/**
 	 *	\var const int mgcStreamIndex.
 	 *	\brief Index number for the spectracl coefficients stream.
@@ -265,6 +311,7 @@ namespace MAGE
 	 *
 	 */
 	const int durStreamIndex = 3; // duration stream index
+#endif
 	
 // --- Actions ---
 
