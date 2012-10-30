@@ -88,15 +88,19 @@ namespace MAGE
 // # of low-pass filter coefficients & # of derivations: ∆( 0 ), ∆( 1 ), ∆( 3 )
 
 			/** 
-			 *	\var double * mgc_mean.
-			 *	\brief It contains the mean value of the spectral coefficients stream (including static and dynamic features) 
+			 *	\var double * stream_mean.
+			 *	\brief It contains the mean value of the spectral coefficients stream, 
+			 *			the fundamental frequency coefficient stream and the low-pass 
+			 *			filter coefficients stream (including static and dynamic features) 
 			 *			for every State of a given HMM.
 			 */
 			double ** stream_mean; // [nOfStreams][maxStreamLen]
 		
 			/** 
-			 *	\var double * mgc_vari.
-			 *	\brief It contains the variance value of the spectral coefficients stream (including static and dynamic features) 
+			 *	\var double * stream_vari.
+			 *	\brief It contains the variance value of the spectral coefficients stream, 
+			 *			the fundamental frequency coefficient stream and the low-pass 
+			 *			filter coefficients stream (including static and dynamic features) 
 			 *			for every State of a given HMM.
 			 */
 			double ** stream_vari; // [nOfStreams][maxStreamLen]

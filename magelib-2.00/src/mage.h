@@ -468,11 +468,15 @@ namespace MAGE
 																								// for the duration & parameter (streams) models
 		
 			/**
-			 *	This function prints the current interpolation weights for evert Engine instance in the map. 
+			 *	This function prints the current interpolation weights for every Engine instance in the map. 
 			 *
 			 */
 			void printInterpolationWeights( void );
 			
+			/**
+			 *	This function resets the current interpolation weights for every Engine instance in the map to zero. 
+			 *
+			 */
 			void resetInterpolationWeights( void );
 		
 			/**

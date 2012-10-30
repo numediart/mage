@@ -57,26 +57,32 @@ namespace MAGE
 // global variances switch
 
 		/** 
-		 *	\var bool mgc_gv_switch.
-		 *	\brief It contains the global variance flag of the spectral stream for every state of a given HMM.
+		 *	\var bool gv_switch_streams.
+		 *	\brief It contains the global variance flag of the spectral coefficients stream, 
+		 *			the fundamental frequency coefficient stream and the low-pass 
+		 *			filter coefficients stream for every state of a given HMM.
 		 */
 		bool gv_switch_streams[nOfStreams];
 	
 // parameters loaded from trees
 		
 		/** 
-		 *	\var Distribution mgc.
-		 *	\brief It contains the gaussian distribution (including static and dynamic features) 
-		 *			of the spectral stream for every state of a given HMM.
+		 *	\var Distribution streams.
+		 *	\brief It contains the gaussian distribution the spectral coefficients stream, 
+		 *			the fundamental frequency coefficient stream and the low-pass 
+		 *			filter coefficients stream (including static and dynamic features) 
+		 *			for every state of a given HMM.
 		 */
 		Distribution streams[nOfStreams][maxStreamLen];
 		
 // global variances
 		
 		/** 
-		 *	\var Distribution gv_mgc.
-		 *	\brief It contains the gaussian distribution (including static and dynamic features) 
-		 *			of the global variance of the spectral stream for every state of a given HMM.
+		 *	\var Distribution gv_streams.
+		 *	\brief It contains the gaussian distribution of the global variance of 
+		 *			the spectral coefficients stream, the fundamental frequency 
+		 *			coefficient stream and the low-pass filter coefficients stream 
+		 *			(including static and dynamic features) for every state of a given HMM.
 		 */
 		Distribution gv_streams[nOfStreams][maxStreamLen];
 		

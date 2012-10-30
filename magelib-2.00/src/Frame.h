@@ -47,6 +47,13 @@ namespace MAGE
 	 */	
 	struct Frame 
 	{
+		/** 
+		 *	\var double streams.
+		 *	\brief It contains the generated parameter trajectories for the spectral 
+		 *			coefficients stream, the fundamental frequency coefficient stream 
+		 *			and the low-pass filter coefficients stream (including static and 
+		 *			dynamic features) for every state of a given HMM.
+		 */
 		double streams[nOfStreams][maxStreamLen];
 		
 		/** 

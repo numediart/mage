@@ -45,7 +45,7 @@ PROJECT_BRIEF          = "The performative HMM-based speech synthesis system"
 # exceed 55 pixels and the maximum width should not exceed 200 pixels. 
 # Doxygen will copy the logo to the output directory.
 
-PROJECT_LOGO           = "/Users/Maipn/Documents/PhD/MAGE Documents/MAGE_Logos/mage_logo_Final/mage_logo_icon_48x48.png"
+PROJECT_LOGO           = "/Users/Maipn/Documents/PhD/Mage/MAGE_Logos/mage_logo_Final/mage_logo_icon_48x48.png"
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) 
 # base path where the generated documentation will be put. 
