@@ -133,7 +133,7 @@ namespace MAGE
 			 *	\var int voiced_unvoiced.
 			 *	\brief It contains the voiced / unvoiced flag sequence of every Frame.
 			 */		
-			int * voiced_unvoiced; // [maxNumOfFrames]
+			int * voiced_unvoiced; // [maxNumOfFrames]		
 	};
 	
 	/** 

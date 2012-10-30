@@ -28,12 +28,19 @@
 
 #pragma once 
 
-#define Alpha 0.55
-#define PadeOrder 5
-#define NumberOfStreams 3
+#define HTS 0 // HTS 
 
-#define logF0 1
-#define melF0 0
+#define mode HTS 
+
+#if mode == HTS
+	#define Alpha 0.55
+	#define PadeOrder 5
+	#define NumberOfStreams 3 
+
+	#define logF0 1
+	#define melF0 0
+	#define NumberOfMGCs 35		// # of MGC coefficients for the MLSA filter	
+#endif
 
 namespace MAGE 
 {
@@ -52,7 +59,7 @@ namespace MAGE
 	 *	\brief Number of spectral coefficients for the MLSA filter.
 	 *
 	 */
-	const unsigned int nOfMGCs = 35;	// # of MGC coefficients for the MLSA filter
+	const unsigned int nOfMGCs = NumberOfMGCs;	// # of MGC coefficients for the MLSA filter
 	
 	/**
 	 *	\var const int mgcLen.
@@ -256,7 +263,8 @@ namespace MAGE
 	const int useMELF0 = 1;
 #endif
 	
-	
+	const bool enableMLSAcheck = true; // Hz
+
 // --- Stream Index --- 
 
 #if NumberOfStreams == 2

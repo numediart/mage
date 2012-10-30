@@ -44,7 +44,7 @@ void MAGE::FrameQueue::printQueue( void )
 	for( int k = 0; k < nOfItems; k++ )
 	{
 		head = ( read + k ) % length;
-		printf( "( %i: %f )", head, rawData[head].f0 );
+		printf( "( %i: %f )", head, rawData[head].streams[lf0StreamIndex][0] );
 	}
 	
 	printf( "\n" );

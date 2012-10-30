@@ -359,16 +359,14 @@ void MAGE::Model::computeGlobalVariances( MAGE::Engine * engine, MAGE::Label * l
 	}
 	
 	for( i = 0; i < nOfStates; i++ )
-	{
+		for( j = 0; j < nOfStreams; j++ )
+			this->state[i].gv_switch_streams[j] = false;
+			
 		//set manually for now
 		/*this->state[i].gv_switch_streams[mgcStreamIndex] = true;
 		this->state[i].gv_switch_streams[lf0StreamIndex] = true;
 		this->state[i].gv_switch_streams[lpfStreamIndex] = false;
 		*/
-		this->state[i].gv_switch_streams[mgcStreamIndex] = false;
-		this->state[i].gv_switch_streams[lf0StreamIndex] = false;
-		this->state[i].gv_switch_streams[lpfStreamIndex] = false;
-	}
 		
 	return;
 }

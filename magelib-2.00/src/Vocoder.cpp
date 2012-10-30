@@ -166,7 +166,7 @@ void MAGE::Vocoder::push( Frame &frame, bool ignoreVoicing )
 	{
 		movem( cc, c, sizeof( * cc ), m + 1 );
 		
-		mc2b( frame.mgc, cc, m, alpha );
+		mc2b( frame.streams[mgcStreamIndex], cc, m, alpha );
 		
 		if( stage != 0 ) // MGLSA
 		{
@@ -181,7 +181,7 @@ void MAGE::Vocoder::push( Frame &frame, bool ignoreVoicing )
 	{
 		flagFirstPush = false;
 		
-		mc2b( frame.mgc, c, m, alpha );
+		mc2b( frame.streams[mgcStreamIndex], c, m, alpha );
 		
 		if( stage != 0 ) // MGLSA
 		{ 
@@ -206,17 +206,17 @@ void MAGE::Vocoder::push( Frame &frame, bool ignoreVoicing )
 			break;
 			
 		case MAGE::shift:
-			this->f0 = ( frame.f0 ) + ( this->actionValue ); // Hz
+			this->f0 = ( frame.streams[lf0StreamIndex][0]  ) + ( this->actionValue ); // Hz
 			break;
 			
 		case MAGE::scale:
-			this->f0 = ( frame.f0 ) * ( this->actionValue );  // Hz
+			this->f0 = ( frame.streams[lf0StreamIndex][0]  ) * ( this->actionValue );  // Hz
 			break;
 			
 		case MAGE::synthetic:
 		case MAGE::noaction:
 		default:
-			this->f0 = frame.f0;
+			this->f0 = frame.streams[lf0StreamIndex][0] ;
 	}
 	
 	if( this->f0 < 0 )
@@ -240,7 +240,7 @@ void MAGE::Vocoder::push( Frame * frame, bool ignoreVoicing )
 	{
 		movem( cc, c, sizeof( * cc ), m + 1 );
 		
-		mc2b( frame->mgc, cc, m, alpha );
+		mc2b( frame->streams[mgcStreamIndex], cc, m, alpha );
 		
 		if( stage != 0 ) /* MGLSA*/
 		{
@@ -255,7 +255,7 @@ void MAGE::Vocoder::push( Frame * frame, bool ignoreVoicing )
 	{
 		flagFirstPush = false;
 		
-		mc2b( frame->mgc, c, m, alpha );
+		mc2b( frame->streams[mgcStreamIndex], c, m, alpha );
 		
 		if( stage != 0 ) // MGLSA
 		{ 
@@ -280,17 +280,17 @@ void MAGE::Vocoder::push( Frame * frame, bool ignoreVoicing )
 			break;
 			
 		case MAGE::shift:
-			this->f0 = ( frame->f0 ) + ( this->actionValue ); // Hz
+			this->f0 = ( frame->streams[lf0StreamIndex][0]  ) + ( this->actionValue ); // Hz
 			break;
 			
 		case MAGE::scale:
-			this->f0 = ( frame->f0 ) * ( this->actionValue );  // Hz
+			this->f0 = ( frame->streams[lf0StreamIndex][0]  ) * ( this->actionValue );  // Hz
 			break;
 			
 		case MAGE::synthetic:
 		case MAGE::noaction:
 		default:
-			this->f0 = frame->f0;
+			this->f0 = frame->streams[lf0StreamIndex][0] ;
 	}
 	
 	if( this->f0 < 0 )

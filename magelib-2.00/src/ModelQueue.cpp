@@ -32,7 +32,7 @@
 MAGE::ModelQueueMemory::ModelQueueMemory()
 {
 	int k;
-	
+
 	// for every stream, for every frame, every mean / ivar / optimized parameters / gv_mean / gv_vari / gv_switch
 	this->mean	= ( double *** ) calloc( nOfStreams, sizeof( double ** ) );	// [nOfStreams][maxNumOfFrames][maxStreamLen]
 	this->ivar	= ( double *** ) calloc( nOfStreams, sizeof( double ** ) );	// [nOfStreams][maxNumOfFrames][maxStreamLen]
@@ -129,15 +129,17 @@ MAGE::ModelQueue::~ModelQueue()
 //	This function generates the PDF parameters of every stream.
 void MAGE::ModelQueue::generate( MAGE::Engine * engine, FrameQueue * frameQueue, unsigned int backup )
 {
+	HTS_ModelSet ms = engine->getModelSet();
 	HTS_Global global = engine->getGlobal();
 
 	//TODO :: actual frame generation with vocoder
-	unsigned int k, s, q, qmgc, qlf0, qlpf, w, ind;
+	unsigned int i, k, s, q, w, ind;
+	unsigned int qStream[nOfStreams];
 	
 	head = ( read + backup ) % length;	// then we land on the correct model( backup models 
 										// have already been used, let's forget about them )
-	
-	qmgc = qlf0 = qlpf = 0;
+	for( i = 0; i < nOfStreams; i++ )
+		qStream[i] = 0;
 	
 	for( w = 0; w < backup; w++ )
 	{
@@ -145,14 +147,16 @@ void MAGE::ModelQueue::generate( MAGE::Engine * engine, FrameQueue * frameQueue,
 		
 		for( s = 0; s < nOfStates; s++ )
 		{
-			qmgc += rawData[ind].getState( s ).duration;
-			qlpf += rawData[ind].getState( s ).duration;
-			
 			//this is totally idiotic because it has already been computed in optimizeparameters
 			//thus it should be saved there and re-used here
-			
-			if( rawData[ind].getState( s ).streams[lf0StreamIndex][0].msdFlag > global.msd_threshold[lf0StreamIndex] )
-				qlf0 += rawData[ind].getState( s ).duration;
+			for( i = 0; i < nOfStreams; i++ )
+			{
+				if( i != lf0StreamIndex )
+					qStream[i] += rawData[ind].getState( s ).duration;
+				else
+					if( rawData[ind].getState( s ).streams[i][0].msdFlag > global.msd_threshold[i] )
+						qStream[i] += rawData[ind].getState( s ).duration;
+			}
 		}
 	}
 	
@@ -168,41 +172,47 @@ void MAGE::ModelQueue::generate( MAGE::Engine * engine, FrameQueue * frameQueue,
 			
 			frame = frameQueue->next();
 			
-			//TODO :: memcpy ? (faster ?)
-			for( k = 0; k < nOfMGCs; k++ )
-				frame->mgc[k] = this->modelQueueMemory.par[mgcStreamIndex][qmgc][k];
-			
-			//TODO ::   this is idiotic but it will do for now 
-			double *tmp = mlsacheck(frame->mgc, nOfMGCs, fftLen, qmgc, defaultAlpha, R1, R2, true, 0);
-			
-			//TODO ::   this is idiotic but it will do for now 
-			for( k = 0; k < nOfMGCs; k++ )
-				frame->mgc[k] = tmp[k];
-
-			qmgc++;
-			
-			//TODO :: memcpy ? (faster ?)
-			for( k = 0; k < nOfLPFs; k++ )
-				frame->lpf[k] = this->modelQueueMemory.par[lpfStreamIndex][qlpf][k];
+			for( i = 0; i < nOfStreams; i++ )
+			{
+				int index = qStream[i];
 	
-			qlpf++;
-			
-			if( rawData[head].getState( s ).streams[lf0StreamIndex][0].msdFlag > global.msd_threshold[lf0StreamIndex] )
-			{
-				frame->voiced = true;
-				
-				if( useLF0 )
-					frame->f0 = exp( this->modelQueueMemory.par[lf0StreamIndex][qlf0][0] );
-				
-				if( useMELF0 )
-					frame->f0 = 700 * (exp ( this->modelQueueMemory.par[lf0StreamIndex][qlf0][0] / 1127 ) - 1 );
-			
-				qlf0++;
-			} 
-			else
-			{
-				frame->voiced = false;
-				frame->f0 = 0;
+				if ( i == lf0StreamIndex )
+				{
+					if( rawData[head].getState( s ).streams[i][0].msdFlag > global.msd_threshold[i] )
+					{						
+						frame->voiced = true;
+						
+						if( useLF0 )
+							frame->streams[i][0] = exp( this->modelQueueMemory.par[i][index][0] );
+						
+						if( useMELF0 )
+							frame->streams[i][0] = 700 * (exp ( this->modelQueueMemory.par[i][index][0] / 1127 ) - 1 );
+						
+						qStream[i]++;
+					} 
+					else
+					{
+						frame->voiced = false;
+						frame->streams[i][0] = 0;
+					}
+				}
+				else
+				{	
+					//TODO :: memcpy ? (faster ?)
+					for( k = 0; k < ms.stream[i].vector_length; k++ )
+						frame->streams[i][k] = this->modelQueueMemory.par[i][index][k];
+					qStream[i]++;
+
+					if( enableMLSAcheck && i == mgcStreamIndex)
+					{
+						//TODO ::   this is idiotic but it will do for now 
+						double *tmp = mlsacheck(frame->streams[mgcStreamIndex], nOfMGCs, fftLen, index, defaultAlpha, R1, R2, true, 0);
+					
+						//TODO ::   this is idiotic but it will do for now 
+						for( k = 0; k < nOfMGCs; k++ )
+							frame->streams[mgcStreamIndex][k] = tmp[k];
+					}
+				}		
 			}
 			
 			frameQueue->push();
@@ -234,7 +244,7 @@ void MAGE::ModelQueue::optimizeParameters( MAGE::Engine * engine, unsigned int b
 	
 	for( w = 0; w < window; w++ )	// for every model 
 	{ 
-		for( state = 0; state < ms.nstate; state++ )// for every state
+		for( state = 0; state < nOfStates; state++ )// for every state
 		{
 			for( j = 0; j < rawData[head].getState( state ).duration; j++, frame++ )// for every frame
 			{
@@ -259,7 +269,7 @@ void MAGE::ModelQueue::optimizeParameters( MAGE::Engine * engine, unsigned int b
 			frame = 0, msd_frame = 0;
 			for( w = 0; w < window; w++ )
 			{
-				for( state = 0; state < ms.nstate; state++ ) // for every state
+				for( state = 0; state < nOfStates; state++ ) // for every state
 				{
 					for( j = 0; j < rawData[head].getState( state ).duration; j++ ) // for every frame
 					{
@@ -312,7 +322,7 @@ void MAGE::ModelQueue::optimizeParameters( MAGE::Engine * engine, unsigned int b
 			
 			for( w = 0; w < window; w++ )
 			{
-				for( state = 0; state < ms.nstate; state++ ) // for every state
+				for( state = 0; state < nOfStates; state++ ) // for every state
 				{
 					for( j = 0; j < rawData[head].getState( state ).duration; j++ ) // for every frame
 					{
@@ -389,6 +399,7 @@ void MAGE::ModelQueue::optimizeParameters( MAGE::Engine * engine, unsigned int b
 		
 		HTS_PStream_mlpg( &pss );			// parameter generation 
 	}
+
 	return;
 }
 

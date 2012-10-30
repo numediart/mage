@@ -47,23 +47,7 @@ namespace MAGE
 	 */	
 	struct Frame 
 	{
-		/** 
-		 *	\var double mgc.
-		 *	\brief It contains the spectral coefficients (including only the static features) that will be used for the synthesis
-		 */
-		double mgc[nOfMGCs];
-
-		/** 
-		 *	\var double lpf.
-		 *	\brief It contains the low-pass filter coefficients (including only the static features) that will be used for the synthesis.
-		 */
-		double lpf[nOfLPFs];
-		
-		/** 
-		 *	\var double f0.
-		 *	\brief It contains the fundamental frequency that will be used for the synthesis.
-		 */
-		double f0;
+		double streams[nOfStreams][maxStreamLen];
 		
 		/** 
 		 *	\var bool voiced.
