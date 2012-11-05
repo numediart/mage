@@ -219,7 +219,7 @@ void MAGE::Mage::setInterpolationFunctions( std::map < std::string, double * > i
 	map < std::string, double * >::iterator it; // iterator for the map of interpolationFunctions
 	map < std::string, std::pair < double * , Engine * > >::iterator itEngine; // iterator for the map of engines
 	
-	// so that for the interoplation we take into account only the engines passed 
+	// so that for the interpolation we take into account only the engines passed 
 	// from interpolationFunctionsSet and not all the engines existing into mage
 	//for( itEngine = this->engine.begin(); itEngine != this->engine.end(); itEngine++ )
 	//	for( int i = 0; i < nOfStreams + 1; i++ )
@@ -517,7 +517,7 @@ void MAGE::Mage::resetInterpolationWeights( void )
 {
 	map < std::string, std::pair < double * , Engine * > >::iterator itEngine; // iterator for the map of engines
 	
-	// so that for the interoplation we take into account only the engines passed 
+	// so that for the interpolation we take into account only the engines passed 
 	// from interpolationFunctionsSet and not all the engines existing into mage
 	for( itEngine = this->engine.begin(); itEngine != this->engine.end(); itEngine++ )
 		for( int i = 0; i < nOfStreams + 1; i++ )
@@ -552,7 +552,7 @@ void MAGE::Mage::checkReady( void )
 	return;
 }
 
-//	This function returns the current time and day. 
+//	This function returns the compilation time and day. 
 std::string MAGE::Mage::timestamp( void )
 {
 	string d( __DATE__ );

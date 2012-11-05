@@ -41,7 +41,7 @@ using namespace std;
 namespace MAGE 
 {
 	/** 
-	 *  \brief		The the default HTS Engine used for HMM-based Speech Synthesis as provided by http://hts.sp.nitech.ac.jp/ .
+	 *  \brief		The default HTS Engine used for HMM-based Speech Synthesis as provided by http://hts.sp.nitech.ac.jp/ .
 	 *  \details	This class is used to define the default Engine instance to be used in Mage (here HTS Engine).
 	 *
 	 *  \authors    Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
