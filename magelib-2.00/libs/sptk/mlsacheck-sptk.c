@@ -71,7 +71,7 @@
 
 double * mlsacheck(double *mcep, int m, int fftlen, int frame,
                double a, double R1, double R2,
-               bool modify_filter, int stable_condition)
+               int modify_filter, int stable_condition)
 {
 	int i;
 	double K, r, *x, *y, *mag;

@@ -1,4 +1,4 @@
-/* ----------------------------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------------------------- */
 /* 																								*/
 /* 	This file is part of MAGE / pHTS( the performative HMM-based speech synthesis system )		*/
 /* 																								*/
@@ -24,11 +24,11 @@
 /* 																								*/
 /* 		Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit	*/
 /* 																								*/
-/* ----------------------------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------------------------- */
 
 /** 
- * 	 @file	mage~.cpp
- * 	 @author A. Moinet
+ * 	 @file			mage~.cpp
+ *	 @author		Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
  */
 
 #include "m_pd.h"
@@ -56,7 +56,6 @@ extern "C"
 		Mage *mage;
 	} t_mage_tilde;
 	
-	//void *mage_tilde_new(t_symbol *s, t_floatarg f);
 	void *mage_tilde_new( void );
 	t_int *mage_tilde_perform( t_int * w );
 	void mage_tilde_dsp( t_mage_tilde * x, t_signal ** sp );
@@ -66,7 +65,8 @@ extern "C"
 	void * genThread( void * argv );
 	
 	//access to MAGE controls
-	void mage_tilde_alpha( t_mage_tilde * x, t_floatarg alpha );
+	void mage_tilde_set( t_mage_tilde *x, t_symbol *selector, int argc, t_atom *argv);
+	
 	void mage_tilde_debug( t_mage_tilde * x );
 	void mage_tilde_interpolation( t_mage_tilde * x, t_symbol *voice, t_floatarg weight );
 	void mage_tilde_label( t_mage_tilde * x, t_symbol *label );
@@ -80,8 +80,6 @@ extern "C"
 	void mage_tilde_pitch_shift( t_mage_tilde * x, t_floatarg pitch );
 	void mage_tilde_pitch_synth( t_mage_tilde * x );
 	void mage_tilde_reset( t_mage_tilde * x );
-	void mage_tilde_speed( t_mage_tilde * x, t_floatarg speed );
-	void mage_tilde_volume( t_mage_tilde * x, t_floatarg volume );
 	
 	void fillLabels( t_mage_tilde * x )
 	{
@@ -153,22 +151,26 @@ extern "C"
 		post("_setup : blocksize = %d",sys_getblksize());
 		
 		class_addmethod(mage_tilde_class, (t_method)mage_tilde_dsp, gensym("dsp"), (t_atomtype) 0);
-		class_addmethod(mage_tilde_class, (t_method)mage_tilde_alpha, gensym("alpha"), A_FLOAT, 0);
 		class_addmethod(mage_tilde_class, (t_method)mage_tilde_debug, gensym("debug"), (t_atomtype) 0);
 		class_addmethod(mage_tilde_class, (t_method)mage_tilde_interpolation, gensym("interpolate"), A_SYMBOL, A_FLOAT, 0);
+		class_addmethod(mage_tilde_class, (t_method)mage_tilde_reset, gensym("reset"), (t_atomtype) 0);
+
+		// Labels
 		class_addmethod(mage_tilde_class, (t_method)mage_tilde_label, gensym("label"), A_SYMBOL, 0);
 		class_addmethod(mage_tilde_class, (t_method)mage_tilde_label_fill, gensym("labelfill"), (t_atomtype) 0);
 		class_addmethod(mage_tilde_class, (t_method)mage_tilde_label_next, gensym("labelnext"), (t_atomtype) 0);
 		class_addmethod(mage_tilde_class, (t_method)mage_tilde_label_insert, gensym("labelinsert"), A_FLOAT, 0);
 		class_addmethod(mage_tilde_class, (t_method)mage_tilde_label_replace, gensym("labelreplace"), A_FLOAT, 0);
 		class_addmethod(mage_tilde_class, (t_method)mage_tilde_label_switch, gensym("labelswitch"), A_FLOAT, 0);
-		class_addmethod(mage_tilde_class, (t_method)mage_tilde_pitch_overwrite, gensym("pitchoverwrite"), A_FLOAT, 0);
-		class_addmethod(mage_tilde_class, (t_method)mage_tilde_pitch_scale, gensym("pitchscale"), A_FLOAT, 0);
-		class_addmethod(mage_tilde_class, (t_method)mage_tilde_pitch_shift, gensym("pitchshift"), A_FLOAT, 0);
-		class_addmethod(mage_tilde_class, (t_method)mage_tilde_pitch_synth, gensym("pitchsynth"), (t_atomtype) 0);
-		class_addmethod(mage_tilde_class, (t_method)mage_tilde_reset, gensym("reset"), (t_atomtype) 0);
-		class_addmethod(mage_tilde_class, (t_method)mage_tilde_speed, gensym("speed"), A_FLOAT, 0);
-		class_addmethod(mage_tilde_class, (t_method)mage_tilde_volume, gensym("volume"), A_FLOAT, 0);
+		
+		// Settings 
+		class_addmethod(mage_tilde_class, (t_method)mage_tilde_set, gensym("set"), A_GIMME, 0);
+		class_addmethod(mage_tilde_class, (t_method)mage_tilde_set, gensym("alpha"), A_GIMME, 0);
+		class_addmethod(mage_tilde_class, (t_method)mage_tilde_set, gensym("speed"), A_GIMME, 0);
+		class_addmethod(mage_tilde_class, (t_method)mage_tilde_set, gensym("pitch"), A_GIMME, 0);
+		class_addmethod(mage_tilde_class, (t_method)mage_tilde_set, gensym("volume"), A_GIMME, 0);
+		class_addmethod(mage_tilde_class, (t_method)mage_tilde_bang, gensym("bang"), A_DEFFLOAT, A_DEFFLOAT, A_DEFFLOAT, A_DEFFLOAT, A_DEFFLOAT, 0);
+		
 	}
 	
 	void mage_tilde_free( t_mage_tilde * x )
@@ -241,17 +243,94 @@ extern "C"
 		return ( NULL );
 	}
 
-	void mage_tilde_alpha( t_mage_tilde * x, t_floatarg alpha )
+	void mage_tilde_set( t_mage_tilde *x, t_symbol *selector, int argc, t_atom *argv)
 	{
-		x->mage->setAlpha( alpha );
+		char *param, *control;
+		float value;
+		int controlValue = MAGE::noaction;
+		
+		if (!strcmp(selector->s_name, "set")) 
+		{
+			if (argc < 2) 
+			{
+				pd_error(x, "Not enough arguments for method '%s'", selector->s_name);
+				return;
+			}
+			
+			if (argv[0].a_type != A_SYMBOL) 
+			{
+				pd_error(x, "Parameter to set should be specified first");
+				return;
+			}
+			selector = argv[0].a_w.w_symbol;
+			//argv++;
+			//argc--;
+		} 
+		
+		param = selector->s_name;
 
+		// Generic setting of type float... could be dependent on the argument type instead 
+		if (argv[0].a_type != A_FLOAT) 
+		{
+			pd_error(x, "Invalid argument type for parameter %s !", param);
+			return;
+		}
+		
+		value = argv[0].a_w.w_float;
+		
+		if (argc >= 2) 
+		{
+			control	= argv[1].a_w.w_symbol->s_name;
+		
+			if (!strcmp(control, "overwrite")) 
+				controlValue = MAGE::overwrite;
+			else if (!strcmp(control, "shift")) 
+				controlValue = MAGE::shift;
+			else if (!strcmp(control, "scale")) 
+				controlValue = MAGE::scale;
+			else if (!strcmp(control, "synthetic")) 
+				controlValue = MAGE::synthetic;
+			else
+			{
+				controlValue = MAGE::noaction;
+				pd_error(x, "Invalid argument type for parameter %s !", control);
+				return;
+			}
+		}
+		
+		// Parse known params 
+		if (!strcmp(param, "alpha")) 
+		{
+			// Alpha
+			x->mage->setAlpha(value);
+		}
+		else if (!strcmp(param, "speed"))
+		{
+			// Speed
+			x->mage->setSpeed(value, controlValue);
+		}
+		else if (!strcmp(param, "pitch"))
+		{
+			// Pitch
+			x->mage->setPitch(value, controlValue);
+		}
+		else if (!strcmp(param, "volume"))
+		{
+			// Volume
+			x->mage->setVolume(value);
+		}
+		else 
+		{
+			pd_error(x, "Unknown parameter %s", param);
+			return;
+		}
 		return;
 	}
-	
+
 	void mage_tilde_debug( t_mage_tilde * x )
 	{
 		x->mage->printInterpolationWeights();
-
+		
 		return;
 	}
 	
@@ -275,6 +354,15 @@ extern "C"
 		
 		return;
 	}
+	
+	void mage_tilde_reset( t_mage_tilde * x )
+	{
+		x->mage->reset();
+		
+		return;
+	}
+	
+// Labels	
 	
 	void mage_tilde_label( t_mage_tilde * x, t_symbol *label )
 	{
@@ -369,54 +457,4 @@ extern "C"
 		
 		return;
 	}
-	
-	void mage_tilde_pitch_overwrite( t_mage_tilde * x, t_floatarg pitch )
-	{
-		x->mage->setPitch(pitch,MAGE::overwrite);
-
-		return;
-	}
-
-	void mage_tilde_pitch_scale( t_mage_tilde * x, t_floatarg pitch )
-	{
-		x->mage->setPitch(pitch,MAGE::scale);
-
-		return;
-	}
-	
-	void mage_tilde_pitch_shift( t_mage_tilde * x, t_floatarg pitch )
-	{
-		x->mage->setPitch(pitch,MAGE::shift);
-
-		return;
-	}
-	
-	void mage_tilde_pitch_synth( t_mage_tilde * x )
-	{
-		x->mage->setPitch(0,MAGE::synthetic);
-
-		return;
-	}
-	
-	void mage_tilde_reset( t_mage_tilde * x )
-	{
-		x->mage->reset();
-
-		return;
-	}
-
-	void mage_tilde_speed( t_mage_tilde * x, t_floatarg speed )
-	{
-		x->mage->setSpeed( speed, MAGE::overwrite );
-
-		return;
-	}
-
-	void mage_tilde_volume( t_mage_tilde * x, t_floatarg volume )
-	{
-		x->mage->setVolume( volume );
-
-		return;
-	}
-
 }
