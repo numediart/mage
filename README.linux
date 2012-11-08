@@ -1,0 +1,29 @@
+to compile:
+
+Release:
+$ mkdir -p builds/linux-x64-release/
+$ cd builds/linux-x64-release/
+$ cmake ../..
+$ make
+
+Debug:
+$ mkdir -p builds/linux-x64-debug/
+$ cd builds/linux-x64-debug/
+$ cmake ../.. -DCMAKE_BUILD_TYPE=Debug
+(or use ccmake after cmake ../.., to change BUILD_TYPE option to Debug)
+$ make
+
+
+to use the openFrameworks-based enterface12 application:
+
+1. have openFrameworks compiled and installed somewhere (default: /opt/openframeworks)
+2. have OfxOsc plugin of openFrameworks compiled and installed somewhere (default: /opt/ofxosc)
+3. ccmake . + set USE_OPENFRAMEWORKS to true + rerun config + change value for 
+
+or do all of this directly in the first cmake command-line above, setting -DUSE_OPENFRAMEWORKS -DOF_ROOT_PATH and -DOFXOSC_ROOT_PATH accordingly
+
+OfxOsc plugin can be downloaded with a CMake build config there : https://github.com/celsius/ofxosc
+
+NB: if you manage to have OfxOsc compiled and installed within openFrameworks without jumping through hoops, good for you. I couldn't so I compiled it separately. And don't get me started on using codeblocks ...
+
+TODO explain file tree for oF and OfxOsc

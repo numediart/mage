@@ -153,11 +153,11 @@ double * mlsacheck(double *mcep, int m, int fftlen, int frame,
 
 	// fwrite(x, sizeof(*x), m + 1, stdout);
 	
-	//free(x);
+	//free(x); //memory leak to fix here
 	free(y);
 	free(mag);
 	
-	return( x );
+	return( x ); //that's why there is a memory leak above, we want to return x
 }
 
 /*

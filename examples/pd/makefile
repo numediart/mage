@@ -1,7 +1,7 @@
 # ----------------------- LINUX -----------------------
 # linux only for now, maybe it could work on OSX with appropriate suffix change ?
 #NB make sure that libmage and libhtsengine are in pd path (in /usr/local/lib for instance or in the same folder as mage~.pd_linux
-#TODO :: switch this into a CMakeLists.txt
+#TODO :: switch this into a CMakeLists.txt :: DONE - keeping the file for debug
 pd_linux: mage~.pd_linux
 
 .SUFFIXES: .pd_linux

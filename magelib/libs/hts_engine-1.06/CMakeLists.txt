@@ -1,5 +1,5 @@
-FILE(GLOB SRC ${SRC} *.cpp *.c)
-FILE(GLOB HDR ${HDR} *.hpp *.h)
+FILE(GLOB SRC ${SRC} *.c)
+FILE(GLOB HDR ${HDR} *.h)
 
 SET(HTS_ENGINE_LIB_NAME htsengine)
 
