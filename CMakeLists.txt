@@ -64,7 +64,8 @@ IF(USE_OPENFRAMEWORKS)
 	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_REENTRANT -DOF_USING_GTK -DOF_USING_MPG123 -Wall -fexceptions -march=native -mtune=native -MMD -MP")
 ENDIF()
 #build the libs
-ADD_SUBDIRECTORY(magelib)
+ADD_SUBDIRECTORY(libs)
+ADD_SUBDIRECTORY(src)
 #build the examples
 ADD_SUBDIRECTORY(examples)
 #TODO doxy documentation
