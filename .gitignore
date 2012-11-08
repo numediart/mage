@@ -14,6 +14,9 @@
 
 #ignore doc
 [dD]ocumentation
+doc
+doc/html
+doc/latex
 html
 latex
 *.png
