@@ -1,7 +1,7 @@
 FILE(GLOB SRC ${SRC} *.c)
 FILE(GLOB HDR ${HDR} *.h)
 
-SET(SPTK_LIB_NAME mage-sptk)
+SET(SPTK_LIB_NAME ${MAGE_LIB_NAME}-sptk)
 
 #force c++ compilation - needed for use of some C++ stuff
 #(cmake doesn't detect C++, it just sees *.c files and deduces that it's C
