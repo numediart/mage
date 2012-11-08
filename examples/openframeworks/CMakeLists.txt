@@ -3,10 +3,10 @@ SET(HTS_ENGINE_ROOT_PATH "${CMAKE_SOURCE_DIR}/libs/hts_engine-1.06")
 SET(PORTAUDIO_ROOT_PATH "${CMAKE_SOURCE_DIR}/libs/portaudio-0.19")
 SET(SPTK_ROOT_PATH "${CMAKE_SOURCE_DIR}/libs/sptk")
 
-SET(APP_NAME enterface12)
+SET(APP_NAME enterface12-ofx)
 
-FILE(GLOB SRC ${SRC} *.cpp *.c)
-FILE(GLOB HDR ${HDR} *.hpp *.h)
+FILE(GLOB SRC ${SRC} src/*.cpp)
+FILE(GLOB HDR ${HDR} src/*.h)
 
 INCLUDE_DIRECTORIES(/usr/include/gtk-2.0)
 INCLUDE_DIRECTORIES(/usr/lib/gtk-2.0/include)
