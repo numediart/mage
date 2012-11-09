@@ -124,14 +124,13 @@ extern "C"
 		
 		post("_new: starting");
 		
-		strcpy(x->labelPath, "./inouts/labels/alice01.lab");
+		strcpy(x->labelPath, "../../data/labels/alice01.lab");
 		x->mage = new Mage();
 		fillLabels(x);
 		
 		post("_new: loading engine");
-		x->mage->addEngine( "slt", "./inouts/slt.conf" );
-		x->mage->addEngine( "awb", "./inouts/awb.conf" );
-		//x->mage->addEngine( "bl11", "./inouts/bl11.conf" );
+		x->mage->addEngine( "slt", "../../data/configFiles/slt.conf" );
+		x->mage->addEngine( "awb", "../../data/configFiles/awb.conf" );
 		x->mage->enableInterpolation(true);
 		
 		post("_new: done with engine");
@@ -271,7 +270,7 @@ extern "C"
 	void mage_tilde_debug( t_mage_tilde * x )
 	{
 		x->mage->printInterpolationWeights();
-
+		
 		return;
 	}
 	
