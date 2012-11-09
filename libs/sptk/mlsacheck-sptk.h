@@ -23,7 +23,7 @@
 #ifdef	__cplusplus
 extern "C" {
 #endif
-	double * mlsacheck(double *mcep, int m, int fftlen, int frame,
+	void mlsacheck(double *mcep, int m, int fftlen, int frame,
 				   double a, double R1, double R2,
 				   int modify_filter, int stable_condition);
 #ifdef	__cplusplus

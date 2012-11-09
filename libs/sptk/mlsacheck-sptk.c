@@ -68,8 +68,7 @@
 
 #include "mlsacheck-sptk.h"
 
-
-double * mlsacheck(double *mcep, int m, int fftlen, int frame,
+void mlsacheck(double *mcep, int m, int fftlen, int frame,
                double a, double R1, double R2,
                int modify_filter, int stable_condition)
 {
@@ -153,11 +152,11 @@ double * mlsacheck(double *mcep, int m, int fftlen, int frame,
 
 	// fwrite(x, sizeof(*x), m + 1, stdout);
 	
-	//free(x); //memory leak to fix here
+	free(x);
 	free(y);
 	free(mag);
 	
-	return( x ); //that's why there is a memory leak above, we want to return x
+	return;
 }
 
 /*
