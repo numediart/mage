@@ -46,13 +46,10 @@ void testApp::setup( void )
 	this->mage = new MAGE::Mage();
 	
 	// add clb & awb voice models
-#if mode == HTS
 	this->labelFile = "../../data/labels/alice01.lab";
 	this->mage->addEngine( "slt", "../../data/configFiles/slt.conf" );
-	//this->mage->addEngine( "bdl", "../data/voiceConfig/bdl.conf" );
 	//this->mage->addEngine( "awb", "./data/voiceConfig/awb.conf" );
 	//this->mage->enableInterpolation(true);
-#endif
 
 	// --- Parameter Generation Thread ---
 	generate = new genThread( this->mage );
@@ -81,9 +78,17 @@ void testApp::exit( void )
 
 void testApp::update( void )
 {	
+	int oscGamma;
+	int oscPorder;
+	int oscAction;
+	
+	float oscSpeed;
+	float oscAlpha;
+	float oscPitch;
+	float oscVolume;
+	
 	string oscEngineName;	
-	//string oscConfigFile = "../../data/voiceConfig/";
-	string oscConfigFile = "../../data/voiceConfig/VBconfigs/";
+	string oscConfigFile;
 	
 	ofxOscMessage m; 
 	
@@ -103,53 +108,138 @@ void testApp::update( void )
 		receiver.getNextMessage( &m );
 		
 		// --- List of messages ---
+		
+		// --- Change pitch ---
+		if( m.getAddress() == "/Mage/pitch" )
+		{
+			oscPitch = m.getArgAsFloat( 0 ); 
+			oscAction = m.getArgAsInt32( 1 );
+			
+			this->pitch = oscPitch; 
+			this->pitchAction = oscAction;
+			this->mage->setPitch( this->pitch, this->pitchAction );
+			// 65.406395 * ( ( oscPitch/12 ) * ( oscPitch/12 ) );
+		}
+		
+		// --- Change alpha ---
+		if( m.getAddress() == "/Mage/alpha" ) 
+		{
+			oscAlpha = m.getArgAsFloat( 0 );
+			
+			this->alpha = ofMap( oscAlpha, 0.1, 0.9, 0.1, 0.9, true );
+			this->mage->setAlpha( this->alpha );
+		}
+		
+		// --- Change gamma ---
+		if( m.getAddress() == "/Mage/gamma" ) 
+		{
+			oscGamma = m.getArgAsFloat( 0 );
+			
+			this->gamma = ofMap( oscGamma, 0, 5, 0, 5, true );
+			this->mage->setGamma( this->gamma );
+		}		
+		
+		// --- Change porder ---
+		if( m.getAddress() == "/Mage/porder" ) 
+		{
+			oscPorder = m.getArgAsFloat( 0 );
+			
+			this->porder = ofMap( oscPorder, 0, 5, 0, 5, true );
+			this->mage->setPOrder( this->porder );
+		}
+		
+		// --- Change speed	---
+		if( m.getAddress() == "/Mage/speed" )
+		{
+			oscSpeed = m.getArgAsFloat( 0 );
+			oscAction = m.getArgAsInt32( 1 );
+			
+			this->speed = oscSpeed;
+			this->speedAction = oscAction;
+			this->mage->setSpeed( this->speed, this->speedAction );
+		}
+		
+		// --- Change labelSpeed ---
+		if( m.getAddress() == "/Mage/lSpeed" )
+		{
+			oscSpeed = m.getArgAsFloat( 0 );
+			
+			this->speed = ofMap( oscSpeed, 0, 10, 0.1, 10, true );
+			this->mage->setLabelSpeed( this->speed );
+		}
+		
+		// --- Change volume ---
+		if( m.getAddress() == "/Mage/volume" )
+		{
+			oscVolume = m.getArgAsFloat( 0 );
+			
+			this->volume = ofMap( oscVolume, 0, 5, 0, 5, true );
+			this->mage->setVolume( this->volume );
+		}
+		
+		// --- Change duration ---
+		if( m.getAddress() == "/Mage/duration" ) 
+		{	
+			for( int i = 0; i < nOfStates; i++ )
+				oscUpdateDuration[i] = m.getArgAsFloat( i );
+			
+			oscAction = m.getArgAsFloat( nOfStates );
+		
+			this->durationAction = oscAction;
+			this->mage->setDuration( oscUpdateDuration, this->durationAction );
+		}
+		
+		// --- Reset Mage ---
+		if( m.getAddress() == "/Mage/resetMage" )
+			this->mage->reset();
+		
+		// --- Reset ONLY the Vocoder ---
+		if( m.getAddress() == "/Mage/resetVocoder" )
+			this->mage->resetVocoder();
+		
+		// --- Add an Engine ---
+		// (here a new voice model)
+		if( m.getAddress() == "/Mage/addEngine" )
+		{
+			oscEngineName = m.getArgAsString( 0 );
+			oscConfigFile = m.getArgAsString( 1 );
+			
+			this->mage->addEngine( oscEngineName, oscConfigFile );
+		}
+		
+		// --- Change the default Engine used for the synthesis ---
+		// (here change the default voice model used)
+		if( m.getAddress() == "/Mage/setDefaultEngine" )
+		{
+			oscEngineName = m.getArgAsString( 0 );
+
+			this->mage->setDefaultEngine( oscEngineName );
+		}
+		
 		// --- Remove an Engine existing in the used list od engines ---
 		// (here a voice model)
-		if( m.getAddress() == "/Mage/reset" )
+		if( m.getAddress() == "/Mage/removeEngine" )
 		{
-			this->mage->reset();
+			oscEngineName = m.getArgAsString( 0 );
+			this->mage->removeEngine( oscEngineName );
 		}
 		
 		if( m.getAddress() == "/Mage/enableInterpolation" )
 		{
-			int nofArgs = m.getNumArgs();
-						
-			if( nofArgs >= 1 )		
+			oscEngineName = m.getArgAsString( 0 );
+			
+			if( oscEngineName.compare("off") == 0 )
+				this->mage->enableInterpolation( false );   			
+			else			
 			{
-				oscEngineName = m.getArgAsString( 0 );
-				if( oscEngineName.compare("off") == 0 )
-				{
-					this->mage->enableInterpolation( false ); 
-				}
-				else
-				{
-					//if( nofArgs > maxNumOfInterpolationEngines)
-					//	nofArgs = maxNumOfInterpolationEngines;
-					
-					this->mage->resetInterpolationWeights();
-
-					for( int i = 0; i < nOfStreams + 1; i++ )
-						oscInterpolationWeights[i] = (double)1/nofArgs;
-					
-					for( int i = 0; i < nofArgs; i++ )
-					{
-						oscEngineName = m.getArgAsString( i );
-						printf("inerp engine : %s\n", oscEngineName.c_str() );
-						
-						this->mage->addEngine( oscEngineName, oscConfigFile + "p" + oscEngineName.c_str() + ".conf" );
-											
-						oscInterpolationFunctions[oscEngineName] = oscInterpolationWeights;	
-					}
-					
-					oscEngineName = m.getArgAsString( 0 );
-					this->mage->setDefaultEngine( oscEngineName );
-					
-					this->mage->setInterpolationFunctions( oscInterpolationFunctions );	
-					this->mage->enableInterpolation( true );
-
-					//this->mage->printInterpolationWeights();
-					
-				}
+				for( int i = 0; i < nOfStreams + 1; i++ )
+					oscInterpolationWeights[i] = m.getArgAsFloat( i + 1 );
+				
+				oscInterpolationFunctions[oscEngineName] = oscInterpolationWeights;				
+				
+				this->mage->enableInterpolation( true );  
+				this->mage->setInterpolationFunctions( oscInterpolationFunctions );	
+				this->mage->printInterpolationWeights();
 			}
 		}
 		
@@ -230,57 +320,7 @@ testApp::testApp( int argc, char ** argv )
 
 void testApp::keyPressed( int key )
 {
-	if( key == 'l' )
-	{
-		MAGE::Label label;
-		while( !labellist.empty() )
-		{
-			string q = labellist.front();
-			label.setQuery( q );
-			
-			labellist.pop();
-			
-			this->mage->pushLabel( label );
-		}
-		
-		string s( this->labelFile );
-		parsefile( s );
-	}
-	
-	if( key == 'o' )
-	{
-		this->loop = !this->loop;
-		printf( "loop %d\n",this->loop );
-	}
-		
-	if ( key == 'p' ) 
-		pushLabel();
 
-	if( key == 'q' )
-		this->mage->enableInterpolation( true );   
-	
-	if( key == 'w' )
-		this->mage->enableInterpolation( false );
-	
-/*	if( key == 'e' )
-	{
-		map < string, double * > interpolationFunctions;   
-		
-		double a[nOfStreams + 1] = { 1.5, 0.25, 0.5, 0 }; //{ 0.25, 0.75, 0.25, 0.75 };
-		interpolationFunctions["clb"] = a;
-		
-		double b[nOfStreams + 1] = { 1, 1.5, 1, 1 }; //{ 0.75, 0.25, 0.75, 0.25 };
-		interpolationFunctions["awb"] = b;
-		
-		this->mage->setInterpolationFunctions( interpolationFunctions );	
-		
-	}
-*/	
-	if( key == '1' )
-		this->mage->printInterpolationWeights();
-
-	if( key == 'r' )
-		this->mage->reset();
 }
 
 void testApp::keyReleased( int key )
