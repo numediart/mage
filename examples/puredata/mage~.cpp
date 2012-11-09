@@ -75,6 +75,7 @@ extern "C"
 	void mage_tilde_label_insert( t_mage_tilde * x, t_floatarg lab );
 	void mage_tilde_label_replace( t_mage_tilde * x, t_floatarg lab );
 	void mage_tilde_label_switch( t_mage_tilde * x, t_floatarg lab );
+	void mage_tilde_pitch( t_mage_tilde * x, t_floatarg pitchvalue, t_symbol *action );
 	void mage_tilde_pitch_overwrite( t_mage_tilde * x, t_floatarg pitch );
 	void mage_tilde_pitch_scale( t_mage_tilde * x, t_floatarg pitch );
 	void mage_tilde_pitch_shift( t_mage_tilde * x, t_floatarg pitch );
@@ -89,7 +90,7 @@ extern "C"
 		string filename = string(x->labelPath);
 		
 		ifstream myfile( filename.c_str() );
-	
+		
 		x->currentLabel = -1;
 		x->labels.clear();
 		
@@ -103,7 +104,7 @@ extern "C"
 		{
 			x->labels.push_back(line);
 		}
-				
+		
 		myfile.close();
 		
 		if( x->labels.size() > 0 )
@@ -132,7 +133,7 @@ extern "C"
 		x->mage->addEngine( "awb", "./inouts/awb.conf" );
 		//x->mage->addEngine( "bl11", "./inouts/bl11.conf" );
 		x->mage->enableInterpolation(true);
-
+		
 		post("_new: done with engine");
 		
 		post("_new: starting genThread");
@@ -163,6 +164,9 @@ extern "C"
 		class_addmethod(mage_tilde_class, (t_method)mage_tilde_label_insert, gensym("labelinsert"), A_FLOAT, 0);
 		class_addmethod(mage_tilde_class, (t_method)mage_tilde_label_replace, gensym("labelreplace"), A_FLOAT, 0);
 		class_addmethod(mage_tilde_class, (t_method)mage_tilde_label_switch, gensym("labelswitch"), A_FLOAT, 0);
+
+		class_addmethod(mage_tilde_class, (t_method)mage_tilde_pitch, gensym("pitch"), A_FLOAT, A_SYMBOL, 0);
+
 		class_addmethod(mage_tilde_class, (t_method)mage_tilde_pitch_overwrite, gensym("pitchoverwrite"), A_FLOAT, 0);
 		class_addmethod(mage_tilde_class, (t_method)mage_tilde_pitch_scale, gensym("pitchscale"), A_FLOAT, 0);
 		class_addmethod(mage_tilde_class, (t_method)mage_tilde_pitch_shift, gensym("pitchshift"), A_FLOAT, 0);
@@ -241,11 +245,11 @@ extern "C"
 		
 		return ( NULL );
 	}
-
+	
 	void mage_tilde_alpha( t_mage_tilde * x, t_floatarg alpha )
 	{
 		x->mage->setAlpha( alpha );
-
+		
 		return;
 	}
 	
@@ -277,11 +281,18 @@ extern "C"
 		return;
 	}
 	
+	void mage_tilde_pitch( t_mage_tilde * x, t_floatarg pitchvalue, t_symbol *action )
+	{
+		
+		
+		return;
+	}
+	
 	void mage_tilde_label( t_mage_tilde * x, t_symbol *label )
 	{
 		strcpy(x->labelPath, label->s_name);
 		fillLabels(x);
-
+		
 		return;
 	}
 	
@@ -307,12 +318,12 @@ extern "C"
 		if( x->labels.size() > 0 )
 		{
 			label.setQuery( x->labels[x->currentLabel] );
-
+			
 			x->mage->pushLabel( label );
-
+			
 			x->currentLabel = ( x->currentLabel + 1 ) % x->labels.size();
 		}
-
+		
 		return;
 	}
 	
@@ -323,10 +334,10 @@ extern "C"
 		if( x->labels.size() > 0 )
 		{
 			int k = ( ( int ) lab ) % x->labels.size(); // always 0 <= lab < x->labels.size() ? < 0 ?
-
+			
 			printf("inserting label %d\n",k);
 			label.setQuery( x->labels[k] );
-
+			
 			x->mage->pushLabel( label );
 			
 			// _next() will go to x->currentLabel;
@@ -342,7 +353,7 @@ extern "C"
 		if( x->labels.size() > 0 )
 		{
 			int k = ( ( int ) lab ) % x->labels.size(); // always 0 <= lab < x->labels.size() ? < 0 ?
-
+			
 			printf("replacing label %d with %d\n",x->currentLabel,k);
 			label.setQuery( x->labels[k] );
 			x->mage->pushLabel( label );
@@ -360,7 +371,7 @@ extern "C"
 		if( x->labels.size() > 0 )
 		{
 			int k = ( ( int ) lab ) % x->labels.size(); // always 0 <= lab < x->labels.size() ? < 0 ?
-
+			
 			printf("switching from label %d to %d\n",x->currentLabel,k);
 			label.setQuery( x->labels[k] );
 			x->mage->pushLabel( label );
@@ -374,50 +385,50 @@ extern "C"
 	void mage_tilde_pitch_overwrite( t_mage_tilde * x, t_floatarg pitch )
 	{
 		x->mage->setPitch(pitch,MAGE::overwrite);
-
+		
 		return;
 	}
-
+	
 	void mage_tilde_pitch_scale( t_mage_tilde * x, t_floatarg pitch )
 	{
 		x->mage->setPitch(pitch,MAGE::scale);
-
+		
 		return;
 	}
 	
 	void mage_tilde_pitch_shift( t_mage_tilde * x, t_floatarg pitch )
 	{
 		x->mage->setPitch(pitch,MAGE::shift);
-
+	
 		return;
 	}
 	
 	void mage_tilde_pitch_synth( t_mage_tilde * x )
 	{
 		x->mage->setPitch(0,MAGE::synthetic);
-
+		
 		return;
 	}
 	
 	void mage_tilde_reset( t_mage_tilde * x )
 	{
 		x->mage->reset();
-
+		
 		return;
 	}
-
+	
 	void mage_tilde_speed( t_mage_tilde * x, t_floatarg speed )
 	{
 		x->mage->setSpeed( speed, MAGE::overwrite );
-
+		
 		return;
 	}
-
+	
 	void mage_tilde_volume( t_mage_tilde * x, t_floatarg volume )
 	{
 		x->mage->setVolume( volume );
-
+		
 		return;
 	}
-
+	
 }
