@@ -124,7 +124,7 @@ extern "C"
 		
 		post("_new: starting");
 		
-		strcpy(x->labelPath, "../../data/labels/alice01.lab");
+		strcpy(x->labelPath, "../../data/labels/cmu-artic/alice01.lab");
 		x->mage = new Mage();
 		fillLabels(x);
 		

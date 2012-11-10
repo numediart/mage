@@ -45,5 +45,4 @@ nbbuild
 
 # data folder at root
 data
-*.pd
 *.pd_darwin
