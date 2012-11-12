@@ -50,6 +50,7 @@ void testApp::setup( void )
 	this->mage->addEngine( "slt", "../../data/configFiles/slt.conf" );
 	//this->mage->addEngine( "awb", "./data/voiceConfig/awb.conf" );
 	//this->mage->enableInterpolation(true);
+	
 
 	// --- Parameter Generation Thread ---
 	generate = new genThread( this->mage );
