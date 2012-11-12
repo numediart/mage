@@ -46,8 +46,8 @@ void testApp::setup( void )
 	this->mage = new MAGE::Mage();
 	
 	// add clb & awb voice models
-	this->labelFile = "./data/labels/alice01.lab";
-	this->mage->addEngine( "slt", "./data/voiceConfig/slt.conf" );
+	this->labelFile = "../../data/labels/alice01.lab";
+	this->mage->addEngine( "slt", "../../data/configFiles/slt.conf" );
 	//this->mage->addEngine( "awb", "./data/voiceConfig/awb.conf" );
 	//this->mage->enableInterpolation(true);
 
@@ -320,57 +320,7 @@ testApp::testApp( int argc, char ** argv )
 
 void testApp::keyPressed( int key )
 {
-	if( key == 'l' )
-	{
-		MAGE::Label label;
-		while( !labellist.empty() )
-		{
-			string q = labellist.front();
-			label.setQuery( q );
-			
-			labellist.pop();
-			
-			this->mage->pushLabel( label );
-		}
-		
-		string s( this->labelFile );
-		parsefile( s );
-	}
-	
-	if( key == 'o' )
-	{
-		this->loop = !this->loop;
-		printf( "loop %d\n",this->loop );
-	}
-		
-	if ( key == 'p' ) 
-		pushLabel();
 
-	if( key == 'q' )
-		this->mage->enableInterpolation( true );   
-	
-	if( key == 'w' )
-		this->mage->enableInterpolation( false );
-	
-	if( key == 'e' )
-	{
-		map < string, double * > interpolationFunctions;   
-		
-		double a[nOfStreams + 1] = { 1.5, 0.25, 0.5, 0 }; //{ 0.25, 0.75, 0.25, 0.75 };
-		interpolationFunctions["clb"] = a;
-		
-		double b[nOfStreams + 1] = { 1, 1.5, 1, 1 }; //{ 0.75, 0.25, 0.75, 0.25 };
-		interpolationFunctions["awb"] = b;
-		
-		this->mage->setInterpolationFunctions( interpolationFunctions );	
-		
-	}
-	
-	if( key == '1' )
-		this->mage->printInterpolationWeights();
-
-	if( key == 'r' )
-		this->mage->reset();
 }
 
 void testApp::keyReleased( int key )

@@ -40,6 +40,8 @@
 #include "genThread.h"
 
 #include <fstream>
+#include <string>
+
 
 // --- OSC --- 
 #include "ofxOsc.h"
