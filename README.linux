@@ -1,4 +1,4 @@
-to compile:
+== Compilation ==
 
 Release:
 $ mkdir -p builds/linux-x64-release/
@@ -13,6 +13,9 @@ $ cmake ../.. -DCMAKE_BUILD_TYPE=Debug
 (or use ccmake after cmake ../.., to change BUILD_TYPE option to Debug)
 $ make
 
+Note that the naming of the folder (builds/linux-x64-...) for building out-of-source with cmake is not really important, but .gitignore is configured to ignore everything in any folder named build, builds, Build or Builds. Feel free to follow your own convention though.
+
+=== With openFrameworks ===
 
 to use the openFrameworks-based enterface12 application:
 
@@ -27,3 +30,19 @@ OfxOsc plugin can be downloaded with a CMake build config there : https://github
 NB: if you manage to have OfxOsc compiled and installed within openFrameworks without jumping through hoops, good for you. I couldn't so I compiled it separately. And don't get me started on using codeblocks ...
 
 TODO explain file tree for oF and OfxOsc
+
+
+== Documentation ==
+
+We use Doxygen to generate the documentation. The config file is in './doc'.
+
+to generate the documentation in html and LaTeX format:
+
+$ cd doc
+$ doxygen
+
+to generate the pdf from the LaTex, run the Makefile in './doc/latex':
+
+$ cd latex
+$ cd make
+

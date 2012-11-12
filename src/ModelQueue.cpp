@@ -205,12 +205,7 @@ void MAGE::ModelQueue::generate( MAGE::Engine * engine, FrameQueue * frameQueue,
 
 					if( enableMLSAcheck && i == mgcStreamIndex)
 					{
-						//TODO ::   this is idiotic but it will do for now 
-						double *tmp = mlsacheck(frame->streams[mgcStreamIndex], nOfMGCs, fftLen, index, defaultAlpha, R1, R2, true, 0);
-					
-						//TODO ::   this is idiotic but it will do for now 
-						for( k = 0; k < nOfMGCs; k++ )
-							frame->streams[mgcStreamIndex][k] = tmp[k];
+						mlsacheck(frame->streams[mgcStreamIndex], nOfMGCs-1, fftLen, index, defaultAlpha, R1, R2, true, 0);
 					}
 				}		
 			}
