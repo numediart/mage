@@ -1,6 +1,6 @@
 IF(USE_OPENFRAMEWORKS)
 	#build the enterface 2012 apps
-	ADD_SUBDIRECTORY(openframeworks)
+	ADD_SUBDIRECTORY(ofxOSC)
 ENDIF()
 
 #test file used for memory leak in magelib - use valgrind to run it
