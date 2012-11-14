@@ -39,6 +39,6 @@
 int main( int argc, char ** argv )
 {	
 	ofAppGlutWindow window; // create a window
-	ofSetupOpenGL( &window, 400, 1200, OF_WINDOW );
+	ofSetupOpenGL( &window, 640, 480, OF_WINDOW );
 	ofRunApp( new testApp( argc, argv ) ); // app
 }

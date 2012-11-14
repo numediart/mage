@@ -84,7 +84,7 @@ class testApp : public ofBaseApp
 		MyTestObject slider_pitch_overwrite;
 		MyTestObject slider_pitch_shift;
 		MyTestObject slider_pitch_scale;
-
+	
 	protected:
 	
 		int Argc;		// number of arguments passed to the main()

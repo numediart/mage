@@ -41,8 +41,8 @@
 #define		OVER_COLOR		0x00FF00
 #define		DOWN_COLOR		0xFF0000
 
-#define X_POS 30
-#define Y_POS 400 
+#define X_POS 300
+#define Y_POS 30 
 #define WIDTH 250 
 #define HIGHT 20
 #define RATIO 30

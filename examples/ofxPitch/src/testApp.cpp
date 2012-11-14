@@ -67,10 +67,10 @@ void testApp::setup( void )
 	slider_pitch_overwrite.setPos(X_POS, Y_POS);
 	
 	slider_pitch_shift.setSize(WIDTH/RATIO, HIGHT);
-	slider_pitch_shift.setPos(X_POS, 1.1*Y_POS);
+	slider_pitch_shift.setPos(X_POS, 2*Y_POS);
 	
 	slider_pitch_scale.setSize(WIDTH/RATIO, HIGHT);
-	slider_pitch_scale.setPos(X_POS, 1.2*Y_POS);
+	slider_pitch_scale.setPos(X_POS, 3*Y_POS);
 }
 
 void testApp::exit( void )
@@ -146,16 +146,16 @@ void testApp::draw( void )
 	ofFill();
 	ofSetColor( 200, 200, 200 );
 	ofRect(X_POS-1, Y_POS-1, WIDTH+2, HIGHT+2);	
-	ofRect(X_POS-1, 1.1*Y_POS-1, WIDTH+2, HIGHT+2);	
-	ofRect(X_POS-1, 1.2*Y_POS-1, WIDTH+2, HIGHT+2);	
+	ofRect(X_POS-1, 2*Y_POS-1, WIDTH+2, HIGHT+2);	
+	ofRect(X_POS-1, 3*Y_POS-1, WIDTH+2, HIGHT+2);	
 
 	ofSetColor( 50, 50, 50 );
 	ofRect(X_POS, Y_POS, WIDTH, HIGHT);
-	ofRect(X_POS, 1.1*Y_POS, WIDTH, HIGHT);
-	ofRect(X_POS, 1.2*Y_POS, WIDTH, HIGHT);
+	ofRect(X_POS, 2*Y_POS, WIDTH, HIGHT);
+	ofRect(X_POS, 3*Y_POS, WIDTH, HIGHT);
 
-	slider_pitch_shift.setPosY(1.1*Y_POS);
-	slider_pitch_scale.setPosY(1.2*Y_POS);
+	slider_pitch_shift.setPosY(2*Y_POS);
+	slider_pitch_scale.setPosY(3*Y_POS);
 }
 
 void testApp::audioOut( float * outBuffer, int bufSize, int nChan )
