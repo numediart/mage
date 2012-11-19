@@ -171,7 +171,7 @@ void MAGE::Mage::setSpeed ( double speed, int action )
 		case MAGE::synthetic:
 		case MAGE::noaction:
 		default:
-			this->hopLen = defaultFrameRate;
+			this->hopLen = defaultFrameRate;			
 	}
 	
 	if( hopLen < 1 )
@@ -179,7 +179,7 @@ void MAGE::Mage::setSpeed ( double speed, int action )
 	
 	if( hopLen > defaultFrameRate * 20 )
 		hopLen = defaultFrameRate * 20;
-	
+
 	return;
 }
 

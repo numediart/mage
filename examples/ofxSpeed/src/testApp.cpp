@@ -63,14 +63,11 @@ void testApp::setup( void )
 	this->fill = true;
 	
 	// gui 
-	slider_pitch_overwrite.setSize(WIDTH/RATIO, HIGHT);
-	slider_pitch_overwrite.setPos(X_POS, Y_POS);
+	slider_speed_overwrite.setSize(WIDTH/RATIO, HIGHT);
+	slider_speed_overwrite.setPos(X_POS, Y_POS);
 	
-	slider_pitch_shift.setSize(WIDTH/RATIO, HIGHT);
-	slider_pitch_shift.setPos(X_POS, 2*Y_POS);
-	
-	slider_pitch_scale.setSize(WIDTH/RATIO, HIGHT);
-	slider_pitch_scale.setPos(X_POS, 3*Y_POS);
+	slider_speed_shift.setSize(WIDTH/RATIO, HIGHT);
+	slider_speed_shift.setPos(X_POS, 2*Y_POS);
 }
 
 void testApp::exit( void )
@@ -84,29 +81,27 @@ void testApp::exit( void )
 
 void testApp::update( void )
 {		
-	// --- Change pitch ---
-	if( slider_pitch_overwrite.isMouseDown() )
+	// --- Change speed ---
+	if( slider_speed_overwrite.isMouseDown() )
 	{
-		this->pitchAction = MAGE::overwrite;
-		this->pitch = ofMap( slider_pitch_overwrite.getPosX(), X_POS, X_POS+WIDTH-WIDTH/RATIO, MINPITCH, MAXPITCH );
+		this->speedAction = MAGE::overwrite;
 
-		this->mage->setPitch( this->pitch, this->pitchAction );
+		if(	this->speed != ofMap( slider_speed_overwrite.getPosX(), X_POS, X_POS+WIDTH-WIDTH/RATIO, MINSPEED, MAXSPEED ) )
+		{
+			this->speed = ofMap( slider_speed_overwrite.getPosX(), X_POS, X_POS+WIDTH-WIDTH/RATIO, MINSPEED, MAXSPEED );
+			this->mage->setSpeed( this->speed, this->speedAction );
+		}
 	}
 	
-	if( slider_pitch_shift.isMouseDown() )
+	if( slider_speed_shift.isMouseDown() )
 	{
-		this->pitchAction = MAGE::shift;
-		this->pitch = ofMap( slider_pitch_shift.getPosX(), X_POS, X_POS+WIDTH-WIDTH/RATIO, MINPITCH/5, MAXPITCH/5 );
-		
-		this->mage->setPitch( this->pitch, this->pitchAction );
-	}
-	
-	if( slider_pitch_scale.isMouseDown() )
-	{
-		this->pitchAction = MAGE::scale;
-		this->pitch = ofMap( slider_pitch_scale.getPosX(), X_POS, X_POS+WIDTH-WIDTH/RATIO, MINPITCH/100+1, MAXPITCH/100 );
-		
-		this->mage->setPitch( this->pitch, this->pitchAction );
+		this->speedAction = MAGE::shift;
+
+		if ( this->speed != ofMap( slider_speed_shift.getPosX(), X_POS, X_POS+WIDTH-WIDTH/RATIO, -2, 5 ) )
+		{
+			this->speed = ofMap( slider_speed_shift.getPosX(), X_POS, X_POS+WIDTH-WIDTH/RATIO, -2, 5 );
+			this->mage->setSpeed( this->speed, this->speedAction );
+		}
 	}
 			
 	// TODO :: check that this is thread-safe( probably not )
@@ -147,20 +142,16 @@ void testApp::draw( void )
 	ofSetColor( 200, 200, 200 );
 	ofRect(X_POS-1, Y_POS-1, WIDTH+2, HIGHT+2);	
 	ofRect(X_POS-1, 2*Y_POS-1, WIDTH+2, HIGHT+2);	
-	ofRect(X_POS-1, 3*Y_POS-1, WIDTH+2, HIGHT+2);	
 
 	ofSetColor( 50, 50, 50 );
 	ofRect(X_POS, Y_POS, WIDTH, HIGHT);
 	ofRect(X_POS, 2*Y_POS, WIDTH, HIGHT);
-	ofRect(X_POS, 3*Y_POS, WIDTH, HIGHT);
 
-	slider_pitch_shift.setPosY(2*Y_POS);
-	slider_pitch_scale.setPosY(3*Y_POS);
+	slider_speed_shift.setPosY(2*Y_POS);
 	
 	ofSetColor( 200, 200, 200 );
-	ofDrawBitmapString( "overwrite pitch", X_POS, Y_POS+Y_POS/2 );
-	ofDrawBitmapString( "shift pitch", X_POS, 2*Y_POS+Y_POS/2 );
-	ofDrawBitmapString( "scale pitch", X_POS, 3*Y_POS+Y_POS/2 );
+	ofDrawBitmapString( "overwrite speed", X_POS, Y_POS+Y_POS/2 );
+	ofDrawBitmapString( "shift speed", X_POS, 2*Y_POS+Y_POS/2 );
 }
 
 void testApp::audioOut( float * outBuffer, int bufSize, int nChan )
