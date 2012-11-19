@@ -25,13 +25,6 @@ INCLUDE_DIRECTORIES(${MAGE_SPTK_PATH})
 
 INCLUDE_DIRECTORIES(${MAGE_EXTERNAL_LIBS_PATH}/gui)
 
-#OFx OSC addon - compiled locally
-INCLUDE_DIRECTORIES(${OFXOSC_ROOT_PATH}/src)
-INCLUDE_DIRECTORIES(${OFXOSC_ROOT_PATH}/libs/oscpack/src)
-INCLUDE_DIRECTORIES(${OFXOSC_ROOT_PATH}/libs/oscpack/src/osc)
-INCLUDE_DIRECTORIES(${OFXOSC_ROOT_PATH}/libs/oscpack/src/ip)
-INCLUDE_DIRECTORIES(${OFXOSC_ROOT_PATH}/libs/oscpack/src/ip/posix)
-
 #certainly not the cleanest way to do it, but it matches openframeworks' gcc command from the Makefile
 #besides ... it works
 #[OPENFRAMEWORKS]
