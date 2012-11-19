@@ -63,8 +63,8 @@ void testApp::setup( void )
 	this->fill = true;
 	
 	// gui 
-	slider_alpha.setSize(WIDTH/RATIO, HIGHT);
-	slider_alpha.setPos(X_POS, Y_POS);
+	slider_volume.setSize(WIDTH/RATIO, HIGHT);
+	slider_volume.setPos(X_POS, Y_POS);
 }
 
 void testApp::exit( void )
@@ -78,12 +78,12 @@ void testApp::exit( void )
 
 void testApp::update( void )
 {		
-	// --- Change alpha ---
-	if( slider_alpha.isMouseDown() )
+	// --- Change volume ---
+	if( slider_volume.isMouseDown() )
 	{
-		this->alpha = ofMap( slider_alpha.getPosX(), X_POS, X_POS+WIDTH-WIDTH/RATIO, 0, 0.9 );
+		this->volume = ofMap( slider_volume.getPosX(), X_POS, X_POS+WIDTH-WIDTH/RATIO, 0, 4 );
 
-		this->mage->setAlpha( this->alpha );
+		this->mage->setVolume( this->volume );
 	}
 	
 	// TODO :: check that this is thread-safe( probably not )
@@ -128,7 +128,7 @@ void testApp::draw( void )
 	ofRect(X_POS, Y_POS, WIDTH, HIGHT);
 		
 	ofSetColor( 200, 200, 200 );
-	ofDrawBitmapString( "alpha", X_POS, Y_POS+Y_POS/2 );
+	ofDrawBitmapString( "volume", X_POS, Y_POS+Y_POS/2 );
 }
 
 void testApp::audioOut( float * outBuffer, int bufSize, int nChan )

@@ -42,7 +42,7 @@
 #define		DOWN_COLOR		0xFF0000
 
 #define X_POS 300
-#define Y_POS 75 
+#define Y_POS 30 
 #define WIDTH 250 
 #define HIGHT 20
 #define RATIO 30

@@ -63,8 +63,20 @@ void testApp::setup( void )
 	this->fill = true;
 	
 	// gui 
-	slider_alpha.setSize(WIDTH/RATIO, HIGHT);
-	slider_alpha.setPos(X_POS, Y_POS);
+	slider_state_rightright.setSize(WIDTH/RATIO, HIGHT);
+	slider_state_rightright.setPos(X_POS, Y_POS);
+	
+	slider_state_right.setSize(WIDTH/RATIO, HIGHT);
+	slider_state_right.setPos(X_POS, 3*Y_POS);
+	
+	slider_state_center.setSize(WIDTH/RATIO, HIGHT);
+	slider_state_center.setPos(X_POS, 5*Y_POS);
+
+	slider_state_left.setSize(WIDTH/RATIO, HIGHT);
+	slider_state_left.setPos(X_POS, 7*Y_POS);
+
+	slider_state_leftleft.setSize(WIDTH/RATIO, HIGHT);
+	slider_state_leftleft.setPos(X_POS, 9*Y_POS);
 }
 
 void testApp::exit( void )
@@ -77,15 +89,30 @@ void testApp::exit( void )
 }
 
 void testApp::update( void )
-{		
-	// --- Change alpha ---
-	if( slider_alpha.isMouseDown() )
+{
+	// --- Change duration ---
+	if( slider_state_rightright.isMouseDown() || slider_state_right.isMouseDown() || slider_state_center.isMouseDown() || slider_state_left.isMouseDown() || slider_state_leftleft.isMouseDown() )
 	{
-		this->alpha = ofMap( slider_alpha.getPosX(), X_POS, X_POS+WIDTH-WIDTH/RATIO, 0, 0.9 );
+		this->durationAction = MAGE::overwrite;
 
-		this->mage->setAlpha( this->alpha );
-	}
+		this->duration = ofMap( slider_state_rightright.getPosX(), X_POS, X_POS+WIDTH-WIDTH/RATIO, MINDUR, MAXDUR );
+		this->updateDuration[0] = this->duration;
 	
+		this->duration = ofMap( slider_state_right.getPosX(), X_POS, X_POS+WIDTH-WIDTH/RATIO, MINDUR, MAXDUR );
+		this->updateDuration[1] = this->duration;
+
+		this->duration = ofMap( slider_state_center.getPosX(), X_POS, X_POS+WIDTH-WIDTH/RATIO, MINDUR, MAXDUR );
+		this->updateDuration[2] = this->duration;
+
+		this->duration = ofMap( slider_state_left.getPosX(), X_POS, X_POS+WIDTH-WIDTH/RATIO, MINDUR, MAXDUR );
+		this->updateDuration[3] = this->duration;
+
+		this->duration = ofMap( slider_state_leftleft.getPosX(), X_POS, X_POS+WIDTH-WIDTH/RATIO, MINDUR, MAXDUR );
+		this->updateDuration[4] = this->duration;		
+	}		
+	
+	this->mage->setDuration( this->updateDuration, this->durationAction );
+
 	// TODO :: check that this is thread-safe( probably not )
 	if( this->fill && this->mage->getLabelQueue()->isEmpty() && this->loop )
 		fillLabelQueue();
@@ -123,12 +150,29 @@ void testApp::draw( void )
 	ofFill();
 	ofSetColor( 200, 200, 200 );
 	ofRect(X_POS-1, Y_POS-1, WIDTH+2, HIGHT+2);	
+	ofRect(X_POS-1, 3*Y_POS-1, WIDTH+2, HIGHT+2);	
+	ofRect(X_POS-1, 5*Y_POS-1, WIDTH+2, HIGHT+2);	
+	ofRect(X_POS-1, 7*Y_POS-1, WIDTH+2, HIGHT+2);	
+	ofRect(X_POS-1, 9*Y_POS-1, WIDTH+2, HIGHT+2);	
 
 	ofSetColor( 50, 50, 50 );
 	ofRect(X_POS, Y_POS, WIDTH, HIGHT);
-		
+	ofRect(X_POS, 3*Y_POS, WIDTH, HIGHT);
+	ofRect(X_POS, 5*Y_POS, WIDTH, HIGHT);
+	ofRect(X_POS, 7*Y_POS, WIDTH, HIGHT);
+	ofRect(X_POS, 9*Y_POS, WIDTH, HIGHT);
+
+	slider_state_right.setPosY(3*Y_POS);
+	slider_state_center.setPosY(5*Y_POS);
+	slider_state_left.setPosY(7*Y_POS);
+	slider_state_leftleft.setPosY(9*Y_POS);
+	
 	ofSetColor( 200, 200, 200 );
-	ofDrawBitmapString( "alpha", X_POS, Y_POS+Y_POS/2 );
+	ofDrawBitmapString( "duration of right - right state", X_POS,   Y_POS+1.3*Y_POS );
+	ofDrawBitmapString( "duration of right state        ", X_POS, 3*Y_POS+1.3*Y_POS );
+	ofDrawBitmapString( "duration of center state       ", X_POS, 5*Y_POS+1.3*Y_POS );
+	ofDrawBitmapString( "duration of left state         ", X_POS, 7*Y_POS+1.3*Y_POS );
+	ofDrawBitmapString( "duration of left - left state  ", X_POS, 9*Y_POS+1.3*Y_POS );
 }
 
 void testApp::audioOut( float * outBuffer, int bufSize, int nChan )
