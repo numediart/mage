@@ -1,4 +1,4 @@
-SET(APP_NAME enterface12-ofx)
+SET(APP_NAME ofxOSC-enterface12)
 
 FILE(GLOB SRC ${SRC} src/*.cpp)
 FILE(GLOB HDR ${HDR} src/*.h)
