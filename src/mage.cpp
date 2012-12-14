@@ -380,8 +380,6 @@ void MAGE::Mage::computeDuration( void )
 //	This function computes the parameters for every coefficients stream. 
 void MAGE::Mage::computeParameters( void )
 {
-	Engine * currentEngine;
-	double * interpolationFunction;
 	map < std::string, std::pair < double * , Engine * > >::const_iterator it;
 	
 	this->model->initParameters();
