@@ -46,3 +46,8 @@ nbbuild
 # data folder at root
 data
 *.pd_darwin
+examples/ofxOSC/ofxOSC.xcodeproj/project.xcworkspace/contents.xcworkspacedata
+examples/ofxOSC/ofxOSC.xcodeproj/project.xcworkspace/xcuserdata/Maipn.xcuserdatad/UserInterfaceState.xcuserstate
+examples/ofxOSC/ofxOSC.xcodeproj/project.xcworkspace/xcuserdata/Maipn.xcuserdatad/WorkspaceSettings.xcsettings
+examples/ofxOSC/ofxOSC.xcodeproj/xcuserdata/Maipn.xcuserdatad/xcdebugger/Breakpoints.xcbkptlist
+examples/ofxOSC/ofxOSC.xcodeproj/xcuserdata/Maipn.xcuserdatad/xcschemes/ofxOSC.xcscheme
