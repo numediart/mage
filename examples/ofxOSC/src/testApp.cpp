@@ -46,8 +46,8 @@ void testApp::setup( void )
 	this->mage = new MAGE::Mage();
 	
 	// add clb & awb voice models
-	this->labelFile = "../../data/labels/cmu-artic/alice01.lab";
-	this->mage->addEngine( "slt", "../../data/configFiles/slt.conf" );
+	this->labelFile = "../../../../data/labels/cmu-artic/alice01.lab";
+	this->mage->addEngine( "slt", "../../../../data/configFiles/slt.conf" );
 	//this->mage->addEngine( "awb", "./data/voiceConfig/awb.conf" );
 	//this->mage->enableInterpolation(true);
 	
