@@ -44,5 +44,5 @@ $ doxygen
 to generate the pdf from the LaTex, run the Makefile in './doc/latex':
 
 $ cd latex
-$ cd make
+$ make
 
