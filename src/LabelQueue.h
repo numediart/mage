@@ -170,9 +170,28 @@ namespace MAGE
 	
 		protected:
 	
-		// TODO :: documentation
+			/**
+			 * \var std::vector<Label> queue
+			 * \brief it contains the labels extracted from the label file
+			 */
 			vector<Label> queue;
-			unsigned int read, write;
+
+			/**
+			 * \var unsigned int read
+			 * \brief index of the position where the next get()/pop() will happen
+			 */
+			unsigned int read;
+
+			/**
+			 * \var unsigned int write
+			 * \brief index of the position where the next next()/push() will happen
+			 */
+			unsigned int write;
+
+			/**
+			 * \var unsigned int nOfLabels
+			 * \brief number of Label currently stored in the queue
+			 */
 			unsigned int nOfLabels;
 	};
 } // namespace

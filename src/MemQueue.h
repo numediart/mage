@@ -201,11 +201,42 @@ namespace MAGE
 			bool isFull( void );
 	
 		protected:
-	
-		// TODO :: documentation
+
+			/**
+			 * \var int nOfItems
+			 * \brief number of items currently stored in the queue
+			 */
 			int nOfItems;
-			unsigned int length, remain;
-			unsigned int read, write;
+
+			/**
+			 * \var unsigned int length
+			 * \brief maximum number of items that can be stored in the queue
+			 */
+			unsigned int length;
+			
+			/**
+			 * \var unsigned int remain
+			 * \brief this tells how many elements can be inserted at the "end" of the circular queue before wraping around.
+			 * \todo currently this variable can be transformed into a local one wherever it is used. However it is left as a member of the class "just in case" ... for now
+			 */
+			unsigned int remain;
+			
+			/**
+			 * \var unsigned int read
+			 * \brief index of the position where the next get()/pop() will happen
+			 */
+			unsigned int read;
+			
+			/**
+			 * \var unsigned int write
+			 * \brief index of the position where the next next()/push() will happen
+			 */
+			unsigned int write;
+			
+			/**
+			 * \var Item * rawData
+			 * \brief number of items currently stored in the queue
+			 */
 			Item * rawData;
 	};
 } // namespace

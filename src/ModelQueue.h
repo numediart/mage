@@ -207,10 +207,22 @@ namespace MAGE
 
 		protected:
 
-		// TODO :: documentation
+			/**
+			 * \var Frame * frame
+			 * \brief pointer to an item in a FrameQueue. Used internally only for now, could be changed in local variable
+			 */
 			Frame * frame;
 
+			/**
+			 * \var unsigned int * head
+			 * \brief pointer to actual head of the ModelQueue, taking into account the backup models. Used internally only for now, could be changed in local variable, but was used across several functions at some point.
+			 */
 			unsigned int head;
+			
+			/**
+			 * \var ModelQueueMemory * modelQueueMemory
+			 * \brief constant-sized memory used to store all the models. Allocated once at the beginning of Mage to avoid any on-the-fly allocation
+			 */
 			ModelQueueMemory modelQueueMemory;
 	};	
 } // namespace
