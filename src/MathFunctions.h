@@ -73,7 +73,7 @@ namespace MAGE
 	 *	@param x The number to be rounded.
 	 *	@return The rounded inputed number.
 	 */
-	//	This function returns a the rounded inputed number.
+	//	This function returns the rounded inputed number.
 	double Round( double x );
 	
 } // namespace
