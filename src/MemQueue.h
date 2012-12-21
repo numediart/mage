@@ -67,7 +67,7 @@ namespace MAGE
 			MemQueue( unsigned int queueLen );
 		
 			/**
-			 *	Distructor that disallocates the used memery of a MemQueue.
+			 *	Destructor that disallocates the used memory of a MemQueue.
 			 */		
 			~MemQueue( void );
 	
@@ -83,7 +83,7 @@ namespace MAGE
 // methods
 		
 			/**
-			 *	This function pushes nItem Items into the queue by copying them from the Item array *item.
+			 *	This function pushes nOfItems Items into the queue by copying them from the Item array *item.
 			 * 
 			 *	@param item The array of Items to be copied/pushed into the queue.
 			 *	@param nOfItems The number of Items to be copied/pushed into the queue.
@@ -97,11 +97,11 @@ namespace MAGE
 			 * 
 			 *	Usage is in 3 steps which could be summarized into "access, write, save": 
 			 * 
-			 *	Item *item = memQueue->next(); //access next memory slot \n
+			 *	Item *item = memQueue->next(); //access next available memory slot \n
 			 *	item->set...(foo); //modify it \n
 			 *	memQueue->push(); //save it into the queue (advance 'write' pointer to next available memory slot) \n
 			 * 
-			 *	@param nOfItems The number of item to be pushed in the queue, i.e. number of item the
+			 *	@param nOfItems The number of items to be pushed in the queue, i.e. number of item the
 			 *			'write' pointer will be advanced. If no value is provided, 1 (one) item is pushed.
 			 *			You will usually want to use it with only one item at a time.
 			 * 
@@ -223,19 +223,19 @@ namespace MAGE
 			
 			/**
 			 * \var unsigned int read
-			 * \brief index of the position where the next get()/pop() will happen
+			 * \brief index of the position where the next get() / pop() will happen
 			 */
 			unsigned int read;
 			
 			/**
 			 * \var unsigned int write
-			 * \brief index of the position where the next next()/push() will happen
+			 * \brief index of the position where the next next() / push() will happen
 			 */
 			unsigned int write;
 			
 			/**
 			 * \var Item * rawData
-			 * \brief number of items currently stored in the queue
+			 * \brief the array of Item used as a circular buffer for the queue
 			 */
 			Item * rawData;
 	};
@@ -252,7 +252,7 @@ MAGE::MemQueue<Item>::MemQueue( unsigned int queueLen )
 	nOfItems = 0;
 }
 
-//	Distructor that disallocates the used memery of a MemQueue.
+//	Destructor that disallocates the used memory of a MemQueue.
 template <class Item>
 MAGE::MemQueue<Item>::~MemQueue( void )
 {
