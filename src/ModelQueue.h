@@ -41,7 +41,7 @@
 namespace MAGE 
 {	
 	/** 
-	 *  \brief		The memory used of a Model queue used in Mage.
+	 *  \brief		The memory used by a ModelQueue used in Mage.
 	 *  \details	This class is used to define the memory structures that are needed for a ModelQueue.
 	 *
 	 *  \authors    Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
@@ -173,7 +173,7 @@ namespace MAGE
 			/**
 			 *	This function gets the current memory used by the ModelQueue.
 			 *
-			 *	@return The memory used by the ModelQueue.
+			 *	@return The memory (as a ModelQueueMemory) used by the ModelQueue.
 			 */
 			inline ModelQueueMemory *getModelQueueMemory( void ){ return( &this->modelQueueMemory ); };
 
@@ -196,7 +196,7 @@ namespace MAGE
 			 *	@param backup The number of Model instances already used that we keep in memory 
 			 *			for smoother parameters computation.
 			 *	@param lookup The number of Model instances not yet used that we keep in memory 
-			 *			for smoother parameters computation.
+			 *			for smoother parameters computation. Ideally should be 0 for better reactivity.
 			 */
 			void optimizeParameters( MAGE::Engine * engine, unsigned int backup = nOfBackup, unsigned int lookup = nOfLookup );
 		
@@ -221,7 +221,7 @@ namespace MAGE
 			
 			/**
 			 * \var ModelQueueMemory * modelQueueMemory
-			 * \brief constant-sized memory used to store all the models. Allocated once at the beginning of Mage to avoid any on-the-fly allocation
+			 * \brief constant-sized memory used to store all the models. Allocated once at the beginning of Mage, when ModelQueue constructor is called, to avoid any on-the-fly allocation
 			 */
 			ModelQueueMemory modelQueueMemory;
 	};	
