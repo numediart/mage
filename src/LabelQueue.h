@@ -87,7 +87,7 @@ namespace MAGE
 			void push( void );
 		
 			/**
-			 *	This function removes the oldest item in the queue.
+			 *	This function removes the oldest item in the queue and copies it into a Label variable.
 			 * 
 			 *	@param label An instance of Label into which the pop()'d label will be 
 			 *					copied before being removed from the queue
@@ -172,19 +172,19 @@ namespace MAGE
 	
 			/**
 			 * \var std::vector<Label> queue
-			 * \brief it contains the labels extracted from the label file
+			 * \brief it contains the labels pushed into the queue (for instance labels extracted from an HTS label file)
 			 */
 			vector<Label> queue;
 
 			/**
 			 * \var unsigned int read
-			 * \brief index of the position where the next get()/pop() will happen
+			 * \brief index of the position where the next get() / pop() will happen
 			 */
 			unsigned int read;
 
 			/**
 			 * \var unsigned int write
-			 * \brief index of the position where the next next()/push() will happen
+			 * \brief index of the position where the next next() / push() will happen
 			 */
 			unsigned int write;
 
