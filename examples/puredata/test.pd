@@ -1,4 +1,4 @@
-#N canvas 3 65 1899 1087 24;
+#N canvas 0 22 1899 1087 24;
 #X obj 836 796 mage~;
 #X obj 828 939 dac~;
 #X msg 428 199 alpha \$1;
@@ -49,12 +49,40 @@
 #X msg 1687 583 stop;
 #X obj 1666 634 metro 250;
 #X obj 284 496 hsl 128 15 0 1 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 12700 1;
+-1 -1 0 1;
 #X obj 39 495 hsl 128 15 0 1 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 5600 1;
+-1 -1 0 1;
 #X msg 281 529 interpolate awb \$1;
 #X msg 34 528 interpolate slt \$1;
 #X msg 562 726 debug;
+#N canvas 245 88 621 465 Licence 0;
+#X text 65 34 This file is part of MAGE / pHTS;
+#X text 64 49 (the performative HMM-based speech synthesis system)
+;
+#X text 65 73 MAGE / pHTS is free software: you can redistribute it
+and/or modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation \, either version 3 of
+the license \, or any later version.;
+#X text 65 134 MAGE / pHTS is distributed in the hope that it will
+be useful \, but WITHOUT ANY WARRANTY \, without even the implied warranty
+of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+General Public License for more details.;
+#X text 66 209 You should have received a copy of the GNU General Public
+License along with MAGE / pHTS. If not \, see http://www.gnu.org/licenses
+;
+#X text 44 19 /* -----------------------------------------------------
+*/;
+#X text 66 263 Copyright 2011 University of Mons :;
+#X text 126 281 Numediart Institute for New Media Art;
+#X text 259 295 ( www.numediart.org );
+#X text 126 309 Acapela Group ( www.acapela-group.com );
+#X text 70 338 Developed by :;
+#X text 128 359 Maria Astrinaki \, Alexis Moinet \, Geoffrey Wilfart
+\,;
+#X text 204 373 Nicolas d'Alessandro \, Thierry Dutoit;
+#X text 70 394 /* ------------------------------------------------------
+*/;
+#X restore 1462 912 pd Licence;
 #X connect 0 0 1 0;
 #X connect 0 0 1 1;
 #X connect 2 0 0 0;
