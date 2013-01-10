@@ -49,5 +49,6 @@ xcuserdata
 
 # data folder at root
 data
+ofAccents
 
 .gitignore.*
