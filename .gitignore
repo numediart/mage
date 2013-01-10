@@ -3,6 +3,8 @@
 *.lo
 *.o
 *.pd_linux
+*.pd_darwin
+
 
 # Compiled Executable (Windows)
 *.exe
@@ -39,53 +41,13 @@ nbbuild
 *.pbxuser
 *.plist
 *.pbxproj
+*.xcworkspace
+xcuserdata
 
 # merge tools garbage
 *.orig
 
 # data folder at root
 data
-*.pd_darwin
-examples/ofxOSC/ofxOSC.xcodeproj/project.xcworkspace/contents.xcworkspacedata
-examples/ofxOSC/ofxOSC.xcodeproj/project.xcworkspace/xcuserdata/Maipn.xcuserdatad/UserInterfaceState.xcuserstate
-examples/ofxOSC/ofxOSC.xcodeproj/project.xcworkspace/xcuserdata/Maipn.xcuserdatad/WorkspaceSettings.xcsettings
-examples/ofxOSC/ofxOSC.xcodeproj/xcuserdata/Maipn.xcuserdatad/xcdebugger/Breakpoints.xcbkptlist
-examples/ofxOSC/ofxOSC.xcodeproj/xcuserdata/Maipn.xcuserdatad/xcschemes/ofxOSC.xcscheme
-examples/ofxAccents/accentMageOSC.xcodeproj/project.xcworkspace/contents.xcworkspacedata
-examples/ofxAccents/accentMageOSC.xcodeproj/project.xcworkspace/xcuserdata/Maipn.xcuserdatad/UserInterfaceState.xcuserstate
-examples/ofxAccents/accentMageOSC.xcodeproj/project.xcworkspace/xcuserdata/Maipn.xcuserdatad/WorkspaceSettings.xcsettings
-examples/ofxAccents/accentMageOSC.xcodeproj/xcuserdata/Maipn.xcuserdatad/xcdebugger/Breakpoints.xcbkptlist
-examples/ofxAccents/accentMageOSC.xcodeproj/xcuserdata/Maipn.xcuserdatad/xcschemes/accentMageOSC.xcscheme
-examples/ofxAlpha/ofxAlpha.xcodeproj/project.xcworkspace/contents.xcworkspacedata
-examples/ofxAlpha/ofxAlpha.xcodeproj/project.xcworkspace/xcuserdata/Maipn.xcuserdatad/UserInterfaceState.xcuserstate
-examples/ofxAlpha/ofxAlpha.xcodeproj/project.xcworkspace/xcuserdata/Maipn.xcuserdatad/WorkspaceSettings.xcsettings
-examples/ofxAlpha/ofxAlpha.xcodeproj/xcuserdata/Maipn.xcuserdatad/xcdebugger/Breakpoints.xcbkptlist
-examples/ofxAlpha/ofxAlpha.xcodeproj/xcuserdata/Maipn.xcuserdatad/xcschemes/ofxAlpha.xcscheme
-examples/ofxArticulation/ofxArticulation.xcodeproj/project.xcworkspace/contents.xcworkspacedata
-examples/ofxArticulation/ofxArticulation.xcodeproj/project.xcworkspace/xcuserdata/Maipn.xcuserdatad/UserInterfaceState.xcuserstate
-examples/ofxArticulation/ofxArticulation.xcodeproj/project.xcworkspace/xcuserdata/Maipn.xcuserdatad/WorkspaceSettings.xcsettings
-examples/ofxArticulation/ofxArticulation.xcodeproj/xcuserdata/Maipn.xcuserdatad/xcdebugger/Breakpoints.xcbkptlist
-examples/ofxArticulation/ofxArticulation.xcodeproj/xcuserdata/Maipn.xcuserdatad/xcschemes/ofxArticulation.xcscheme
-examples/ofxPitch/ofxPitch.xcodeproj/project.xcworkspace/contents.xcworkspacedata
-examples/ofxPitch/ofxPitch.xcodeproj/project.xcworkspace/xcuserdata/Maipn.xcuserdatad/UserInterfaceState.xcuserstate
-examples/ofxPitch/ofxPitch.xcodeproj/project.xcworkspace/xcuserdata/Maipn.xcuserdatad/WorkspaceSettings.xcsettings
-examples/ofxPitch/ofxPitch.xcodeproj/xcuserdata/Maipn.xcuserdatad/xcdebugger/Breakpoints.xcbkptlist
-examples/ofxPitch/ofxPitch.xcodeproj/xcuserdata/Maipn.xcuserdatad/xcschemes/ofxPitch.xcscheme
-examples/ofxSpeed/ofxSpeed.xcodeproj/project.xcworkspace/contents.xcworkspacedata
-examples/ofxSpeed/ofxSpeed.xcodeproj/project.xcworkspace/xcuserdata/Maipn.xcuserdatad/UserInterfaceState.xcuserstate
-examples/ofxSpeed/ofxSpeed.xcodeproj/project.xcworkspace/xcuserdata/Maipn.xcuserdatad/WorkspaceSettings.xcsettings
-examples/ofxSpeed/ofxSpeed.xcodeproj/xcuserdata/Maipn.xcuserdatad/xcschemes/ofxSpeed.xcscheme
-examples/ofxStateDuration/ofxStateDuration.xcodeproj/project.xcworkspace/contents.xcworkspacedata
-examples/ofxStateDuration/ofxStateDuration.xcodeproj/project.xcworkspace/xcuserdata/Maipn.xcuserdatad/UserInterfaceState.xcuserstate
-examples/ofxStateDuration/ofxStateDuration.xcodeproj/project.xcworkspace/xcuserdata/Maipn.xcuserdatad/WorkspaceSettings.xcsettings
-examples/ofxStateDuration/ofxStateDuration.xcodeproj/xcuserdata/Maipn.xcuserdatad/xcdebugger/Breakpoints.xcbkptlist
-examples/ofxStateDuration/ofxStateDuration.xcodeproj/xcuserdata/Maipn.xcuserdatad/xcschemes/ofxStateDuration.xcscheme
-examples/ofxVolume/ofxVolume.xcodeproj/project.xcworkspace/contents.xcworkspacedata
-examples/ofxVolume/ofxVolume.xcodeproj/project.xcworkspace/xcuserdata/Maipn.xcuserdatad/UserInterfaceState.xcuserstate
-examples/ofxVolume/ofxVolume.xcodeproj/project.xcworkspace/xcuserdata/Maipn.xcuserdatad/WorkspaceSettings.xcsettings
-examples/ofxVolume/ofxVolume.xcodeproj/xcuserdata/Maipn.xcuserdatad/xcdebugger/Breakpoints.xcbkptlist
-examples/ofxVolume/ofxVolume.xcodeproj/xcuserdata/Maipn.xcuserdatad/xcschemes/ofxVolume.xcscheme
-examples/puredata/mage~.xcodeproj/project.xcworkspace/contents.xcworkspacedata
-examples/puredata/mage~.xcodeproj/project.xcworkspace/xcuserdata/Maipn.xcuserdatad/UserInterfaceState.xcuserstate
-examples/puredata/mage~.xcodeproj/project.xcworkspace/xcuserdata/Maipn.xcuserdatad/WorkspaceSettings.xcsettings
-examples/puredata/mage~.xcodeproj/xcuserdata/Maipn.xcuserdatad/xcschemes/mage~.xcscheme
+
+.gitignore.*
