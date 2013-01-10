@@ -1,7 +1,7 @@
-SET(APP_NAME ofxOSC-enterface12)
+SET(APP_NAME ofStateDuration)
 
-FILE(GLOB SRC ${SRC} src/*.cpp)
-FILE(GLOB HDR ${HDR} src/*.h)
+FILE(GLOB SRC ${SRC} src/*.cpp ${MAGE_EXTERNAL_LIBS_PATH}/gui/*.cpp)
+FILE(GLOB HDR ${HDR} src/*.h ${MAGE_EXTERNAL_LIBS_PATH}/gui/*.h)
 
 INCLUDE_DIRECTORIES(/usr/include/gtk-2.0)
 INCLUDE_DIRECTORIES(/usr/lib/gtk-2.0/include)
@@ -23,12 +23,7 @@ INCLUDE_DIRECTORIES(${MAGE_HTS_ENGINE_PATH})
 INCLUDE_DIRECTORIES(${MAGE_PORTAUDIO_PATH})
 INCLUDE_DIRECTORIES(${MAGE_SPTK_PATH})
 
-#OFx OSC addon - compiled locally
-INCLUDE_DIRECTORIES(${OFXOSC_ROOT_PATH}/src)
-INCLUDE_DIRECTORIES(${OFXOSC_ROOT_PATH}/libs/oscpack/src)
-INCLUDE_DIRECTORIES(${OFXOSC_ROOT_PATH}/libs/oscpack/src/osc)
-INCLUDE_DIRECTORIES(${OFXOSC_ROOT_PATH}/libs/oscpack/src/ip)
-INCLUDE_DIRECTORIES(${OFXOSC_ROOT_PATH}/libs/oscpack/src/ip/posix)
+INCLUDE_DIRECTORIES(${MAGE_EXTERNAL_LIBS_PATH}/gui)
 
 #certainly not the cleanest way to do it, but it matches openframeworks' gcc command from the Makefile
 #besides ... it works

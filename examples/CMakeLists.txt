@@ -1,11 +1,11 @@
 IF(USE_OPENFRAMEWORKS)
 	#build the enterface 2012 apps
-	ADD_SUBDIRECTORY(ofxAlpha)
-	ADD_SUBDIRECTORY(ofxOSC)
-	ADD_SUBDIRECTORY(ofxPitch)
-	ADD_SUBDIRECTORY(ofxSpeed)
-	ADD_SUBDIRECTORY(ofxStateDuration)
-	ADD_SUBDIRECTORY(ofxVolume)
+	ADD_SUBDIRECTORY(ofAlpha)
+	ADD_SUBDIRECTORY(ofOscControl)
+	ADD_SUBDIRECTORY(ofPitch)
+	ADD_SUBDIRECTORY(ofSpeed)
+	ADD_SUBDIRECTORY(ofStateDuration)
+	ADD_SUBDIRECTORY(ofVolume)
 ENDIF()
 
 #test file used for memory leak in magelib - use valgrind to run it
