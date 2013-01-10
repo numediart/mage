@@ -1,4 +1,4 @@
-SET(APP_NAME ofxStateDuration)
+SET(APP_NAME ofStateDuration)
 
 FILE(GLOB SRC ${SRC} src/*.cpp ${MAGE_EXTERNAL_LIBS_PATH}/gui/*.cpp)
 FILE(GLOB HDR ${HDR} src/*.h ${MAGE_EXTERNAL_LIBS_PATH}/gui/*.h)
