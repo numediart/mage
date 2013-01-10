@@ -19,7 +19,7 @@ Note that the naming of the folder (builds/linux-x64-...) for building out-of-so
 
 to use the openFrameworks-based enterface12 application:
 
-1. have openFrameworks compiled and installed somewhere (default: /opt/openframeworks)
+1. have openFrameworks compiled and installed somewhere (default: /opt/openframeworks). NB: on linux, we tested with OF version 0071, however if the organization of OF libraries didn't change, later versions (0073 at time of writing) should work fine too.
 2. have OfxOsc plugin of openFrameworks compiled and installed somewhere (default: /opt/ofxosc)
 3. ccmake . + set USE_OPENFRAMEWORKS to true + rerun config + change value for 
 
