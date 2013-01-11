@@ -35,7 +35,7 @@ namespace MAGE
 {
 	/** 
 	 *  \brief		The memory queue of Frame instances used in Mage (Frame ringbuffer).
-	 *  \details	This class is used to exchange tspeech parameters with the synthesis thread.
+	 *  \details	This class is used to exchange speech parameters with the synthesis thread.
 	 *
 	 *  \authors    Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
 	 *
