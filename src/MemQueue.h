@@ -39,7 +39,7 @@
 namespace MAGE 
 {
 	/** 
-	 *  \brief		The memory queues used in Mage.
+	 *  \brief		The basic template class for the memory queues used in Mage.
 	 *  \details	This class is used to define the memory queue structures that are used in Mage. 
 	 *				Memory-efficient lock-free ringbuffer : push and template POD data with memcpy()
 	 *				and inform on the state of the buffer
@@ -152,9 +152,9 @@ namespace MAGE
 		
 			/**
 			 *	This function copies nItem Items of the FIFO queue into the Item array *item. 
-			 *	This is meant to be used with pop(int). 
+			 *	This is meant to be used with pop(unsigned int). 
 			 *
-			 *	\see pop(int) doc for more complete explanation.
+			 *	\see pop(unsigned int) doc for more complete explanation.
 			 * 
 			 *	@param item A pre-allocated array of Item in which nItem from the queue will be copied.
 			 *	@param nOfItems The number of Items to be copied.
@@ -162,9 +162,9 @@ namespace MAGE
 			void get( Item * item, unsigned int nOfItems = 1 );
 		
 			/**
-			 *	This function accesses the oldest item of the FIFO queue. This is meant to be used with pop(int).
+			 *	This function accesses the oldest item of the FIFO queue. This is meant to be used with pop(unsigned int).
 			 *
-			 *	\see pop(int) doc for more complete explanation.
+			 *	\see pop(unsigned int) doc for more complete explanation.
 			 * 
 			 *	@return A pointer to the item of the queue that pop() would remove. i.e. the
 			 *				oldest slot in the FIFO.
@@ -173,9 +173,9 @@ namespace MAGE
 		
 			/**
 			 *	This function accesses the next available slot of the memory pool. This is meant to be 
-			 *	used with push(int). 
+			 *	used with push(unsigned int). 
 			 *
-			 *	\see push(int) doc for more complete explanations.
+			 *	\see push(unsigned int) doc for more complete explanations.
 			 * 
 			 *	@return A pointer to the item of the queue that push() would write to. i.e. 
 			 *				the next available slot in memory that has not yet been pushed into the FIFO

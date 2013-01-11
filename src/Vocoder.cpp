@@ -388,7 +388,7 @@ void MAGE::Vocoder::reset()
 }
 
 // accessors
-//	This function returns true if a Frame is voiced and false otherwise.
+//	This function returns true if the current Frame is voiced and false otherwise.
 bool MAGE::Vocoder::isVoiced( void )
 {
 	return( this->voiced );

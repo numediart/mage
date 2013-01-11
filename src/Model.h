@@ -131,7 +131,7 @@ namespace MAGE
 		public :
 		
 			/**
-			 *	Constructor that allocates the required memory for a Model and initiallizes the parameters used.
+			 *	Constructor that allocates the required memory for a Model and initializes the parameters used.
 			 */
 			Model();
 		
@@ -202,7 +202,7 @@ namespace MAGE
 			 *	@param engine The engine to be used.
 			 *	@param label The string query for which the durations are going to be computed.
 			 *	@param interpolationWeight The possible interpolation weights to be taken into account for the computation.
-			 *			If this argument is set to NULL then by default the interpolation weight taken into account are set to 1.
+			 *			If this argument is set to NULL then by default the interpolation weights taken into account are set to 1.
 			 */
 			void computeDuration  ( MAGE::Engine * engine, MAGE::Label * label, double * interpolationWeight );
 		
@@ -212,7 +212,7 @@ namespace MAGE
 			 *	@param engine The engine to be used.
 			 *	@param label The string query for which the parameters are going to be computed.
 			 *	@param interpolationWeight The possible interpolation weights to be taken into account for the computation.
-			 *			If this argument is set to NULL then by default the interpolation weight taken into account are set 
+			 *			If this argument is set to NULL then by default the interpolation weights taken into account are set 
 			 *			to one as default value.
 			 */
 			void computeParameters( MAGE::Engine * engine, MAGE::Label * label, double * interpolationWeight );
@@ -227,7 +227,7 @@ namespace MAGE
 		
 			/**
 			 *	This function checks and normalizes the interpolation weights for every coefficients stream of every State of  
-			 *		the Model that are passed directly to the used engine from the configuration file.
+			 *		the Model that are passed directly to the given engine from the configuration file.
 			 *
 			 *	@param engine The engine to be used.
 			 *	@param forced The flag to recall this function several times.

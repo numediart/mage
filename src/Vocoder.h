@@ -181,7 +181,7 @@ namespace MAGE
 // methods
 		
 			/** 
-			 *	This function generates a Frame.
+			 *	This function receives a Frame and prepare all the parameters of the MLSA filter for the next sample generation by pop().
 			 * 
 			 *	@param frame An instance of class Frame.
 			 *	@param ignoreVoicing If true, then ignore the voiced / unvoiced information of the Frame and use latest known information.
@@ -189,7 +189,7 @@ namespace MAGE
 			void push( Frame &frame, bool ignoreVoicing=false );
 		
 			/**
-			 *	This function generates a Frame.
+			 *	This function receives a Frame and prepare all the parameters of the MLSA filter for the next sample generation by pop().
 			 * 
 			 *	@param frame A pointer to an instance of class Frame.
 			 *	@param ignoreVoicing If true, then ignore the voiced / unvoiced information of the Frame and use latest known information.
@@ -221,9 +221,9 @@ namespace MAGE
 // accessors
 
 			/** 
-			 *	This function returns true if a Frame is voiced and false otherwise.
+			 *	This function returns true if the current Frame is voiced and false otherwise.
 			 * 
-			 *	@return True if a Frame is voiced and false otherwise.
+			 *	@return True if the current Frame is voiced and false otherwise.
 			 */
 			bool isVoiced( void );
 		

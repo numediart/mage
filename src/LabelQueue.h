@@ -39,7 +39,7 @@ namespace MAGE
 	/** 
 	 *  \brief		The memory queue of Label instances used in Mage (Label ringbuffer).
 	 *  \details	This class is used to exchange the Label instances between the different threads; 
-	 *				we could not inherint from MemQueue because Label is not a POD type.
+	 *				we could not inherit from MemQueue because Label is not a POD type.
 	 *
 	 *  \authors    Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
 	 *
@@ -109,7 +109,7 @@ namespace MAGE
 			 *	string s2 = label->getQuery();//don't do this \n
 			 * 
 			 *	Note that once pop() has been called, the item can be overwritten at any time
-			 *	by a subsequent next()/push(). Therefore if the Label has to be used but without
+			 *	by a subsequent next() / push(). Therefore if the Label has to be used but without
 			 *	blocking/clogging up the queue, it is better to make a copy-pop() with pop(Label&)
 			 * 
 			 *	Label *label = labelQueue->get();//access oldest item in the queue \n

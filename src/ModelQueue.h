@@ -185,7 +185,7 @@ namespace MAGE
 			 *	@param engine The Engine used to store the Model and Global parameter structures.
 			 *	@param frameQueue The FrameQueue used to store the generated parameters of every Frame.
 			 *	@param backup The number of Model instances already used that we keep in memory 
-			 *			for smoother parameters computation.
+			 *			for computation of smoother parameters.
 			 */
 			void generate( MAGE::Engine * engine, FrameQueue * frameQueue, unsigned int backup = nOfBackup );
 		
@@ -194,9 +194,9 @@ namespace MAGE
 			 *
 			 *	@param engine The Engine used to store the Model and Global parameter structures.
 			 *	@param backup The number of Model instances already used that we keep in memory 
-			 *			for smoother parameters computation.
+			 *			for computation of smoother parameters.
 			 *	@param lookup The number of Model instances not yet used that we keep in memory 
-			 *			for smoother parameters computation. Ideally should be 0 for better reactivity.
+			 *			for computation of smoother parameters. Ideally should be 0 for better reactivity.
 			 */
 			void optimizeParameters( MAGE::Engine * engine, unsigned int backup = nOfBackup, unsigned int lookup = nOfLookup );
 		
