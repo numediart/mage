@@ -43,8 +43,8 @@ void testApp::setup( void )
 	this->mage = new MAGE::Mage();
 	
 	// add clb & awb voice models
-    this->labelFile = "../../../../data/labels/cmu-artic/alice01.lab";
-	this->mage->addEngine( "slt", "../../../../data/configFiles/cmu-artic/slt.conf" );
+    this->labelFile = "../../../data/labels/cmu-artic/alice01.lab";
+	this->mage->addEngine( "slt", "../../../data/configFiles/cmu-artic/slt.conf" );
     
 	// --- Parameter Generation Thread ---
 	generate = new genThread( this->mage );
