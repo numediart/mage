@@ -81,5 +81,5 @@ ADD_SUBDIRECTORY(${MAGE_EXTERNAL_LIBS_PATH})
 ADD_SUBDIRECTORY(${MAGE_SRC_PATH})
 #build the examples
 ADD_SUBDIRECTORY(${MAGE_EXAMPLES_PATH})
-#TODO doxy documentation
+#TODO automatic generation of doxy documentation
 #ADD_SUBDIRECTORY(${MAGE_DOC_PATH})

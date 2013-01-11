@@ -1,3 +1,9 @@
+== General Information ==
+* For linux, we use cmake to compile mage as a shared library (actually a group of shared libs, libmage.so being the main one), and the executables in ./examples as well as the mage~ puredata object (max/msp is only for OSX and Windows).
+* If you manage to have openframeworks properly compiled, there are more ./examples to compile though some may not make any actual sound if they use both OF and puredata (e.g. ofOscControl) and you don't find a proper sound configuration.
+* this was tested and used on Ubuntu 10.04.x 64-bit. 
+* the cmake configs files for the OF examples are quite "unclean" and have some ubuntu-ism in the lib paths. More recent versions of ubuntu may need some adaptations. Please let us know of any such trouble.
+
 == Compilation ==
 
 Release:
@@ -13,7 +19,13 @@ $ cmake ../.. -DCMAKE_BUILD_TYPE=Debug
 (or use ccmake after cmake ../.., to change BUILD_TYPE option to Debug)
 $ make
 
+Once the Makefiles have been generated, you can also consider using an IDE such as Netbeans or Eclipse (or any other) to create and configure a project accordingly. Netbeans option is "New Project --> C/C++ project with Existing Sources" + select the mage folder + make your configuration as desired with the generated Makefiles. Recent Netbeans seems to be able to directly handle cmake, but we did not test it yet. 
+
 Note that the naming of the folder (builds/linux-x64-...) for building out-of-source with cmake is not really important, but .gitignore is configured to ignore everything in any folder named build, builds, Build or Builds. Feel free to follow your own convention though.
+
+Note also that git is configured to ignore netbeans project files created in the mage folder.
+
+Finally note that without openframeworks, the cmake configuration is generalist enough that it should compile just fine on OSX (and maybe even on Windows).
 
 === With openFrameworks ===
 
