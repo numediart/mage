@@ -86,9 +86,9 @@ namespace MAGE
 	};
 	
 	/** 
-	 *  \brief     The Label query used to retrieve the statistical inforamtion for building a Model.
+	 *  \brief     The Label query used to retrieve the statistical information for building a Model.
 	 *  \details   This class is used to define the Label query structures, such as the label string,
-	 *				the time tags and if the duration is forced by the user.
+	 *				the time tags and whether the duration is forced by the user.
 	 *
 	 *  \authors    Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
 	 *
@@ -116,7 +116,7 @@ namespace MAGE
 			Label( string query );
 		
 			/**
-			 *	Destructor that disallocates all the memory used from a Label.
+			 *	Destructor that disallocates all the memory used by a Label.
 			 */		
 			~Label( void );
 	
