@@ -47,7 +47,7 @@ namespace MAGE
 	 *
 	 *  \authors    Maria Astrinaki, Alexis Moinet, Geoffrey Wilfart, Nicolas d'Alessandro, Thierry Dutoit
 	 *
-	 *  \version	2.00 beta
+	 *  \version	2.00
 	 *  \date		2011 - 2012
 	 *  \copyright 
 	 *				Numediart Institute for New Media Art ( www.numediart.org )	\n
