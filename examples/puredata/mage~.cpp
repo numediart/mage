@@ -77,6 +77,10 @@ extern "C"
 	void mage_tilde_pitch_synth( t_mage_tilde * x );
 	void mage_tilde_reset( t_mage_tilde * x );
 	void mage_tilde_speed( t_mage_tilde * x, t_floatarg speed, t_floatarg action );
+	void mage_tilde_speed_overwrite( t_mage_tilde * x, t_floatarg speedvalue );
+	void mage_tilde_speed_scale( t_mage_tilde * x, t_floatarg speedvalue );
+	void mage_tilde_speed_shift( t_mage_tilde * x, t_floatarg speedvalue );
+	void mage_tilde_speed_synth( t_mage_tilde * x );
 	void mage_tilde_volume( t_mage_tilde * x, t_floatarg volume );
 	
 	void fillLabels( t_mage_tilde * x )
@@ -170,6 +174,10 @@ extern "C"
 		
 		// Speed
 		class_addmethod(mage_tilde_class, (t_method)mage_tilde_speed, gensym("speed"), A_FLOAT, A_FLOAT, 0);
+		class_addmethod(mage_tilde_class, (t_method)mage_tilde_speed_overwrite, gensym("speedoverwrite"), A_FLOAT, 0);
+		class_addmethod(mage_tilde_class, (t_method)mage_tilde_speed_scale, gensym("speedscale"), A_FLOAT, 0);
+		class_addmethod(mage_tilde_class, (t_method)mage_tilde_speed_shift, gensym("speedshift"), A_FLOAT, 0);
+		class_addmethod(mage_tilde_class, (t_method)mage_tilde_speed_synth, gensym("speedsynth"), (t_atomtype) 0);
 		
 		// Volume
 		class_addmethod(mage_tilde_class, (t_method)mage_tilde_volume, gensym("volume"), A_FLOAT, 0);
@@ -441,6 +449,34 @@ extern "C"
 		// controlValue = MAGE::noaction;
 	
 		x->mage->setSpeed( speed, action );
+		
+		return;
+	}
+
+	void mage_tilde_speed_overwrite( t_mage_tilde * x, t_floatarg speedvalue )
+	{
+		x->mage->setSpeed( speedvalue, MAGE::overwrite );
+		
+		return;
+	}
+	
+	void mage_tilde_speed_scale( t_mage_tilde * x, t_floatarg speedvalue )
+	{
+		x->mage->setSpeed( speedvalue, MAGE::scale );
+		
+		return;
+	}
+	
+	void mage_tilde_speed_shift( t_mage_tilde * x, t_floatarg speedvalue )
+	{
+		x->mage->setSpeed( speedvalue, MAGE::shift );
+		
+		return;
+	}
+	
+	void mage_tilde_speed_synth( t_mage_tilde * x )
+	{
+		x->mage->setSpeed( 0, MAGE::synthetic );
 		
 		return;
 	}
