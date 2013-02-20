@@ -451,7 +451,8 @@ void MAGE::Mage::addEngine( std::string EngineName, std::string confFilename )
 {
 	this->parseConfigFile( confFilename );
 	
-	this->addEngine( EngineName );
+	if( this->argc > 0 )
+		this->addEngine( EngineName );
 	
 	this->freeArgv();
 	
@@ -604,7 +605,7 @@ void MAGE::Mage::addEngine( std::string EngineName )
 	if( it != this->engine.end() )
 	{
 // OPTION :: nothing, directly return
-		printf("Warning :: Enigine %s already exists\n", EngineName.c_str());
+		printf("Warning :: Engine %s already exists\n", EngineName.c_str());
 		return;
 		
 // OPTION :: overwrite the existing Engine
@@ -660,6 +661,9 @@ void MAGE::Mage::parseConfigFile( std::string confFilename )
 	string line, s;
 	ifstream confFile( confFilename.c_str() );
 	
+	this->argc = 0;
+	this->argv = 0;
+
 	if( !confFile.is_open() )
 	{
 		printf( "could not open file %s\n",confFilename.c_str() );

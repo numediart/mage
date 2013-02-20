@@ -140,7 +140,7 @@ extern "C"
 		
 		post( "_new: starting genThread" );
 		pthread_create(&(x->thread), NULL, genThread, (void *) x);
-		post( "_new : done with genThread" );
+		post( "_new: done with genThread" );
 		
 		outlet_new(&x->x_obj, &s_signal);
 		
@@ -154,7 +154,7 @@ extern "C"
 		mage_tilde_class = class_new(gensym("mage~"),(t_newmethod)mage_tilde_new,(t_method)mage_tilde_free,sizeof(t_mage_tilde),CLASS_DEFAULT, (t_atomtype) 0);
 
 		class_addbang( mage_tilde_class, mage_tilde_bang );
-		post( "_setup : blocksize = %d", sys_getblksize() );
+		post( "_setup: blocksize = %d", sys_getblksize() );
 		
 		class_addmethod(mage_tilde_class, (t_method)mage_tilde_dsp, gensym("dsp"), (t_atomtype) 0);
 		
