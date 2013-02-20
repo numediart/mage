@@ -173,7 +173,7 @@ namespace MAGE
 			 *
 			 *	@return True if the currently added Engine instance is ready to be accessed, and false otherwise. 
 			 */
-			inline bool ready( void ){ return( this->flagReady); };
+			inline bool ready( void ){ return( this->flagReady ); };
 			
 			/**
 			 *	This function gets the name of the default engine used.

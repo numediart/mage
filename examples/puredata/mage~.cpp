@@ -244,28 +244,31 @@ extern "C"
 		{ 
 			pthread_testcancel();
 			
-			if( x->mage->popLabel() ) 
+			if( x->mage->ready() )
 			{
-				// prepare the model
-				x->mage->prepareModel(); 
-				
-				// compute the corresponding durations taking into account the model 
-				// and if set, the interpolation and/or duration functions set by the user
-				x->mage->computeDuration(); 
-				
-				// compute the corresponding parameters taking into account the model 
-				// and if set, the interpolation and/or duration functions set by the user
-				x->mage->computeParameters ();
-				
-				// optimize the generated parameters 
-				x->mage->optimizeParameters();
-				
-				usleep( 100 );
+				if( x->mage->popLabel() )
+				{
+					// prepare the model
+					x->mage->prepareModel();
+
+					// compute the corresponding durations taking into account the model
+					// and if set, the interpolation and/or duration functions set by the user
+					x->mage->computeDuration();
+
+					// compute the corresponding parameters taking into account the model
+					// and if set, the interpolation and/or duration functions set by the user
+					x->mage->computeParameters ();
+
+					// optimize the generated parameters
+					x->mage->optimizeParameters();
+
+					usleep( 100 );
+				}
 			}
 			else
 			{
-				usleep( 100 );
-			}			
+				usleep( 1000 );
+			}
 		}
 		
 		return ( NULL );
