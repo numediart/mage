@@ -1,4 +1,4 @@
-#N canvas 0 22 1133 825 12;
+#N canvas 655 145 1133 825 12;
 #X declare -path ./;
 #X obj 436 535 mage~;
 #X obj 424 566 dac~;
@@ -7,7 +7,7 @@
 #X obj -119 104 hsl 64 15 0.1 0.9 0 0 empty empty empty -2 -8 0 10
 -262144 -1 -1 0 1;
 #X obj -119 612 hsl 64 15 12 1200 0 0 empty empty empty -2 -8 0 10
--262144 -1 -1 0 1;
+-262144 -1 -1 600 1;
 #X obj -33 104 hsl 64 15 0 1 0 0 empty empty empty -2 -8 0 10 -262144
 -1 -1 0 1;
 #X floatatom -115 126 5 0 0 0 - - -;
@@ -103,9 +103,8 @@
 #X msg 144 731 speed \$1 2;
 #X obj 21 777 s speed;
 #X obj 436 283 r speed;
-#X msg 661 286 label ../../data/labels/cmu-artic/alice02.lab;
 #X obj 844 773 declare -path ./;
-#N canvas 245 88 621 465 Licence 0;
+#N canvas 248 116 621 465 Licence 0;
 #X text 65 34 This file is part of MAGE / pHTS;
 #X text 64 49 (the performative HMM-based speech synthesis system)
 ;
@@ -133,7 +132,16 @@ License along with MAGE / pHTS. If not \, see http://www.gnu.org/licenses
 #X text 70 394 /* ------------------------------------------------------
 */;
 #X restore 752 775 pd Licence;
-#X msg 661 256 label ../../data/labels/cmu-artic/alice01.lab;
+#X msg 663 255 label ../../../data/labels/cmu-artic/alice01.lab;
+#X msg 661 286 label ../../../data/labels/cmu-artic/alice02.lab;
+#X obj 511 170 s engine;
+#X obj 436 250 r engine;
+#X msg 536 82 engineremove slt;
+#X msg 536 107 engineremove awb;
+#X msg 511 25 engineadd slt ../../../data/configFiles/cmu-artic/slt.conf
+;
+#X msg 511 49 engineadd awb ../../../data/configFiles/cmu-artic/awb.conf
+;
 #X connect 0 0 1 0;
 #X connect 0 0 1 1;
 #X connect 2 0 45 0;
@@ -214,5 +222,10 @@ License along with MAGE / pHTS. If not \, see http://www.gnu.org/licenses
 #X connect 85 0 86 0;
 #X connect 86 0 87 0;
 #X connect 88 0 0 0;
-#X connect 89 0 69 0;
+#X connect 91 0 69 0;
 #X connect 92 0 69 0;
+#X connect 94 0 0 0;
+#X connect 95 0 93 0;
+#X connect 96 0 93 0;
+#X connect 97 0 93 0;
+#X connect 98 0 93 0;

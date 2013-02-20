@@ -27,6 +27,7 @@
  /* ----------------------------------------------------------------------------------------------- */
 
 #include "m_pd.h"
+#include "m_imp.h"
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
@@ -63,6 +64,8 @@ extern "C"
 	//access to MAGE controls
 	void mage_tilde_alpha( t_mage_tilde * x, t_floatarg alpha );
 	void mage_tilde_debug( t_mage_tilde * x );
+	void mage_tilde_engine_add( t_mage_tilde * x, t_symbol *name, t_symbol *conf );
+	void mage_tilde_engine_remove( t_mage_tilde * x, t_symbol *name );
 	void mage_tilde_interpolation( t_mage_tilde * x, t_symbol *voice, t_floatarg weight );
 	void mage_tilde_label( t_mage_tilde * x, t_symbol *label );
 	void mage_tilde_label_fill( t_mage_tilde * x );
@@ -119,41 +122,46 @@ extern "C"
 	
 	void * mage_tilde_new( void )
 	{
-		t_mage_tilde *x = (t_mage_tilde *) pd_new(mage_tilde_class);
+		t_mage_tilde * x = ( t_mage_tilde * ) pd_new( mage_tilde_class );
 		
-		post("_new: starting");
+		post( "mage~ loaded from %s",mage_tilde_class->c_externdir->s_name );
 		
-		strcpy(x->labelPath, "../../../../data/labels/cmu-artic/alice01.lab");
+		strcpy( x->labelPath, mage_tilde_class->c_externdir->s_name );
+		strcat( x->labelPath, "/../../data/labels/cmu-artic/alice01.lab" );
 		x->mage = new Mage();
 		fillLabels(x);
 		
-		post("_new: loading engine");
-		x->mage->addEngine( "slt", "../../../../../data/configFiles/cmu-artic/slt.conf" );
-		x->mage->addEngine( "awb", "../../../../data/configFiles/cmu-artic/awb.conf" );
-		x->mage->enableInterpolation(true);
+		//post("_new: loading engine");
+		//x->mage->addEngine( "slt", "../../../data/configFiles/cmu-artic/slt.conf" );
+		//x->mage->addEngine( "awb", "../../../data/configFiles/cmu-artic/awb.conf" );
+		//x->mage->enableInterpolation(true);
 		
-		post("_new: done with engine");
+		//post("_new: done with engine");
 		
-		post("_new: starting genThread");
+		post( "_new: starting genThread" );
 		pthread_create(&(x->thread), NULL, genThread, (void *) x);
-		post("_new : done with genThread");
+		post( "_new : done with genThread" );
 		
 		outlet_new(&x->x_obj, &s_signal);
 		
-		post("_new: done\n");
+		post( "_new: done\n" );
 		
-		return (void *)x;
+		return ( void * ) x;
 	}
 	
 	void mage_tilde_setup( void )
 	{
 		mage_tilde_class = class_new(gensym("mage~"),(t_newmethod)mage_tilde_new,(t_method)mage_tilde_free,sizeof(t_mage_tilde),CLASS_DEFAULT, (t_atomtype) 0);
-		
-		class_addbang(mage_tilde_class, mage_tilde_bang);
-		post("_setup : blocksize = %d",sys_getblksize());
+
+		class_addbang( mage_tilde_class, mage_tilde_bang );
+		post( "_setup : blocksize = %d", sys_getblksize() );
 		
 		class_addmethod(mage_tilde_class, (t_method)mage_tilde_dsp, gensym("dsp"), (t_atomtype) 0);
 		
+		// Engine
+		class_addmethod(mage_tilde_class, (t_method)mage_tilde_engine_add, gensym("engineadd"), A_SYMBOL, A_SYMBOL, 0);
+		class_addmethod(mage_tilde_class, (t_method)mage_tilde_engine_remove, gensym("engineremove"), A_SYMBOL, 0);
+
 		// Label
 		class_addmethod(mage_tilde_class, (t_method)mage_tilde_label, gensym("label"), A_SYMBOL, 0);
 		class_addmethod(mage_tilde_class, (t_method)mage_tilde_label_fill, gensym("labelfill"), (t_atomtype) 0);
@@ -198,13 +206,13 @@ extern "C"
 		pthread_cancel(x->thread);
 		printf( "stopping genThread\n" );
 		pthread_join(x->thread,NULL);
-		post("free mage memory");
+		post( "free mage memory" );
 		delete x->mage;
 	}
 	
 	void mage_tilde_dsp( t_mage_tilde * x, t_signal ** sp )
 	{
-		post("_dsp");
+		post( "_dsp" );
 		dsp_add( mage_tilde_perform, 3, x, sp[0]->s_vec, sp[0]->s_n );
 	}
 	
@@ -277,7 +285,20 @@ extern "C"
 		return;
 	}
 	
-	void mage_tilde_interpolation( t_mage_tilde * x, t_symbol *voice, t_floatarg weight )
+	void mage_tilde_engine_add( t_mage_tilde * x, t_symbol * name, t_symbol * conf )
+	{
+		post( "_new: loading engine %s", name->s_name );
+		x->mage->addEngine( name->s_name, conf->s_name );
+	}
+
+	void mage_tilde_engine_remove( t_mage_tilde * x, t_symbol * name )
+	{
+		post( "_new: removing engine %s", name->s_name );
+		x->mage->removeEngine( name->s_name );
+	}
+
+
+	void mage_tilde_interpolation( t_mage_tilde * x, t_symbol * voice, t_floatarg weight )
 	{
 		string s(voice->s_name);
 		
