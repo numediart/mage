@@ -62,11 +62,11 @@
 -262144 -1 -1 0 1;
 #X floatatom -113 448 5 0 0 0 - - -;
 #X msg -121 402 set 1;
-#X obj 29 427 hsl 64 15 0.25 4 0 0 empty empty empty -2 -8 0 10 -262144
+#X obj 29 427 hsl 64 15 -200 1000 0 0 empty empty empty -2 -8 0 10 -262144
 -1 -1 0 1;
 #X floatatom 34 449 5 0 0 0 - - -;
 #X msg 26 401 set 1;
-#X obj 146 427 hsl 64 15 -200 1000 0 0 empty empty empty -2 -8 0 10
+#X obj 146 427 hsl 64 15 0.25 4 0 0 empty empty empty -2 -8 0 10
 -262144 -1 -1 0 1;
 #X floatatom 152 449 5 0 0 0 - - -;
 #X msg 143 402 set 1;
@@ -85,7 +85,7 @@
 #X obj 481 425 r label;
 #X msg -122 707 speed \$1 overwrite;
 #X msg -122 733 speed \$1 0;
-#X obj 24 611 hsl 64 15 12 1200 0 0 empty empty empty -2 -8 0 10 -262144
+#X obj 24 611 hsl 64 15 -200 1000 0 0 empty empty empty -2 -8 0 10 -262144
 -1 -1 0 1;
 #X floatatom 29 681 5 0 0 0 - - -;
 #X obj 29 632 / 240;
