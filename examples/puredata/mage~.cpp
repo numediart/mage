@@ -68,6 +68,7 @@ extern "C"
 	void mage_tilde_engine_remove( t_mage_tilde * x, t_symbol *name );
 	void mage_tilde_interpolation( t_mage_tilde * x, t_symbol *voice, t_floatarg weight );
 	void mage_tilde_label( t_mage_tilde * x, t_symbol *label );
+	void mage_tilde_label_clear( t_mage_tilde * x );
 	void mage_tilde_label_fill( t_mage_tilde * x );
 	void mage_tilde_label_next( t_mage_tilde * x );
 	void mage_tilde_label_insert( t_mage_tilde * x, t_floatarg lab );
@@ -164,6 +165,7 @@ extern "C"
 
 		// Label
 		class_addmethod(mage_tilde_class, (t_method)mage_tilde_label, gensym("label"), A_SYMBOL, 0);
+		class_addmethod(mage_tilde_class, (t_method)mage_tilde_label_clear, gensym("labelclear"), (t_atomtype) 0);
 		class_addmethod(mage_tilde_class, (t_method)mage_tilde_label_fill, gensym("labelfill"), (t_atomtype) 0);
 		class_addmethod(mage_tilde_class, (t_method)mage_tilde_label_next, gensym("labelnext"), (t_atomtype) 0);
 		class_addmethod(mage_tilde_class, (t_method)mage_tilde_label_insert, gensym("labelinsert"), A_FLOAT, 0);
@@ -326,6 +328,13 @@ extern "C"
 	{
 		strcpy(x->labelPath, label->s_name);
 		fillLabels(x);
+		
+		return;
+	}
+	
+	void mage_tilde_label_clear( t_mage_tilde * x )
+	{
+		x->mage->clearLabels();
 		
 		return;
 	}
