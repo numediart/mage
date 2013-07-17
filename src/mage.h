@@ -377,7 +377,13 @@ namespace MAGE
 			 *	@return True if the Label was pop()'d, otherwise false.
 			 */
 			bool popLabel( void );
-
+			
+			/**
+			 * This function empties the label queue
+			 *
+			 */
+			void clearLabels( void );
+			
 			/**
 			 *	This function runs all the Mage controls until the speech sample generation. 
 			 * 

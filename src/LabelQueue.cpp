@@ -32,8 +32,8 @@
 MAGE::LabelQueue::LabelQueue( unsigned int size )
 {
 	queue.resize( size );
-	read = write = 0;
 	nOfLabels = 0;
+	read = write = 0;
 }
 
 // methods
@@ -126,6 +126,6 @@ bool MAGE::LabelQueue::isFull( void )
 
 void MAGE::LabelQueue::clear( void)
 {
-	read = write = 0;
 	nOfLabels = 0;
+	read = write = 0;
 }
