@@ -92,12 +92,12 @@ void MAGE::LabelQueue::get( Label &label )
 //	This function accesses the oldest item of the FIFO queue. This is meant to be used with pop(void).
 MAGE::Label * MAGE::LabelQueue::get( void )
 {
-		return &queue[read];
+	return &queue[read];
 }
 
 MAGE::Label * MAGE::LabelQueue::next( void )
 {
-		return &queue[write];
+	return &queue[write];
 }
 
 // accessors 
@@ -124,3 +124,8 @@ bool MAGE::LabelQueue::isFull( void )
 		return false;
 }
 
+void MAGE::LabelQueue::clear( void)
+{
+	read = write = 0;
+	nOfLabels = 0;
+}

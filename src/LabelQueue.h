@@ -92,7 +92,7 @@ namespace MAGE
 			 *	@param label An instance of Label into which the pop()'d label will be 
 			 *					copied before being removed from the queue
 			 */
-			void pop ( Label &label );
+			void pop( Label &label );
 		
 			/**
 			 *	This function removes the oldest item in the queue. In this case, there is no copy 
@@ -129,7 +129,7 @@ namespace MAGE
 			 *
 			 *	@param label An instance of Label into which the get()'d label will be copied.
 			 */
-			void get ( Label &label );
+			void get( Label &label );
 		
 			/**
 			 *	This function accesses the oldest item of the FIFO queue. This is meant to be used with pop(void).
@@ -165,9 +165,21 @@ namespace MAGE
 			 *	@return True if the queue is full, i.e. if it contains the max number of elements
 			 *			given to the constructor, false otherwise.
 			 */
-			bool isFull ( void );
-	
-	
+			bool isFull( void );
+			
+			/**
+			 * This function removes all elements already present in the queue
+			 * and sets the number of elements to zero.
+			 */
+			void clear( void );
+			
+			/**
+			 * This function returns the number of labels present in the queue.
+			 * This value is supposed to be inbetween 0 and maxLabelQueueLen.
+			 * (see Constant.h for value of maxLabelQueueLen)
+			 */
+			inline unsigned int size( void ) { return this->nOfLabels; }
+			
 		protected:
 	
 			/**
