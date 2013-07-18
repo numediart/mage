@@ -283,9 +283,9 @@ bool MAGE::Mage::popLabel( void )
 	return( false );
 }
 
-void MAGE::Mage::clearLabels( void )
+string MAGE::Mage::clearLabels( void )
 {
-	this->labelQueue->clear();
+	return this->labelQueue->clear();
 }
 
 //	This function runs all the Mage controls until the speech sample generation. 

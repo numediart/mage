@@ -171,7 +171,7 @@ namespace MAGE
 			 * This function removes all elements already present in the queue
 			 * and sets the number of elements to zero.
 			 */
-			void clear( void );
+			std::string clear( void );
 			
 			/**
 			 * This function returns the number of labels present in the queue.

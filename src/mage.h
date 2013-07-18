@@ -382,7 +382,7 @@ namespace MAGE
 			 * This function empties the label queue
 			 *
 			 */
-			void clearLabels( void );
+			std::string clearLabels( void );
 			
 			/**
 			 *	This function runs all the Mage controls until the speech sample generation. 

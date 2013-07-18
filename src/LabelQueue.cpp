@@ -124,8 +124,13 @@ bool MAGE::LabelQueue::isFull( void )
 		return false;
 }
 
-void MAGE::LabelQueue::clear( void)
+string MAGE::LabelQueue::clear( void)
 {
 	nOfLabels = 0;
+	
+	string next = queue[read].getQuery();
+	
 	read = write = 0;
+	
+	return next;
 }
