@@ -28,7 +28,7 @@
 
 /** 
  * 	 @file	mage~.cpp
- * 	 @author A. Moinet
+ * 	 @author Loïc Reboursière, Victor Huguenin
  */
 #include "ext.h"
 #include "ext_obex.h"
