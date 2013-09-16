@@ -168,6 +168,10 @@ namespace MAGE
 			 */
 			inline double getLabelSpeed( void ){ return( this->labelSpeed ); };
 		
+			inline double getvibthresh( void ){	return( this->vibthresh ); }; //V - threshold of sinewave
+			inline double getvibzoom( void ){	return( this->vibzoom ); }; //V - zoom of sinewave
+			inline double getviboffset( void ){	return( this->viboffset ); }; //V - offset of sinewave
+		
 			/**
 			 *	This function returns true if the currently added Engine instance is ready to be accessed, and false otherwise. 
 			 *
@@ -216,6 +220,8 @@ namespace MAGE
 			 *	@return The volume value used in the Vocoder.
 			 */
 			double getVolume( void );
+
+			double getvibamp(void);		//V
 		
 			/**
 			 *	This function gets the duration value of the Model used.
@@ -261,6 +267,11 @@ namespace MAGE
 			 *	@param labelSpeed The new Vocoder instance.
 			 */	
 			inline void setLabelSpeed( double labelSpeed ){ this->labelSpeed = labelSpeed; }; // less reactive
+
+			inline void setvibthresh( double vibthresh ){ this->vibthresh = vibthresh; }; //V
+			inline void setvibzoom( double vibzoom ){ this->vibzoom = vibzoom; }; //V - zoom of sinewave
+			inline void setviboffset( double viboffset ){ this->viboffset = viboffset; }; //V - offset of sinewave
+		
 		
 			/**
 			 *	This function sets a new LabelQueue instance instead of the currently used.
@@ -310,6 +321,9 @@ namespace MAGE
 			 *	@param volume The new volume value.
 			 */	
 			void setVolume( double volume );
+
+			void setvibamp(double vibamp); //V
+			void setsinresult(double sinresult); //V
 		
 			/**
 			 *	This function sets a new pitch value to be used in the Vocoder, taking into account a  
@@ -499,6 +513,13 @@ namespace MAGE
 			 *	@return The compilation time and day.
 			 */
 			std::string timestamp( void );
+		
+			/**
+			 *	This function returns a sinus wave, at a rate of defaultSampleRate/vibthresh per second,
+			 *	the shape of the wave can be modified by vibzoom and viboffset //V
+			 */
+			double mysin ( double indx );
+
 
 		protected:		
 		
@@ -594,6 +615,13 @@ namespace MAGE
 			 */
 			double labelSpeed;	// we need this because the speed changes on the lable 
 								// level and we need to have memory of this
+		
+			double sinresult; // V - this is the sinewave
+			double vibthresh; // V - this is the threshhold of the sinewave
+			double vibzoom; // V - "zoom" factor for the sinewave
+			double viboffset;	// V - offset of the sinewave
+			double sinusoid; //V - this is the counter for the sinewave
+		
 
 		private:
 

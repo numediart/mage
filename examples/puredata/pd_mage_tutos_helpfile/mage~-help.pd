@@ -1,0 +1,720 @@
+#N canvas 4 22 1439 852 10;
+#X declare -lib unauthorized;
+#X declare -path ./;
+#X declare -lib mediasettings;
+#N canvas 573 22 1101 616 filesloader 0;
+#X obj 102 177 playlist lab 500 200 {Helvetica 10 bold} #FEFEFE #E63A79
+black red;
+#X symbolatom 117 444 50 0 0 0 - - -;
+#X symbolatom 436 443 50 0 0 0 - - -;
+#X msg 112 40 /Users/vichug/Music/pd_files/txt2labscrpt/out;
+#X obj 112 -1 loadbang;
+#X obj 112 77 prepend location;
+#X obj 55 423 outlet;
+#X obj 319 417 outlet;
+#X obj 566 420 outlet;
+#X obj 262 76 prepend set;
+#X obj 260 16 prepend set;
+#X symbolatom 105 118 80 0 0 0 - - -;
+#X text 102 100 Input here the path to the folder with .lab files;
+#X text 104 145 Scroll the list by clic-dragging in the colored area.
+;
+#X obj 218 2 t b s;
+#X text 103 133 It is possible to then save this patcher so that it
+will;
+#X text 442 133 remember this path.;
+#X symbolatom 700 232 50 0 0 0 - - -;
+#X obj 754 37 prepend set;
+#X text 406 100 (or navigate until finding it);
+#X connect 0 0 1 0;
+#X connect 0 0 6 0;
+#X connect 0 1 2 0;
+#X connect 0 1 7 0;
+#X connect 0 2 8 0;
+#X connect 0 2 17 0;
+#X connect 3 0 5 0;
+#X connect 3 0 9 0;
+#X connect 4 0 3 0;
+#X connect 5 0 0 0;
+#X connect 9 0 11 0;
+#X connect 10 0 3 0;
+#X connect 11 0 14 0;
+#X connect 14 0 3 0;
+#X connect 14 1 10 0;
+#X connect 17 0 18 0;
+#X connect 18 0 3 0;
+#X coords 0 -1 1 1 505 280 2 100 100;
+#X restore -1004 -590 pd filesloader;
+#N canvas 154 316 1101 616 filesloader 0;
+#X obj 111 205 playlist conf 430 130 {Helvetica 10 bold} #FEFEFE #E63A79
+black red;
+#X symbolatom 117 444 50 0 0 0 - - -;
+#X symbolatom 436 443 50 0 0 0 - - -;
+#X symbolatom 757 443 50 0 0 0 - - -;
+#X msg 112 40 /Users/vichug/Music/MAGE/mage-2.00/data/configFiles/cmu-artic
+;
+#X obj 112 -1 loadbang;
+#X obj 112 77 prepend location;
+#X obj 55 423 outlet;
+#X obj 319 417 outlet;
+#X obj 566 420 outlet;
+#X obj 262 76 prepend set;
+#X obj 263 7 prepend set;
+#X symbolatom 111 160 80 0 0 0 - - -;
+#X text 107 110 Input here the path to the folder with engine configuration
+;
+#X text 465 110 files :;
+#X obj 107 517 cnv 15 100 60 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X obj 207 7 t b s;
+#X symbolatom 690 222 50 0 0 0 - - -;
+#X obj 744 27 prepend set;
+#X text 107 122 (or just navigate until you find it. Clicking on a
+folder;
+#X text 453 122 opens said folder.;
+#X text 110 134 Click on the two dots for upper folder.);
+#X connect 0 0 1 0;
+#X connect 0 0 7 0;
+#X connect 0 1 2 0;
+#X connect 0 1 8 0;
+#X connect 0 2 3 0;
+#X connect 0 2 9 0;
+#X connect 0 2 17 0;
+#X connect 4 0 6 0;
+#X connect 4 0 10 0;
+#X connect 5 0 4 0;
+#X connect 6 0 0 0;
+#X connect 10 0 12 0;
+#X connect 11 0 4 0;
+#X connect 12 0 16 0;
+#X connect 16 0 4 0;
+#X connect 16 1 11 0;
+#X connect 17 0 18 0;
+#X connect 18 0 4 0;
+#X coords 0 -1 1 1 505 250 2 100 100;
+#X restore -494 -590 pd filesloader;
+#X obj 301 -581 import unauthorized;
+#X obj -1004 -300 prepend label;
+#X obj -1004 -275 s tomagehelp;
+#X obj -983 28 r tomagehelp;
+#X obj -898 27 prepend set;
+#X obj -289 -277 s tomagehelp;
+#X obj -289 -302 prepend engineadd;
+#X obj -169 -302 prepend engineremove;
+#X msg -334 -305 2;
+#X msg -334 -333 1;
+#X text -398 -333 add engine;
+#X text -416 -306 remove engine;
+#X obj -923 110 vu 15 120 empty empty -1 -8 0 10 -66577 -1 1 0;
+#X obj -991 193 output~;
+#X obj -613 -270 ii reset;
+#X obj -613 -191 s tomagehelp;
+#X obj -613 -293 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X text -578 -295 panic !;
+#X msg -607 -246 pitchsynth;
+#X msg -601 -221 labelclear;
+#X text -553 -271 resets nearly everything;
+#X text -527 -222 make it stop;
+#X obj -992 -3 s tomagehelp;
+#X msg -992 -117 labelfill;
+#X text -921 -118 sends the whole label file at once;
+#X msg -985 -89 labelfilluntilend;
+#X text -908 -59 goes to next label;
+#X text -876 -37 goes to next vowel or pause label;
+#X msg -978 -57 labelnext;
+#X msg -973 -34 labelnextvowel;
+#X msg -1003 -184 volume \$1;
+#X msg -930 -184 alpha \$1;
+#X msg -853 -185 gamma \$1;
+#X floatatom -1003 -207 9 0 0 0 - - -;
+#X floatatom -930 -206 9 0 0 0 - - -;
+#X floatatom -853 -206 9 0 0 0 - - -;
+#X obj -930 -149 s tomagehelp;
+#N canvas 248 116 621 465 Licence 0;
+#X text 65 34 This file is part of MAGE / pHTS;
+#X text 64 49 (the performative HMM-based speech synthesis system)
+;
+#X text 65 73 MAGE / pHTS is free software: you can redistribute it
+and/or modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation \, either version 3 of
+the license \, or any later version.;
+#X text 65 134 MAGE / pHTS is distributed in the hope that it will
+be useful \, but WITHOUT ANY WARRANTY \, without even the implied warranty
+of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+General Public License for more details.;
+#X text 66 209 You should have received a copy of the GNU General Public
+License along with MAGE / pHTS. If not \, see http://www.gnu.org/licenses
+;
+#X text 44 19 /* -----------------------------------------------------
+*/;
+#X text 66 263 Copyright 2011 University of Mons :;
+#X text 126 281 Numediart Institute for New Media Art;
+#X text 259 295 ( www.numediart.org );
+#X text 126 309 Acapela Group ( www.acapela-group.com );
+#X text 70 338 Developed by :;
+#X text 128 359 Maria Astrinaki \, Alexis Moinet \, Geoffrey Wilfart
+\,;
+#X text 204 373 Nicolas d'Alessandro \, Thierry Dutoit;
+#X text 70 390 /* ------------------------------------------------------
+*/;
+#X restore -756 -165 pd Licence;
+#X msg -1003 -248 1;
+#X msg -930 -247 0.55;
+#X obj -927 -225 hsl 64 15 0.1 0.9 0 0 empty empty empty -2 -8 0 10
+-262144 -1 -1 0 1;
+#X obj -1000 -226 hsl 64 15 0 2 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 0 1;
+#X msg -853 -247 1;
+#X obj -850 -225 hsl 64 15 0 1 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 0 1;
+#X obj -622 -89 hsl 64 15 20 1000 0 0 empty empty empty -2 -8 0 10
+-262144 -1 -1 0 1;
+#X floatatom -625 -68 5 0 0 0 - - -;
+#X msg -625 -33 pitchoverwrite \$1;
+#X obj -506 -89 hsl 64 15 0.25 4 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 0 1;
+#X floatatom -509 -67 5 0 0 0 - - -;
+#X msg -509 -33 pitchscale \$1;
+#X obj -413 -89 hsl 64 15 -200 1000 0 0 empty empty empty -2 -8 0 10
+-262144 -1 -1 0 1;
+#X floatatom -416 -67 5 0 0 0 - - -;
+#X msg -416 -33 pitchshift \$1;
+#X msg -323 -32 pitchsynth;
+#X obj -622 33 hsl 64 15 20 1000 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 0 1;
+#X floatatom -625 58 5 0 0 0 - - -;
+#X obj -545 33 hsl 64 15 -200 1000 0 0 empty empty empty -2 -8 0 10
+-262144 -1 -1 0 1;
+#X floatatom -548 59 5 0 0 0 - - -;
+#X obj -470 33 hsl 64 15 0.25 4 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 0 1;
+#X floatatom -473 59 5 0 0 0 - - -;
+#X msg -625 106 pitch \$1 0;
+#X msg -548 107 pitch \$1 1;
+#X msg -473 107 pitch \$1 2;
+#X obj -493 4 s tomagehelp;
+#X msg -509 -115 1;
+#X obj -543 135 s tomagehelp;
+#X text -615 85 overwrite;
+#X text -540 86 shift;
+#X text -464 87 scale;
+#X msg -625 -114 220;
+#X msg -416 -114 0;
+#X obj -209 17 hsl 64 15 12 1200 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 0 1;
+#X floatatom -204 87 5 0 0 0 - - -;
+#X obj -204 38 / 240;
+#X obj -204 63 pow -1;
+#X msg -212 125 speed \$1 0;
+#X obj -126 17 hsl 64 15 -200 1000 0 0 empty empty empty -2 -8 0 10
+-262144 -1 -1 0 1;
+#X msg -129 125 speed \$1 1;
+#X obj -48 17 hsl 64 15 -5 5 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 0 1;
+#X msg -51 125 speed \$1 2;
+#X obj -129 162 s tomagehelp;
+#X text -199 104 overwrite;
+#X text -119 105 shift;
+#X text -41 105 scale;
+#X msg -212 -9 240;
+#X floatatom -51 72 5 0 0 0 - - -;
+#X msg -51 -9 1;
+#X msg -129 -10 0;
+#X msg -848 196 params @samplerate 48000;
+#X floatatom -129 72 5 0 0 0 - - -;
+#X text -215 -35 speed is size of one frame \, in samples.;
+#X text -853 160 mage~ works better at a sample rate of 48000 Hz;
+#N canvas 694 33 450 300 formatenginename 0;
+#X obj -281 -471 stripfilename -5;
+#X obj -197 -448 list;
+#X obj -203 -497 t s s;
+#X obj -230 -426 gate 2;
+#X obj -230 -446 ii 1;
+#X obj -197 -401 unpack s s;
+#X obj -203 -520 inlet;
+#X obj -273 -446 inlet;
+#X obj -255 -373 outlet;
+#X obj -197 -373 outlet;
+#X connect 0 0 1 0;
+#X connect 1 0 3 1;
+#X connect 2 0 0 0;
+#X connect 2 1 1 1;
+#X connect 3 0 8 0;
+#X connect 3 1 5 0;
+#X connect 4 0 3 0;
+#X connect 5 0 9 0;
+#X connect 6 0 2 0;
+#X connect 7 0 3 0;
+#X restore -289 -326 pd formatenginename;
+#X msg 180 153 labelnext;
+#X msg 124 6 labelinsert \$1;
+#X msg 158 91 bang;
+#X msg 202 91 stop;
+#X obj 180 124 metro 250;
+#X obj -126 -144 nbx 5 14 -1e+37 1e+37 0 0 empty empty empty 0 -8 0
+10 -262144 -1 -1 0 256;
+#X obj -258 -95 prepend duration;
+#X obj -314 -163 metro 10;
+#X obj -245 -154 nbx 5 14 -1e+37 1e+37 0 0 empty empty empty 0 -8 0
+10 -262144 -1 -1 0 256;
+#X obj -314 -183 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1
+0 1;
+#X obj -244 -179 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X obj 154 -171 knob 32 32 0 1 0 0 empty mageknobin3 empty 0 -8 0 8
+-234399 -234399 -1 0 1;
+#X obj 227 -170 knob 32 32 0 1 0 0 empty mageknobin4 empty 0 -8 0 8
+-234399 -234399 -1 0 1;
+#X obj 296 -169 knob 32 32 0 1 0 0 empty mageknobin5 empty 0 -8 0 8
+-234399 -234399 -1 0 1;
+#X obj 367 -169 knob 32 32 0 1 0 0 empty mageknobin6 empty 0 -8 0 8
+-234399 -234399 -1 0 1;
+#N canvas 100 22 962 586 interpall 0;
+#X obj 121 89 t b f;
+#X obj 186 90 t b f;
+#X obj 251 91 t b f;
+#X obj 316 91 t b f;
+#X obj 382 92 t b f;
+#X obj 12 18 inlet;
+#X obj 371 7 inlet;
+#X obj 422 8 inlet;
+#X obj 472 8 inlet;
+#X obj 522 8 inlet;
+#X obj 569 8 inlet;
+#X obj 616 8 inlet;
+#X obj 214 496 spigot;
+#X obj 154 496 spigot;
+#X obj 93 496 spigot;
+#X obj 388 496 spigot;
+#X obj 328 496 spigot;
+#X obj 267 496 spigot;
+#X obj 741 436 spigot;
+#X obj 685 436 spigot;
+#X obj 624 436 spigot;
+#X obj 915 436 spigot;
+#X obj 855 436 spigot;
+#X obj 796 436 spigot;
+#X obj 293 549 outlet;
+#X obj 349 550 outlet;
+#X obj 403 549 outlet;
+#X obj 463 547 outlet;
+#X obj 527 549 outlet;
+#X obj 582 548 outlet;
+#X obj 12 414 - 1;
+#X obj 12 154 t b f;
+#X msg 12 187 1;
+#X obj 24 49 loadbang;
+#X msg 24 88 1;
+#X obj 88 88 t f;
+#X obj 39 479 nbx 5 14 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 10
+-262144 -1 -1 1 256;
+#X obj 101 139 expr $f1 / ($f1 + $f2 + $f3 + $f4 + $f5 + $f6) \; $f2
+/ ($f1 + $f2 + $f3 + $f4 + $f5 + $f6) \; $f3 / ($f1 + $f2 + $f3 + $f4
++ $f5 + $f6) \; $f4 / ($f1 + $f2 + $f3 + $f4 + $f5 + $f6) \; $f5 /
+($f1 + $f2 + $f3 + $f4 + $f5 + $f6) \; $f6 / ($f1 + $f2 + $f3 + $f4
++ $f5 + $f6);
+#X obj 156 35 ii 1;
+#X connect 0 0 37 0;
+#X connect 0 1 37 1;
+#X connect 1 0 37 0;
+#X connect 1 1 37 2;
+#X connect 2 0 37 0;
+#X connect 2 1 37 3;
+#X connect 3 0 37 0;
+#X connect 3 1 37 4;
+#X connect 4 0 37 0;
+#X connect 4 1 37 5;
+#X connect 5 0 31 0;
+#X connect 6 0 20 0;
+#X connect 6 0 35 0;
+#X connect 7 0 0 0;
+#X connect 7 0 19 0;
+#X connect 8 0 1 0;
+#X connect 8 0 18 0;
+#X connect 9 0 2 0;
+#X connect 9 0 23 0;
+#X connect 10 0 3 0;
+#X connect 10 0 22 0;
+#X connect 11 0 4 0;
+#X connect 11 0 21 0;
+#X connect 12 0 26 0;
+#X connect 13 0 25 0;
+#X connect 14 0 24 0;
+#X connect 15 0 29 0;
+#X connect 16 0 28 0;
+#X connect 17 0 27 0;
+#X connect 18 0 26 0;
+#X connect 19 0 25 0;
+#X connect 20 0 24 0;
+#X connect 21 0 29 0;
+#X connect 22 0 28 0;
+#X connect 23 0 27 0;
+#X connect 30 0 20 1;
+#X connect 30 0 19 1;
+#X connect 30 0 18 1;
+#X connect 30 0 23 1;
+#X connect 30 0 22 1;
+#X connect 30 0 21 1;
+#X connect 31 0 32 0;
+#X connect 31 1 30 1;
+#X connect 31 1 36 0;
+#X connect 32 0 30 0;
+#X connect 33 0 34 0;
+#X connect 34 0 31 0;
+#X connect 35 0 37 0;
+#X connect 36 0 14 1;
+#X connect 36 0 13 1;
+#X connect 36 0 12 1;
+#X connect 36 0 17 1;
+#X connect 36 0 16 1;
+#X connect 36 0 15 1;
+#X connect 37 0 14 0;
+#X connect 37 1 13 0;
+#X connect 37 2 12 0;
+#X connect 37 3 17 0;
+#X connect 37 4 16 0;
+#X connect 37 5 15 0;
+#X connect 38 0 37 1;
+#X restore 10 -126 pd interpall -----------------------------------------------
+;
+#X obj 10 -81 prepend interpolate;
+#X msg 10 -103 awb \$1;
+#X msg 81 -103 slt \$1;
+#X msg 152 -104 clb \$1;
+#X msg 224 -105 jmk \$1;
+#X msg 295 -105 rms \$1;
+#X msg 367 -106 bdl \$1;
+#X obj -15 -124 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1
+1 1;
+#N canvas 539 22 371 334 about_speed 0;
+#X text -70 8 -overwrite : redefines the size \, in samples \, of one
+frame. -shift : shifts the size of the frame by the given amount of
+samples. -scale : multiplies the current number of samples in one frame
+by the number you give.;
+#X text -64 68 Each phoneme has a different amount of frames. Each
+frame has a fixed number of samples. The "speed" parameter affects
+the number of samples in all the frames \, but the number of frames
+per phoneme is still calculated by mage \, and more than likely to
+be different for each phoneme. Each phoneme is divided in 5 states
+\, and mage calculates the duration of each states individually \,
+which is heavily dependant on everything (surrounding phonemes \, consonne/vowel...).
+The "duration \$1 \$2 \$3 \$4 \$5" message is the way to override default
+Mage's generated duration in frames for one phoneme. Each number argument
+you give to that message will override the corresponding state's duration
+for the next generated phoneme.;
+#X text -66 253 Each time you shift or scale \, you're shifting or
+scaling the current speed value \, not the original/default one - so
+using those shift and scale sliders you can very quikly exponentially
+increase the duration in an uncontrolled fashion.;
+#X restore -22 161 pd about_speed;
+#X obj 10 -59 s tomagehelp;
+#N canvas 938 22 386 438 label_what_? 0;
+#X text -1 295 labelnextvowel;
+#X text -1 308 labelfilluntilend;
+#X text 0 337 labelnextvowel sends 'labelnext'-like instructions to
+Mage until it reaches a vowel phonem \, or a pause phonem. It allows
+to stay on vowels or pause \, in a singing-like fashion. labelfilluntilend
+works similarly to labelfill \, except it starts pushing labels from
+current reading point \, not from the beginning of the file.;
+#X text 1 2 Several messages make it possible to manipulate the sequence
+of labels in real-time:;
+#X text 2 107 where the first message loads a list of label from file
+alice.lab and labelnext sends a label from that list to Mage and goes
+to the next label of the list. labelinsert N sends the Nth label of
+the list to Mage \, labelreplace N sends the Nth label of the list
+to Mage and makes labelnext jump to its next label. labelswitch N sends
+the Nth label of the list and makes labelnext point to label N + 1
+If a command reaches the end of the list \, it loops back to the start.
+labelfill sends all the labels of the loaded lab file at once to the
+queue.;
+#X text 1 38 label alice.lab;
+#X text 1 48 labelnext;
+#X text 1 59 labelinsert 0;
+#X text 1 82 labelswitch 17;
+#X text 1 71 labelreplace 42;
+#X text 3 266 In addition to this :;
+#X restore 233 36 pd label_what_?;
+#X msg 223 6 labelreplace \$1;
+#X msg 329 6 labelswitch \$1;
+#X floatatom 124 -19 5 0 0 0 - - -;
+#X floatatom 223 -18 5 0 0 0 - - -;
+#X floatatom 329 -18 5 0 0 0 - - -;
+#X obj 124 33 s tomagehelp;
+#X msg 259 153 labelnextvowel;
+#X obj 24 -211 image awb.gif;
+#X obj 103 -214 image slt.gif;
+#X obj 176 -214 image clb.gif;
+#X obj 254 -215 image jmk.gif;
+#X obj 321 -214 image rms.gif;
+#X obj 394 -214 image bdl.gif;
+#X text 7 -275 awb;
+#X text 79 -274 slt;
+#X text 157 -276 clb;
+#X text 230 -278 jmk;
+#X text 300 -278 rms;
+#X text 365 -277 bdl;
+#X text -389 52 0 = overwrite \; 1 = shift \; 2 = scale \; 3 = synthetic
+\; 4 = no action;
+#X text 19 55 0 = overwrite \; 1 = shift \; 2 = scale \; 3 = synthetic
+\; 4 = no action;
+#X text -869 -87 from current reading point;
+#X text -533 -254 tells Mage to begin;
+#X text -534 -243 synthesizing the pitch again;
+#X text -868 -98 sends the label file at once beginning;
+#X obj -258 -241 key;
+#X obj -258 -209 spigot;
+#X msg -224 -241 1;
+#X msg -191 -240 0;
+#X obj 81 -169 knob 32 32 0 1 0 0 empty mageknobin2 empty 0 -8 0 8
+-234399 -234399 -1 0 1;
+#X obj 10 -168 knob 32 32 0 1 0 0 empty mageknobin1 empty 0 -8 0 8
+-234399 -234399 -1 0 1;
+#X obj -29 -151 ii 1;
+#X obj -692 -239 image mageForPd.gif;
+#X obj 180 181 s tomagehelp;
+#X obj -756 -146 declare -path ./;
+#N canvas 976 356 450 300 duration_of_successive_frames 0;
+#N canvas 610 363 450 300 pack------------- 0;
+#X obj 27 66 inlet;
+#X obj 67 66 inlet;
+#X obj 107 66 inlet;
+#X obj 147 66 inlet;
+#X obj 187 66 inlet;
+#X obj 228 151 inlet;
+#X obj 27 234 outlet;
+#X obj 67 97 t b f;
+#X obj 107 97 t b f;
+#X obj 147 97 t b f;
+#X obj 187 97 t b f;
+#X obj 27 168 pack 1 1 1 1 1 0;
+#X connect 0 0 11 0;
+#X connect 1 0 7 0;
+#X connect 2 0 8 0;
+#X connect 3 0 9 0;
+#X connect 4 0 10 0;
+#X connect 5 0 11 5;
+#X connect 7 0 11 0;
+#X connect 7 1 11 1;
+#X connect 8 0 11 0;
+#X connect 8 1 11 2;
+#X connect 9 0 11 0;
+#X connect 9 1 11 3;
+#X connect 10 0 11 0;
+#X connect 10 1 11 4;
+#X connect 11 0 6 0;
+#X restore 29 83 pd pack-------------;
+#X obj 18 -139 inlet;
+#X floatatom 13 49 5 0 0 0 - - -;
+#X floatatom 46 49 5 0 0 0 - - -;
+#X floatatom 79 49 5 0 0 0 - - -;
+#X floatatom 112 49 5 0 0 0 - - -;
+#X floatatom 145 49 5 0 0 0 - - -;
+#X floatatom 218 49 5 0 0 0 - - -;
+#X text 260 -1 0 = overwrite \; 1 = shift \; 2 = scale \; 3 = synthetic
+\; 4 = no action;
+#X obj 218 -12 inlet;
+#X obj 24 129 outlet;
+#X obj 18 1 any;
+#X obj 18 -68 / 10;
+#X floatatom 57 -114 5 0 0 0 - - -;
+#X connect 0 0 10 0;
+#X connect 1 0 12 0;
+#X connect 2 0 0 0;
+#X connect 3 0 0 1;
+#X connect 4 0 0 2;
+#X connect 5 0 0 3;
+#X connect 6 0 0 4;
+#X connect 7 0 0 5;
+#X connect 9 0 7 0;
+#X connect 11 0 2 0;
+#X connect 11 0 3 0;
+#X connect 11 0 4 0;
+#X connect 11 0 5 0;
+#X connect 11 0 6 0;
+#X connect 12 0 11 0;
+#X connect 13 0 12 1;
+#X restore -258 -122 pd duration_of_successive_frames;
+#X text -133 -221 0 = overwrite \; 1 = shift \; 2 = scale \; 3 = synthetic
+\; 4 = no action;
+#X obj -258 -67 s tomagehelp;
+#X floatatom 49 -456 5 0 0 0 - - -;
+#X floatatom 49 -382 5 0 0 0 - - -;
+#X floatatom 155 -382 5 0 0 0 - - -;
+#X obj 49 -409 s tomagehelp;
+#X msg 49 -431 vibratoamp \$1;
+#X msg 49 -358 vibratooffset \$1;
+#X msg 155 -358 vibratozoom \$1;
+#X obj -664 -9 r pitchvib;
+#X obj 263 -431 s pitchvib;
+#X floatatom 139 -450 10 0 0 0 - - -;
+#X msg 139 -431 vibratothresh \$1;
+#X obj 49 -336 s tomagehelp;
+#X obj 139 -534 pow -1;
+#X obj 139 -513 * 48000;
+#X obj 139 -555 nbx 5 14 -1e+37 1e+37 0 0 empty empty empty 0 -8 0
+10 -262144 -1 -1 0 256;
+#X obj 263 -453 metro 10;
+#X obj 263 -473 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1
+0 1;
+#X obj 327 -452 nbx 5 14 -1e+37 1e+37 0 0 empty empty empty 0 -8 0
+10 -262144 -1 -1 0 256;
+#X text 242 -539 it is required to update;
+#X text 244 -527 the pitch continuously;
+#X text 243 -516 in order to have the;
+#X text 244 -505 vibrato working on;
+#X text 244 -494 frozen phonems.;
+#X text 111 -587 frequency of vibrato;
+#X text 125 -575 in hertz;
+#X text 22 -502 amplitude of;
+#X text 22 -490 the voice's;
+#X text 22 -479 vibrato \, in hertz;
+#X obj 139 -492 sel 0;
+#X obj 139 -471 48000;
+#X text -12 -304 Once all six engines are loaded it is possible to
+interpolate between voices :;
+#X obj 299 -562 import mediasettings;
+#X obj -848 222 audiosettings;
+#X obj -690 -165 mage_glossary;
+#X msg -898 49 reset;
+#X obj -986 50 cnv 15 40 20 empty empty empty 0 0 0 20 -234399 -234399
+0;
+#X obj -983 52 mage~;
+#X obj -924 68 rms~;
+#X obj -924 88 - 100;
+#X text 266 129 use this with care;
+#X connect 0 0 3 0;
+#X connect 1 1 94 1;
+#X connect 3 0 4 0;
+#X connect 5 0 6 0;
+#X connect 5 0 196 0;
+#X connect 6 0 194 0;
+#X connect 8 0 7 0;
+#X connect 9 0 7 0;
+#X connect 10 0 94 0;
+#X connect 11 0 94 0;
+#X connect 16 0 17 0;
+#X connect 18 0 16 0;
+#X connect 20 0 17 0;
+#X connect 21 0 17 0;
+#X connect 25 0 24 0;
+#X connect 27 0 24 0;
+#X connect 30 0 24 0;
+#X connect 31 0 24 0;
+#X connect 32 0 38 0;
+#X connect 33 0 38 0;
+#X connect 34 0 38 0;
+#X connect 35 0 32 0;
+#X connect 36 0 33 0;
+#X connect 37 0 34 0;
+#X connect 40 0 43 0;
+#X connect 41 0 42 0;
+#X connect 42 0 36 0;
+#X connect 43 0 35 0;
+#X connect 44 0 45 0;
+#X connect 45 0 37 0;
+#X connect 46 0 47 0;
+#X connect 47 0 48 0;
+#X connect 48 0 65 0;
+#X connect 49 0 50 0;
+#X connect 50 0 51 0;
+#X connect 51 0 65 0;
+#X connect 52 0 53 0;
+#X connect 53 0 54 0;
+#X connect 54 0 65 0;
+#X connect 55 0 65 0;
+#X connect 56 0 57 0;
+#X connect 57 0 62 0;
+#X connect 58 0 59 0;
+#X connect 59 0 63 0;
+#X connect 60 0 61 0;
+#X connect 61 0 64 0;
+#X connect 62 0 67 0;
+#X connect 63 0 67 0;
+#X connect 64 0 67 0;
+#X connect 66 0 49 0;
+#X connect 71 0 46 0;
+#X connect 72 0 52 0;
+#X connect 73 0 75 0;
+#X connect 73 0 77 0;
+#X connect 75 0 76 0;
+#X connect 76 0 74 0;
+#X connect 77 0 82 0;
+#X connect 78 0 91 0;
+#X connect 79 0 82 0;
+#X connect 80 0 87 0;
+#X connect 81 0 82 0;
+#X connect 86 0 73 0;
+#X connect 87 0 81 0;
+#X connect 88 0 80 0;
+#X connect 89 0 78 0;
+#X connect 90 0 192 0;
+#X connect 91 0 79 0;
+#X connect 94 0 8 0;
+#X connect 94 1 9 0;
+#X connect 95 0 155 0;
+#X connect 96 0 127 0;
+#X connect 97 0 99 0;
+#X connect 98 0 99 0;
+#X connect 99 0 95 0;
+#X connect 100 0 157 1;
+#X connect 101 0 159 0;
+#X connect 102 0 157 0;
+#X connect 103 0 157 0;
+#X connect 104 0 102 0;
+#X connect 105 0 103 0;
+#X connect 106 0 110 3;
+#X connect 107 0 110 4;
+#X connect 108 0 110 5;
+#X connect 109 0 110 6;
+#X connect 110 0 112 0;
+#X connect 110 1 113 0;
+#X connect 110 2 114 0;
+#X connect 110 3 115 0;
+#X connect 110 4 116 0;
+#X connect 110 5 117 0;
+#X connect 111 0 120 0;
+#X connect 112 0 111 0;
+#X connect 113 0 111 0;
+#X connect 114 0 111 0;
+#X connect 115 0 111 0;
+#X connect 116 0 111 0;
+#X connect 117 0 111 0;
+#X connect 118 0 110 0;
+#X connect 122 0 127 0;
+#X connect 123 0 127 0;
+#X connect 124 0 96 0;
+#X connect 125 0 122 0;
+#X connect 126 0 123 0;
+#X connect 128 0 155 0;
+#X connect 147 0 148 0;
+#X connect 148 0 157 0;
+#X connect 149 0 148 1;
+#X connect 150 0 148 1;
+#X connect 151 0 110 2;
+#X connect 152 0 110 1;
+#X connect 153 0 118 0;
+#X connect 157 0 101 0;
+#X connect 160 0 164 0;
+#X connect 161 0 165 0;
+#X connect 162 0 166 0;
+#X connect 164 0 163 0;
+#X connect 165 0 171 0;
+#X connect 166 0 171 0;
+#X connect 167 0 48 0;
+#X connect 169 0 170 0;
+#X connect 170 0 163 0;
+#X connect 172 0 173 0;
+#X connect 173 0 188 0;
+#X connect 174 0 172 0;
+#X connect 175 0 168 0;
+#X connect 176 0 175 0;
+#X connect 177 0 168 0;
+#X connect 188 0 189 0;
+#X connect 188 1 169 0;
+#X connect 189 0 169 0;
+#X connect 196 0 15 0;
+#X connect 196 0 15 1;
+#X connect 196 0 197 0;
+#X connect 197 0 198 0;
+#X connect 198 0 14 0;

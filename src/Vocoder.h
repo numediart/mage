@@ -38,6 +38,7 @@
 #include "Constants.h"
 #include "Frame.h"
 #include "MathFunctions.h"
+#include <math.h>
 
 namespace MAGE 
 {
@@ -105,6 +106,13 @@ namespace MAGE
 			 *	@return The volume parameter value used in the Vocoder.
 			 */
 			inline double getVolume( void ){ return( this->volume ); };
+
+			/** // V
+			 *	This function gets the current value of the vibrato amplitude parameter used in the Vocoder.
+			 *
+			 *	@return The vibrato amplitude parameter value used in the Vocoder.
+			 */
+			inline double getvibamp( void ){ return ( this->vibamp ); }; //V
 		
 			/**
 			 *	This function gets the current value of the pade order parameter used in the Vocoder.
@@ -149,6 +157,20 @@ namespace MAGE
 			 *	@param volume The new value of the volume parameter.
 			 */
 			inline void setVolume( double volume ){ this->volume = volume; };	
+
+			/** // V
+			 *	This function sets a new value of the vibrato amplitude parameter to be used in the Vocoder.
+			 *
+			 *	@param vibamp The new value of the vibrato amplitude parameter.
+			 */
+			inline void setvibamp( double vibamp ){ this->vibamp = vibamp; }; //V
+
+			/** // V
+			 *	This function sets current value for the sinusoid wave to be used in the Vocoder.
+			 *	Happens very fast (at samplerate).
+			 *	@param sinresult The curent value of the sinusoid parameter.
+			 */
+			inline void setsinresult( double sinresult ){ this->sinresult = sinresult; }; //V
 		
 			/**
 			 *	This function sets a new value of the pade order parameter to be used in the Vocoder.
@@ -272,6 +294,10 @@ namespace MAGE
 			 *	\brief It contains the volume used by the Vocoder.
 			 */
 			double volume; // >= 0
+
+			double vibamp; //V
+			double sinresult; //V
+			
 
 		private:
 		

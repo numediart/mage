@@ -46,6 +46,7 @@ MAGE::Vocoder::Vocoder( int am, double aalpha, int afprd, int aiprd, int astage,
 	this->pd = apd;			// 4;
 	this->ngain = angain;	// true;
 	this->alpha = aalpha;	// 0.55;
+	this->vibamp = 0;		// V
 	
 	//excitation
 	this->count = 0;
@@ -138,6 +139,8 @@ void MAGE::Vocoder::setPitch( double pitch, int action, bool forceVoiced )
 	this->action = action;
 	this->actionValue = pitch;
 	
+	this->f0 = fabs(this->f0 + (this->sinresult * this->vibamp));//V
+
 	// ATTENTION!! Should I do that???
 	//set a default value for the pitch in case a negative value is entered
 	if( this->f0 < 0 )
@@ -221,6 +224,8 @@ void MAGE::Vocoder::push( Frame &frame, bool ignoreVoicing )
 		default:
 			this->f0 = frame.streams[lf0StreamIndex][0] ;
 	}
+
+	this->f0 = fabs(this->f0 + (this->sinresult * this->vibamp));//V
 	
 	if( this->f0 < 0 )
 		this->f0 = MAGE::defaultPitch; 
@@ -295,6 +300,8 @@ void MAGE::Vocoder::push( Frame * frame, bool ignoreVoicing )
 		default:
 			this->f0 = frame->streams[lf0StreamIndex][0] ;
 	}
+
+	this->f0 = fabs(this->f0 + (this->sinresult * this->vibamp));//V
 	
 	if( this->f0 < 0 )
 		this->f0 = MAGE::defaultPitch; 
@@ -383,6 +390,7 @@ void MAGE::Vocoder::reset()
 	this->pd	 = MAGE::defaultPadeOrder; 
 	this->volume = MAGE::defaultVolume;
 	this->flagFirstPush = true;
+	this->vibamp = 0; // V
 	
 	return;
 }

@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------------------------- */
-/*   																							*/
+/* 																								*/
 /* 	This file is part of MAGE / pHTS( the performative HMM-based speech synthesis system )		*/
 /* 																								*/
 /* 	MAGE / pHTS is free software: you can redistribute it and/or modify it under the terms		*/
@@ -26,10 +26,14 @@
 /* 																								*/
 /* ----------------------------------------------------------------------------------------------- */
 
-/** 
- * 	 @file	mage~.cpp
- * 	 @author Loïc Reboursière, Victor Huguenin
+/**
+ * @file mage~.cpp
+ * @author Loïc Reboursière, Victor Huguenin
  */
+
+// Github version
+
+//MaxMSP
 #include "ext.h"
 #include "ext_obex.h"
 #include "z_dsp.h"
@@ -39,12 +43,16 @@
 #include <iostream>
 #include <pthread.h>
 #include <mage.h>
+#include <string.h>
+
 
 using namespace std;
 using namespace MAGE;
 
 extern "C" 
 {	
+    
+    void *mage_tilde_class;    
     
 	typedef struct _mage_tilde
 	{
@@ -54,106 +62,124 @@ extern "C"
 		vector < string > labels;
 		int currentLabel;
 		Mage *mage;
-		void *intout2; // essai
-		void *intout; // essai
-		void *bangout; // essai
+		void *intout; // V
+		void *intout2; // V
+		void *bangout; // V
 	} t_mage_tilde;
 
-    /*    typedef struct _fftinfo
-    {
-        t_pxobject x_obj;
-        t_pfftpub *x_pfft;	// pointer to owning fftpatcher struct
-        
-        long x_fftsize;		// size of input fft (in samples)
-        long x_ffthop;		// hop size for window advance
-        long x_n;			// vector size (half of fft size if fullspect = 0)
-        int x_fullspect;	// if full spectra are used
-        
-        void *x_out[4];		// array of outlets
-        
-    } t_fftinfo;	
-*/	
-    //void *mage_tilde_new(t_symbol *s, double f);
 	void *mage_tilde_new( t_symbol *s, long argc, t_atom *argv );
 	t_int *mage_tilde_perform( t_int * w );
 	void mage_tilde_dsp( t_mage_tilde * x, t_signal ** sp, short *count );
 	void mage_tilde_bang( t_mage_tilde * x);
 	void mage_tilde_free( t_mage_tilde * x );
-	void mage_tilde_setup( void );
 	void * genThread( void * argv );
     void fillLabels( t_mage_tilde * x );
 	
 	//access to MAGE controls
-	void mage_tilde_alpha( t_mage_tilde * x, double alpha );
 	void mage_tilde_reset( t_mage_tilde * x );
-	void mage_tilde_speed( t_mage_tilde * x, double speed, double action );
-	void mage_tilde_volume( t_mage_tilde * x, double volume );
-	
-	void mage_tilde_label_clear( t_mage_tilde * x ); //essai
-	
+	//manually add/remove engines  
+	void mage_tilde_engine_add( t_mage_tilde * x, t_symbol *name, t_symbol *conf );
+	void mage_tilde_engine_remove( t_mage_tilde * x, t_symbol *name );
+	//interpolation between voices - V
+	void mage_tilde_interpolation( t_mage_tilde * x, t_symbol *voice,double weight );
+	// duration of each state of a label, in frames
+	void mage_tilde_duration( t_mage_tilde * x, Symbol *s, long ac, t_atom *argv );		
+	//labels manipulation
     void mage_tilde_label( t_mage_tilde * x, t_symbol *label );
+	void mage_tilde_label_clear( t_mage_tilde * x ); //V
+	void mage_tilde_label_pause( t_mage_tilde * x ); //V
 	void mage_tilde_label_fill( t_mage_tilde * x );
+	void mage_tilde_label_fill_until_end( t_mage_tilde * x ); // V
 	void mage_tilde_label_next( t_mage_tilde * x );
+	void mage_tilde_label_nextvowel( t_mage_tilde * x ); // V
 	void mage_tilde_label_insert( t_mage_tilde * x, long lab );
 	void mage_tilde_label_replace( t_mage_tilde * x, long lab );
 	void mage_tilde_label_switch( t_mage_tilde * x, long lab );
-	
+	//pitch
+	void mage_tilde_pitch( t_mage_tilde * x, Symbol *s, long ac, t_atom *argv ); // V
     void mage_tilde_pitch_overwrite( t_mage_tilde * x, double pitch );
 	void mage_tilde_pitch_scale( t_mage_tilde * x, double pitch );
 	void mage_tilde_pitch_shift( t_mage_tilde * x, double pitch );
 	void mage_tilde_pitch_synth( t_mage_tilde * x );
-//essai d'ajouter l'interpolation entre voix
-	void mage_tilde_interpolation( t_mage_tilde * x, t_symbol *voice,double weight );
-//essai d'ajouter l'assistance aux inlets/outlets
+	//speed
+	void mage_tilde_speed( t_mage_tilde * x, Symbol *s, long ac, t_atom *argv );//V
+	//volume, alpha, gamma
+	void mage_tilde_volume( t_mage_tilde * x, double volume );
+	void mage_tilde_alpha( t_mage_tilde * x, double alpha );
+	void mage_tilde_gamma( t_mage_tilde * x, double gamma );// V
+	//vibrato
+	void mage_tilde_vib_amp (t_mage_tilde *x, double vibamp); // V
+	void mage_tilde_vib_thresh (t_mage_tilde *x, double vibthresh); // V
+	void mage_tilde_vib_zoom (t_mage_tilde *x, double vibzoom); // V
+	void mage_tilde_vib_offset (t_mage_tilde *x, double viboffset); // V
+	//inlets/outlets assistance - V
 	void mage_tilde_assist (t_mage_tilde *x, void *b, long io, long index, char *s);
-	void mage_tilde_printquery (t_mage_tilde *x);  // essai
-	// engines add/remove manually
-	void mage_tilde_engine_add( t_mage_tilde * x, t_symbol *name, t_symbol *conf );
-	void mage_tilde_engine_remove( t_mage_tilde * x, t_symbol *name );
 
-	
-	void mage_tilde_duration( t_mage_tilde * x, Symbol *s, long ac, t_atom *argv );
-	
-    void *mage_tilde_class;
-    
+	    
 	int main( void )
 	{
         t_class *c;
 		c = class_new("mage~", (method)mage_tilde_new, (method)mage_tilde_free, (long)sizeof(t_mage_tilde), 0L, A_GIMME, 0);
 		
+		// Core
 		class_addmethod(c, (method)mage_tilde_bang, "bang", 0);
         //		post("_setup : blocksize = %d",sys_getblksize());
         class_addmethod(c, (method)mage_tilde_dsp, "dsp", A_CANT, 0);
-		class_addmethod(c, (method)mage_tilde_alpha, "alpha", A_FLOAT, 0);
+
+		// Reset
         class_addmethod(c, (method)mage_tilde_reset, "reset", A_GIMME, 0);
-//		class_addmethod(c, (method)mage_tilde_speed, "speed", A_FLOAT, 0); // this one
-		class_addmethod(c, (method)mage_tilde_speed, "speed", A_FLOAT, A_FLOAT, 0); // this one
-		class_addmethod(c, (method)mage_tilde_volume, "volume", A_FLOAT, 0);
+       
+		// Engine
+		class_addmethod(c, (method)mage_tilde_engine_add, "engineadd", A_SYM, A_SYM, 0);
+		class_addmethod(c, (method)mage_tilde_engine_remove, "engineremove", A_SYM, 0);
+
+		// Interpolate - V
+		class_addmethod(c, (method)mage_tilde_interpolation, "interpolate", A_SYM, A_FLOAT, 0);
+		
+		// Duration
+        class_addmethod(c, (method)mage_tilde_duration, "duration", A_GIMME, 0);       
+
+ 		// Label
         class_addmethod(c, (method)mage_tilde_label, "label", A_SYM, 0);
-		class_addmethod(c, (method)mage_tilde_label_clear, "labelclear",0);//essai
+		class_addmethod(c, (method)mage_tilde_label_clear, "labelclear",0);// V
+		class_addmethod(c, (method)mage_tilde_label_pause, "labelpause",0);// V		
         class_addmethod(c, (method)mage_tilde_label_fill, "labelfill", A_GIMME, 0);
+        class_addmethod(c, (method)mage_tilde_label_fill_until_end, "labelfilluntilend", A_GIMME, 0);// V
 		class_addmethod(c, (method)mage_tilde_label_next, "labelnext",0);
+		class_addmethod(c, (method)mage_tilde_label_nextvowel, "labelnextvowel",0);//essai		
 		class_addmethod(c, (method)mage_tilde_label_insert, "labelinsert", A_LONG, 0);
 		class_addmethod(c, (method)mage_tilde_label_replace, "labelreplace", A_LONG, 0);
 		class_addmethod(c, (method)mage_tilde_label_switch, "labelswitch", A_LONG, 0);
+
+		// Pitch
+		class_addmethod(c, (method)mage_tilde_pitch, "pitch", A_GIMME, 0); // V 
 		class_addmethod(c, (method)mage_tilde_pitch_overwrite, "pitchoverwrite", A_FLOAT, 0);
 		class_addmethod(c, (method)mage_tilde_pitch_scale, "pitchscale", A_FLOAT, 0);
 		class_addmethod(c, (method)mage_tilde_pitch_shift, "pitchshift", A_FLOAT, 0);
 		class_addmethod(c, (method)mage_tilde_pitch_synth, "pitchsynth", A_GIMME, 0);
-        class_addmethod(c, (method)mage_tilde_duration, "duration", A_GIMME, 0);       
-//essai d'ajouter l'interpolation entre voix
-		class_addmethod(c, (method)mage_tilde_interpolation, "interpolate", A_SYM, A_FLOAT, 0);
-//essai d'ajouter l'assistance aux inlets/outlets
-		class_addmethod(c, (method)mage_tilde_assist, "assist", A_CANT, 0);
-//		class_addmethod(c, (method)mage_tilde_curlabel, 0)
-		class_addmethod(c, (method)mage_tilde_printquery, "printquery", 0); // ça c'est moi qui l'ai fait
-		// Engine
-		class_addmethod(c, (method)mage_tilde_engine_add, "engineadd", A_SYM, A_SYM, 0);
-		class_addmethod(c, (method)mage_tilde_engine_remove, "engineremove", A_SYM, 0);
 		
-        
-        //        ps_spfft = gensym("__pfft~__");	// owning pfft~ is bound to this while patch is loaded
-        //        fftinfo_warning = 1;
+		// Speed
+		class_addmethod(c, (method)mage_tilde_speed, "speed", A_GIMME, 0); //V
+
+		// Volume
+		class_addmethod(c, (method)mage_tilde_volume, "volume", A_FLOAT, 0);
+
+		// Alpha
+		class_addmethod(c, (method)mage_tilde_alpha, "alpha", A_FLOAT, 0);
+
+		// Gamma
+		class_addmethod(c, (method)mage_tilde_gamma, "gamma", A_FLOAT, 0); //V
+
+		// Vibrato
+		class_addmethod(c, (method)mage_tilde_vib_amp, "vibratoamp", A_FLOAT, 0);// V
+		class_addmethod(c, (method)mage_tilde_vib_thresh, "vibratothresh", A_FLOAT, 0);// V
+		class_addmethod(c, (method)mage_tilde_vib_zoom, "vibratozoom", A_FLOAT, 0);// V
+		class_addmethod(c, (method)mage_tilde_vib_offset, "vibratooffset", A_FLOAT, 0);// V
+
+
+
+		//inlets/outlets assistance - V
+		class_addmethod(c, (method)mage_tilde_assist, "assist", A_CANT, 0);
         
         class_dspinit(c);
         class_register(CLASS_BOX, c);
@@ -175,34 +201,63 @@ extern "C"
 		x->mage = new Mage();
 //		fillLabels(x);
 		
-//		post("_new: loading engine");
-//		x->mage->addEngine( "slt", "/Users/vichug/Music/MAGE/mage-2.00/data/configFiles/cmu-artic/slt.conf" );
-//		x->mage->addEngine( "awb", "/Users/vichug/Music/MAGE/mage-2.00/data/configFiles/cmu-artic/awb.conf" );
-//		x->mage->addEngine( "clb", "/Users/vichug/Music/MAGE/mage-2.00/data/configFiles/cmu-artic/clb.conf" );
-//		x->mage->addEngine( "jmk", "/Users/vichug/Music/MAGE/mage-2.00/data/configFiles/cmu-artic/jmk.conf" );
-//		x->mage->addEngine( "rms", "/Users/vichug/Music/MAGE/mage-2.00/data/configFiles/cmu-artic/rms.conf" );
-//		x->mage->addEngine( "bdl", "/Users/vichug/Music/MAGE/mage-2.00/data/configFiles/cmu-artic/bdl.conf" );
-//		x->mage->addEngine( "hpo", "/Users/vichug/Music/MAGE/mage-2.00/data/configFiles/cmu-artic/hpo.conf" );
-//		x->mage->addEngine( "hpr", "/Users/vichug/Music/MAGE/mage-2.00/data/configFiles/cmu-artic/hpr.conf" );
-//		x->mage->addEngine( "neu", "/Users/vichug/Music/MAGE/mage-2.00/data/configFiles/cmu-artic/neu.conf" );
-		x->mage->enableInterpolation(true);
+// Uncomment the following block and replace MageSourcePath with your path to your Mage sources;
+// then recompile, if you want to avoid needing to manually add voice engines each time
+// that you create a new Mage instance.		
+/*		post("_new: loading engine");
+		x->mage->addEngine( "slt", "/MageSourcePath/data/configFiles/cmu-artic/slt.conf" );
+		x->mage->addEngine( "awb", "/MageSourcePath/data/configFiles/cmu-artic/awb.conf" );
+		x->mage->addEngine( "clb", "/MageSourcePath/data/configFiles/cmu-artic/clb.conf" );
+		x->mage->addEngine( "jmk", "/MageSourcePath/data/configFiles/cmu-artic/jmk.conf" );
+		x->mage->addEngine( "rms", "/MageSourcePath/data/configFiles/cmu-artic/rms.conf" );
+		x->mage->addEngine( "bdl", "/MageSourcePath/data/configFiles/cmu-artic/bdl.conf" );
+		post("_new: done with engine"); */		
 
-//		post("_new: done with engine");
-		
+		x->mage->enableInterpolation(true);
+				
 		post("_new: starting genThread");
 		pthread_create(&(x->thread), NULL, genThread, (void *) x);
 		post("_new : done with genThread");
 
-		x->intout2 = intout((t_object *)x); // essai		
-		x->intout = intout((t_object *)x); // essai
-		x->bangout = bangout((t_object *)x); // essai
-//		outlet_new(&x->x_obj, &s_signal); // Pd line
-//        outlet_new((t_pxobject *)x, "signal");
+		x->intout = intout((t_object *)x); // V		
+		x->intout2 = intout((t_object *)x); // V
+		x->bangout = bangout((t_object *)x); // V
         outlet_new(x, "signal");
 		
 		post("_new: done\n");
 		
 		return (x);
+	}
+
+	t_int *mage_tilde_perform( t_int * w )
+	{
+		t_mage_tilde * x = ( t_mage_tilde * )( w[1] );
+		t_float * out = ( t_float * )( w[2] );
+		int n = ( int )( w[3] );
+		
+		while( n-- )
+		{
+			// generate the samples from the computed parameters taking into account the user contol
+			x->mage->updateSamples();		
+			
+			// get the generated samples
+			*out++ = x->mage->popSamples();
+
+		}
+		
+		return ( w+4 );
+	}
+	
+	void mage_tilde_dsp( t_mage_tilde * x, t_signal ** sp, short *count )
+	{
+		post("_dsp");
+        post("my sample rate is: %f", sp[0]->s_sr);
+		dsp_add( mage_tilde_perform, 3, x, sp[0]->s_vec, sp[0]->s_n );
+	}
+		
+	void mage_tilde_bang( t_mage_tilde * x )
+	{
+		post( "blocksize: %d",sys_getblksize() );
 	}
 	
 	void mage_tilde_free( t_mage_tilde * x )
@@ -213,36 +268,7 @@ extern "C"
 		post("free mage memory");
 		delete x->mage;
 	}
-	
-	void mage_tilde_dsp( t_mage_tilde * x, t_signal ** sp, short *count )
-	{
-		post("_dsp");
-        post("my sample rate is: %f", sp[0]->s_sr);
-		dsp_add( mage_tilde_perform, 3, x, sp[0]->s_vec, sp[0]->s_n );
-	}
-	
-	t_int *mage_tilde_perform( t_int * w )
-	{
-		t_mage_tilde * x = ( t_mage_tilde * )( w[1] );
-		t_float * out = ( t_float * )( w[2] );
-//		t_float * out2 = ( t_float * )( w[2] ); // a tous les coups c'est a cause de ca
-		int n = ( int )( w[3] );
-		
-		while( n-- )
-		{
-			// generate the samples from the computed parameters taking into account the user contol
-			x->mage->updateSamples();		
-			
-			// get the generated samples
-			*out++ = x->mage->popSamples();
-//			*out2++ = x->mage->popSamples(); // commented out voir plus haut
-
-
-		}
-		
-		return ( w+4 );
-	}
-	
+    
 	void * genThread(void * argv)
 	{
 		printf( "running genThread\n" );
@@ -255,6 +281,7 @@ extern "C"
 			
 			if( x->mage->popLabel() ) 
 			{
+
 				// prepare the model
 				x->mage->prepareModel(); 
 				
@@ -262,7 +289,7 @@ extern "C"
 				// and if set, the interpolation and/or duration functions set by the user
 				x->mage->computeDuration(); 
 				
-				outlet_int(x->intout2, x->mage->getDuration() ); //essai
+				outlet_int(x->intout2, x->mage->getDuration() ); //V
 				
 				// compute the corresponding parameters taking into account the model 
 				// and if set, the interpolation and/or duration functions set by the user
@@ -281,7 +308,7 @@ extern "C"
 		
 		return ( NULL );
 	}
-
+	
     void fillLabels( t_mage_tilde * x )
 	{
 		string line;
@@ -305,7 +332,7 @@ extern "C"
 		}
         
 //      post ("labels number %d", x->labels.size());
-		outlet_int(x->intout, x->labels.size()); // ça c'est moi qui l'ai fait 
+		outlet_int(x->intout, x->labels.size()); // V - give the size of the file
         
 		myfile.close();
 		
@@ -316,192 +343,51 @@ extern "C"
 	}
 
 	
-	
-	void mage_tilde_bang( t_mage_tilde * x )
-	{
-		post( "blocksize: %d",sys_getblksize() );
-	}
-    
-    
-	void mage_tilde_alpha( t_mage_tilde * x, double alpha )
-	{
-		x->mage->setAlpha( alpha );
-//        post("alpha : %f", alpha);
-        post("path : %s", x->labelPath);
-
-		return;
-	}
-	
+	    
     void mage_tilde_reset( t_mage_tilde * x )
 	{
 		x->mage->reset();
         
 		return;
 	}
- 
-
-
-	void mage_tilde_speed( t_mage_tilde * x, double speed, double action )
-	{
-		// controlValue = MAGE::overwrite;
-		// controlValue = MAGE::shift;
-		// controlValue = MAGE::scale;
-		// controlValue = MAGE::synthetic;
-		// controlValue = MAGE::noaction;
- 
-		x->mage->setSpeed( speed, action );
-	}
- 
-
 	
-/*	void mage_tilde_speed( t_mage_tilde * x, double speed )
-	{
-		x->mage->setSpeed( speed, MAGE::overwrite );
-        
-		return;
-	} */
-    
-	void mage_tilde_volume( t_mage_tilde * x, double volume )
-	{
-		x->mage->setVolume( volume );
-        
-		return;
-	}
-    
-	void mage_tilde_label( t_mage_tilde * x, t_symbol *label )
-	{
-        post("filepath %s", label->s_name);
-		strcpy(x->labelPath, label->s_name);
-		fillLabels(x);
 
-		return;
+
+	// engines add/remove
+	
+	void mage_tilde_engine_add( t_mage_tilde * x, t_symbol * name, t_symbol * conf )
+	{
+		post( "_new: loading engine %s", name->s_name );
+		x->mage->addEngine( name->s_name, conf->s_name );
 	}
 	
-	void mage_tilde_label_clear( t_mage_tilde * x ) //essai
+	void mage_tilde_engine_remove( t_mage_tilde * x, t_symbol * name )
 	{
-		x->mage->clearLabels();
+		post( "_new: removing engine %s", name->s_name );
+		x->mage->removeEngine( name->s_name );
+	}
+	
+	void mage_tilde_interpolation( t_mage_tilde * x, t_symbol *voice, double weight ) //V
+	{
+		string s(voice->s_name);
 		
-		return;
-	}
-	
-	void mage_tilde_label_fill( t_mage_tilde * x )
-	{
-		Label label;
-		vector < string >::const_iterator it;
+		x->mage->enableInterpolation(true);
 		
-		for( it = x->labels.begin(); it < x->labels.end(); it++ )
+		double interpolationWeights[nOfStreams + 1];
+		map < string, double * > interpolationFunctions;
+		
+		for( unsigned int i = 0; i < nOfStreams + 1; i++ ) 
 		{
-//			post( "pushing %s",line.c_str() );
-			label.setQuery( ( * it ) );
-			x->mage->pushLabel( label );
-
+			interpolationWeights[i] = (double) weight;
 		}
 		
-
-		return;
-	}
-	
-	void mage_tilde_label_next( t_mage_tilde * x )
-	{
-		Label label;
+		interpolationFunctions[s] = interpolationWeights;
 		
-		if( x->labels.size() > 0 )
-		{
-			label.setQuery( x->labels[x->currentLabel] );
-
-			x->mage->pushLabel( label );
-
-			x->currentLabel = ( x->currentLabel + 1 ) % x->labels.size();
-		}
-
-		return;
-	}
-	
-	void mage_tilde_label_insert( t_mage_tilde * x, long lab )
-	{	
-		Label label;
-		
-		if( x->labels.size() > 0 )
-		{
-			int k = ( ( int ) lab ) % x->labels.size(); // always 0 <= lab < x->labels.size() ? < 0 ?
-
-			post("inserting label %d\n",k);
-			label.setQuery( x->labels[k] );
-
-			x->mage->pushLabel( label );
-			
-			// _next() will go to x->currentLabel;
-		}
+		x->mage->setInterpolationFunctions( interpolationFunctions );	
 		
 		return;
 	}
-	
-	void mage_tilde_label_replace( t_mage_tilde * x, long lab )
-	{	
-		Label label;
-		
-		if( x->labels.size() > 0 )
-		{
-			int k = ( ( int ) lab ) % x->labels.size(); // always 0 <= lab < x->labels.size() ? < 0 ?
 
-			post("replacing label %d with %d\n",x->currentLabel,k);
-			label.setQuery( x->labels[k] );
-			x->mage->pushLabel( label );
-			
-			x->currentLabel = ( x->currentLabel + 1 ) % x->labels.size(); // _next() will go to x->currentLabel+1
-		}
-		
-		return;
-	}
-	
-	void mage_tilde_label_switch( t_mage_tilde * x, long lab )
-	{	
-		Label label;
-		
-		if( x->labels.size() > 0 )
-		{
-//			int k = ( ( int ) lab ) % x->labels.size(); // always 0 <= lab < x->labels.size() ? < 0 ?
-			long k = lab % x->labels.size(); // always 0 <= lab < x->labels.size() ? < 0 ?
-        
- 			post("switching from label %d to %d\n",x->currentLabel,k);
-			outlet_bang( x->bangout ); // ça c'est moi qui l'ai fait
-			label.setQuery( x->labels[k] );
-			x->mage->pushLabel( label );
-			
-			x->currentLabel = ( k + 1 ) % x->labels.size(); // _next() will go to lab+1
-		}
-		
-		return;
-	}
-	
-	void mage_tilde_pitch_overwrite( t_mage_tilde * x, double pitch )
-	{
-		x->mage->setPitch(pitch,MAGE::overwrite);
-
-		return;
-	}
-
-	void mage_tilde_pitch_scale( t_mage_tilde * x, double pitch )
-	{
-		x->mage->setPitch(pitch,MAGE::scale);
-
-		return;
-	}
-	
-	void mage_tilde_pitch_shift( t_mage_tilde * x, double pitch )
-	{
-		x->mage->setPitch(pitch,MAGE::shift);
-
-		return;
-	}
-	
-	void mage_tilde_pitch_synth( t_mage_tilde * x )
-	{
-		x->mage->setPitch(0,MAGE::synthetic);
-
-		return;
-	}
-    
     void mage_tilde_duration ( t_mage_tilde * x, Symbol *s, long ac, t_atom *argv )
     {
         double *updateDuration = new double [5];
@@ -536,30 +422,376 @@ extern "C"
     }  
 		
 
-//essai d'interpolation
-	void mage_tilde_interpolation( t_mage_tilde * x, t_symbol *voice, double weight )
+
+	void mage_tilde_label( t_mage_tilde * x, t_symbol *label )
 	{
-		string s(voice->s_name);
+        post("filepath %s", label->s_name);
+		strcpy(x->labelPath, label->s_name);
+		fillLabels(x);
+
+		return;
+	}
+	
+	void mage_tilde_label_clear( t_mage_tilde * x ) //V
+	{
+		const char *lastlab = x->mage->clearLabels().c_str();
 		
-		x->mage->enableInterpolation(true);
+		post ("last label : %s", lastlab );
 		
-		double interpolationWeights[nOfStreams + 1];
-		map < string, double * > interpolationFunctions;
+		return;
+	}
+
+	void mage_tilde_label_fill( t_mage_tilde * x )
+	{
+		Label label;
+		vector < string >::const_iterator it;
 		
-		for( unsigned int i = 0; i < nOfStreams + 1; i++ ) 
+		for( it = x->labels.begin(); it < x->labels.end(); it++ )
 		{
-			interpolationWeights[i] = (double) weight;
+//			post( "pushing %s",line.c_str() );
+			outlet_bang( x->bangout ); // V
+			label.setQuery( ( * it ) );
+			x->mage->pushLabel( label );
+
 		}
 		
-		interpolationFunctions[s] = interpolationWeights;
+
+		return;
+	}
+	
+	void mage_tilde_label_fill_until_end( t_mage_tilde * x ) // V
+	{
+		Label label;
+		int i;
 		
-		x->mage->setInterpolationFunctions( interpolationFunctions );	
+		if( x->labels.size() > 0 )
+		{
+			for (i = x->currentLabel; i < x->labels.size(); i++)
+			{
+				outlet_bang( x->bangout ); // V
+				label.setQuery( x->labels[x->currentLabel] );
+				
+				x->mage->pushLabel( label );
+				
+				x->currentLabel = ( x->currentLabel + 1 ) % x->labels.size();
+//				post("onepush");
+			}
+		}
+		
+		
+		return;
+	}
+	
+	void mage_tilde_label_next( t_mage_tilde * x )
+	{
+		Label label;
+		
+		if( x->labels.size() > 0 )
+		{
+			outlet_bang( x->bangout ); // V
+			label.setQuery( x->labels[x->currentLabel] );
+
+			x->mage->pushLabel( label );
+
+			x->currentLabel = ( x->currentLabel + 1 ) % x->labels.size();
+		}
+
+		return;
+	}
+	
+	void mage_tilde_label_nextvowel( t_mage_tilde * x ) // V - thanks R.
+	{
+		Label label;
+		const char* carac = "+"; 		
+		
+		if( x->labels.size() > 0 )
+		{
+			outlet_bang( x->bangout ); // V
+			label.setQuery( x->labels[x->currentLabel] );
+			
+			x->mage->pushLabel( label );
+			
+			x->currentLabel = ( x->currentLabel + 1 ) % x->labels.size();
+			
+			const char* vla = x->mage->getLabel().getQuery().c_str();
+			//		post ("%s", vla );
+			
+			char index = 1 + strchr(vla, *carac) - vla;
+			const char *firstelem = vla + index;
+			char pau_buf[3];
+			
+			bool isitvowel = ((firstelem[0] == 'a')  || (firstelem[0] == 'e') || (firstelem[0] == 'i') || (firstelem[0] == 'o') || (firstelem[0] == 'u') || (firstelem[0] == 'y'));
+			//		if (isitvowel==1) { post("vowel"); }
+			if (isitvowel == 0) {
+				if (firstelem[0]=='p') {
+					strncpy(pau_buf,firstelem,3);
+					if(strcmp(pau_buf,"pau")==0){
+						isitvowel=1;
+						//	post("pau");
+					}
+				}
+			}
+			while (isitvowel == 0) {
+				usleep(100000);
+				if( x->labels.size() > 0 )
+				{
+					label.setQuery( x->labels[x->currentLabel] );
+					
+					x->mage->pushLabel( label );
+					
+					x->currentLabel = ( x->currentLabel + 1 ) % x->labels.size();
+				}
+				
+				vla = x->mage->getLabel().getQuery().c_str();
+				index = 1 + strchr(vla, *carac) - vla;
+				firstelem = vla + index;
+				isitvowel = ((firstelem[0] == 'a')  || (firstelem[0] == 'e') || (firstelem[0] == 'i') || (firstelem[0] == 'o') || (firstelem[0] == 'u') || (firstelem[0] == 'y'));
+				//			if (isitvowel==1) { post("vowel"); }
+				if (isitvowel == 0) {
+					if (firstelem[0]=='p') {
+						strncpy(pau_buf,firstelem,3);
+						if(strcmp(pau_buf,"pau")==0){
+							isitvowel=1;
+							//						post("pau");
+						}
+					}
+				}			
+			}
+		}
+		
+		return;
+	}
+	
+	void mage_tilde_label_insert( t_mage_tilde * x, long lab )
+	{	
+		Label label;
+		
+		if( x->labels.size() > 0 )
+		{
+			int k = ( ( int ) lab ) % x->labels.size(); // always 0 <= lab < x->labels.size() ? < 0 ?
+
+			post("inserting label %d\n",k);
+			outlet_bang( x->bangout ); // V
+			label.setQuery( x->labels[k] );
+
+			x->mage->pushLabel( label );
+			
+			// _next() will go to x->currentLabel;
+		}
+		
+		return;
+	}
+	
+	void mage_tilde_label_replace( t_mage_tilde * x, long lab )
+	{	
+		Label label;
+		
+		if( x->labels.size() > 0 )
+		{
+			int k = ( ( int ) lab ) % x->labels.size(); // always 0 <= lab < x->labels.size() ? < 0 ?
+
+			post("replacing label %d with %d\n",x->currentLabel,k);
+			outlet_bang( x->bangout ); // V
+			label.setQuery( x->labels[k] );
+			x->mage->pushLabel( label );
+			
+			x->currentLabel = ( x->currentLabel + 1 ) % x->labels.size(); // _next() will go to x->currentLabel+1
+		}
+		
+		return;
+	}
+	
+	void mage_tilde_label_switch( t_mage_tilde * x, long lab )
+	{	
+		Label label;
+		
+		if( x->labels.size() > 0 )
+		{
+//			int k = ( ( int ) lab ) % x->labels.size(); // always 0 <= lab < x->labels.size() ? < 0 ?
+			long k = lab % x->labels.size(); // always 0 <= lab < x->labels.size() ? < 0 ?
+        
+ 			post("switching from label %d to %d\n",x->currentLabel,k);
+			outlet_bang( x->bangout ); // V
+			label.setQuery( x->labels[k] );
+			x->mage->pushLabel( label );
+			
+			x->currentLabel = ( k + 1 ) % x->labels.size(); // _next() will go to lab+1
+		}
+		
+		return;
+	}
+
+	void mage_tilde_label_pause( t_mage_tilde * x ) //V - does work on very exceptionnal circumstances
+	{
+		int cur;
+		
+		cur = x->currentLabel;
+		
+		x->mage->clearLabels();
+		
+		x->currentLabel = cur;
+		
+		return;
+	}
+	
+
+
+    void mage_tilde_pitch ( t_mage_tilde * x, Symbol *s, long ac, t_atom *argv )
+	{
+		// controlValue = MAGE::overwrite;
+		// controlValue = MAGE::shift;
+		// controlValue = MAGE::scale;
+		// controlValue = MAGE::synthetic;
+		// controlValue = MAGE::noaction;
+
+		if ( ac != 2 )
+		{
+			if ( (ac == 1) && (argv->a_type == A_FLOAT) ) 
+			{ 
+				x->mage->setPitch(atom_getfloat(argv), MAGE::overwrite); 
+			} 
+			else if ( (ac == 1) && (argv->a_type == A_LONG ) ) 
+			{ 
+				x->mage->setPitch((float)atom_getlong(argv), MAGE::overwrite); 
+			} 
+			else
+				
+				post("need either one float/int (pitchoverwrite by that value) or one float/int and one int (int will precise the action)");
+		}
+		else
+		{
+			if ( (argv->a_type == A_FLOAT ) && ((argv+1)->a_type == A_LONG) ) {
+				x->mage->setPitch(atom_getfloat(argv),atom_getlong(argv+1));
+			}
+			else if ( (argv->a_type == A_LONG ) && ((argv+1)->a_type == A_LONG) ) {
+				x->mage->setPitch((float)atom_getlong(argv),atom_getlong(argv+1));
+			}
+		}
+		
+		return;
+	}
+    
+	void mage_tilde_pitch_overwrite( t_mage_tilde * x, double pitch )
+	{
+		x->mage->setPitch(pitch,MAGE::overwrite);
+
+		return;
+	}
+
+	void mage_tilde_pitch_scale( t_mage_tilde * x, double pitch )
+	{
+		x->mage->setPitch(pitch,MAGE::scale);
+
+		return;
+	}
+	
+	void mage_tilde_pitch_shift( t_mage_tilde * x, double pitch )
+	{
+		x->mage->setPitch(pitch,MAGE::shift);
+
+		return;
+	}
+	
+	void mage_tilde_pitch_synth( t_mage_tilde * x )
+	{
+		x->mage->setPitch(0,MAGE::synthetic);
+
+		return;
+	}
+
+	
+     void mage_tilde_speed ( t_mage_tilde * x, Symbol *s, long ac, t_atom *argv ) //V
+	{
+		// controlValue = MAGE::overwrite;
+		// controlValue = MAGE::shift;
+		// controlValue = MAGE::scale;
+		// controlValue = MAGE::synthetic;
+		// controlValue = MAGE::noaction;
+
+		if ( ac != 2 )
+		{
+			if ( (ac == 1) && (argv->a_type == A_FLOAT) ) 
+			{ 
+				x->mage->setSpeed(atom_getfloat(argv), MAGE::overwrite); 
+			} 
+			else if ( (ac == 1) && (argv->a_type == A_LONG ) ) 
+			{ 
+				x->mage->setSpeed((float)atom_getlong(argv), MAGE::overwrite); 
+			} 
+			else
+				post("need either one float/int (speedoverwrite by that value) or one float/int and one int (int will precise the action)");
+		}
+		else
+		{
+			if ( (argv->a_type == A_FLOAT) && ((argv+1)->a_type == A_LONG) ) {
+				x->mage->setSpeed(atom_getfloat(argv),atom_getlong(argv+1));
+			}
+			else if ( (argv->a_type == A_LONG ) && ((argv+1)->a_type == A_LONG) ) {
+				x->mage->setSpeed((float)atom_getlong(argv),atom_getlong(argv+1));
+			}
+		}
+		
+		return;
+	}
+		
+
+
+	void mage_tilde_volume( t_mage_tilde * x, double volume )
+	{
+		x->mage->setVolume( volume );
+        
+		return;
+	}
+
+	void mage_tilde_alpha( t_mage_tilde * x, double alpha )
+	{
+		x->mage->setAlpha( alpha );
+//        post("alpha : %f", alpha);
+//        post("path : %s", x->labelPath);
+
+		return;
+	}
+	
+	void mage_tilde_gamma( t_mage_tilde * x, double gamma )// V
+	{
+		x->mage->setGamma( gamma );
 		
 		return;
 	}
 	
 	
-//essai d'ajouter l'assistance aux inlets/outlets
+	
+	//Vibrato -V
+	void mage_tilde_vib_amp (t_mage_tilde *x, double vibamp) // V
+	{
+		x->mage->setvibamp( vibamp );
+        
+		return;
+	}
+	
+	void mage_tilde_vib_thresh (t_mage_tilde *x, double vibthresh) // V
+	{
+		x->mage->setvibthresh( vibthresh );
+        
+		return;
+	}
+	
+	void mage_tilde_vib_zoom (t_mage_tilde *x, double vibzoom) // V
+	{
+		x->mage->setvibzoom( vibzoom );
+        
+		return;
+	}
+
+	void mage_tilde_vib_offset (t_mage_tilde *x, double viboffset) // V
+	{
+		x->mage->setviboffset( viboffset );
+        
+		return;
+	}
+	
+	
+			
 	// "The io argument will be 1 for inlets, 2 for outlets. 
 	// The index argument will be 0 for the leftmost inlet or outlet."
 	void mage_tilde_assist (t_mage_tilde *x, void *b, long io, long index, char *s)
@@ -584,33 +816,14 @@ extern "C"
 					sprintf(s, "bang at beginning of a label read with labelswitch method");
 					break;
 				case 2:
-					sprintf(s, "total number of labels when a label list is read");
+					sprintf(s, "number of frames in currently processed label");
 					break;					
 				case 3:
-					sprintf(s, "number of frames in currently processed label");
+					sprintf(s, "total number of labels when a label list is read");
 					break;										
 			}
 				break;
 		}				
-	}
-	
-	void mage_tilde_printquery (t_mage_tilde *x)
-	{
-//		x->mage->label.printQuery(); // ne marche pas
-	}
-	
-	// engines add/remove
-	
-	void mage_tilde_engine_add( t_mage_tilde * x, t_symbol * name, t_symbol * conf )
-	{
-		post( "_new: loading engine %s", name->s_name );
-		x->mage->addEngine( name->s_name, conf->s_name );
-	}
-	
-	void mage_tilde_engine_remove( t_mage_tilde * x, t_symbol * name )
-	{
-		post( "_new: removing engine %s", name->s_name );
-		x->mage->removeEngine( name->s_name );
 	}
 	
 }

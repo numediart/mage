@@ -1,1 +1,6 @@
 external for Max/MSP
+
+16/09/2013
+installation :
+* Place the MagePackage fodler in one of your max package folders.
+* Try the MaxMageTuto.maxpat first if you're new to mage~ with MaxMSP.

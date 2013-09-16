@@ -1,0 +1,1152 @@
+#N canvas 121 70 1135 762 10;
+#X declare -path ./;
+#X declare -lib unauthorized;
+#X declare -lib mediasettings;
+#X obj -672 -219 image mageForPd.gif;
+#N canvas 248 116 621 465 Licence 0;
+#X text 65 34 This file is part of MAGE / pHTS;
+#X text 64 49 (the performative HMM-based speech synthesis system)
+;
+#X text 65 73 MAGE / pHTS is free software: you can redistribute it
+and/or modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation \, either version 3 of
+the license \, or any later version.;
+#X text 65 134 MAGE / pHTS is distributed in the hope that it will
+be useful \, but WITHOUT ANY WARRANTY \, without even the implied warranty
+of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+General Public License for more details.;
+#X text 66 209 You should have received a copy of the GNU General Public
+License along with MAGE / pHTS. If not \, see http://www.gnu.org/licenses
+;
+#X text 44 19 /* -----------------------------------------------------
+*/;
+#X text 66 263 Copyright 2011 University of Mons :;
+#X text 126 281 Numediart Institute for New Media Art;
+#X text 259 295 ( www.numediart.org );
+#X text 126 309 Acapela Group ( www.acapela-group.com );
+#X text 70 338 Developed by :;
+#X text 128 359 Maria Astrinaki \, Alexis Moinet \, Geoffrey Wilfart
+\,;
+#X text 204 373 Nicolas d'Alessandro \, Thierry Dutoit;
+#X text 70 390 /* ------------------------------------------------------
+*/;
+#X restore -746 -155 pd Licence;
+#X obj -746 -136 declare -path ./;
+#X obj -680 -155 mage_glossary;
+#X obj -548 -245 cnv 6 5 5 empty empty mage~ 0 0 0 32 -262144 -1 0
+;
+#X obj -461 -214 cnv 6 5 5 empty empty performative 0 0 0 20 -262144
+-1 0;
+#X obj -576 -214 cnv 6 5 5 empty empty hmm-based 0 0 0 20 -262144 -1
+0;
+#X obj -311 -214 cnv 6 5 5 empty empty speech 0 0 0 20 -262144 -1 0
+;
+#X obj -235 -214 cnv 6 5 5 empty empty synthesis 0 0 0 20 -262144 -1
+0;
+#X obj -124 -214 cnv 6 5 5 empty empty toolkit 0 0 0 20 -262144 -1
+0;
+#X obj -568 -191 cnv 6 5 5 empty empty as 0 0 0 14 -262144 -1 0;
+#X obj -550 -191 cnv 6 5 5 empty empty a 0 0 0 14 -262144 -1 0;
+#X obj -539 -191 cnv 6 5 5 empty empty PureData 0 0 0 14 -262144 -1
+0;
+#X obj -473 -191 cnv 6 5 5 empty empty external 0 0 0 14 -262144 -1
+0;
+#X text -162 -190 numediart | University of Mons | Acapela Group;
+#X obj -143 -172 pddplink http://mage.numediart.org;
+#X obj -598 122 cnv 5 5 5 empty empty 1 -15 5 0 20 -234399 -234399
+0;
+#X obj -725 364 cnv 5 5 5 empty empty 2 -15 5 0 20 -234399 -234399
+0;
+#X obj -705 183 cnv 15 40 20 empty empty empty 0 0 0 20 -234399 -234399
+0;
+#X obj -702 185 mage~;
+#X obj -718 435 prepend set;
+#X msg -718 457 reset;
+#X obj -626 279 vu 15 120 empty empty -1 -8 0 10 -66577 -1 1 0;
+#X obj -627 231 rms~;
+#X obj -710 344 output~;
+#X obj -702 161 r tomagetuto;
+#X obj -708 -60 cnv 5 5 5 empty empty 0 -15 5 0 20 -234399 -234399
+0;
+#X obj -695 -65 ii reset;
+#X obj -695 -88 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X text -660 -90 panic !;
+#X msg -689 -41 pitchsynth;
+#X msg -683 -16 labelclear;
+#X text -635 -66 resets nearly everything;
+#X text -609 -17 make it stop;
+#X text -615 -49 tells Mage to begin;
+#X text -616 -38 synthesizing the pitch again;
+#X obj -695 14 s tomagetuto;
+#X obj -584 -154 import unauthorized;
+#X msg -707 91 params @samplerate 48000;
+#X text -741 68 mage~ works better at a sample rate of 48000 Hz;
+#X obj -586 -135 import mediasettings;
+#X obj -707 117 audiosettings;
+#X obj -414 -16 cnv 5 5 5 empty empty 3 -15 5 0 20 -234399 -234399
+0;
+#N canvas 396 73 1101 616 filesloader 0;
+#X obj 103 155 playlist lab 500 120 {Helvetica 10 bold} #FEFEFE #E63A79
+black red;
+#X symbolatom 116 379 50 0 0 0 - - -;
+#X symbolatom 435 378 50 0 0 0 - - -;
+#X msg 112 40 /Users/vichug/Music/pd_files/txt2labscrpt/out;
+#X obj 112 -1 loadbang;
+#X obj 112 77 prepend location;
+#X obj 54 358 outlet;
+#X obj 318 352 outlet;
+#X obj 565 355 outlet;
+#X obj 262 76 prepend set;
+#X obj 260 16 prepend set;
+#X symbolatom 106 118 80 0 0 0 - - -;
+#X obj 218 2 t b s;
+#X symbolatom 680 212 50 0 0 0 - - -;
+#X obj 734 17 prepend set;
+#X text 102 101 Input here the path/navigate with the below filebrowser
+to;
+#X text 454 101 a folder with .lab files;
+#X connect 0 0 1 0;
+#X connect 0 0 6 0;
+#X connect 0 1 2 0;
+#X connect 0 1 7 0;
+#X connect 0 2 8 0;
+#X connect 0 2 13 0;
+#X connect 3 0 5 0;
+#X connect 3 0 9 0;
+#X connect 4 0 3 0;
+#X connect 5 0 0 0;
+#X connect 9 0 11 0;
+#X connect 10 0 3 0;
+#X connect 11 0 12 0;
+#X connect 12 0 3 0;
+#X connect 12 1 10 0;
+#X connect 13 0 14 0;
+#X connect 14 0 3 0;
+#X coords 0 -1 1 1 505 180 2 100 100;
+#X restore -145 231 pd filesloader;
+#X obj -145 417 prepend label;
+#X obj -145 442 s tomagetuto;
+#X obj -263 116 prepend engineadd;
+#X obj -143 116 prepend engineremove;
+#X text -357 104 add engine;
+#X text -374 122 remove engine;
+#N canvas 731 48 265 213 formatenginename 0;
+#X obj -198 -458 stripfilename -5;
+#X obj -114 -435 list;
+#X obj -120 -484 t s s;
+#X obj -147 -413 gate 2;
+#X obj -147 -433 ii 1;
+#X obj -114 -388 unpack s s;
+#X obj -120 -507 inlet;
+#X obj -227 -430 inlet;
+#X obj -172 -360 outlet;
+#X obj -114 -360 outlet;
+#X obj -187 -432 + 1;
+#X connect 0 0 1 0;
+#X connect 1 0 3 1;
+#X connect 2 0 0 0;
+#X connect 2 1 1 1;
+#X connect 3 0 8 0;
+#X connect 3 1 5 0;
+#X connect 4 0 3 0;
+#X connect 5 0 9 0;
+#X connect 6 0 2 0;
+#X connect 7 0 10 0;
+#X connect 10 0 3 0;
+#X restore -263 92 pd formatenginename;
+#X obj -197 142 s tomagetuto;
+#X text -399 71 Click on an engine name on the above list to load it.
+;
+#X obj -292 107 vradio 15 1 0 2 empty empty empty 0 -8 0 10 -262144
+-1 -1 0;
+#X text -375 159 Remove it later if needed by toggling "remove engine"
+first \, then clicking again on its name in the above list.;
+#X obj -157 326 cnv 5 5 5 empty empty 4 -15 5 0 20 -234399 -234399
+0;
+#X text -47 421 Click on a label file in the above it to load it into
+mage~.;
+#X obj -718 414 r tomagetuto;
+#X obj -488 310 cnv 5 5 5 empty empty 5 -15 5 0 20 -234399 -234399
+0;
+#X obj 151 -105 cnv 5 5 5 empty empty 6 -15 5 0 20 -234399 -234399
+0;
+#X obj 151 -79 cnv 5 5 5 empty empty 7 -15 5 0 20 -234399 -234399 0
+;
+#X obj 151 -52 cnv 5 5 5 empty empty 8 -15 5 0 20 -234399 -234399 0
+;
+#X obj 151 -24 cnv 5 5 5 empty empty 9 -15 5 0 20 -234399 -234399 0
+;
+#X obj 151 2 cnv 5 5 5 empty empty 10 -20 5 0 20 -234399 -234399 0
+;
+#X text -497 -183 step-by-step tutorial;
+#N canvas 395 22 692 768 voices_interpolation 0;
+#X obj 42 92 s tomagetuto;
+#X obj 43 13 prepend interpolate;
+#X msg 81 -194 awb;
+#X obj 43 -76 knob 32 32 0 1 0 0 empty mageknobin1 empty 0 -8 0 8 -234399
+-234399 -1 0 1;
+#X obj 88 -51 symbol;
+#X obj 43 -28 pack 1 s;
+#X msg 88 -175 slt;
+#X msg 94 -156 clb;
+#X msg 98 -137 jmk;
+#X msg 104 -118 rms;
+#X msg 110 -99 bdl;
+#X msg 43 -8 \$2 \$1;
+#X obj 53 -194 cnv 5 5 5 empty empty 1 -15 5 0 20 -234399 -234399 0
+;
+#X obj 13 -61 cnv 5 5 5 empty empty 2 -15 5 0 20 -234399 -234399 0
+;
+#X obj 239 -203 cnv 5 5 5 empty empty 3 -15 5 0 20 -234399 -234399
+0;
+#X obj 377 -3 cnv 5 5 5 empty empty 4 -15 5 0 20 -234399 -234399 0
+;
+#X obj -69 216 cnv 5 5 5 empty empty 5 -15 5 0 20 -234399 -234399 0
+;
+#X obj -85 71 prepend set;
+#X msg -85 92 interpolate awb 1;
+#X text 29 -252 interpolation between voices.;
+#X text -138 -173 Select one already loaded engine...;
+#X text -105 -86 ...then move the dial.;
+#X text 178 -121 At any moment \, the cumulated interpolation weights
+of all the engines should not exceed 1 \, or it will result in saturation.
+You might want it at a certain point \, though. Up to you.;
+#X text 145 -180 Then select another loaded engine \, move the dial
+again - carefully.;
+#X text 177 -39 The most natural (intended) result will happen if cumulated
+weights of all voices is 1;
+#X obj 256 32 knob 32 32 0 1 0 0 empty mageknobin1 empty 0 -8 0 8 -234399
+-234399 -1 0 1;
+#X obj 375 31 knob 32 32 0 1 0 0 empty empty empty 0 -8 0 8 -234399
+-234399 -1 0 1;
+#X obj 319 51 -;
+#X obj 318 10 t b f;
+#X obj 318 31 1;
+#X msg 256 75 interpolate awb \$1;
+#X msg 375 75 interpolate slt \$1;
+#X text 182 98 Ensuring this with two voices is rather easy...;
+#X obj 118 306 knob 32 32 0 1 0 0 empty mageknobin3 empty 0 -8 0 8
+-234399 -234399 -1 0 1;
+#X obj 191 307 knob 32 32 0 1 0 0 empty mageknobin4 empty 0 -8 0 8
+-234399 -234399 -1 0 1;
+#X obj 260 308 knob 32 32 0 1 0 0 empty mageknobin5 empty 0 -8 0 8
+-234399 -234399 -1 0 1;
+#X obj 331 308 knob 32 32 0 1 0 0 empty mageknobin6 empty 0 -8 0 8
+-234399 -234399 -1 0 1;
+#N canvas 352 78 962 586 interpall 0;
+#X obj 121 89 t b f;
+#X obj 186 90 t b f;
+#X obj 251 91 t b f;
+#X obj 316 91 t b f;
+#X obj 382 92 t b f;
+#X obj 12 18 inlet;
+#X obj 371 7 inlet;
+#X obj 422 8 inlet;
+#X obj 472 8 inlet;
+#X obj 522 8 inlet;
+#X obj 569 8 inlet;
+#X obj 616 8 inlet;
+#X obj 214 336 spigot;
+#X obj 154 336 spigot;
+#X obj 94 336 spigot;
+#X obj 388 336 spigot;
+#X obj 328 336 spigot;
+#X obj 267 336 spigot;
+#X obj 741 276 spigot;
+#X obj 685 276 spigot;
+#X obj 624 276 spigot;
+#X obj 915 276 spigot;
+#X obj 855 276 spigot;
+#X obj 796 276 spigot;
+#X obj 293 389 outlet;
+#X obj 349 390 outlet;
+#X obj 403 389 outlet;
+#X obj 463 387 outlet;
+#X obj 527 389 outlet;
+#X obj 582 388 outlet;
+#X obj 9 256 - 1;
+#X obj 12 154 t b f;
+#X msg 12 187 1;
+#X obj 24 49 loadbang;
+#X msg 24 88 1;
+#X obj 88 88 t f;
+#X msg 133 46 1;
+#X obj 101 139 expr $f1 / ($f1 + $f2 + $f3 + $f4 + $f5 + $f6) \; $f2
+/ ($f1 + $f2 + $f3 + $f4 + $f5 + $f6) \; $f3 / ($f1 + $f2 + $f3 + $f4
++ $f5 + $f6) \; $f4 / ($f1 + $f2 + $f3 + $f4 + $f5 + $f6) \; $f5 /
+($f1 + $f2 + $f3 + $f4 + $f5 + $f6) \; $f6 / ($f1 + $f2 + $f3 + $f4
++ $f5 + $f6);
+#X obj 39 321 nbx 5 14 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 10
+-262144 -1 -1 1 256;
+#X connect 0 0 37 0;
+#X connect 0 1 37 1;
+#X connect 1 0 37 0;
+#X connect 1 1 37 2;
+#X connect 2 0 37 0;
+#X connect 2 1 37 3;
+#X connect 3 0 37 0;
+#X connect 3 1 37 4;
+#X connect 4 0 37 0;
+#X connect 4 1 37 5;
+#X connect 5 0 31 0;
+#X connect 6 0 20 0;
+#X connect 6 0 35 0;
+#X connect 7 0 0 0;
+#X connect 7 0 19 0;
+#X connect 8 0 1 0;
+#X connect 8 0 18 0;
+#X connect 9 0 2 0;
+#X connect 9 0 23 0;
+#X connect 10 0 3 0;
+#X connect 10 0 22 0;
+#X connect 11 0 4 0;
+#X connect 11 0 21 0;
+#X connect 12 0 26 0;
+#X connect 13 0 25 0;
+#X connect 14 0 24 0;
+#X connect 15 0 29 0;
+#X connect 16 0 28 0;
+#X connect 17 0 27 0;
+#X connect 18 0 26 0;
+#X connect 19 0 25 0;
+#X connect 20 0 24 0;
+#X connect 21 0 29 0;
+#X connect 22 0 28 0;
+#X connect 23 0 27 0;
+#X connect 30 0 20 1;
+#X connect 30 0 19 1;
+#X connect 30 0 18 1;
+#X connect 30 0 23 1;
+#X connect 30 0 22 1;
+#X connect 30 0 21 1;
+#X connect 31 0 32 0;
+#X connect 31 1 30 1;
+#X connect 31 1 38 0;
+#X connect 32 0 30 0;
+#X connect 33 0 34 0;
+#X connect 34 0 31 0;
+#X connect 35 0 37 0;
+#X connect 36 0 37 1;
+#X connect 37 0 14 0;
+#X connect 37 1 13 0;
+#X connect 37 2 12 0;
+#X connect 37 3 17 0;
+#X connect 37 4 16 0;
+#X connect 37 5 15 0;
+#X connect 38 0 14 1;
+#X connect 38 0 13 1;
+#X connect 38 0 12 1;
+#X connect 38 0 17 1;
+#X connect 38 0 16 1;
+#X connect 38 0 15 1;
+#X restore -26 351 pd interpall -----------------------------------------------
+;
+#X obj -26 396 prepend interpolate;
+#X msg -26 374 awb \$1;
+#X msg 45 374 slt \$1;
+#X msg 116 373 clb \$1;
+#X msg 188 372 jmk \$1;
+#X msg 259 372 rms \$1;
+#X msg 331 371 bdl \$1;
+#X obj -51 353 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+1;
+#X obj -12 266 image awb.gif;
+#X obj 67 263 image slt.gif;
+#X obj 140 263 image clb.gif;
+#X obj 218 262 image jmk.gif;
+#X obj 285 263 image rms.gif;
+#X obj 358 263 image bdl.gif;
+#X text 43 203 slt;
+#X text 121 201 clb;
+#X text 194 199 jmk;
+#X text 264 199 rms;
+#X text 329 200 bdl;
+#X obj 45 308 knob 32 32 0 1 0 0 empty mageknobinslt empty 0 -8 0 8
+-234399 -234399 -1 3100 1;
+#X obj -26 309 knob 32 32 0 1 0 0 empty mageknobin1 empty 0 -8 0 8
+-234399 -234399 -1 0 1;
+#X obj -65 326 ii 1;
+#X text -46 131 ...but it can quickly get complicated.;
+#X text 0 450 If you have loaded n voices \, you should interpolate
+all n voices at a time - if you don't \, expect strange result.;
+#X text -27 204 awb;
+#X obj -26 418 s tomagetuto;
+#X msg 401 316 \; mageknobinslt set 1;
+#X obj 401 294 loadbang;
+#X text 400 353 The default engine;
+#X text 401 364 is slt.;
+#X text -47 146 Once you have loaded all six engines from mage source's
+data/configFiles/smu-artic folder \, the "interpall" subpatcher here
+shows how to make sure the total of weights is always 1;
+#X connect 1 0 0 0;
+#X connect 1 0 17 0;
+#X connect 2 0 4 0;
+#X connect 3 0 5 0;
+#X connect 4 0 5 1;
+#X connect 5 0 11 0;
+#X connect 6 0 4 0;
+#X connect 7 0 4 0;
+#X connect 8 0 4 0;
+#X connect 9 0 4 0;
+#X connect 10 0 4 0;
+#X connect 11 0 1 0;
+#X connect 17 0 18 0;
+#X connect 25 0 28 0;
+#X connect 25 0 30 0;
+#X connect 26 0 31 0;
+#X connect 27 0 26 0;
+#X connect 28 0 29 0;
+#X connect 28 1 27 1;
+#X connect 29 0 27 0;
+#X connect 30 0 0 0;
+#X connect 31 0 0 0;
+#X connect 33 0 37 3;
+#X connect 34 0 37 4;
+#X connect 35 0 37 5;
+#X connect 36 0 37 6;
+#X connect 37 0 39 0;
+#X connect 37 1 40 0;
+#X connect 37 2 41 0;
+#X connect 37 3 42 0;
+#X connect 37 4 43 0;
+#X connect 37 5 44 0;
+#X connect 38 0 63 0;
+#X connect 39 0 38 0;
+#X connect 40 0 38 0;
+#X connect 41 0 38 0;
+#X connect 42 0 38 0;
+#X connect 43 0 38 0;
+#X connect 44 0 38 0;
+#X connect 45 0 37 0;
+#X connect 57 0 37 2;
+#X connect 58 0 37 1;
+#X connect 59 0 45 0;
+#X connect 65 0 64 0;
+#X restore 165 -112 pd voices_interpolation;
+#N canvas 340 34 962 584 labels_queue_commands 0;
+#X obj -672 21 cnv 5 5 5 empty empty 1 -15 5 0 20 -234399 -234399 0
+;
+#X obj -673 78 cnv 5 5 5 empty empty 2 -15 5 0 20 -234399 -234399 0
+;
+#X obj -674 142 cnv 5 5 5 empty empty 3 -15 5 0 20 -234399 -234399
+0;
+#X obj -675 192 cnv 5 5 5 empty empty 4 -15 5 0 20 -234399 -234399
+0;
+#X obj -678 256 cnv 5 5 5 empty empty 5 -15 5 0 20 -234399 -234399
+0;
+#X obj -219 44 cnv 5 5 5 empty empty 6 -15 5 0 20 -234399 -234399 0
+;
+#X text -648 12 fills label queue with everything at once;
+#X msg -657 32 labelfill;
+#X msg -658 88 labelnext;
+#X text -649 69 fills label queue with only the next label;
+#X text -650 128 fills label queue until the next vowel or silence
+label;
+#X msg -659 149 labelnextvowel;
+#X text -650 184 fills label queue from your current position in the
+label list to the very end;
+#X msg -659 215 labelfilluntilend;
+#X text -646 247 empties the queue \, all at once;
+#X obj -670 320 s tomagetuto;
+#X msg -659 267 labelclear;
+#X text -235 6 Three methods to directly jump at a given label given
+its position in the list :;
+#X obj -189 148 nbx 5 14 -1e+37 1e+37 0 0 empty empty empty 0 -8 0
+10 -262144 -1 -1 0 256;
+#X msg -189 168 labelreplace \$1;
+#X text -130 76 labelinsert N sends the Nth label of the list to Mage
+\,;
+#X obj -189 77 nbx 5 14 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 10
+-262144 -1 -1 0 256;
+#X msg -189 97 labelinsert \$1;
+#X text -126 137 labelreplace N sends the Nth label of the list to
+Mage and makes labelnext jump to its next label \,;
+#X text -129 203 labelswitch N sends the Nth label of the list and
+makes labelnext point to label N + 1;
+#X obj -190 216 nbx 5 14 -1e+37 1e+37 0 0 empty empty empty 0 -8 0
+10 -262144 -1 -1 0 256;
+#X msg -190 236 labelswitch \$1;
+#X obj -229 313 s tomagetuto;
+#X text -128 278 If a command reaches the end of the list \, it loops
+back to the start.;
+#X text -415 367 note : the label queue is only 512 labels long.;
+#X text -436 480 If you use labelfill or labelfilluntilend and your
+label file contains more than 512 labels or if you try filling the
+queue with more than 512 elements \, it will freeze once it reaches
+the 512th label. Once the queue has read that 512th element which is
+frozen \, the queue is empty \; therefore you can refill it with the
+rest of the labels list using labelnext \, labelnextvowel or labelfilluntilend.
+;
+#X obj -341 388 r labelsize;
+#X obj -341 410 nbx 5 14 -1e+37 1e+37 0 0 empty empty empty 0 -8 0
+10 -262144 -1 -1 0 256;
+#X text -435 429 You can see above the size in samples of your currently
+loaded label file \, which is sent by the second data outlet of mage~
+when said files is loaded.;
+#X text -562 149 Use this carefully;
+#X connect 7 0 15 0;
+#X connect 8 0 15 0;
+#X connect 11 0 15 0;
+#X connect 13 0 15 0;
+#X connect 16 0 15 0;
+#X connect 18 0 19 0;
+#X connect 19 0 27 0;
+#X connect 21 0 22 0;
+#X connect 22 0 27 0;
+#X connect 25 0 26 0;
+#X connect 26 0 27 0;
+#X connect 31 0 32 0;
+#X restore 165 -84 pd labels_queue_commands;
+#N canvas 561 22 880 654 base_controls 0;
+#X obj -547 -100 cnv 5 5 5 empty empty 1 -15 5 0 20 -234399 -234399
+0;
+#X obj -546 -29 cnv 5 5 5 empty empty 2 -15 5 0 20 -234399 -234399
+0;
+#X obj -546 45 cnv 5 5 5 empty empty 3 -15 5 0 20 -234399 -234399 0
+;
+#X obj -541 200 cnv 5 5 5 empty empty 4 -15 5 0 20 -234399 -234399
+0;
+#X obj -518 -96 nbx 5 14 -1e+37 1e+37 0 0 empty empty empty 0 -8 0
+10 -262144 -1 -1 0 256;
+#X msg -518 -72 volume \$1;
+#X text -439 -95 a quite standard though fine volume control;
+#X obj -517 -26 nbx 5 14 0 1 0 0 empty empty empty 0 -8 0 10 -262144
+-1 -1 0 256;
+#X msg -517 -2 alpha \$1;
+#X text -441 47 gamma is another vocoder parameter which control is
+slightly useless.;
+#X obj -516 48 nbx 5 14 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 10
+-262144 -1 -1 0 256;
+#X msg -516 72 gamma \$1;
+#X text -503 179 control on the duration of all 5 successive states
+for next synthesized (or computed ?) phoneme. The duration is expressed
+in number of frames.;
+#X obj -175 448 nbx 5 14 -1e+37 1e+37 0 0 empty empty empty 0 -8 0
+10 -262144 -1 -1 0 256;
+#X obj 10 298 metro 10;
+#X obj -391 314 nbx 5 14 -1e+37 1e+37 0 0 empty empty empty 0 -8 0
+10 -262144 -1 -1 0 256;
+#X obj 10 278 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj -391 293 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X obj -598 249 key;
+#X obj -598 281 spigot;
+#X msg -565 249 1;
+#X msg -532 250 0;
+#X text -182 371 0 = overwrite \; 1 = shift \; 2 = scale \; 3 = synthetic
+\; 4 = no action;
+#X floatatom -396 392 5 0 0 0 - - -;
+#X floatatom -363 392 5 0 0 0 - - -;
+#X floatatom -330 392 5 0 0 0 - - -;
+#X floatatom -297 392 5 0 0 0 - - -;
+#X floatatom -264 392 5 0 0 0 - - -;
+#X obj -391 364 any;
+#X obj -391 336 / 10;
+#X obj -387 473 s tomagetuto;
+#X obj -538 118 s tomagetuto;
+#X text -440 -27 alpha is one of the vocoder's parameters \; simulates
+the vocal track length. Default is 0.55. Should not go outside a 0
+- 1 range. (Shift+drag for precision tuning);
+#X obj -316 315 nbx 5 14 -1e+37 1e+37 0 0 empty empty empty 0 -8 0
+10 -262144 -1 -1 0 256;
+#X text -140 216 The change is only effective on next synthesized (computed
+?) label. If you want a permanent change from mage's default \, you
+will need to send the message at least once each label. Easiest way
+to do that is to use a metro.;
+#X text -92 355 6th integer is the type of operation to apply :;
+#X text -82 369 0 - overwrite old value by current value;
+#X text -82 383 1 - shift old by current value;
+#X text -82 397 2 - scale old by current;
+#X text -82 410 3 - mage will compute duration (default);
+#X text -82 424 4 - no effect;
+#X obj -390 444 cnv 15 168 23 empty empty empty 0 0 0 20 -234399 -234399
+0;
+#N canvas 610 363 450 300 pack------------- 0;
+#X obj 27 66 inlet;
+#X obj 67 66 inlet;
+#X obj 107 66 inlet;
+#X obj 147 66 inlet;
+#X obj 187 66 inlet;
+#X obj 227 66 inlet;
+#X obj 27 234 outlet;
+#X obj 67 97 t b f;
+#X obj 107 97 t b f;
+#X obj 147 97 t b f;
+#X obj 187 97 t b f;
+#X obj 227 97 t b f;
+#X obj 27 168 pack 1 1 1 1 1 0;
+#X connect 0 0 12 0;
+#X connect 1 0 7 0;
+#X connect 2 0 8 0;
+#X connect 3 0 9 0;
+#X connect 4 0 10 0;
+#X connect 5 0 11 0;
+#X connect 7 0 12 0;
+#X connect 7 1 12 1;
+#X connect 8 0 12 0;
+#X connect 8 1 12 2;
+#X connect 9 0 12 0;
+#X connect 9 1 12 3;
+#X connect 10 0 12 0;
+#X connect 10 1 12 4;
+#X connect 11 0 12 0;
+#X connect 11 1 12 5;
+#X connect 12 0 6 0;
+#X restore -387 422 pd pack-------------;
+#X msg -387 447 duration \$1 \$2 \$3 \$4 \$5 \$6;
+#X text -495 254 This is just an example of controlling this;
+#X text -500 265 with the ascii numbers of the keys in your keyboard
+;
+#X text -360 332 An example of simple math on input;
+#X text -361 343 (a state typical duration is 2-10 frames);
+#X obj -433 365 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X connect 4 0 5 0;
+#X connect 5 0 31 0;
+#X connect 7 0 8 0;
+#X connect 8 0 31 0;
+#X connect 10 0 11 0;
+#X connect 11 0 31 0;
+#X connect 13 0 42 5;
+#X connect 14 0 29 0;
+#X connect 15 0 29 0;
+#X connect 16 0 14 0;
+#X connect 17 0 15 0;
+#X connect 18 0 19 0;
+#X connect 19 0 29 0;
+#X connect 20 0 19 1;
+#X connect 21 0 19 1;
+#X connect 23 0 42 0;
+#X connect 24 0 42 1;
+#X connect 25 0 42 2;
+#X connect 26 0 42 3;
+#X connect 27 0 42 4;
+#X connect 28 0 23 0;
+#X connect 28 0 24 0;
+#X connect 28 0 25 0;
+#X connect 28 0 26 0;
+#X connect 28 0 27 0;
+#X connect 29 0 28 0;
+#X connect 33 0 29 1;
+#X connect 42 0 43 0;
+#X connect 43 0 30 0;
+#X connect 48 0 28 0;
+#X restore 165 -57 pd base_controls;
+#N canvas 370 38 959 828 pitch_and_speed_controls 0;
+#X obj -502 74 cnv 5 5 5 empty empty 1 -15 5 0 20 -234399 -234399 0
+;
+#X obj -657 479 cnv 5 5 5 empty empty 2 -15 5 0 20 -234399 -234399
+0;
+#X obj -632 643 hsl 64 15 20 1000 0 0 empty empty empty -2 -8 0 10
+-262144 -1 -1 0 1;
+#X floatatom -635 664 5 0 0 0 - - -;
+#X msg -635 699 pitchoverwrite \$1;
+#X obj -426 643 hsl 64 15 0.25 4 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 0 1;
+#X floatatom -429 665 5 0 0 0 - - -;
+#X msg -429 699 pitchscale \$1;
+#X obj -517 643 hsl 64 15 -200 1000 0 0 empty empty empty -2 -8 0 10
+-262144 -1 -1 0 1;
+#X floatatom -520 665 5 0 0 0 - - -;
+#X msg -520 699 pitchshift \$1;
+#X msg -333 700 pitchsynth;
+#X obj -622 475 hsl 64 15 20 1000 0 0 empty empty empty -2 -8 0 10
+-262144 -1 -1 0 1;
+#X floatatom -625 500 5 0 0 0 - - -;
+#X obj -545 475 hsl 64 15 -200 1000 0 0 empty empty empty -2 -8 0 10
+-262144 -1 -1 0 1;
+#X floatatom -548 501 5 0 0 0 - - -;
+#X obj -470 475 hsl 64 15 0.25 4 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 0 1;
+#X floatatom -473 501 5 0 0 0 - - -;
+#X msg -625 548 pitch \$1 0;
+#X msg -548 549 pitch \$1 1;
+#X msg -473 549 pitch \$1 2;
+#X msg -429 617 1;
+#X text -615 527 overwrite;
+#X text -540 528 shift;
+#X text -464 529 scale;
+#X msg -520 618 0;
+#X obj -466 72 hsl 64 15 12 1200 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 0 1;
+#X floatatom -461 142 5 0 0 0 - - -;
+#X obj -461 93 / 240;
+#X obj -461 118 pow -1;
+#X msg -469 180 speed \$1 0;
+#X obj -384 72 hsl 64 15 -200 1000 0 0 empty empty empty -2 -8 0 10
+-262144 -1 -1 0 1;
+#X msg -387 180 speed \$1 1;
+#X obj -301 72 hsl 64 15 -5 5 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 0 1;
+#X msg -304 180 speed \$1 2;
+#X text -456 159 overwrite;
+#X text -377 160 shift;
+#X text -294 160 scale;
+#X msg -469 46 240;
+#X floatatom -304 127 5 0 0 0 - - -;
+#X msg -304 46 1;
+#X msg -387 45 0;
+#X floatatom -387 127 5 0 0 0 - - -;
+#X text -714 524 0 = overwrite \; 1 = shift \; 2 = scale \; 3 = synthetic
+\; 4 = no action;
+#X text -238 110 0 = overwrite \; 1 = shift \; 2 = scale \; 3 = synthetic
+\; 4 = no action;
+#X obj -677 758 r pitchvib;
+#X text -135 306 Each time you shift or scale \, you're shifting or
+scaling the current speed value \, not the original/default one - so
+using those shift and scale sliders you can very quikly exponentially
+increase the duration in an uncontrolled fashion.;
+#X text -133 90 -scale : multiplies the current number of samples in
+one frame by the number you give.;
+#X text -133 51 -overwrite : redefines the size \, in samples \, of
+one frame.;
+#X text -133 65 -shift : shifts the size of the frame by the given
+amount of samples.;
+#X obj -387 219 s tomagetuto;
+#X text -684 136 this gives a ratio of current speed;
+#X text -690 148 compared to the default speed;
+#X text -693 160 (240 - ratio of 1);
+#X obj -483 292 nbx 5 14 -1e+37 1e+37 0 0 empty empty empty 0 -8 0
+10 -262144 -1 -1 240 256;
+#X floatatom -398 337 9 0 0 0 - - -;
+#X obj -398 288 / 240;
+#X obj -398 313 pow -1;
+#X text -344 294 ratio;
+#X obj -256 602 nbx 6 14 -1e+37 1e+37 0 0 empty empty empty 0 -8 0
+10 -262144 -1 -1 110 256;
+#X text -320 10 Default speed is of 240;
+#X text -641 14 "speed" is the size of one frame \, in samples.;
+#X text -321 22 samples per frame.;
+#X text -23 15 More details :;
+#X obj -543 577 s tomagetuto;
+#X obj -503 736 s tomagetuto;
+#X obj -342 658 f;
+#X obj -280 658 f;
+#X obj -311 658 f;
+#X obj -342 490 f;
+#X obj -311 490 f;
+#X obj -280 490 f;
+#N canvas 780 345 450 300 current_speed 0;
+#X obj 25 46 inlet;
+#X obj 200 46 inlet;
+#X obj 386 44 inlet;
+#X text 199 23 shift;
+#X text 386 20 scale;
+#X obj 169 247 outlet;
+#X obj 169 210 f;
+#X obj 297 77 f;
+#X obj 200 112 + 240;
+#X obj 386 112 * 240;
+#X obj 81 169 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 86 195 ii 240;
+#X text 17 23 original/overwrite;
+#X connect 0 0 6 0;
+#X connect 0 0 7 0;
+#X connect 1 0 8 0;
+#X connect 2 0 9 0;
+#X connect 6 0 7 0;
+#X connect 6 0 5 0;
+#X connect 7 0 8 1;
+#X connect 7 0 9 1;
+#X connect 8 0 6 0;
+#X connect 9 0 6 0;
+#X connect 10 0 11 0;
+#X connect 11 0 6 0;
+#X restore -469 260 pd current_speed -----------;
+#X msg -635 618 110;
+#X text -404 723 Alternatively \, you can send explicit;
+#X text -410 734 messages for pitch operations.;
+#X text -133 636 Mage synthesizes speech not only at a given central
+frequency \, but also with continuous variations (accentuation). The
+shift and scale methods allow you to preserve that accentuation \,
+whereas the overwrite method doesn't. If you overwrite \, you set a
+new pitch \, which won't be altered by mage. If after overwriting you
+use the shift or scale method \, the accentuation will be synthesized
+again \, but the shifting and scaling will occur from default frequency
+\, not the one currently set with pitch overwrite method.;
+#X text -134 512 Whatever pitch method you use \, it will always perform
+the requested operation comparatively to a fixed default pitch \, not
+the one set previously by user. The default Mage pitch is 110 Hz \,
+but this value is very dependant on currently used voice engine. The
+pitch scale and shift methods will perform change relatively to that
+current default frequency (which depends on the engine). The overwrite
+method will overwrite the current pitch \, and is agnostic in regard
+to that default frequency.;
+#X text -134 125 Each phoneme has a different amount of frames. Each
+frame has a fixed number of samples. The "speed" parameter affects
+the number of samples in all the frames \, but the number of frames
+per phoneme is still calculated by mage \, and more than likely to
+be different for each phoneme. Each phoneme is divided in 5 states
+\, and mage calculates the duration of each states individually \,
+which is heavily dependant on everything (surrounding phonemes \, consonne/vowel
+\, voice engine...). The "duration \$1 \$2 \$3 \$4 \$5" message is
+the way to override default Mage's generated duration in frames for
+one phoneme. Each number argument you give to that message will override
+the corresponding state's duration for the next generated phoneme.
+;
+#N canvas 780 345 620 288 current_pitch 0;
+#X obj 25 46 inlet;
+#X obj 200 46 inlet;
+#X obj 386 44 inlet;
+#X text 17 23 original;
+#X text 199 23 shift;
+#X text 386 20 scale;
+#X obj 169 247 outlet;
+#X obj 169 210 f;
+#X obj 81 169 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 86 195 ii 110;
+#X obj 200 112 + 110;
+#X obj 386 112 * 110;
+#X obj 494 44 inlet;
+#X text 462 22 default base speech;
+#X connect 0 0 7 0;
+#X connect 1 0 10 0;
+#X connect 2 0 11 0;
+#X connect 7 0 6 0;
+#X connect 8 0 9 0;
+#X connect 9 0 7 0;
+#X connect 10 0 7 0;
+#X connect 11 0 7 0;
+#X connect 12 0 11 1;
+#X connect 12 0 10 1;
+#X restore -342 576 pd current_pitch;
+#X obj -264 558 nbx 5 14 -1e+37 1e+37 0 0 empty empty empty 0 -8 0
+10 -262144 -1 -1 110 256;
+#X text -254 534 base pitch;
+#X obj -264 515 ii 110;
+#X text -136 383 The subpatcher "current speed" gives you the current
+speed \, taking into consideration the changes you may effect with
+the connected sliders and different methods.;
+#X text -134 467 Different rules apply to operations on pitch - notwithstanding
+vibrato (see "vibrato" subpatcher from main patch).;
+#X text -133 775 The "current_pitch" subpatcher gives current speech
+pitch. You will need to provide it with a base pitch though \, if it's
+different from mage's default pitch (110 Hz).;
+#X text -697 775 this will be used in the vibrato subpatcher;
+#X connect 2 0 3 0;
+#X connect 2 0 66 0;
+#X connect 3 0 4 0;
+#X connect 4 0 65 0;
+#X connect 5 0 6 0;
+#X connect 5 0 67 0;
+#X connect 6 0 7 0;
+#X connect 7 0 65 0;
+#X connect 8 0 9 0;
+#X connect 8 0 68 0;
+#X connect 9 0 10 0;
+#X connect 10 0 65 0;
+#X connect 11 0 65 0;
+#X connect 12 0 13 0;
+#X connect 12 0 69 0;
+#X connect 13 0 18 0;
+#X connect 14 0 15 0;
+#X connect 14 0 70 0;
+#X connect 15 0 19 0;
+#X connect 16 0 17 0;
+#X connect 16 0 71 0;
+#X connect 17 0 20 0;
+#X connect 18 0 64 0;
+#X connect 19 0 64 0;
+#X connect 20 0 64 0;
+#X connect 21 0 5 0;
+#X connect 25 0 8 0;
+#X connect 26 0 28 0;
+#X connect 26 0 30 0;
+#X connect 26 0 72 0;
+#X connect 28 0 29 0;
+#X connect 29 0 27 0;
+#X connect 30 0 50 0;
+#X connect 31 0 42 0;
+#X connect 31 0 72 1;
+#X connect 32 0 50 0;
+#X connect 33 0 39 0;
+#X connect 33 0 72 2;
+#X connect 34 0 50 0;
+#X connect 38 0 26 0;
+#X connect 39 0 34 0;
+#X connect 40 0 33 0;
+#X connect 41 0 31 0;
+#X connect 42 0 32 0;
+#X connect 45 0 4 0;
+#X connect 56 0 57 0;
+#X connect 57 0 55 0;
+#X connect 66 0 79 0;
+#X connect 67 0 79 2;
+#X connect 68 0 79 1;
+#X connect 69 0 79 0;
+#X connect 70 0 79 1;
+#X connect 71 0 79 2;
+#X connect 72 0 54 0;
+#X connect 72 0 56 0;
+#X connect 73 0 2 0;
+#X connect 79 0 59 0;
+#X connect 80 0 79 3;
+#X connect 82 0 80 0;
+#X restore 165 -29 pd pitch_and_speed_controls;
+#N canvas 350 78 763 668 vibrato 0;
+#X obj -328 -219 cnv 5 5 5 empty empty 1 -15 5 0 20 -234399 -234399
+0;
+#X obj -501 -58 cnv 5 5 5 empty empty 2 -15 5 0 20 -234399 -234399
+0;
+#X obj -437 169 cnv 5 5 5 empty empty 3 -15 5 0 20 -234399 -234399
+0;
+#X obj -187 158 cnv 5 5 5 empty empty 4 -15 5 0 20 -234399 -234399
+0;
+#X obj -30 38 cnv 5 5 5 empty empty 5 -15 5 0 20 -234399 -234399 0
+;
+#X floatatom -477 -71 5 0 0 0 - - -;
+#X floatatom -173 155 5 0 0 0 - - -;
+#X floatatom -490 168 5 0 0 0 - - -;
+#X msg -477 -46 vibratoamp \$1;
+#X msg -173 179 vibratooffset \$1;
+#X msg -490 192 vibratozoom \$1;
+#X obj -6 94 s pitchvib;
+#X floatatom -311 -123 10 0 0 0 - - -;
+#X msg -311 -104 vibratothresh \$1;
+#X obj -311 -207 pow -1;
+#X obj -311 -186 * 48000;
+#X obj -311 -228 nbx 5 14 -1e+37 1e+37 0 0 empty empty empty 0 -8 0
+10 -262144 -1 -1 0 256;
+#X obj -6 39 metro 10;
+#X obj -6 19 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0 1
+;
+#X obj -6 67 nbx 5 14 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 10
+-262144 -1 -1 0 256;
+#X text -26 -47 it is required to update;
+#X text -25 -35 the pitch continuously;
+#X text -26 -24 in order to have the;
+#X text -25 -13 vibrato working on;
+#X text -25 -2 frozen phonems.;
+#X text -339 -260 frequency of vibrato;
+#X text -325 -248 in hertz;
+#X text -504 -117 amplitude of;
+#X text -504 -105 the voice's;
+#X text -504 -94 vibrato \, in hertz;
+#X obj -311 -165 sel 0;
+#X obj -311 -144 48000;
+#X obj -311 -9 s tomagetuto;
+#X obj -303 249 s tomagetuto;
+#X text -404 -324 vibrato - to give a vibrato effect to the current
+synthesized speech.;
+#X text -507 137 zoom inside one period;
+#X text -287 120 offset the period - useful in conjonction with zoom
+\, to create different shapes than sinus.;
+#X msg -153 39 labelnextvowel;
+#X obj -153 61 s tomagetuto;
+#X text -242 -152 threshold is the size of one vibrato period \, in
+samples - above is conversion from hertz to period at samplerate of
+48000;
+#X connect 5 0 8 0;
+#X connect 6 0 9 0;
+#X connect 7 0 10 0;
+#X connect 8 0 32 0;
+#X connect 9 0 33 0;
+#X connect 10 0 33 0;
+#X connect 12 0 13 0;
+#X connect 13 0 32 0;
+#X connect 14 0 15 0;
+#X connect 15 0 30 0;
+#X connect 16 0 14 0;
+#X connect 17 0 19 0;
+#X connect 18 0 17 0;
+#X connect 19 0 11 0;
+#X connect 30 0 31 0;
+#X connect 30 1 12 0;
+#X connect 31 0 12 0;
+#X connect 37 0 38 0;
+#X restore 165 -2 pd vibrato;
+#N canvas 55 22 1277 498 slightly_more_advanced_topics 0;
+#X obj -441 -204 cnv 6 5 5 empty empty a 0 0 0 20 -262144 -1 0;
+#X obj -543 -204 cnv 6 5 5 empty empty creating 0 0 0 20 -262144 -1
+0;
+#X obj -420 -204 cnv 6 5 5 empty empty voice 0 0 0 20 -262144 -1 0
+;
+#X obj -347 -204 cnv 6 5 5 empty empty engine 0 0 0 20 -262144 -1 0
+;
+#X obj -547 -71 cnv 6 5 5 empty empty recompiling 0 0 0 20 -262144
+-1 0;
+#X text -544 -189 Creating a voice engine is a complex and long process
+\, those included are freely available and were created using \, among
+other things \, proprietary software from the acapela group;
+#X obj -512 -150 pddp/pddplink http://www.acapela-group.com/ -text
+(http://www.acapela-group.com/).;
+#X text -549 -56 If you recompile mage~ \, you can replace the commented
+out lines (in mage~.cpp \, lines 222-230) that load the engines on
+mage startup by the path to the engines on your computer. This will
+allow you to have all engines preloaded each start you start mage (hence
+not needing engineadd engineremove mesages).;
+#X text -553 81 Many things to do with mage~ and poly~ ! Example patchs
+will come later.;
+#X obj -551 64 cnv 6 5 5 empty empty using 0 0 0 20 -262144 -1 0;
+#X obj -485 64 cnv 6 5 5 empty empty poly~ 0 0 0 20 -262144 -1 0;
+#X obj -129 150 cnv 6 5 5 empty empty using 0 0 0 20 -262144 -1 0;
+#X obj -63 150 cnv 6 5 5 empty empty controllers 0 0 0 20 -262144 -1
+0;
+#X text -132 167 It's obviously interesting to use controllers of all
+sorts with mage~ \, and the main interest of mage's implementation
+in MaxMSP and PureData. Patch examples of interfacing mage with the
+native macbooks trackpad \, a wacom bamboo tablet and the Razer Hydra
+game controller will come later.;
+#X text -131 -186 By now \, you might know everyting about mage and
+mage~ \, and may want to create your own .lab files from whatever text
+you fancy.;
+#X text -132 -140 However \, it is quite difficult at the moment. You
+need to install the festival speech synthesis system;
+#X obj -134 -114 pddp/pddplink http://www.cstr.ed.ac.uk/projects/festival/
+-text (http://www.cstr.ed.ac.uk/projects/festival/);
+#X text -133 -101 and figure how to translate a text to a format used
+by mage \, using this. If you know nothing about this \, it means quite
+a lot of work. Alternately \, provided it's not on a per-day basis
+\, you can send me a text to format at vic.hvk@gmail.com. about mage
+and mage~ \, and may want to create your own .lab files from whatever
+text you fancy.;
+#X text -133 -16 You could also look at the formating of a .lab file
+in the examples and \, knowing that each line is a label and that the
+important information is the first few characters of each line \, where
+you see the 3 previous phonems - the current phonem - then the 3 next
+phonems - all separated by special separator characters that are the
+same for each line \; you can recompose label files from this... obviously
+\, the result will be strange.;
+#X text -133 91 Better solutions will come later.;
+#X obj -129 -202 cnv 6 5 5 empty empty creating 0 0 0 20 -262144 -1
+0;
+#X obj -31 -202 cnv 6 5 5 empty empty .lab 0 0 0 20 -262144 -1 0;
+#X obj 21 -202 cnv 6 5 5 empty empty files 0 0 0 20 -262144 -1 0;
+#X text 298 -146 You may have noticed rarely used data outlets from
+the mage~ object. The first one (from left to right) is a bang each
+time a label is pushed to the labelqueue. The second one is the number
+of labels when a label lists is loaded. The third one is the duration
+\, in frames \, of currently computed label.;
+#X text 298 -58 Data outlets provide half useful information because
+they are synced with the label queue \, not the model queue \, hence
+it gives informations at a different rate than what is output. For
+exemple : the "label size" outlet gives the size of the label that
+just got computed \, not of the next to-be-output label - if you give
+a big list to compute it is likely to be computed very fast or slightly
+faster than it is synthesized.;
+#X text 299 55 It is possible to sort of workaround this \, using a
+custom queue \, recalculating each size of label in samples and syncing
+precisely with the start of the synthesis \; however it is not really
+easy to achieve \, even harder if you take into account that your aim
+is to control the timing of labels and you have to recompute the size
+of a label each time its duration is affected - so you need to recalculate
+values in the queue \, etc... what's more \, you have to detect the
+exact time mage begins to synthesize \, which is different from the
+time you fill the queue (there is the computation inbetween \, which
+time frame is not known in advance.) Example patch will come later.
+;
+#X obj 363 -163 cnv 6 5 5 empty empty the 0 0 0 20 -262144 -1 0;
+#X obj 297 -163 cnv 6 5 5 empty empty about 0 0 0 20 -262144 -1 0;
+#X obj 406 -163 cnv 6 5 5 empty empty data 0 0 0 20 -262144 -1 0;
+#X obj 462 -163 cnv 6 5 5 empty empty outlets 0 0 0 20 -262144 -1 0
+;
+#X obj 552 -163 cnv 6 5 5 empty empty of 0 0 0 20 -262144 -1 0;
+#X obj 582 -164 cnv 6 5 5 empty empty mage~  0 0 0 20 -262144 -1 0
+;
+#X restore 165 26 pd slightly_more_advanced_topics;
+#X obj 152 30 cnv 5 5 5 empty empty 11 -20 5 0 20 -234399 -234399 0
+;
+#X msg -465 291 labelfill;
+#X obj -465 322 s tomagetuto;
+#X obj -435 435 mage_glossary;
+#X text -557 411 Lost with words ? Try the glossary (just click on
+it) :;
+#X text -537 225 fill mage's label queue with this message - as soon
+as there is something in the label queue \, mage will synthesize it
+and remove it - "labelfill" fills the queue with the whole label list
+currently loaded;
+#X text -718 386 dsp start/stop;
+#N canvas 177 507 1101 616 filesloader 0;
+#X obj 104 178 playlist conf 430 130 {Helvetica 10 bold} #FEFEFE #E63A79
+black red;
+#X symbolatom 117 444 50 0 0 0 - - -;
+#X symbolatom 436 443 50 0 0 0 - - -;
+#X symbolatom 670 202 50 0 0 0 - - -;
+#X obj 112 -1 loadbang;
+#X obj 112 77 prepend location;
+#X obj 55 423 outlet;
+#X obj 319 417 outlet;
+#X obj 566 420 outlet;
+#X obj 262 76 prepend set;
+#X obj 263 7 prepend set;
+#X symbolatom 105 117 80 0 0 0 - - -;
+#X text 105 144 Scroll the list by clic-dragging in the colored area.
+;
+#X text 104 132 It is possible to then save this patcher so that it
+will;
+#X text 443 132 remember this path.;
+#X obj 208 1 t b s;
+#X msg 112 40 /Users/vichug/Music/MAGE/mage-2.00/data/configFiles/cmu-artic
+;
+#X obj 724 7 prepend set;
+#X msg 708 535 /Users/vichug/Music/MAGE/mage-2.00/data/configFiles/cmu-artic
+;
+#X obj 139 496 prepend set;
+#X msg 131 537 /Users/vichug/Music/MAGE/mage-2.00/data/configFiles/cmu-artic/jmk.conf
+;
+#X text 101 100 Input here the path/navigate to the folder with;
+#X text 387 100 engine configuration files :;
+#X obj 803 81 stripfilename;
+#X connect 0 0 1 0;
+#X connect 0 0 6 0;
+#X connect 0 1 2 0;
+#X connect 0 1 7 0;
+#X connect 0 2 3 0;
+#X connect 0 2 8 0;
+#X connect 1 0 19 0;
+#X connect 3 0 17 0;
+#X connect 4 0 16 0;
+#X connect 5 0 0 0;
+#X connect 9 0 11 0;
+#X connect 10 0 16 0;
+#X connect 11 0 15 0;
+#X connect 15 0 16 0;
+#X connect 15 1 10 0;
+#X connect 16 0 5 0;
+#X connect 16 0 9 0;
+#X connect 17 0 16 0;
+#X connect 19 0 20 0;
+#X coords 0 -1 1 1 505 210 2 100 100;
+#X restore -401 -143 pd filesloader;
+#X text 7 110 In the filebrowsers \, navigate by clicking on two dots
+for the above folder \, and on a folder name to open said folder \,
+then load an appopriate item. If you tehn save the patch it should
+remember this folder next time you open this patcher.;
+#X obj -642 205 s labelsize;
+#X obj -560 195 print a;
+#X obj -502 195 print b;
+#X obj -442 195 print c;
+#X text -546 175 bang;
+#X text -447 176 labelsize;
+#X text -506 176 framesize;
+#X obj -627 250 - 100;
+#X connect 19 0 23 0;
+#X connect 19 0 24 0;
+#X connect 19 0 24 1;
+#X connect 19 1 81 0;
+#X connect 19 2 82 0;
+#X connect 19 3 80 0;
+#X connect 19 3 83 0;
+#X connect 20 0 21 0;
+#X connect 23 0 87 0;
+#X connect 25 0 19 0;
+#X connect 27 0 36 0;
+#X connect 28 0 27 0;
+#X connect 30 0 36 0;
+#X connect 31 0 36 0;
+#X connect 38 0 41 0;
+#X connect 43 0 44 0;
+#X connect 44 0 45 0;
+#X connect 46 0 51 0;
+#X connect 47 0 51 0;
+#X connect 50 0 46 0;
+#X connect 50 1 47 0;
+#X connect 53 0 50 0;
+#X connect 57 0 20 0;
+#X connect 72 0 73 0;
+#X connect 78 1 50 1;
+#X connect 87 0 22 0;
