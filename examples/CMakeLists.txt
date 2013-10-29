@@ -12,4 +12,5 @@ ENDIF()
 ADD_SUBDIRECTORY(memorytest)
 #PureData object
 ADD_SUBDIRECTORY(puredata)
-
+# pHTSbatch: generating a testing example as a waveform
+ADD_SUBDIRECTORY(pHTSbatch)
