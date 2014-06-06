@@ -58,9 +58,9 @@ MAGE::ModelQueueMemory::ModelQueueMemory()
 		this->wum [k] = ( double * ) calloc( maxNumOfFrames, sizeof( double   ) );
 		this->g	  [k] = ( double * ) calloc( maxNumOfFrames, sizeof( double   ) );
 		
-		this->gv_mean[k]	= ( double * ) calloc( nOfStreams * maxStreamLen, sizeof( double ) );	
-		this->gv_vari[k]	= ( double * ) calloc( nOfStreams * maxStreamLen, sizeof( double ) );	
-		this->gv_switch[k]	= ( int    * ) calloc( nOfStreams * maxStreamLen, sizeof( int    ) );	
+		this->gv_mean[k]	= ( double * ) calloc( maxNumOfFrames * maxStreamLen, sizeof( double ) );	
+		this->gv_vari[k]	= ( double * ) calloc( maxNumOfFrames * maxStreamLen, sizeof( double ) );	
+		this->gv_switch[k]	= ( int    * ) calloc( maxNumOfFrames * maxStreamLen, sizeof( int    ) );	
 		
 		for( int j = 0; j < maxNumOfFrames; j++ )
 		{
