@@ -2,10 +2,15 @@
 LINUX
 
 1. This has been tested on linux only for now, maybe it could work on OSX with appropriate suffix change ?
-2. make sure that libmage.so and libhtsengine.so are in pd path ('ln -s' them in /usr/local/lib for instance) or in the same folder as mage~.pd_linux
-3. make sure that the "inout" folder is in the same folder as mage~.pd_linux since it looks for "./inouts/slt.conf" and all associated files (models, trees, labels, ...)
-4. No input parameters for the moment, it's just a loop over alice01.lab. Ideally it should take messages as input a bit like OSC messages, only simplified.
-
+2. make sure that libmage.so, libmage-htsengine.so and libmage-sptk.so are in pd path ('ln -s' them in /usr/local/lib for instance) or in the same folder as mage~.pd_linux (normally ./bin/Release or ./bin/Debug)
+3. make sure that the "data" folder is filled (cf. ./data/README), or modify mage.pd appropriately for path to voices/*.conf and label files, as well as all associated files (models, trees, labels, ...)
+4. create a folder in ./examples/puredata
+	cd examples/puredata
+	mkdir mage
+(just an example, you can name it as you want)
+5. run:
+	cd mage
+	pd -path ../../../bin/Release ../mage.pd
 
 OSX
 

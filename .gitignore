@@ -22,6 +22,8 @@ doc/latex
 html
 latex
 *.png
+*.wav
+*.raw
 
 # build directory (build, builds, Build, Builds, ...)
 [bB]uild*
