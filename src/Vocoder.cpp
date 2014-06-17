@@ -46,7 +46,7 @@ MAGE::Vocoder::Vocoder( int am, double aalpha, int afprd, int aiprd, int astage,
 	this->pd = apd;			// 4;
 	this->ngain = angain;	// true;
 	this->alpha = aalpha;	// 0.55;
-	
+
 	//excitation
 	this->count = 0;
 	
@@ -151,6 +151,7 @@ void MAGE::Vocoder::setPitch( double pitch, int action, bool forceVoiced )
 	return;
 }
 
+
 //	This function forces a Frame to be voiced or unvoiced.
 void MAGE::Vocoder::setVoiced( bool forceVoiced )
 {
@@ -163,87 +164,26 @@ void MAGE::Vocoder::setVoiced( bool forceVoiced )
 //	This function generates a Frame.
 void MAGE::Vocoder::push( Frame &frame, bool ignoreVoicing )
 {
-	int i;
-	
-	if( !flagFirstPush )
-	{
-		movem( cc, c, sizeof( * cc ), m + 1 );
-		
-		mc2b( frame.streams[mgcStreamIndex], cc, m, alpha );
-		
-		if( stage != 0 ) // MGLSA
-		{
-			gnorm( cc, cc, m, gamma );
-			cc[0] = log( cc[0] );
-			
-			for( i = 1; i <= m; i++ )
-				cc[i] *= gamma;
-		}
-	} 
-	else 
-	{
-		flagFirstPush = false;
-		
-		mc2b( frame.streams[mgcStreamIndex], c, m, alpha );
-		
-		if( stage != 0 ) // MGLSA
-		{ 
-			gnorm( c, c, m, gamma );
-			c[0] = log( c[0] );
-			
-			for( i = 1; i <= m; i++ )
-				c[i] *= gamma;
-		}
-		
-		for( i = 0; i <= m; i++ )
-			cc[i] = c[i];
-	}	
-	
-	for( i = 0; i <= m; i++ )
-		inc[i] = ( cc[i] - c[i] ) * iprd / fprd;
-	
-	switch( action )
-	{
-		case MAGE::overwrite:
-			this->f0 = this->actionValue; // Hz
-			break;
-			
-		case MAGE::shift:
-			this->f0 = ( frame.streams[lf0StreamIndex][0]  ) + ( this->actionValue ); // Hz
-			break;
-			
-		case MAGE::scale:
-			this->f0 = ( frame.streams[lf0StreamIndex][0]  ) * ( this->actionValue );  // Hz
-			break;
-			
-		case MAGE::synthetic:
-		case MAGE::noaction:
-		default:
-			this->f0 = frame.streams[lf0StreamIndex][0] ;
-	}
-	
-	if( this->f0 < 0 )
-		this->f0 = MAGE::defaultPitch; 
-	
-	this->t0 = MAGE::defaultSamplingRate / this->f0; // defaultSamplingRate = 48000
-	
-	if( !ignoreVoicing )
-		this->voiced = frame.voiced;
-	
-	this->nOfPopSinceLastPush = 0;
+	this->push( frame.streams, frame.voiced, ignoreVoicing );
 	return;
 }
 
 //	This function generates a Frame.
 void MAGE::Vocoder::push( Frame * frame, bool ignoreVoicing )
 {
+	this->push( frame->streams, frame->voiced, ignoreVoicing );
+	return;
+}
+
+void MAGE::Vocoder::push( double frame[nOfStreams][maxStreamLen], bool voiced, bool ignoreVoicing )
+{
 	int i;
-	
+
 	if( !flagFirstPush )
 	{
 		movem( cc, c, sizeof( * cc ), m + 1 );
 		
-		mc2b( frame->streams[mgcStreamIndex], cc, m, alpha );
+		mc2b( frame[0], cc, m, alpha );
 		
 		if( stage != 0 ) /* MGLSA*/
 		{
@@ -258,7 +198,7 @@ void MAGE::Vocoder::push( Frame * frame, bool ignoreVoicing )
 	{
 		flagFirstPush = false;
 		
-		mc2b( frame->streams[mgcStreamIndex], c, m, alpha );
+		mc2b( frame[0], c, m, alpha );
 		
 		if( stage != 0 ) // MGLSA
 		{ 
@@ -283,17 +223,17 @@ void MAGE::Vocoder::push( Frame * frame, bool ignoreVoicing )
 			break;
 			
 		case MAGE::shift:
-			this->f0 = ( frame->streams[lf0StreamIndex][0]  ) + ( this->actionValue ); // Hz
+			this->f0 = ( frame[1][0]  ) + ( this->actionValue ); // Hz
 			break;
 			
 		case MAGE::scale:
-			this->f0 = ( frame->streams[lf0StreamIndex][0]  ) * ( this->actionValue );  // Hz
+			this->f0 = ( frame[1][0]  ) * ( this->actionValue );  // Hz
 			break;
 			
 		case MAGE::synthetic:
 		case MAGE::noaction:
 		default:
-			this->f0 = frame->streams[lf0StreamIndex][0] ;
+			this->f0 = frame[1][0] ;
 	}
 	
 	if( this->f0 < 0 )
@@ -302,7 +242,7 @@ void MAGE::Vocoder::push( Frame * frame, bool ignoreVoicing )
 	this->t0 = MAGE::defaultSamplingRate / this->f0; // defaultSamplingRate = 48000
 	
 	if( !ignoreVoicing )
-		this->voiced = frame->voiced;
+		this->voiced = voiced;
 	
 	this->nOfPopSinceLastPush = 0;
 	return;
@@ -335,6 +275,8 @@ double MAGE::Vocoder::pop()
 	{ 
 		if( !ngain )
 			x *= exp( c[0] );
+		else
+			x *= c[0];
 		
 		x = mglsadf( x, c, m, alpha, stage, d );
 	} 
@@ -342,6 +284,8 @@ double MAGE::Vocoder::pop()
 	{ 
 		if( !ngain )
 			x *= exp( c[0] );
+		else
+			x *= c[0];
 		
 		x = mlsadf( x, c, m, alpha, pd, d );
 	}
@@ -349,9 +293,11 @@ double MAGE::Vocoder::pop()
 	//filter interpolation has not reached next filter yet
 	//when next filter is reached, stop interpolation, otherwise
 	//you'll eventually get an unstable filter
-	if( this->nOfPopSinceLastPush < ( fprd/iprd ) ) 
+	if( this->nOfPopSinceLastPush < ( fprd/iprd ) )
+	{
 		for( i = 0; i <= m; i++ )
 			c[i] += inc[i];
+	}
 	
 	this->nOfPopSinceLastPush++;
 	

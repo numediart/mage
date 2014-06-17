@@ -186,7 +186,7 @@ namespace MAGE
 			 *	@param frame An instance of class Frame.
 			 *	@param ignoreVoicing If true, then ignore the voiced / unvoiced information of the Frame and use latest known information.
 			 */
-			void push( Frame &frame, bool ignoreVoicing=false );
+			void push( Frame &frame, bool ignoreVoicing = false );
 		
 			/**
 			 *	This function receives a Frame and prepare all the parameters of the MLSA filter for the next sample generation by pop().
@@ -195,7 +195,15 @@ namespace MAGE
 			 *	@param ignoreVoicing If true, then ignore the voiced / unvoiced information of the Frame and use latest known information.
 			 */
 			void push( Frame * frame, bool ignoreVoicing=false );
-		
+
+			/**
+			 *	This function receives a double ** and prepare all the parameters of the MLSA filter for the next sample generation by pop().
+			 *
+			 *	@param frame A pointer to the double ** stream array of an instance of class Frame.
+			 *	@param bool Is the frame a voiced one or not ?
+			 */
+			void push( double frame[nOfStreams][maxStreamLen], bool voiced, bool ignoreVoicing = false );
+
 			/** 
 			 *	This function resets the Vocoder to its default values.
 			 *
