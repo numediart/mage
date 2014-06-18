@@ -87,9 +87,10 @@ int main(int argc, char **argv) {
       mage->getFrameQueue()->pop();
       for( int k = 0; k < bufSize; k++ ) {
     	  outbuffer[k] = mage->popSamples();
-    	  float temp = outbuffer[k];
-    	  fwrite(&temp, sizeof(float), 1, pFile);
+          //float temp = outbuffer[k];
+          //fwrite(&temp, sizeof(float), 1, pFile);
       }
+	  fwrite(outbuffer,sizeof(float),bufSize,pFile);
     }
   }
   printf("Done, generated %s\n",fName);
