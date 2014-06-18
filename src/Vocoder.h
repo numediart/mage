@@ -179,7 +179,13 @@ namespace MAGE
 			void setPitch( double pitch, int action, bool forceVoiced=false );
 		
 // methods
-		
+			/**
+			 *  This function generates an excitation based on the current voiced/unvoiced status and F0 value
+			 *
+			 *  @return a sample that can be fed into the MLSA filter
+			 */
+			double excite( void );
+
 			/** 
 			 *	This function receives a Frame and prepare all the parameters of the MLSA filter for the next sample generation by pop().
 			 * 

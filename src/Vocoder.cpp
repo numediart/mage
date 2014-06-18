@@ -160,6 +160,31 @@ void MAGE::Vocoder::setVoiced( bool forceVoiced )
 }
 
 // methods
+double MAGE::Vocoder::excite()
+{
+	double sample = 0;
+
+	if( voiced )
+	{
+		if( count <= 0 )
+		{
+			sample = sqrt( this->t0 );
+			count = this->t0;
+		}
+		else
+		{
+			sample = 0;
+			count--;
+		}
+	}
+	else
+	{
+		sample = MAGE::Random( -1,1 );
+		count = 0;
+	}
+
+	return sample;
+}
 
 //	This function generates a Frame.
 void MAGE::Vocoder::push( Frame &frame, bool ignoreVoicing )
@@ -251,26 +276,9 @@ void MAGE::Vocoder::push( double frame[nOfStreams][maxStreamLen], bool voiced, b
 double MAGE::Vocoder::pop()
 {
 	int i;
-	
-	if( voiced )
-	{
-		if( count <= 0 )
-		{
-			x = sqrt( this->t0 );
-			count = this->t0;
-		} 
-		else 
-		{
-			x = 0;
-			count--;
-		}
-	} 
-	else
-	{
-		x = MAGE::Random( -1,1 );
-		count = 0;
-	}
-	
+
+	x = this->excite();
+
 	if( stage != 0 )  // MGLSA
 	{ 
 		if( !ngain )
