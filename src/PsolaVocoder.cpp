@@ -175,6 +175,20 @@ void MAGE::PsolaVocoder::makepulse( unsigned int length )
 	return;
 }
 
+//	This function generates a Frame.
+void MAGE::PsolaVocoder::push( Frame &frame, bool ignoreVoicing )
+{
+	this->push( frame.streams, frame.voiced, ignoreVoicing );
+	return;
+}
+
+//	This function generates a Frame.
+void MAGE::PsolaVocoder::push( Frame * frame, bool ignoreVoicing )
+{
+	this->push( frame->streams, frame->voiced, ignoreVoicing );
+	return;
+}
+
 void MAGE::PsolaVocoder::push( double frame[nOfStreams][maxStreamLen], bool voiced, bool ignoreVoicing )
 {
 	int i;

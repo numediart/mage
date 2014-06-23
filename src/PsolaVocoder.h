@@ -91,14 +91,30 @@ namespace MAGE
 			 *  @return a sample that can be fed into the MLSA filter
 			 */
 			double excite( void );
-			
+
 			/**
 			 *  This function generates one window-centered pulse for a 2T0-sized window
 			 *
 			 *  @param length of the window (2*T0)
 			 */
 			void makepulse( unsigned int length );
-			
+
+			/** 
+			 *	This function receives a Frame and prepare all the parameters of the MLSA filter for the next sample generation by pop().
+			 * 
+			 *	@param frame An instance of class Frame.
+			 *	@param ignoreVoicing If true, then ignore the voiced / unvoiced information of the Frame and use latest known information.
+			 */
+			void push( Frame &frame, bool ignoreVoicing = false );
+		
+			/**
+			 *	This function receives a Frame and prepare all the parameters of the MLSA filter for the next sample generation by pop().
+			 * 
+			 *	@param frame A pointer to an instance of class Frame.
+			 *	@param ignoreVoicing If true, then ignore the voiced / unvoiced information of the Frame and use latest known information.
+			 */
+			void push( Frame * frame, bool ignoreVoicing=false );
+
 			/**
 			 *	This function receives a double ** and prepare all the parameters of the MLSA filter for the next sample generation by pop().
 			 *
