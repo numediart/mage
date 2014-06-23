@@ -97,7 +97,7 @@ namespace MAGE
 			 *
 			 *  @param length of the window (2*T0)
 			 */
-			void makepulse( unsigned int length );
+			virtual void makepulse( unsigned int length );
 
 			/**
 			 *	This function receives a double ** and prepare all the parameters of the MLSA filter for the next sample generation by pop().
