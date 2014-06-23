@@ -40,24 +40,6 @@
 MAGE::PsolaVocoder::PsolaVocoder( int am, double aalpha, int afprd, int aiprd, int astage, int apd, bool angain )
 	: Vocoder(am,aalpha,afprd,aiprd,astage,apd,angain)
 {
-	this->m = am;			// nOfMGCs-1;
-	this->fprd = afprd;		// 240;
-	this->iprd = aiprd;		// 1;
-	this->stage = astage;	// 0;
-	this->pd = apd;			// 4;
-	this->ngain = angain;	// true;
-	this->alpha = aalpha;	// 0.55;
-
-	if( stage != 0 ) // MGLSA
-		gamma = -1 / ( double )stage;
-	
-	this->csize = 0;
-	
-	if( stage != 0 )
-		this->csize = m + m + m + 3 + ( m + 1 ) * stage;  // MGLSA
-	else
-		this->csize = 3 * ( m + 1 )+ 3 * ( pd + 1 ) + pd * ( m + 2 );  // MLSA
-	
 	//c = new double[this->csize];
 	c.resize( PSOLA_FRAMEQUEUE_LENGTH );
 	inc.resize( PSOLA_FRAMEQUEUE_LENGTH );
@@ -76,9 +58,6 @@ MAGE::PsolaVocoder::PsolaVocoder( int am, double aalpha, int afprd, int aiprd, i
 	//d = inc + m + 1;
 	d = new double[this->csize];//that's too much, should be (if MLSA): 3 * ( pd + 1 ) + pd * ( m + 2)
 	memset( d, 0, sizeof( double ) * this->csize );
-	
-	flagFirstPush = true;
-	this->nOfPopSinceLastPush = 0;
 	
 	//PSOLA
 	this->pulse.resize( 2 * PSOLA_MAX_T0, 0 );

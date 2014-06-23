@@ -289,6 +289,14 @@ namespace MAGE
 
 		private:
 		
+			double x;
+			double * c;
+			double * inc;
+			double * cc;
+			double * d;
+			
+		protected:	
+			
 			int m;
 			int fprd;
 			int iprd;
@@ -299,13 +307,6 @@ namespace MAGE
 			bool ngain;
 			bool flagFirstPush;
 		
-			double x;
-			double * c;
-			double * inc;
-			double * cc;
-			double * d;
-			
-		protected:	
 			int count;
 			double actionValue;
 		

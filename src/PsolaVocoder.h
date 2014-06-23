@@ -114,6 +114,7 @@ namespace MAGE
 			 *			To be used in case the PsolaVocoder becomes irremediably unstable or to reset all the changes.
 			 */		
 			void reset( void );
+
 			/** 
 			 *	This function returns a single sample from the PsolaVocoder.
 			 * 
@@ -121,17 +122,7 @@ namespace MAGE
 			 */
 			double pop( void );
 
-		private:
-		
-			int m;
-			int fprd;
-			int iprd;
-			int stage;
-			int pd;
-			int csize;
-		
-			bool ngain;
-			bool flagFirstPush;
+		protected:
 		
 			double x;
 			std::vector< std::vector<double> > c;
@@ -156,5 +147,4 @@ namespace MAGE
 			double errorT0;
 	};	
 } // namespace
-
 
