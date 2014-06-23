@@ -304,14 +304,16 @@ namespace MAGE
 			double * inc;
 			double * cc;
 			double * d;
-				
-			double padesptk[21];
-			double * ppadesptk;
-		
+			
+		protected:	
 			int count;
 			double actionValue;
 		
 			int nOfPopSinceLastPush;
+	
+			// pade values for SPTK filtering
+			double padesptk[21];
+			double * ppadesptk;
 		
 			// functions imported from SPTK
 			void mc2b( double * mc, double * b, int m, const double a );
