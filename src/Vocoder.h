@@ -208,7 +208,7 @@ namespace MAGE
 			 *	@param frame A pointer to the double ** stream array of an instance of class Frame.
 			 *	@param bool Is the frame a voiced one or not ?
 			 */
-			void push( double frame[nOfStreams][maxStreamLen], bool voiced, bool ignoreVoicing = false );
+			virtual void prepare( double frame[nOfStreams][maxStreamLen], bool voiced, bool ignoreVoicing = false );
 
 			/** 
 			 *	This function resets the Vocoder to its default values.

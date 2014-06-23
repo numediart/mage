@@ -189,18 +189,18 @@ double MAGE::Vocoder::excite()
 //	This function generates a Frame.
 void MAGE::Vocoder::push( Frame &frame, bool ignoreVoicing )
 {
-	this->push( frame.streams, frame.voiced, ignoreVoicing );
+	this->prepare( frame.streams, frame.voiced, ignoreVoicing );
 	return;
 }
 
 //	This function generates a Frame.
 void MAGE::Vocoder::push( Frame * frame, bool ignoreVoicing )
 {
-	this->push( frame->streams, frame->voiced, ignoreVoicing );
+	this->prepare( frame->streams, frame->voiced, ignoreVoicing );
 	return;
 }
 
-void MAGE::Vocoder::push( double frame[nOfStreams][maxStreamLen], bool voiced, bool ignoreVoicing )
+void MAGE::Vocoder::prepare( double frame[nOfStreams][maxStreamLen], bool voiced, bool ignoreVoicing )
 {
 	int i;
 
