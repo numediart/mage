@@ -8,7 +8,7 @@
 #   Milos Cernak, October 2013
 #
 
-pHTS=../../bin/Release/pHTSbatch
+pHTS=../../bin/Debug/pHTSbatch
 lab=../../data/labels/cmu-artic/alice01.lab
 
 opts=(
