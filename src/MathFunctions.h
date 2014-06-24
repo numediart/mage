@@ -75,5 +75,14 @@ namespace MAGE
 	 */
 	//	This function returns the rounded inputed number.
 	double Round( double x );
-	
+
+	/**
+	 *  This function returns the energy of a vector
+	 *
+	 *  @param x the input vector
+	 *  @return the energy
+	 *
+	 */	
+	double Energy( float * x, int size );
+	double Energy( double * x, int size );
 } // namespace

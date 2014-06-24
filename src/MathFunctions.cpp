@@ -53,3 +53,26 @@ double MAGE::Round( double x )
 	return( floor( x + 0.5 ));
 }
 
+// computation of a vector's energy
+double MAGE::Energy( float * x, int size )
+{
+	double sum = 0.0;
+
+	for ( int k = 0; k < size; k++ )
+	{
+		sum += ( x[k] * x[k] );
+	}
+
+	return sum;
+}
+double MAGE::Energy( double * x, int size )
+{
+	double sum = 0.0;
+
+	for ( int k = 0; k < size; k++ )
+	{
+		sum += ( x[k] * x[k] );
+	}
+
+	return sum;
+}
