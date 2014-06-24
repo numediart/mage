@@ -45,15 +45,15 @@ MAGE::PsolaVocoder::PsolaVocoder( int am, double aalpha, int afprd, int aiprd, i
 	inc.resize( PSOLA_FRAMEQUEUE_LENGTH );
 	
 	for ( int f = 0; f < c.size(); f++ ) {
-		c[f].resize( m );
-		inc[f].resize( m );
+		c[f].resize( m + 1 );
+		inc[f].resize( m + 1 );
 	}
 
 	head_c = 0;
 	tail_c = 0;
 	
 	//cc = c.data() + m + 1;
-	cc = new double[m];	
+	cc = new double[m+1];	
 	//inc = cc + m + 1;
 	//d = inc + m + 1;
 	d = new double[this->csize];//that's too much, should be (if MLSA): 3 * ( pd + 1 ) + pd * ( m + 2)
