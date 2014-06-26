@@ -89,6 +89,9 @@ double MAGE::PsolaVocoder::excite()
 	double sample = 0;
 	int k, ct0 = (int) (this->t0 + 0.5);
 
+	if ( ct0 > PSOLA_MAX_T0 )
+		ct0 = PSOLA_MAX_T0;
+
 	if( voiced )
 	{
 		if( count <= 0 )
