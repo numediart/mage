@@ -185,8 +185,6 @@ void MAGE::PsolaVocoder::prepare( double frame[nOfStreams][maxStreamLen], bool v
 	//filter part
 	if( !flagFirstPush )
 	{
-		hopLen.push( nOfPopSinceLastPush );
-
 		movem( cc, c[head_c].data(), sizeof( * cc ), m + 1 );
 		
 		mc2b( frame[0], cc, m, alpha );
@@ -206,11 +204,15 @@ void MAGE::PsolaVocoder::prepare( double frame[nOfStreams][maxStreamLen], bool v
 		head_c++;
 		if ( head_c >= c.size() )
 			head_c = 0;
+
+		if (hopLen.empty()){
+			hopLen.push(0);
+		} else {
+			hopLen.push( nOfPopSinceLastPush );
+		}
 	} 
 	else 
 	{
-		flagFirstPush = false;
-		
 		mc2b( frame[0], c[head_c].data(), m, alpha );
 		
 		if( stage != 0 ) // MGLSA
@@ -231,6 +233,8 @@ void MAGE::PsolaVocoder::prepare( double frame[nOfStreams][maxStreamLen], bool v
 		head_c++;
 		if (head_c >= c.size() )
 		   head_c = 0;	
+
+		flagFirstPush = false;
 	}	
 
 	// pitch part
@@ -263,6 +267,7 @@ void MAGE::PsolaVocoder::prepare( double frame[nOfStreams][maxStreamLen], bool v
 		this->voiced = voiced;
 	
 	this->nOfPopSinceLastPush = 0;
+
 	return;
 }
 //	This function returns a single sample from the PsolaVocoder.
@@ -318,6 +323,12 @@ double MAGE::PsolaVocoder::pop()
 				tail_c++;
 				if ( tail_c >= c.size() )
 					tail_c = 0;
+
+				if (hopLen.empty()) {
+					//minor reset
+					this->countInitPop = PSOLA_MAX_T0;
+					flagFirstPush = true;
+				}
 			}
 		}
 	}
@@ -353,6 +364,7 @@ void MAGE::PsolaVocoder::reset()
 	this->pd	 = MAGE::defaultPadeOrder; 
 	this->volume = MAGE::defaultVolume;
 	this->flagFirstPush = true;
+	this->countInitPop = PSOLA_MAX_T0;
 	
 	return;
 }
