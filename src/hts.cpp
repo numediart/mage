@@ -191,7 +191,7 @@ void MAGE::Engine::load( int argc, char ** argv )
 	// read command
 	while( --argc )
 	{
-		if( ** ++argv == '-' )
+		if( ** argv == '-' )
 		{
 			switch( * ( * argv + 1 ) )
 			{
@@ -475,6 +475,7 @@ void MAGE::Engine::load( int argc, char ** argv )
 		{
 			labfn = * argv;
 		}
+		argv++;
 	}
 	
 	// number of models,trees check
