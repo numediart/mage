@@ -95,6 +95,10 @@ namespace MAGE
 			/**
 			 *  This function generates one window-centered pulse for a 2T0-sized window
 			 *
+			 *  \brief In the current implementation it generates a simple window-centered pulse,
+			 *         but a class that inherit from PsolaVocoder can reimplement it with more complex
+			 *         form of pitch-synchronous excitation
+			 *
 			 *  @param length of the window (2*T0)
 			 */
 			virtual void makepulse( unsigned int length );
@@ -133,8 +137,9 @@ namespace MAGE
 			int tail_c;
 
 			//PSOLA stuffs
-			//buffer for filter excitation (we cannot do sample-by-sample with PSOLA, so a buffer is needed)
+			//buffer for the 2*T0 pulse generated when calling makepulse(int) and to be overlap-added in excite()
 			std::vector<double> pulse;
+			//buffer for filter excitation (we cannot do sample-by-sample with PSOLA, so a buffer is needed)
 			std::vector<double> source;
 			int tail_s;//index of first *valid* sample in the buffer (i.e. a sample for which PSOLA is done)
 			int head_s;//index of first non-valid sample in the buffer (i.e. a sample for which OLA is ongoing) 

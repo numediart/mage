@@ -208,7 +208,7 @@ void MAGE::Vocoder::prepare( double frame[nOfStreams][maxStreamLen], bool voiced
 	{
 		movem( cc, c, sizeof( * cc ), m + 1 );
 		
-		mc2b( frame[0], cc, m, alpha );
+		mc2b( frame[mgcStreamIndex], cc, m, alpha );
 		
 		if( stage != 0 ) /* MGLSA*/
 		{
@@ -223,7 +223,7 @@ void MAGE::Vocoder::prepare( double frame[nOfStreams][maxStreamLen], bool voiced
 	{
 		flagFirstPush = false;
 		
-		mc2b( frame[0], c, m, alpha );
+		mc2b( frame[mgcStreamIndex], c, m, alpha );
 		
 		if( stage != 0 ) // MGLSA
 		{ 
@@ -248,17 +248,17 @@ void MAGE::Vocoder::prepare( double frame[nOfStreams][maxStreamLen], bool voiced
 			break;
 			
 		case MAGE::shift:
-			this->f0 = ( frame[1][0]  ) + ( this->actionValue ); // Hz
+			this->f0 = ( frame[lf0StreamIndex][0]  ) + ( this->actionValue ); // Hz
 			break;
 			
 		case MAGE::scale:
-			this->f0 = ( frame[1][0]  ) * ( this->actionValue );  // Hz
+			this->f0 = ( frame[lf0StreamIndex][0]  ) * ( this->actionValue );  // Hz
 			break;
 			
 		case MAGE::synthetic:
 		case MAGE::noaction:
 		default:
-			this->f0 = frame[1][0] ;
+			this->f0 = frame[lf0StreamIndex][0] ;
 	}
 	
 	if( this->f0 < 0 )
