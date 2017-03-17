@@ -1,0 +1,85 @@
+#N canvas 567 22 603 751 10;
+#X obj 44 32 cnv 6 5 5 engin engout engine 0 0 0 16 -262144 -1 0;
+#X obj 52 305 cnv 6 5 5 labin labout label 0 0 0 16 -262144 -1 0;
+#X obj 33 429 cnv 6 15 15 empty empty .lab 0 0 0 16 -262144 -1 0;
+#X obj 84 428 cnv 6 15 1 empty empty or 0 0 0 16 -262144 -1 0;
+#X obj 26 450 cnv 6 1 1 empty empty labels 0 0 0 16 -262144 -1 0;
+#X obj 92 450 cnv 6 1 1 empty empty list 0 0 0 16 -262144 -1 0;
+#X obj 22 513 cnv 6 1 1 empty empty labels 0 0 0 16 -262144 -1 0;
+#X obj 89 513 cnv 6 1 1 empty empty queue 0 0 0 16 -262144 -1 0;
+#X obj 50 650 cnv 6 1 1 empty empty model 0 0 0 16 -262144 -1 0;
+#X obj 27 728 cnv 6 1 1 empty empty model 0 0 0 16 -262144 -1 0;
+#X obj 81 728 cnv 6 1 1 empty empty queue 0 0 0 16 -262144 -1 0;
+#X obj 50 851 cnv 6 1 1 empty empty state 0 0 0 16 -262144 -1 0;
+#X obj 52 981 cnv 6 1 1 empty empty frame 0 0 0 16 -262144 -1 0;
+#X obj 42 1198 cnv 6 1 1 empty empty vocoder 0 0 0 16 -262144 -1 0
+;
+#X obj 55 1268 cnv 6 1 1 empty empty mage 0 0 0 16 -262144 -1 0;
+#X obj 26 1479 cnv 6 1 1 empty empty performative 0 0 0 16 -262144
+-1 0;
+#X obj 54 1498 cnv 6 1 1 empty empty system 0 0 0 16 -262144 -1 0;
+#X text 190 22 a set of all the rules needed to make mage replicate
+a trained model's specific voice. You will need one different engine
+for each voice you want to imitate.;
+#X text 189 87 Six different engines are provided in the "data" archives
+\, in the folder data/configFiles/cmu-artic are the .conf files \;
+you will probably need to modify the filepath in these so that they
+point to your current installation's path of folder data/voices/[engine
+name].;
+#X text 188 174 Those files were obtained after a training procedure
+\, which consists - to summarize - in recording one person's voice
+reading phonetically balanced texts \, then analysing and processing
+the result until the obtention of a set of rules for speech synthesis.
+;
+#X text 188 296 One label is a string containing information needed
+to synthesize a phoneme. It gives info about what is the current phoneme
+\, what are the few previous and next phonemes \, current phoneme's
+duration \, intonation \, accentuation \, etc.;
+#X text 186 418 File containing a list of several successive labels
+\, it is the output of label file generation from a text file.;
+#X text 184 506 Internal mage's buffer where are waiting the next labels
+to be processed/synthesized. It is a FIFO (first in first out) queue.
+When you send a label in the queue \, it waits until the queue reaches
+his turn \, then it is computed (all the information are translated
+to parameters to give to the vocoder) then the computed parameters
+are sent to the models queue.;
+#X text 183 640 Label computed into a set of synthesis parameter for
+the vocoder ?;
+#X text 183 720 Similarly to the label queue \, FIFO list containing
+all the models to be synthesized by the vocoder. Unlike the label queue
+\, user has very few control or information on the model queue.;
+#X text 181 842 A temporal subdivision of a phoneme/label/model \;
+each of those has five states \, "beginning - beginning/middle - middle
+- middle/end - end" \, each state lasts a different number of frames
+(usually between 1 and 10 \, first is shorter \, middle is longer \,
+or somehting along those lines);
+#X text 182 971 Shortest temporal unit that is used by mage (except
+the vocoder which of course synthesizes sound at sample rate). Frame
+length is an absolute value (= not changing \, as opposed to state
+duration for example \, which depends on many parameters) expressed
+in samples. User has direct and realtime control on that value with
+the message "speed" ans its derivatives (see relevant tab). Default
+frame length is 240 samples \, default mage framerate is 48000 Hz (doesn't
+work correctly at other rates at the moment) \; which gives a defaut
+frame length of 240 samples at 48000 samples per second <-> 200 frames
+per second <-> 5 miliseconds per frame.;
+#X text 180 1190 Synthesis engine at the core of mage.;
+#X text 180 1260 Parameters generation/interfacing/everything engine
+at the core of mage.;
+#X obj 58 1344 cnv 6 1 1 empty empty hmm 0 0 0 16 -262144 -1 0;
+#X obj 336 1336 pddp/pddplink http://en.wikipedia.org/wiki/Hidden_Markov_model
+-text wikipedia;
+#X obj 180 1375 pddp/pddplink http://hts.sp.nitech.ac.jp/ -text HTS/HTK
+;
+#X text 178 1473 Simply means a system suited for real-time manipulation.
+Mage allows control over many synthesis parameters during said synthesis
+\, at real time \; hence the "performative" appellation.;
+#X obj 340 1578 pddp/pddplink http://mage.numediart.org/publications.php
+-text mage.numediart.org.;
+#X text 92 1578 some more theorical informations/papers @;
+#X text 179 1336 Hidden Markov Models. See;
+#X text 180 1349 Statistical model which allows for multiple transitions
+between several states. They are at the core of the;
+#X text 394 1336 for more info.;
+#X text 224 1375 speech synthesis systems \, which in turn are;
+#X text 180 1387 at the core of mage.;

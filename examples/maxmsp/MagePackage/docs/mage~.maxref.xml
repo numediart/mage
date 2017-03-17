@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml-stylesheet href="./_c74_ref.xsl" type="text/xsl"?>
+
+<c74object name="mage~" module="msp" category="MSP Synthesis, mage">
+
+	<digest>
+		HMM-based performative speech synthesis
+	</digest>
+
+	<description>
+		The <o>mage~</o> object 
+		implements the mage speech synthesis toolbox as a MaxMSP object.
+	</description>
+
+	
+	<!--METADATA-->
+	<metadatalist>
+		<metadata name="author">numediart</metadata>
+		<metadata name="tag">Audio</metadata>
+		<metadata name="tag">Speech</metadata>
+		<metadata name="tag">mage</metadata>
+		<metadata name="tag">Synthesis</metadata>		
+	</metadatalist>
+
+	
+	<!--ARGUMENTS-->
+<!-- 
+	<objarglist>
+		<objarg name="buffername" type="symbol" optional="0">
+			<description>The name of a buffer to reference.</description>
+		</objarg>
+	</objarglist>
+ -->
+	
+
+	<!--MESSAGES-->
+	<methodlist>
+		<method name="set">
+			<arglist><arg name="name" type="symbol" optional="0" id="0" /></arglist>
+			<description>Set the buffer to reference.</description>
+		</method>
+		<method name="reset">
+			<arglist></arglist>
+			<description>
+				Resets mage.
+			</description>
+		</method>
+		<method name="labelclear">
+			<arglist></arglist>
+			<description>
+				Empties mage label queue.
+			</description>
+		</method>
+		<method name="labelnext">
+			<arglist></arglist>
+			<description>
+				Jumps to next label.
+			</description>
+		</method>
+		<method name="labelfill">
+			<arglist></arglist>
+			<description>
+				Fills the label queue with labels from currently loaded label list file.
+			</description>
+		</method>
+		<method name="labelfilluntilend">
+			<arglist></arglist>
+			<description>
+				Like labelfill but starts from current label.
+			</description>
+		</method>
+		<method name="labelnextvowel">
+			<arglist></arglist>
+			<description>
+				Jumps to next vowel or pause label.
+			</description>
+		</method>
+		<method name="label">
+			<arglist><arg name="file path" type="symbol" optional="0" id="0" /></arglist>
+			<description>Loads .lab file at given path.</description>
+		</method>
+		<method name="engineadd">
+			<arglist><arg name="file path" type="symbol" optional="0" id="0" /><arg name="engine name" type="symbol" optional="0" id="1" /></arglist>
+			<description>Loads an engine at given path (2d argument) with a custom name (first argument).</description>
+		</method>
+		<method name="engineremove">
+			<arglist><arg name="engine name" type="symbol" optional="0" id="0" /></arglist>
+			<description>Removes an already loaded and named engine.</description>
+		</method>
+		<method name="volume">
+			<arglist><arg name="volume" type="float" optional="0" id="0" /></arglist>
+			<description> Sets mage audio output volume.
+			</description>
+		</method>
+		<method name="alpha">
+			<arglist><arg name="alpha" type="float" optional="0" id="0" /></arglist>
+			<description> Sets mage vocoder alpha value.
+			</description>
+		</method>
+		<method name="gamma">
+			<arglist><arg name="gamma" type="float" optional="0" id="0" /></arglist>
+			<description> Sets mage vocoder gamma value.
+			</description>
+		</method>
+		<method name="speed">
+			<arglist><arg name="speed value" type="float" optional="0" id="0" /><arg name="operation type" type="integer" optional="1" id="1" /></arglist>
+			<description> Sets or calculates a new frame length in samples.
+			</description>
+		</method>
+		<method name="pitch">
+			<arglist><arg name="pitch value" type="float" optional="0" id="0" /><arg name="operation type" type="integer" optional="1" id="1" /></arglist>
+			<description> Sets or calculates a new pitch frequency in hertz.
+			</description>
+		</method>
+		<method name="pitchoverwrite">
+			<arglist><arg name="pitch value" type="float" optional="0" id="0" /></arglist>
+			<description> Sets a new pitch value in hertz.
+			</description>
+		</method>
+		<method name="pitchscale">
+			<arglist><arg name="scale value" type="float" optional="0" id="0" /></arglist>
+			<description> Multiplies pitch by a given factor.
+			</description>
+		</method>
+		<method name="pitchshift">
+			<arglist><arg name="shift value" type="float" optional="0" id="0" /></arglist>
+			<description> Shifts pitch by a given amount of hertz.
+			</description>
+		</method>
+		<method name="pitchsynth">
+			<arglist></arglist>
+			<description>
+				Tells mage to compute the pitch.
+			</description>
+		</method>
+		<method name="labelreplace">
+			<arglist><arg name="label number" type="float" optional="0" id="0" /></arglist>
+			<description> Jump to nth label, labelnext will jump to nth label.
+			</description>
+		</method>
+		<method name="labelinsert">
+			<arglist><arg name="label number" type="float" optional="0" id="0" /></arglist>
+			<description> Jump to nth label.
+			</description>
+		</method>
+		<method name="labelswitch">
+			<arglist><arg name="label number" type="float" optional="0" id="0" /></arglist>
+			<description> Jump to nth label, labelnext will jump to (n+1)th label.
+			</description>
+		</method>
+		<method name="vibratoamp">
+			<arglist><arg name="vibrato amplitude" type="float" optional="0" id="0" /></arglist>
+			<description> Sets a vibrato amplitude.
+			</description>
+		</method>
+		<method name="vibratothresh">
+			<arglist><arg name="vibrato period threshhold" type="float" optional="0" id="0" /></arglist>
+			<description> Sets the size, in samples, of one vibrato period.
+			</description>
+		</method>
+		<method name="vibratozoom">
+			<arglist><arg name="vibrato zoom" type="float" optional="0" id="0" /></arglist>
+			<description> Sets the zoom factor in vibrato sine periods.
+			</description>
+		</method>
+		<method name="vibratooffset">
+			<arglist><arg name="vibrato period threshhold" type="float" optional="0" id="0" /></arglist>
+			<description> An offset factor (between -pi and +pi) for the vibrato sine periods.
+			</description>
+		</method>
+		<method name="duration">
+			<arglist><arg name="frame one" type="integer" optional="0" id="0" /><arg name="frame two" type="integer" optional="0" id="1" /><arg name="frame three" type="integer" optional="0" id="2" /><arg name="frame four" type="integer" optional="0" id="3" /><arg name="frame five" type="integer" optional="0" id="4" /><arg name="operation type" type="integer" optional="0" id="5" /></arglist>
+			<description> Sets or calculates a new duration in frames for each state of next label, given five integers : one for each state, and a last integer to set the type of operation to apply - overwrite, shift, scale, resynthesis, nothing.
+			</description>
+		</method>
+	</methodlist>
+	
+	
+	<!--ATTRIBUTES-->
+<!-- 
+	<attributelist>
+		<attribute name="loop" get="1" set="1" type="int" size="1">
+			<description>Toggle on and off loop-recording.</description>
+		</attribute>
+		<attribute name="fade" get="1" set="1" type="float" size="1">
+			<description>Specifies the number of milliseconds over which newly recorded samples are faded into the buffer.</description>
+		</attribute>
+		<attribute name="channel" get="1" set="1" type="int" size="1">
+			<description>Specifies the channel number in the buffer to which new samples should be written.</description>
+		</attribute>
+	</attributelist>
+ -->
+
+	
+	<!--SEEALSO-->
+<!-- 
+	<seealsolist>
+		<seealso name="tap.buffer.record2~"/>
+	</seealsolist>
+ -->
+
+	
+</c74object>
